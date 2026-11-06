@@ -5,3 +5,136 @@
 
 /* Resultado final da partida, distinto do marcador em directo */
 .final-score-strip{display:flex;align-items:center;gap:10px;margin-top:12px;padding:9px 11px;background:#191d1b;border:1px solid #39433d;border-radius:7px;color:#b9c4bc}.final-score-strip b{font-size:15px;color:#f0f3ef}.final-score-strip span{font-size:9px;font-weight:800;letter-spacing:.6px;color:#a8b4aa}
+
+
+/* FK — nova identidade visual: navy, verde e laranja */
+:root{
+  color-scheme:dark;
+  --fk-bg:#07111f;
+  --fk-sidebar:#091625;
+  --fk-panel:#0d1b2a;
+  --fk-panel-2:#102236;
+  --fk-border:#1d3449;
+  --fk-text:#edf4f8;
+  --fk-muted:#8da3b5;
+  --fk-green:#20d69a;
+  --fk-green-soft:#12382f;
+  --fk-orange:#ff9b45;
+  --fk-orange-soft:#3b291b;
+}
+body,.app-shell{background:var(--fk-bg);color:var(--fk-text)}
+.sidebar{background:linear-gradient(180deg,#091625 0%,#081321 100%);border-color:#1b3043}
+.brand-mark span{color:var(--fk-green)}
+.brand small,.profile small,.side-status small{color:#8097aa}
+.side-label{color:#70879a}
+.nav-item{color:#9bb0c0}
+.nav-item:hover,.nav-item.active{background:#102b35;color:#e9fff7}
+.nav-item.active{box-shadow:inset 3px 0 var(--fk-green)}
+.live-dot,.status-dot{background:var(--fk-green);box-shadow:0 0 13px #20d69a55}
+.side-status,.profile{border-color:var(--fk-border)}
+.side-status{background:#0d1b2a;color:#b8cbd8}
+.avatar{background:var(--fk-green);color:#062018}
+.topbar{background:#091625;border-color:var(--fk-border)}
+.crumb{color:#8198aa}.crumb b{color:#e4eef5}
+.local-chip{color:var(--fk-green);border-color:#1c6a53}
+.local-chip i{background:var(--fk-green)}
+.content{color:var(--fk-text)}
+.eyebrow,.text-btn{color:var(--fk-green)}
+.welcome p,.section-head p,.panel-head p{color:var(--fk-muted)}
+h1{color:#f1f6fa}
+.primary-btn{background:var(--fk-green);color:#052218}
+.primary-btn:hover{background:#52e8b4}
+.secondary-btn{background:#132a3b;border-color:#29465d;color:#d8e8f1}
+.danger-btn{background:#351f1c;border-color:#68402e;color:#ffb18a}
+.demo-banner,.live-warning{background:#102a2a;border-color:#20534d;color:var(--fk-green)}
+.demo-banner b,.live-warning b{color:#e6fff5}
+.demo-banner span,.live-warning span{color:#9bb9b6}
+.demo-pill{border-color:#267d66;color:#7df0c1!important}
+.notice{color:#ffc184;border-color:#704b2b;background:#2b2118}
+.stats-grid .stat-card,.ticket-card,.panel,.empty,.empty-state{background:linear-gradient(145deg,#102235 0%,#0c1a29 100%);border-color:var(--fk-border)}
+.stat-top{color:#9ab0c0}.stat-top svg{color:var(--fk-green)}
+.stat-card>strong{color:#f0f6fa}
+.stat-card>small,.ticket-meta,.ticket-foot,.panel-note,.hint{color:#8ca2b3}
+.section-head h2,.panel-head h3{color:#eaf2f7}
+.searchbox,.filter-wrap{background:#0b1928;border-color:#254056;color:#90a8ba}
+.searchbox input{color:#edf4f8}
+.searchbox input::placeholder{color:#71899b}
+.filter-wrap select,.field select{color:#c5d5df}
+.tag{color:#6cf0bd;background:#123a32}
+.tag-gold{color:#ffbd7e;background:#402b1c}
+.ticket-state{color:#a1b4c2}
+.odds-row{border-color:#20384c}
+.odds-row strong,.pick>strong,.odd-value,.history-odd b,.track-summary b{color:var(--fk-orange)}
+.leg-count{color:#eaf2f7}
+.pick,.ticket-foot,.rule,.service,.setting-row,.history-actions{border-color:#20384a}
+.pick-info b,.ticket-expand h3,.details-heading b,.match-teams>b{color:#eaf3f8}
+.pick-info span,.pick-index,.ticket-quick small,.ticket-subline,.ticket-detail-footer span{color:#8ba2b4}
+.ticket-foot b{color:#c6d7e1}
+.rule,.service{color:#a7bbc9}
+.rule b{color:var(--fk-green)}
+.service small,.empty span,.empty-state>span{color:#8ca2b3}
+.service small i{background:var(--fk-green)}
+.empty{border-color:#29465a}
+.empty b,.empty-state>b{color:#e5f0f5}
+.field{color:#a8bdcb}
+.field input,.field select{background:#091725;border-color:#29445a;color:#edf4f8}
+.field input:focus,.field select:focus{border-color:var(--fk-green)}
+.field input::placeholder{color:#71899b}
+.game-row,.history-item{background:#0e1e2d;border-color:var(--fk-border)}
+.game-match b{color:#e7f0f5}
+.game-match small,.history-top small,.history-odd small{color:#8da3b5}
+.source-tag{color:#79e9bd;border-color:#246b57}
+.small-btn{border-color:#28765f;background:#12392f;color:#8af0c8}
+.small-btn.danger{color:#ffad9e;border-color:#684039;background:#321f1e}
+.builder-total,.history-legs>div,.track-summary{background:#091725;border-color:#29445a}
+.builder-total strong{color:var(--fk-orange)}
+.builder-total small,.builder-total span,.history-legs small{color:#8ca2b3}
+.available-pick{border-color:#20384a}
+.available-pick b,.history-legs span{color:#e3edf3}
+.available-pick small{color:#8ca2b3}
+.available-pick strong{color:var(--fk-orange)}
+.track-summary{color:#a8bdcb}
+.track-leg{border-color:#20384a}
+.track-leg b{color:#e7f0f5}
+.track-leg small{color:#8ca2b3}
+.track-leg select{background:#091725;border-color:#29445a;color:#e5eff5}
+.history-top h3{color:#e7f0f5}
+.history-odd span{color:#a7bac7}
+.text-danger{color:#ff9d8f}
+.setting-row b{color:#e5eff5}
+.setting-row small{color:#8ca2b3}
+.status-text{color:#8ee5bd}
+.daily-summary{background:linear-gradient(100deg,#102b36,#102235);border-color:#245064}
+.daily-icon,.empty-state-icon{background:#123a36;color:var(--fk-green)}
+.daily-summary b{color:#eef8f8}
+.daily-summary span{color:#9bb4c0}
+.daily-date{color:var(--fk-orange);border-color:#75502f}
+.daily-ticket{background:linear-gradient(145deg,#102235,#0c1a29);border-color:#203b50}
+.ticket-quick>b{color:var(--fk-orange)}
+.reserve-id{color:#a8bdc9}
+.expand-icon{color:var(--fk-green)}
+.ticket-details{border-color:#203b50}
+.match-detail{background:#091725;border-color:#1f394d}
+.match-number,.match-teams small{color:#8ca3b5}
+.match-teams>b span{color:#8ba2b4}
+.market-detail-grid{border-color:#20394d}
+.market-detail-grid small{color:#8099aa}
+.market-detail-grid b{color:#dce9f0}
+.state-good{color:var(--fk-green)}
+.state-bad{color:#ff8f82}
+.state-live{color:var(--fk-orange)}
+.state-pending{color:#a6b8c4}
+.live-score-strip{background:#10332f;border-color:#226354;color:var(--fk-green)}
+.live-score-strip b{color:#f0fff9}
+.live-score-strip small{color:#a2c3b9}
+.final-score-strip{background:#172535;border-color:#34495c;color:#c0d0dc}
+.final-score-strip b{color:#f0f5f8}
+.final-score-strip span{color:#a9bdca}
+.market-update{color:#9bb0be}
+.ticket-detail-footer{border-color:#20394d}
+.ticket-detail-footer b{color:var(--fk-green)}
+.quiet-note{border-color:#244057;color:#9ab0bf}
+.quiet-note svg{color:var(--fk-green)}
+footer{color:#7890a2}
+.icon-btn{background:#0e2030;border-color:#29445a;color:#c1d2dd}
+@media(max-width:760px){.sidebar{background:#091625}.scrim{background:#020812c9}}
