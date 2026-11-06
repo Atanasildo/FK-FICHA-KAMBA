@@ -56,3 +56,17 @@ Importa `Atanasildo/FK-FICHA-KAMBA` na Vercel. Configuração:
 - Output Directory: `dist`
 
 Para activar a consulta opcional de jogos, adiciona `FOOTBALL_DATA_TOKEN` às variáveis de ambiente do projecto na Vercel. Nunca coloques a chave no código do navegador.
+
+## Motor de análise com Groq
+
+O endpoint protegido `POST /api/ai-analyze` envia jogos e mercados reais para a Groq e devolve uma análise estruturada. Usa o modelo `openai/gpt-oss-20b` por defeito. A chave Groq e o segredo de execução ficam exclusivamente nas variáveis de ambiente do servidor.
+
+Variáveis necessárias na Vercel:
+
+- `GROQ_API_KEY`: chave criada na consola Groq.
+- `GROQ_MODEL`: opcional; por defeito `openai/gpt-oss-20b`.
+- `CRON_SECRET`: segredo longo e aleatório; o endpoint exige `Authorization: Bearer <CRON_SECRET>`.
+
+O pedido deve conter jogos reais em `fixtures`, cada um com `id`, `home`, `away` e uma lista `markets` com `market`, `selection` e `odds`. O endpoint valida novamente cada selecção contra os mercados recebidos e rejeita selecções que não correspondam exactamente aos dados de entrada ou tenham odds inferiores a 1.40.
+
+Este endpoint é apenas a primeira integração do motor de IA. Ainda não obtém automaticamente odds, não cria IDs de reserva, não guarda/publica fichas numa base de dados e não agenda a geração diária. Essas etapas dependem da integração das fontes desportivas, armazenamento central e agendamento. Os limites gratuitos da Groq variam por modelo e conta.
