@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Activity, CalendarDays, ChevronDown, ChevronRight, Clock3, FileText, History, LayoutDashboard, Radio, RefreshCw, Settings, ShieldCheck, Ticket, Trophy, Download, Bell, Menu, X } from 'lucide-react';
 
-const NAV = [['Boletins do dia', LayoutDashboard], ['Acompanhamento ao vivo', Activity], ['Histórico', History], ['Definições', Settings]];
+const NAV = [['Bilhetes do dia', LayoutDashboard], ['Acompanhamento ao vivo', Activity], ['Histórico', History], ['Definições', Settings]];
 const STORE = 'fk-ficha-kamba-v1';
 const money = n => Number(n || 0).toFixed(2);
 const readStore = () => {
@@ -28,7 +28,7 @@ const resultClass = leg => {
 };
 
 export default function App() {
-  const [page, setPage] = useState('Boletins do dia');
+  const [page, setPage] = useState('Bilhetes do dia');
   const [data] = useState(readStore);
   const [expanded, setExpanded] = useState({});
   const [mobile, setMobile] = useState(false);
@@ -46,9 +46,9 @@ export default function App() {
   };
   return <div className="app-shell"><aside className={mobile ? 'sidebar mobile-open' : 'sidebar'}>{side}</aside>{mobile && <button className="scrim" onClick={() => setMobile(false)} aria-label="Fechar menu"/>}
     <main className="main"><header className="topbar"><button className="icon-btn mobile-menu" onClick={() => setMobile(true)}><Menu/></button><div className="crumb">Plataforma <span>/</span> <b>{page}</b></div><div className="top-actions"><span className="date-chip"><CalendarDays size={15}/> {new Date().toLocaleDateString('pt-AO')}</span><span className="local-chip"><i/> PAINEL</span><div className="avatar small">FK</div></div></header>
-      <div className="content"><div className="welcome"><div><div className="eyebrow"><span className="status-dot"/> FICHA KAMBA</div><h1>{page}</h1><p>{page === 'Boletins do dia' ? 'Consulta as fichas preparadas e publicadas para hoje.' : page === 'Acompanhamento ao vivo' ? 'Acompanha os jogos e mercados das tuas fichas em curso.' : page === 'Histórico' ? 'Consulta fichas e resultados de dias anteriores.' : 'Preferências e dados da tua conta.'}</p></div></div>
+      <div className="content"><div className="welcome"><div><div className="eyebrow"><span className="status-dot"/> FICHA KAMBA</div><h1>{page}</h1><p>{page === 'Bilhetes do dia' ? 'Consulta as fichas preparadas e publicadas para hoje.' : page === 'Acompanhamento ao vivo' ? 'Acompanha os jogos e mercados das tuas fichas em curso.' : page === 'Histórico' ? 'Consulta fichas e resultados de dias anteriores.' : 'Preferências e dados da tua conta.'}</p></div></div>
         {notice && <div className="notice"><ShieldCheck size={17}/><span>{notice}</span><button onClick={() => setNotice('')}><X size={15}/></button></div>}
-        {page === 'Boletins do dia' && <>
+        {page === 'Bilhetes do dia' && <>
           <div className="daily-summary"><div className="daily-icon"><Ticket size={21}/></div><div><b>{todayTickets.length} {todayTickets.length === 1 ? 'ficha publicada' : 'fichas publicadas'} hoje</b><span>As fichas do dia, os IDs de reserva e todos os jogos ficam reunidos aqui.</span></div><div className="daily-date">{new Date().toLocaleDateString('pt-AO')}</div></div>
           {todayTickets.length ? <div className="daily-ticket-list">{todayTickets.map(t => <TicketPanel key={t.id} ticket={t} expanded={!!expanded[t.id]} onToggle={() => toggle(t.id)}/>)}</div> : <EmptyState icon={FileText} title="Ainda não há fichas publicadas para hoje" detail="As fichas aparecerão automaticamente aqui quando o serviço de análise e publicação da IA estiver ligado. Não são apresentados palpites ou IDs de reserva inventados."/>}
           <div className="quiet-note"><ShieldCheck size={16}/><span>Esta área é apenas de consulta. A elaboração das fichas é uma tarefa interna do sistema.</span></div>
