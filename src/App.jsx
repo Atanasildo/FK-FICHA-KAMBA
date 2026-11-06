@@ -18,7 +18,7 @@ const matchScore = leg => {
   const away = leg.awayScore ?? score.away ?? score.fullTime?.away ?? score.regularTime?.away ?? score.current?.away;
   return home !== null && home !== undefined && away !== null && away !== undefined ? `${home} : ${away}` : null;
 };
-const resultLabel = leg => leg.marketStatus || leg.result || (isLive(leg) ? 'Em directo' : 'Por iniciar');
+const resultLabel = leg => leg.marketStatus || leg.result || (isLive(leg) ? 'Em directo' : isFinished(leg) ? 'Jogo terminado · mercado a confirmar' : 'Por iniciar');
 const resultClass = leg => {
   const s = String(resultLabel(leg)).toLowerCase();
   if (s.includes('ganh') || s.includes('favor')) return 'state-good';
