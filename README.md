@@ -1,29 +1,39 @@
 # FK — Ficha Kamba
 
-Plataforma web para organizar análises de futebol e construir boletins para Elephant Bet e BantuBet.
+Plataforma web responsiva para organizar análises de futebol, construir boletins e acompanhar os seus jogos.
 
 ## Regras do produto
-- Gerar entre 8 e 15 boletins por dia, apenas quando houver jogos e dados suficientes.
-- Odd total mínima obrigatória: **10.00** por boletim.
-- Misturar boletins de um único campeonato com combinados multicampeonato.
-- Mostrar o ID/código de reserva abaixo do boletim quando for obtido por integração autorizada; nunca inventar códigos.
-- Suportar Elephant Bet e BantuBet como casas-alvo.
-- Usar componentes gratuitos/open-source e não depender de uma API de IA paga.
 
-## Estado inicial
-Este repositório começa com a base do frontend. A recolha de odds e a submissão de boletins dependem de feeds/API ou automação oficialmente permitidos pelas casas. Não guardar credenciais das casas no frontend nem contornar CAPTCHA, autenticação ou controlos de acesso. Até existir integração autorizada, os dados são inseridos/importados e os boletins ficam em modo de revisão.
+- Gerar entre **8 e 15 boletins por dia**, conforme a disponibilidade e qualidade dos jogos.
+- Procurar incluir **3 boletins com odd total >= 100.00**, apenas quando existirem dados suficientes para sustentar as selecções.
+- Cada selecção deve ter odd **>= 1.40**; cada boletim normal deve ter odd total **>= 10.00**.
+- Combinar boletins de um só campeonato com boletins de vários campeonatos.
+- Casas previstas: **BantuBet Angola** e **Elephant Bet Angola**.
+- Nunca inventar jogos, odds, estatísticas, resultados ou IDs de reserva.
+- Sem apostas com dinheiro, depósitos ou levantamentos.
+- IA gratuita/open-source, executada localmente (por exemplo, Ollama). Os cálculos e validações de odds devem ser determinísticos.
 
-## Desenvolvimento
+## Estado actual
+
+O repositório contém o primeiro MVP da interface. Os cartões com jogos e odds estão assinalados como **DEMO** e usam dados fictícios de apresentação. Não são jogos actuais, prognósticos reais nem odds verificadas. O acompanhamento em directo e as integrações das casas ainda não estão ligados.
+
+A obtenção de um ID de reserva depende de uma integração oficialmente permitida. Até existir essa integração, o código real terá de ser introduzido manualmente. Não contornar CAPTCHA, autenticação ou controlos de acesso.
+
+## Executar localmente
+
+Requer Node.js 20 ou superior.
+
 ```bash
 npm install
 npm run dev
 ```
 
 ## Próximas etapas
-1. Backend e base de dados para jogos, odds, análises e histórico.
-2. Fontes autorizadas de dados desportivos.
-3. Motor estatístico local e integração opcional com modelo gratuito executado localmente (ex.: Ollama).
-4. Adaptadores autorizados para Elephant Bet e BantuBet, incluindo leitura do ID de reserva quando disponibilizado.
-5. Agendamento diário, auditoria e painel de resultados.
 
-> As odds e probabilidades não garantem ganhos. O sistema deve apresentar incerteza e manter aprovação humana antes de qualquer aposta.
+1. Backend e base de dados para persistência.
+2. Fontes autorizadas de jogos, odds e eventos em directo.
+3. Motor estatístico auditável e validação automática das regras.
+4. Adaptadores autorizados para BantuBet e Elephant Bet.
+5. Serviço local de IA open-source opcional.
+
+A interface não deve ser interpretada como fonte de dados desportivos em tempo real até essas integrações estarem concluídas.
