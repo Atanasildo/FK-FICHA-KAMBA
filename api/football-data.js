@@ -10,7 +10,7 @@ function luandaDate() {
 }
 
 function validDate(value) {
-  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return false;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
   const date = new Date(value + "T00:00:00Z");
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
@@ -44,8 +44,8 @@ export default async function handler(req, res) {
     );
 
     const payload = await response.json().catch(() => ({}));
-    if (!response.ok || payload.success === false) {
-      const message = payload.error || "Resposta HTTP " + response.status;
+    if (!response.ok || payload.success === false || !Array.isArray(payload.data)) {
+      const message = payload.error || payload.message || "Resposta inesperada da SportAPI (HTTP " + response.status + ").";
       return res.status(response.status === 429 ? 429 : 502).json({
         error: "Não foi possível obter os jogos da SportAPI.",
         detail: message
