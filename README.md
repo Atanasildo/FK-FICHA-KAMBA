@@ -70,3 +70,13 @@ Variáveis necessárias na Vercel:
 O pedido deve conter jogos reais em `fixtures`, cada um com `id`, `home`, `away` e uma lista `markets` com `market`, `selection` e `odds`. O endpoint valida novamente cada selecção contra os mercados recebidos e rejeita selecções que não correspondam exactamente aos dados de entrada ou tenham odds inferiores a 1.40.
 
 Este endpoint é apenas a primeira integração do motor de IA. Ainda não obtém automaticamente odds, não cria IDs de reserva, não guarda/publica fichas numa base de dados e não agenda a geração diária. Essas etapas dependem da integração das fontes desportivas, armazenamento central e agendamento. Os limites gratuitos da Groq variam por modelo e conta.
+
+## Fonte de jogos e odds: API-Football
+
+O endpoint `GET /api/football-data?date=YYYY-MM-DD` consulta os jogos do dia no fuso `Africa/Luanda` e tenta associar as odds pré-jogo disponibilizadas pela API-Football. A variável necessária é `API_FOOTBALL_KEY`, configurada apenas no servidor Vercel.
+
+A resposta distingue jogos com e sem odds. A disponibilidade de mercados depende da competição, partida, bookmaker e plano da API. A consulta de odds é paginada pelo fornecedor; esta primeira versão lê a página 1. Não trata ausência de odds como odd zero e não inventa mercados.
+
+A API-Football documenta actualização e cobertura variáveis por competição; odds pré-jogo podem estar disponíveis apenas numa janela anterior ao início do jogo. Confirma no painel do fornecedor se o plano da conta dá acesso aos endpoints de odds e acompanha o consumo diário.
+
+A rota existente `POST /api/ai-analyze` é protegida por `CRON_SECRET`. O próximo passo é um processo interno que obtenha a resposta desta fonte, prepare o payload de mercados reais e chame a análise Groq; esta integração de ponta a ponta e a publicação persistente ainda não estão activadas.
