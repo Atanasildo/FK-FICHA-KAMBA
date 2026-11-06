@@ -9,7 +9,15 @@ const readStore = () => {
   catch { return { games: [], tickets: [], bookmaker: 'BantuBet Angola' }; }
 };
 const isToday = value => value && new Date(value).toDateString() === new Date().toDateString();
-const isLive = leg => ['IN_PLAY', 'LIVE', 'PAUSED', '1H', '2H', 'HT'].includes(String(leg.matchStatus || leg.status || '').toUpperCase()) || Boolean(leg.live);
+const matchState = leg => String(leg.matchStatus || leg.status || '').toUpperCase();
+const isLive = leg => ['IN_PLAY', 'LIVE', 'PAUSED', '1H', '2H', 'HT', 'FIRST_HALF', 'SECOND_HALF', 'HALF_TIME'].includes(matchState(leg)) || Boolean(leg.live);
+const isFinished = leg => ['FINISHED', 'FT', 'FULL_TIME', 'AFTER_EXTRA_TIME', 'PENALTY_SHOOTOUT', 'AET'].includes(matchState(leg));
+const matchScore = leg => {
+  const score = leg.score || {};
+  const home = leg.homeScore ?? score.home ?? score.fullTime?.home ?? score.regularTime?.home ?? score.current?.home;
+  const away = leg.awayScore ?? score.away ?? score.fullTime?.away ?? score.regularTime?.away ?? score.current?.away;
+  return home !== null && home !== undefined && away !== null && away !== undefined ? `${home} : ${away}` : null;
+};
 const resultLabel = leg => leg.marketStatus || leg.result || (isLive(leg) ? 'Em directo' : 'Por iniciar');
 const resultClass = leg => {
   const s = String(resultLabel(leg)).toLowerCase();
@@ -70,7 +78,7 @@ function TicketPanel({ ticket: t, expanded, onToggle, liveView = false }) {
     {expanded && <div className="ticket-details"><div className="details-heading"><b>Jogos e mercados desta ficha</b><span>{liveView ? 'Estado em directo quando disponível' : 'Todas as selecções'}</span></div>
       {legs.length ? legs.map((leg, i) => <article className="match-detail" key={leg.id || i}><div className="match-detail-top"><span className="match-number">JOGO {String(i + 1).padStart(2, '0')}</span><span className={resultClass(leg)}>{resultLabel(leg)}</span></div><div className="match-teams"><b>{leg.home || leg.homeTeam || 'Equipa da casa'} <span>vs</span> {leg.away || leg.awayTeam || 'Equipa visitante'}</b><small>{leg.league || leg.competition || 'Campeonato não indicado'}{leg.date ? ' · ' + new Date(leg.date).toLocaleString('pt-AO') : ''}</small></div>
         <div className="market-detail-grid"><div><small>MERCADO</small><b>{leg.market || 'Mercado'}</b></div><div><small>SELECÇÃO</small><b>{leg.selection || '—'}</b></div><div><small>ODD</small><b>{money(leg.odd)}</b></div></div>
-        {isLive(leg) && <div className="live-score-strip"><Radio size={15}/><b>{leg.homeScore ?? leg.score?.home ?? '—'} : {leg.awayScore ?? leg.score?.away ?? '—'}</b><span>{leg.minute ? leg.minute + "'" : leg.matchStatus || 'Em directo'}</span>{leg.lastEvent && <small>{leg.lastEvent}</small>}</div>}
+        {(isLive(leg) || isFinished(leg) || matchScore(leg)) && <div className={isLive(leg) ? 'live-score-strip' : 'final-score-strip'}><Radio size={15}/><b>{matchScore(leg) || '— : —'}</b><span>{isLive(leg) ? (leg.minute ? leg.minute + "'" : leg.matchStatus || 'Em directo') : isFinished(leg) ? 'RESULTADO FINAL' : (leg.matchStatus || 'Resultado disponível')}</span>{leg.lastEvent && isLive(leg) && <small>{leg.lastEvent}</small>}</div>}
         {leg.marketUpdate && <p className="market-update">{leg.marketUpdate}</p>}
       </article>) : <p className="muted-copy">Os jogos desta ficha serão apresentados aqui quando forem publicados.</p>}
       <div className="ticket-detail-footer"><span>IDENTIFICADOR DE RESERVA</span><b>{t.bookingId || 'Ainda não disponibilizado'}</b></div>
