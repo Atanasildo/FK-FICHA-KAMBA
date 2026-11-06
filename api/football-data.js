@@ -1,4 +1,4 @@
-const API_BASE = "https://v3.football.api-sports.io";
+const API_BASE = "https://sportapi.ai/api";
 
 function luandaDate() {
   return new Intl.DateTimeFormat("en-CA", {
@@ -10,24 +10,9 @@ function luandaDate() {
 }
 
 function validDate(value) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return false;
   const date = new Date(value + "T00:00:00Z");
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
-}
-
-async function apiGet(path, key) {
-  const response = await fetch(API_BASE + path, {
-    method: "GET",
-    headers: { "x-apisports-key": key }
-  });
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok || (payload.errors && Object.keys(payload.errors).length)) {
-    const message = payload.errors
-      ? Object.entries(payload.errors).map(([k, v]) => k + ": " + v).join("; ")
-      : "Resposta HTTP " + response.status;
-    throw new Error(message);
-  }
-  return payload;
 }
 
 export default async function handler(req, res) {
@@ -36,11 +21,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Método não permitido." });
   }
 
-  const key = process.env.API_FOOTBALL_KEY;
+  const key = process.env.SPORTAPI_KEY;
   if (!key) {
     return res.status(503).json({
-      error: "API-Football ainda não configurada.",
-      detail: "Adiciona API_FOOTBALL_KEY nas variáveis de ambiente da Vercel."
+      error: "SportAPI ainda não configurada.",
+      detail: "Adiciona SPORTAPI_KEY nas variáveis de ambiente da Vercel."
     });
   }
 
@@ -50,69 +35,54 @@ export default async function handler(req, res) {
   }
 
   try {
-    const [fixturesPayload, oddsPayload] = await Promise.all([
-      apiGet("/fixtures?date=" + encodeURIComponent(date) + "&timezone=Africa%2FLuanda", key),
-      apiGet("/odds?date=" + encodeURIComponent(date) + "&timezone=Africa%2FLuanda&page=1", key)
-    ]);
-
-    const oddsByFixture = new Map();
-    for (const item of oddsPayload.response || []) {
-      const fixtureId = item.fixture?.id;
-      if (!fixtureId) continue;
-      const markets = [];
-      for (const bookmaker of item.bookmakers || []) {
-        for (const bet of bookmaker.bets || []) {
-          for (const value of bet.values || []) {
-            const odd = Number(value.odd);
-            if (!Number.isFinite(odd) || odd <= 1) continue;
-            markets.push({
-              market: bet.name,
-              selection: value.value,
-              odds: odd,
-              bookmaker: bookmaker.name
-            });
-          }
-        }
+    const response = await fetch(
+      API_BASE + "/fixtures/date/" + encodeURIComponent(date),
+      {
+        method: "GET",
+        headers: { "X-Api-Key": key }
       }
-      oddsByFixture.set(String(fixtureId), markets);
+    );
+
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || payload.success === false) {
+      const message = payload.error || "Resposta HTTP " + response.status;
+      return res.status(response.status === 429 ? 429 : 502).json({
+        error: "Não foi possível obter os jogos da SportAPI.",
+        detail: message
+      });
     }
 
-    const fixtures = (fixturesPayload.response || []).map(item => {
-      const fixture = item.fixture || {};
-      const teams = item.teams || {};
-      const goals = item.goals || {};
-      const markets = oddsByFixture.get(String(fixture.id)) || [];
-      return {
-        id: String(fixture.id),
-        provider: "API-Football",
-        kickoff: fixture.date || null,
-        timestamp: fixture.timestamp || null,
-        status: fixture.status?.short || "TBD",
-        elapsed: fixture.status?.elapsed ?? null,
-        competition: item.league?.name || null,
-        leagueId: item.league?.id || null,
-        season: item.league?.season || null,
-        home: teams.home?.name || "Equipa da casa",
-        away: teams.away?.name || "Equipa visitante",
-        homeScore: goals.home ?? null,
-        awayScore: goals.away ?? null,
-        markets
-      };
-    });
+    const fixtures = (payload.data || []).map(item => ({
+      id: String(item.id),
+      provider: "SportAPI",
+      kickoff: item.datetime || item.date || null,
+      status: item.status || "TBD",
+      elapsed: item.minute ?? item.elapsed ?? null,
+      competition: item.league_name || item.competition_name || null,
+      leagueId: item.league_id ?? null,
+      home: item.home_team || item.home?.name || "Equipa da casa",
+      away: item.away_team || item.away?.name || "Equipa visitante",
+      homeScore: item.home_score ?? item.score?.home ?? null,
+      awayScore: item.away_score ?? item.score?.away ?? null,
+      markets: [],
+      oddsAvailable: false
+    }));
 
-    res.setHeader("Cache-Control", "s-maxage=180, stale-while-revalidate=300");
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
     return res.status(200).json({
-      provider: "API-Football",
+      provider: "SportAPI",
       date,
       timezone: "Africa/Luanda",
       fetchedAt: new Date().toISOString(),
       fixtureCount: fixtures.length,
-      fixturesWithOdds: fixtures.filter(f => f.markets.length > 0).length,
+      fixturesWithOdds: 0,
+      oddsProvider: null,
+      note: "A SportAPI fornece dados de jogos e resultados, mas não fornece odds de apostas.",
       fixtures
     });
   } catch (error) {
     return res.status(502).json({
-      error: "Não foi possível obter os jogos e odds da API-Football.",
+      error: "Falha de comunicação com a SportAPI.",
       detail: error.message
     });
   }
