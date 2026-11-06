@@ -32,7 +32,7 @@ Aplicação web responsiva, em português (Angola), para registar jogos e mercad
 
 Esta versão é um **MVP funcional local**, não é ainda uma plataforma de dados desportivos em directo.
 
-- Jogos e odds são inseridos manualmente; ainda não há fornecedor de dados ligado.
+- A aplicação já tem um endpoint opcional para consultar calendário e estado de jogos via football-data.org. É necessário criar uma chave gratuita e configurá-la no servidor; a cobertura e os limites dependem do plano. As odds das casas continuam manuais.
 - O acompanhamento actualiza-se manualmente; não recebe placares, minutos ou eventos automaticamente.
 - As casas BantuBet Angola e Elephant Bet Angola ainda não têm adaptadores autorizados ligados. O ID de reserva é manual.
 - O serviço de IA local (por exemplo, Ollama com modelo open-weight compatível) ainda precisa de instalação e configuração num servidor/PC.
@@ -69,7 +69,7 @@ Importa \`Atanasildo/FK-FICHA-KAMBA\` na Vercel. O projecto usa Vite:
 - Output Directory: \`dist\`
 - Root Directory: \`./\`
 
-Não são necessárias variáveis de ambiente para o MVP actual.
+Para activar a consulta opcional de jogos, cria uma conta em [football-data.org](https://www.football-data.org/client/register) e adiciona a chave como variável de ambiente `FOOTBALL_DATA_TOKEN` nas definições do projecto na Vercel. Nunca coloques essa chave no código do navegador. Sem a chave, o restante MVP continua a funcionar.
 
 ## Próximas fases técnicas
 
