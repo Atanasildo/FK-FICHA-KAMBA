@@ -55,7 +55,18 @@ export default async function handler(req, res) {
     const fixtures = (payload.data || []).map(item => ({
       id: String(item.id),
       provider: "SportAPI",
-      kickoff: item.datetime || item.date || null,
+      kickoff: item.kickoff_utc
+        ? new Intl.DateTimeFormat("sv-SE", {
+            timeZone: "Africa/Luanda",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hourCycle: "h23"
+          }).format(new Date(item.kickoff_utc)).replace(" ", "T")
+        : item.datetime || item.date || null,
+      sourceKickoffUtc: item.kickoff_utc || null,
       status: item.status || "TBD",
       elapsed: item.minute ?? item.elapsed ?? null,
       competition: item.league_name || item.competition_name || null,
