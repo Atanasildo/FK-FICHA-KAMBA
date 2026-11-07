@@ -88,7 +88,7 @@
               const par = [celulasComOdd[j], celulasComOdd[j + 1]];
               par.forEach((item, lado) => {
                 const registo = {
-                  selecao: cabecalhos[lado],
+                  selecao: `${cabecalhos[lado]} ${item.linha}`.trim(),
                   odd: item.odd,
                   linha: item.linha,
                   coluna: cabecalhos[lado]
