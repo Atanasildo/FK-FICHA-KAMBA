@@ -95,10 +95,23 @@ function parseLabelOddPairs(lines) {
   return selections.length ? selections.filter(Boolean) : null;
 }
 
+function parseStructuredSelections(market) {
+  const rows = market?.selecoes || market?.selections;
+  if (!Array.isArray(rows) || rows.length === 0) return null;
+  const parsed = rows.map(row => makeSelection(
+    row?.selecao || row?.selection || row?.nome || row?.label,
+    row?.odd ?? row?.odds
+  ));
+  if (parsed.some(item => !item)) return null;
+  return parsed;
+}
+
 function parseMarket(market) {
   const rawContent = market?.conteudo || market?.content || "";
   const lines = cleanLines(rawContent);
   const title = String(market?.mercado || market?.market || lines[0] || "Mercado sem nome").trim();
+  const structured = parseStructuredSelections(market);
+  if (structured) return { market: title, selections: structured, status: "ok", rawContent };
   if (lines.length && lines[0].toLocaleLowerCase() === title.toLocaleLowerCase()) lines.shift();
   if (lines.length === 0) {
     return { market: title, selections: [], status: "empty", rawContent };
