@@ -155,7 +155,11 @@
             .map(linha => linha.trim())
             .filter(linha => linha && !/^NOVO$/i.test(linha));
 
-          while (linhas.length && linhas[0].toLocaleLowerCase() === titulo.toLocaleLowerCase()) {
+          const tituloBase = titulo.split(/\\r?\\n/)[0].trim().toLocaleLowerCase();
+          while (linhas.length && (
+            linhas[0].toLocaleLowerCase() === titulo.toLocaleLowerCase() ||
+            linhas[0].toLocaleLowerCase() === tituloBase
+          )) {
             linhas.shift();
           }
 
