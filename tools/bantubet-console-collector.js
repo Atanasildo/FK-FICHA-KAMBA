@@ -70,7 +70,38 @@
             .map((el, pos) => ({ el, pos }))
             .filter(x => x.el.classList.contains("market-base"));
 
-          if (bases.length) {
+          // Handicap de equipas: a interface apresenta dois cabeçalhos
+          // (equipas) e depois células alternadas: handicap+odd da equipa 1,
+          // handicap+odd da equipa 2. Não há .market-base neste layout.
+          if (!bases.length && cabecalhos.length === 2 && /handicap/i.test(titulo)) {
+            const celulasComOdd = celulas
+              .filter(el => !el.classList.contains("m-g-header"))
+              .map(el => {
+                const odd = el.querySelector(".market-odd-bc")?.innerText.trim();
+                const texto = el.innerText.trim();
+                const linha = texto.replace(odd || "", "").trim();
+                return { odd, linha };
+              })
+              .filter(x => x.odd && x.linha);
+
+            for (let j = 0; j + 1 < celulasComOdd.length; j += 2) {
+              const par = [celulasComOdd[j], celulasComOdd[j + 1]];
+              par.forEach((item, lado) => {
+                const registo = {
+                  selecao: cabecalhos[lado],
+                  odd: item.odd,
+                  linha: item.linha,
+                  coluna: cabecalhos[lado]
+                };
+                selecoes.push(registo);
+                selecoesParciais.push(registo);
+              });
+            }
+            // Se sobrar uma célula sem par, não a associar por suposição.
+            if (celulasComOdd.length % 2) {
+              oddsSemNome.push(celulasComOdd[celulasComOdd.length - 1].odd);
+            }
+          } else if (bases.length) {
             bases.forEach((base, rowIndex) => {
               const proximaBase = bases[rowIndex + 1]?.pos ?? celulas.length;
               const celulasDaLinha = celulas.slice(base.pos + 1, proximaBase);
