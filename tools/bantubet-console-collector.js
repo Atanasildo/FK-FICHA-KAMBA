@@ -40,52 +40,94 @@
       aba.click();
       await aguardar(ESPERA);
 
-      // Selecciona os grupos de mercado da categoria actualmente aberta.
-      const grupos = [...document.querySelectorAll(".sgm-market-g.sgm-market-info")];
+      // A interface actual usa .sgm-market-g (sem .sgm-market-info).
+      // Em mercados separados, os cabeçalhos (ex.: Mais de/Menos) são
+      // colunas e cada .market-base inicia uma linha com as respectivas odds.
+      const grupos = [...document.querySelectorAll(".sgm-market-g")];
       const mercados = grupos.map((grupo, indice) => {
-        const titulo = grupo.querySelector(".sgm-market-g-h-title-bc")
+        const titulo = grupo.querySelector(".sgm-market-g-head-bc")
           ?.innerText.trim()
-          || grupo.innerText.trim().split("\n").find(Boolean)
+          || grupo.querySelector(".sgm-market-g-h-title-bc")
+            ?.innerText.trim()
           || `Mercado ${indice + 1}`;
 
         const blocos = [...grupo.querySelectorAll(".sgm-market-g-item-bc")];
         const selecoes = [];
+        const selecoesParciais = [];
         const oddsSemNome = [];
+        const odds = [...grupo.querySelectorAll(".market-odd-bc")]
+          .map(el => el.innerText.trim())
+          .filter(Boolean);
 
         for (const bloco of blocos) {
-          const nomes = [...bloco.querySelectorAll(".m-g-header")]
+          const celulas = [...bloco.children]
+            .filter(el => el.matches(".sgm-market-g-i-cell-bc"));
+          const cabecalhos = celulas
+            .filter(el => el.classList.contains("m-g-header"))
             .map(el => el.innerText.trim())
             .filter(Boolean);
-          const odds = [...bloco.querySelectorAll(".market-odd-bc")]
-            .map(el => el.innerText.trim())
-            .filter(Boolean);
+          const bases = celulas
+            .map((el, pos) => ({ el, pos }))
+            .filter(x => x.el.classList.contains("market-base"));
 
-          if (nomes.length === odds.length && odds.length > 0) {
-            odds.forEach((odd, j) => selecoes.push({
-              selecao: nomes[j],
-              odd
-            }));
+          if (bases.length) {
+            bases.forEach((base, rowIndex) => {
+              const proximaBase = bases[rowIndex + 1]?.pos ?? celulas.length;
+              const celulasDaLinha = celulas.slice(base.pos + 1, proximaBase);
+              const oddsDaLinha = celulasDaLinha
+                .map(el => ({
+                  valor: el.querySelector(".market-odd-bc")?.innerText.trim(),
+                  celula: el
+                }))
+                .filter(x => x.valor);
+
+              const linha = base.el.innerText.trim();
+              if (oddsDaLinha.length === cabecalhos.length && cabecalhos.length > 0) {
+                oddsDaLinha.forEach((item, j) => {
+                  const selecao = `${cabecalhos[j]} ${linha}`.trim();
+                  const registo = { selecao, odd: item.valor, linha, coluna: cabecalhos[j] };
+                  selecoes.push(registo);
+                  selecoesParciais.push(registo);
+                });
+              } else {
+                oddsDaLinha.forEach(item => oddsSemNome.push(item.valor));
+              }
+            });
           } else {
-            // Mantém os valores brutos, mas não inventa a associação nome/odd.
-            odds.forEach(odd => oddsSemNome.push(odd));
+            // Compatibilidade com mercados antigos, sem linhas .market-base.
+            const nomes = [...bloco.querySelectorAll(".m-g-header")]
+              .map(el => el.innerText.trim())
+              .filter(Boolean);
+            const oddsDoBloco = [...bloco.querySelectorAll(".market-odd-bc")]
+              .map(el => el.innerText.trim())
+              .filter(Boolean);
+
+            if (nomes.length === oddsDoBloco.length && oddsDoBloco.length > 0) {
+              oddsDoBloco.forEach((odd, j) => {
+                const registo = { selecao: nomes[j], odd };
+                selecoes.push(registo);
+                selecoesParciais.push(registo);
+              });
+            } else {
+              oddsDoBloco.forEach(odd => oddsSemNome.push(odd));
+            }
           }
         }
 
-        const conteudo = grupo.innerText.trim();
-        const quantidadeOdds = [...grupo.querySelectorAll(".market-odd-bc")].length;
-
+        // Só declarar associação completa quando todas as odds do mercado
+        // tiverem nome de selecção validamente associado.
+        const associacaoCompleta = odds.length > 0 && selecoes.length === odds.length;
         return {
           mercado: titulo,
-          quantidadeOdds,
-          odds: [...grupo.querySelectorAll(".market-odd-bc")]
-            .map(el => el.innerText.trim()),
-          selecoes: selecoes.length === quantidadeOdds && quantidadeOdds > 0 ? selecoes : [],
-          selecoesParciais: selecoes,
+          quantidadeOdds: odds.length,
+          odds,
+          selecoes: associacaoCompleta ? selecoes : [],
+          selecoesParciais,
           oddsSemNome,
-          associacaoCompleta: selecoes.length === quantidadeOdds && quantidadeOdds > 0,
-          conteudo
+          associacaoCompleta,
+          conteudo: grupo.innerText.trim()
         };
-      });
+      }).filter(mercado => mercado.quantidadeOdds > 0);
 
       resultado.push({
         categoria,
