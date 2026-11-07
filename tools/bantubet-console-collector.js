@@ -145,6 +145,44 @@
           }
         }
 
+        // Fallback para mercados em que a casa apresenta cada opção
+        // como duas linhas consecutivas (nome da selecção + odd), por exemplo
+        // minutos, combos e mercados de jogadores. Não inferir se a sequência
+        // não formar pares exactos nem se a contagem divergir das odds do DOM.
+        if (selecoes.length === 0 && odds.length > 0) {
+          const linhas = grupo.innerText
+            .split(/\\r?\\n/)
+            .map(linha => linha.trim())
+            .filter(linha => linha && !/^NOVO$/i.test(linha));
+
+          while (linhas.length && linhas[0].toLocaleLowerCase() === titulo.toLocaleLowerCase()) {
+            linhas.shift();
+          }
+
+          const paresValidos = linhas.length > 0 && linhas.length % 2 === 0;
+          const pares = [];
+          if (paresValidos) {
+            for (let j = 0; j < linhas.length; j += 2) {
+              const label = linhas[j];
+              const odd = linhas[j + 1];
+              const oddValida = /^\\d+(?:[.,]\\d+)?$/.test(odd) &&
+                Number(odd.replace(",", ".")) > 1;
+              const labelValida = label && !/^\\d+(?:[.,]\\d+)?$/.test(label);
+              if (!oddValida || !labelValida) {
+                pares.length = 0;
+                break;
+              }
+              pares.push({ selecao: label, odd });
+            }
+          }
+
+          if (pares.length === odds.length) {
+            selecoes.push(...pares);
+            selecoesParciais.push(...pares);
+            oddsSemNome.length = 0;
+          }
+        }
+
         // Só declarar associação completa quando todas as odds do mercado
         // tiverem nome de selecção validamente associado.
         const associacaoCompleta = odds.length > 0 && selecoes.length === odds.length;
