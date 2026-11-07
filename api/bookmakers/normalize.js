@@ -98,7 +98,8 @@ function parseLabelOddPairs(lines) {
 function parseMarket(market) {
   const rawContent = market?.conteudo || market?.content || "";
   const lines = cleanLines(rawContent);
-  const title = String(market?.mercado || market?.market || lines.shift() || "Mercado sem nome").trim();
+  const title = String(market?.mercado || market?.market || lines[0] || "Mercado sem nome").trim();
+  if (lines.length && lines[0].toLocaleLowerCase() === title.toLocaleLowerCase()) lines.shift();
   if (lines.length === 0) {
     return { market: title, selections: [], status: "empty", rawContent };
   }
