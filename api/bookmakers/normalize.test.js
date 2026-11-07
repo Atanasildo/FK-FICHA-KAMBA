@@ -81,3 +81,32 @@ test("aceita linhas de handicap zero", () => {
     ["KV Mechelen", "0", 2.16]
   ]);
 });
+
+test("usa selecções estruturadas do recolhedor BantuBet sem re-parsing ambíguo", () => {
+  const parsed = parseMarket({
+    mercado: "Resultado do Jogo",
+    conteudo: "Resultado do Jogo\\nCasa\\nEmpate\\nFora\\n2.10\\n3.20\\n3.40",
+    selecoes: [
+      { selecao: "Casa", odd: "2.10" },
+      { selecao: "Empate", odd: "3.20" },
+      { selecao: "Fora", odd: "3.40" }
+    ]
+  });
+  assert.equal(parsed.status, "ok");
+  assert.deepEqual(parsed.selections.map(x => [x.selection, x.odd]), [
+    ["Casa", 2.1], ["Empate", 3.2], ["Fora", 3.4]
+  ]);
+});
+
+test("não aceita selecções estruturadas incompletas", () => {
+  const parsed = parseMarket({
+    mercado: "Resultado do Jogo",
+    conteudo: "Resultado do Jogo\\nCasa\\nEmpate\\nFora\\n2.10\\n3.20\\n3.40",
+    selecoes: [
+      { selecao: "Casa", odd: "2.10" },
+      { selecao: "Empate", odd: "3.20" }
+    ]
+  });
+  assert.equal(parsed.status, "review");
+  assert.equal(parsed.selections.length, 0);
+});
