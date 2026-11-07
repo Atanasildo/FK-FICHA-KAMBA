@@ -79,7 +79,8 @@
           quantidadeOdds,
           odds: [...grupo.querySelectorAll(".market-odd-bc")]
             .map(el => el.innerText.trim()),
-          selecoes,
+          selecoes: selecoes.length === quantidadeOdds && quantidadeOdds > 0 ? selecoes : [],
+          selecoesParciais: selecoes,
           oddsSemNome,
           associacaoCompleta: selecoes.length === quantidadeOdds && quantidadeOdds > 0,
           conteudo
