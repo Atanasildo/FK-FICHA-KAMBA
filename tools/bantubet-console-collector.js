@@ -21,6 +21,11 @@
   const urlPagina = location.href;
   const recolhidoEm = new Date().toISOString();
   const resultado = [];
+  // Categorias de jogadores não entram nas fichas FK:
+  // são ignoradas na recolha para evitar odds sem associação.
+  const CATEGORIAS_EXCLUIDAS = /jogadores|players/i;
+  const MERCADOS_EXCLUIDOS = /jogadores|players/i;
+
 
   if (!abas.length) {
     console.warn("FK: não foram encontradas categorias. Abre primeiro um evento com mercados.");
@@ -33,6 +38,11 @@
     const aba = abas[i];
     const categoria = aba.innerText.trim() || "Sem categoria";
     const categoriaId = aba.getAttribute("data-id");
+
+    if (CATEGORIAS_EXCLUIDAS.test(categoria)) {
+      console.log(`[${i + 1}/${abas.length}] ${categoria} — ignorada (fora do âmbito FK)`);
+      continue;
+    }
 
     console.log(`[${i + 1}/${abas.length}] ${categoria}`);
 
@@ -200,7 +210,10 @@
           associacaoCompleta,
           conteudo: grupo.innerText.trim()
         };
-      }).filter(mercado => mercado.quantidadeOdds > 0);
+      }).filter(mercado =>
+        mercado.quantidadeOdds > 0 &&
+        !MERCADOS_EXCLUIDOS.test(mercado.mercado)
+      );
 
       resultado.push({
         categoria,
