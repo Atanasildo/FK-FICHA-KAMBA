@@ -1,5 +1,5 @@
 const ODDS_RE = /^\d+(?:[.,]\d+)?$/;
-const LINE_RE = /^[+-]\d+(?:[.,]\d+)?$/;
+const LINE_RE = /^(?:[+-]\d+(?:[.,]\d+)?|0(?:[.,]0+)?)$/;
 const THRESHOLD_RE = /^\d+(?:[.,]\d+)?\+$/;
 
 function cleanLines(value) {
