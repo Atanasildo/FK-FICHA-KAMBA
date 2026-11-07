@@ -105,7 +105,9 @@ test("não aceita selecções estruturadas incompletas", () => {
     selecoes: [
       { selecao: "Casa", odd: "2.10" },
       { selecao: "Empate", odd: "3.20" }
-    ]
+    ],
+    associacaoCompleta: false,
+    quantidadeOdds: 3
   });
   assert.equal(parsed.status, "review");
   assert.equal(parsed.selections.length, 0);
