@@ -110,8 +110,8 @@ function parseMarket(market) {
   const rawContent = market?.conteudo || market?.content || "";
   const lines = cleanLines(rawContent);
   const title = String(market?.mercado || market?.market || lines[0] || "Mercado sem nome").trim();
-  const structured = parseStructuredSelections(market);
-  if (structured) return { market: title, selections: structured, status: "ok", rawContent };
+  // A flag de recolha incompleta tem prioridade sobre qualquer parsing:
+  // nunca promover dados parcialmente associados a selecções válidas.
   if (market?.associacaoCompleta === false) {
     return {
       market: title,
@@ -121,6 +121,8 @@ function parseMarket(market) {
       rawContent
     };
   }
+  const structured = parseStructuredSelections(market);
+  if (structured) return { market: title, selections: structured, status: "ok", rawContent };
   if (lines.length && lines[0].toLocaleLowerCase() === title.toLocaleLowerCase()) lines.shift();
   if (lines.length === 0) {
     return { market: title, selections: [], status: "empty", rawContent };
