@@ -69,3 +69,15 @@ test("remove duplicados entre Tudo e categoria específica", () => {
   assert.deepEqual(result[0].categories, ["Tudo", "Jogo"]);
   assert.equal(result[0].category, "Jogo");
 });
+
+test("aceita linhas de handicap zero", () => {
+  const parsed = parseMarket({
+    mercado: "Handicap de Golos",
+    conteudo: "Handicap de Golos\n\nOud-Heverlee Leuven\nKV Mechelen\n-0.5\n2.16\n+0.5\n1.63\n0\n1.63\n0\n2.16"
+  });
+  assert.equal(parsed.status, "ok");
+  assert.deepEqual(parsed.selections.slice(-2).map(x => [x.team, x.line, x.odd]), [
+    ["Oud-Heverlee Leuven", "0", 1.63],
+    ["KV Mechelen", "0", 2.16]
+  ]);
+});
