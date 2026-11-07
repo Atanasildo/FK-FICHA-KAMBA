@@ -112,6 +112,15 @@ function parseMarket(market) {
   const title = String(market?.mercado || market?.market || lines[0] || "Mercado sem nome").trim();
   const structured = parseStructuredSelections(market);
   if (structured) return { market: title, selections: structured, status: "ok", rawContent };
+  if (market?.associacaoCompleta === false) {
+    return {
+      market: title,
+      selections: [],
+      status: "review",
+      warning: "A recolha encontrou odds sem conseguir associar todas às respectivas selecções.",
+      rawContent
+    };
+  }
   if (lines.length && lines[0].toLocaleLowerCase() === title.toLocaleLowerCase()) lines.shift();
   if (lines.length === 0) {
     return { market: title, selections: [], status: "empty", rawContent };
