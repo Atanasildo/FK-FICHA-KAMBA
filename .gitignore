@@ -2,3 +2,6 @@ node_modules
 dist
 .env
 .DS_Store
+.fk-browser-profile/
+data/collections/
+tools/events.local.json
