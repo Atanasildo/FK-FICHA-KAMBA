@@ -116,15 +116,36 @@ export default async function handler(req, res) {
     });
   }
 
-  if (!validFixtures.length) {
+  // Junta as recolhas das duas casas num único jogo antes de enviar à IA.
+  const groupedFixtures = new Map();
+  for (const fixture of validFixtures) {
+    if (!groupedFixtures.has(fixture.id)) {
+      groupedFixtures.set(fixture.id, { ...fixture, markets: [...fixture.markets] });
+      continue;
+    }
+    const existing = groupedFixtures.get(fixture.id);
+    if (existing.home !== fixture.home || existing.away !== fixture.away ||
+        (existing.competition || "") !== (fixture.competition || "")) {
+      excluded.push({ fixtureId: fixture.id, reason: "As recolhas com o mesmo ID apresentam equipas ou competição diferentes." });
+      groupedFixtures.delete(fixture.id);
+      continue;
+    }
+    const merged = new Map(existing.markets.map(m => [canonicalMarketKey(m.market, m.selection), m]));
+    for (const market of fixture.markets) merged.set(canonicalMarketKey(market.market, market.selection), market);
+    existing.markets = [...merged.values()];
+  }
+  const safeIds = new Set(groupedFixtures.keys());
+  const deduplicatedFixtures = [...groupedFixtures.values()];
+
+  if (!deduplicatedFixtures.length) {
     return res.status(422).json({
       error: "Nenhum jogo tem estatísticas e mercados suficientes para análise.",
       excluded
     });
   }
 
-  const fixtureQuotes = fixtures.filter(f => validFixtures.some(v => v.id === f.id));
-  const aiInput = validFixtures.map(({ stats, markets, ...fixture }) => ({ ...fixture, stats, markets }));
+  const fixtureQuotes = fixtures.filter(f => safeIds.has(f.id));
+  const aiInput = deduplicatedFixtures.map(({ stats, markets, ...fixture }) => ({ ...fixture, stats, markets }));
   try {
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -164,7 +185,7 @@ export default async function handler(req, res) {
     }
     const verifiedSelections = [];
     for (const item of analysis.selections || []) {
-      const fixture = validFixtures.find(f => f.id === item.fixtureId);
+      const fixture = deduplicatedFixtures.find(f => f.id === item.fixtureId);
       if (!fixture || !fixture.markets.some(m => m.market === item.market && m.selection === item.selection)) continue;
       const eventKey = [fixture.home.toLowerCase(), fixture.away.toLowerCase(), (fixture.competition || "").toLowerCase()].join("|");
       const wantedKey = canonicalMarketKey(item.market, item.selection);
