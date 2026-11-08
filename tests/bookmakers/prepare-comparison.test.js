@@ -35,7 +35,7 @@ test("exclui mercados marcados como associação incompleta", () => {
   }] }];
   const prepared = prepareOddsComparison({
     bantubet: { categorias: incomplete },
-    elephantbet: { categorias },
+    elephantbet: { categorias: categories },
     event
   });
   assert.equal(prepared.diagnostics[0].selectionCount, 0);
@@ -49,8 +49,8 @@ test("exige os dois ficheiros e os nomes do evento", () => {
 
 test("recusa ficheiro colocado na casa errada", () => {
   assert.throws(() => prepareOddsComparison({
-    bantubet: { bookmaker: "ElephantBet", categorias },
-    elephantbet: { bookmaker: "ElephantBet", categorias },
+    bantubet: { bookmaker: "ElephantBet", categorias: categories },
+    elephantbet: { bookmaker: "ElephantBet", categorias: categories },
     event
   }), /outra casa/);
 });
