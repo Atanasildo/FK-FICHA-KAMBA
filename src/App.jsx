@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Activity, CalendarDays, ChevronDown, ChevronRight, Clock3, FileText, History, LayoutDashboard, Radio, RefreshCw, Settings, ShieldCheck, Ticket, Trophy, Download, Bell, Menu, X, BarChart3, Upload, FileJson, AlertTriangle, CheckCircle2, ArrowUpDown, ExternalLink } from 'lucide-react';
+import { Activity, CalendarDays, ChevronDown, ChevronRight, Clock3, FileText, History, LayoutDashboard, Radio, RefreshCw, Settings, ShieldCheck, Ticket, Trophy, Download, Bell, Menu, X, BarChart3, FileJson, AlertTriangle, CheckCircle2, ArrowUpDown, ExternalLink } from 'lucide-react';
 import { prepareOddsComparison } from '../lib/bookmakers/prepare-comparison.js';
 
 const NAV = [['Bilhetes do dia', LayoutDashboard], ['Comparar Odds', BarChart3], ['Acompanhamento ao vivo', Activity], ['Histórico', History], ['Definições', Settings]];
@@ -111,7 +111,7 @@ function OddsComparePage() {
     try {
       if (file.size > 12 * 1024 * 1024) throw new Error('O ficheiro excede o limite de 12 MB.');
       const parsed = JSON.parse(await file.text());
-      const payload = parsed?.payload && typeof parsed.payload === 'object' ? parsed.payload : parsed;
+      const payload = parsed?.payload && typeof parsed.payload === 'object' ? { ...parsed, ...parsed.payload, payload: undefined } : parsed;
       const hasCategories = Array.isArray(payload) || Array.isArray(payload?.categorias) || Array.isArray(payload?.categories);
       if (!hasCategories) throw new Error('Este JSON não contém categorias de mercados reconhecíveis.');
       const declared = String(payload?.bookmaker || '').toLowerCase();
