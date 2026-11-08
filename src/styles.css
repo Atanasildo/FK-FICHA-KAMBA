@@ -138,3 +138,84 @@ h1{color:#f1f6fa}
 footer{color:#7890a2}
 .icon-btn{background:#0e2030;border-color:#29445a;color:#c1d2dd}
 @media(max-width:760px){.sidebar{background:#091625}.scrim{background:#020812c9}}
+
+
+/* Comparador de odds — importação e resultados */
+.odds-workspace{display:grid;gap:16px}
+.odds-intro{display:flex;align-items:center;gap:14px;background:linear-gradient(110deg,#10332f,#102235);border-color:#24604f}
+.odds-intro-icon{width:45px;height:45px;display:grid;place-items:center;border-radius:11px;background:#123f36;color:#20d69a;flex-shrink:0}
+.odds-intro>div:nth-child(2){flex:1}
+.odds-intro b{font-size:13px;color:#eafff6}
+.odds-intro p{font-size:10px;line-height:1.6;color:#a4c2bb;margin:5px 0 0}
+.odds-local-tag{display:flex;align-items:center;gap:6px;color:#7ce9be;border:1px solid #286c58;border-radius:6px;padding:7px 9px;font-size:8px;font-weight:900;letter-spacing:.8px;white-space:nowrap}
+.odds-section-title{display:flex;align-items:center;gap:12px;margin-bottom:17px}
+.odds-section-title>span{width:29px;height:29px;display:grid;place-items:center;border-radius:8px;background:#123a32;color:#20d69a;font-size:11px;font-weight:900}
+.odds-section-title h3{font-size:13px;margin:0 0 4px;color:#eaf3f8}
+.odds-section-title p{font-size:9px;color:#8da3b5;margin:0}
+.odds-event-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.odds-event-grid .field input{font-size:11px}
+.odds-upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.odds-upload-card{position:relative;min-height:155px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;border:1px dashed #2d8067;border-radius:10px;background:#0c2426;cursor:pointer;transition:border-color .15s,background .15s;overflow:hidden;padding:17px}
+.odds-upload-card:hover{border-color:#20d69a;background:#10302f}
+.odds-upload-card.elephant{border-color:#82532e;background:#251d17}
+.odds-upload-card.elephant:hover{border-color:#ff9b45;background:#302319}
+.odds-upload-card input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.odds-upload-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:9px;background:#123c34;color:#20d69a}
+.odds-upload-card.elephant .odds-upload-icon{background:#49301e;color:#ffad64}
+.odds-upload-card>b{font-size:12px;color:#eaf4f4}
+.odds-upload-card>span{font-size:9px;color:#9bb0bb}
+.odds-upload-card>small{display:flex;align-items:center;gap:5px;max-width:95%;font-size:8px;color:#8299a8;overflow-wrap:anywhere;text-align:center}
+.odds-upload-card .upload-success{color:#6fe5b8}
+.odds-actions{display:flex;align-items:center;gap:9px;margin-top:16px}
+.odds-actions .secondary-btn{margin:0}
+.odds-actions .primary-btn:disabled{opacity:.45;cursor:not-allowed}
+.odds-error{display:flex;align-items:center;gap:9px;margin-top:13px;padding:11px 12px;border-radius:8px;background:#321f1b;border:1px solid #754536;color:#ffb092;font-size:10px}
+.odds-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.odds-stats>div{display:grid;gap:5px;padding:15px;border:1px solid #203e4e;border-radius:10px;background:#0e2030}
+.odds-stats small{font-size:8px;letter-spacing:1px;color:#8ba4b4;font-weight:800}
+.odds-stats b{font-size:25px;color:#20d69a}
+.odds-stats span{font-size:9px;color:#92a9b7;line-height:1.4}
+.odds-result-heading{display:flex;align-items:end;justify-content:space-between;gap:14px;margin:9px 0 0}
+.odds-result-heading h2{font-size:20px;letter-spacing:-.5px;margin:8px 0 5px;color:#f0f6fa}
+.odds-result-heading h2 span{font-size:12px;color:#8299aa;font-weight:500;padding:0 5px}
+.odds-result-heading p{font-size:9px;line-height:1.5;color:#8da3b5;max-width:680px;margin:0}
+.odds-result-heading .secondary-btn{margin:0}
+.odds-filter{align-items:center}
+.odds-filter>span{font-size:9px;color:#8da3b5;white-space:nowrap}
+.odds-results-list{display:grid;gap:10px}
+.odds-result-card{padding:15px;border:1px solid #203c50;border-radius:10px;background:linear-gradient(145deg,#102235,#0b1a29)}
+.odds-result-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.odds-market-label{font-size:8px;text-transform:uppercase;letter-spacing:.8px;color:#8fa8b8}
+.odds-result-top h3{font-size:12px;color:#e8f1f6;margin:6px 0}
+.odds-result-top>div:first-child>small{font-size:9px;color:#8da3b5}
+.best-odd{min-width:110px;display:grid;gap:3px;text-align:right}
+.best-odd small{font-size:8px;letter-spacing:.8px;color:#20d69a;font-weight:900}
+.best-odd b{font-size:22px;color:#ff9b45}
+.best-odd span{font-size:9px;color:#d5e3e9}
+.odds-quotes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px;padding-top:11px;border-top:1px solid #20394d}
+.odds-quote{display:flex;align-items:center;gap:9px;padding:10px;background:#091725;border:1px solid #20384a;border-radius:7px}
+.odds-quote>span{flex:1;font-size:9px;color:#afc0cb}
+.odds-quote>b{font-size:14px;color:#dce8ed}
+.odds-quote.best{border-color:#24775e;background:#0e2c2a}
+.odds-quote.best>b{color:#20d69a}
+.odds-quote em{font-size:7px;font-style:normal;color:#20d69a;border:1px solid #24775e;border-radius:4px;padding:3px 5px}
+.odds-quote a{display:grid;place-items:center;color:#8ea9b8}
+.odds-diagnostics{margin-top:2px}
+.diagnostic-provider{display:grid;gap:6px;padding:11px 0;border-top:1px solid #20394d}
+.diagnostic-provider>b{font-size:10px;color:#e2edf2}
+.diagnostic-provider>span{font-size:9px;color:#9aafbd}
+.diagnostic-provider ul{margin:2px 0 0;padding-left:18px;color:#d7a77d;font-size:9px;line-height:1.7}
+.odds-safety-note{display:flex;align-items:flex-start;gap:8px;margin:12px 0 0;padding-top:12px;border-top:1px solid #20394d;color:#9bb0bd;font-size:9px;line-height:1.6}
+.odds-safety-note svg{color:#20d69a;flex-shrink:0}
+@media(max-width:760px){
+ .odds-intro{align-items:flex-start;flex-wrap:wrap}
+ .odds-local-tag{margin-left:59px}
+ .odds-event-grid,.odds-upload-grid,.odds-stats,.odds-quotes{grid-template-columns:1fr}
+ .odds-result-heading{align-items:flex-start;flex-direction:column}
+ .odds-result-heading .secondary-btn{width:100%}
+ .odds-actions{align-items:stretch;flex-direction:column}
+ .odds-actions button{width:100%}
+ .odds-result-top{gap:8px}
+ .best-odd{min-width:88px}
+ .odds-quote{min-width:0}
+}
