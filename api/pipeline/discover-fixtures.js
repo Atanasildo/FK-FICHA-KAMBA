@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     const rows = results.flatMap(({ fixtures }) => fixtures
       .filter(f => f?.id != null && f.home_team && f.away_team && isUpcoming(f.status))
       .map(f => ({
-        source: "sportapi",
+        source: "SportAPI",
         external_id: String(f.id),
         home_team: String(f.home_team).slice(0, 180),
         away_team: String(f.away_team).slice(0, 180),
