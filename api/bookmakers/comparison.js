@@ -34,7 +34,9 @@ function describeMarket(name) {
 
   if (/penalti|penalty/.test(normalized)) kind = "penalty";
   else if (/cartoes?.*pontos|pontos.*cartoes?/.test(normalized)) {
-    kind = /handicap/.test(normalized) ? "card-points-handicap" : /total/.test(normalized) ? "card-points-total" : "card-points";
+    const teamCardMatch = normalized.match(/total de pontos de cartoes? (?:do|da|de) (.+)$/);
+    kind = /handicap/.test(normalized) ? "card-points-handicap" : teamCardMatch ? "card-points-team-total" : /total/.test(normalized) ? "card-points-total" : "card-points";
+    if (teamCardMatch) entity = teamCardMatch[1];
   } else if (/cantos?/.test(normalized)) {
     kind = /handicap/.test(normalized) ? "corner-handicap" : /total/.test(normalized) ? "corner-total" : "corner";
   } else if (teamMatch) {
@@ -84,6 +86,16 @@ function describeSelection(market, row) {
     return `${team}|${line}`;
   }
   return clean(label);
+}
+
+function lineFromSelection(row) {
+  const explicit = canonicalLine(row.line);
+  if (explicit) return explicit;
+  const label = String(row.selection || "");
+  const total = label.match(/(?:mais de|mais|over|menos de|menos|under)\\s+([+-]?\\d+(?:[.,]\\d+)?)/i);
+  if (total) return canonicalLine(total[1]);
+  const handicap = label.match(/\\(([+-]?\\d+(?:[.,]\\d+)?)\\)$/);
+  return handicap ? canonicalLine(handicap[1]) : null;
 }
 
 function eventKey(fixture) {
@@ -147,7 +159,7 @@ export function compareFixtures(fixtures = []) {
         const marketKey = [market.period, market.kind, market.entity || "", market.fallback || ""].join("|");
         const key = `${marketKey}::${selectionKey}`;
         if (!quotesByKey.has(key)) {
-          quotesByKey.set(key, { market: marketName, selection, period: market.period, line: canonicalLine(row.line), quotes: new Map() });
+          quotesByKey.set(key, { market: marketName, selection, period: market.period, line: lineFromSelection({ ...row, selection }), quotes: new Map() });
         }
 
         const quote = {
@@ -155,7 +167,7 @@ export function compareFixtures(fixtures = []) {
           odds,
           market: marketName,
           selection,
-          line: canonicalLine(row.line),
+          line: lineFromSelection({ ...row, selection }),
           side: row.side || null,
           team: row.team || null,
           sourceUrl: row.sourceUrl || fixture.sourceUrl || null,
