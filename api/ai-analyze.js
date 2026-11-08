@@ -118,7 +118,9 @@ export default async function handler(req, res) {
 
   // Junta as recolhas das duas casas num único jogo antes de enviar à IA.
   const groupedFixtures = new Map();
+  const conflictedIds = new Set();
   for (const fixture of validFixtures) {
+    if (conflictedIds.has(fixture.id)) continue;
     if (!groupedFixtures.has(fixture.id)) {
       groupedFixtures.set(fixture.id, { ...fixture, markets: [...fixture.markets] });
       continue;
@@ -128,6 +130,7 @@ export default async function handler(req, res) {
         (existing.competition || "") !== (fixture.competition || "")) {
       excluded.push({ fixtureId: fixture.id, reason: "As recolhas com o mesmo ID apresentam equipas ou competição diferentes." });
       groupedFixtures.delete(fixture.id);
+      conflictedIds.add(fixture.id);
       continue;
     }
     const merged = new Map(existing.markets.map(m => [canonicalMarketKey(m.market, m.selection), m]));
@@ -144,7 +147,7 @@ export default async function handler(req, res) {
     });
   }
 
-  const fixtureQuotes = fixtures.filter(f => safeIds.has(f.id));
+  const fixtureQuotes = fixtures.filter(f => safeIds.has(f.id) && !isStarted(f.status));
   const aiInput = deduplicatedFixtures.map(({ stats, markets, ...fixture }) => ({ ...fixture, stats, markets }));
   try {
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
