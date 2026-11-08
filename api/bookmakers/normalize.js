@@ -102,7 +102,7 @@ function parseStructuredSelections(market) {
     row?.selecao || row?.selection || row?.nome || row?.label,
     row?.odd ?? row?.odds,
     {
-      ...(row?.line != null ? { line: String(row.line).replace(",", ".") } : {}),
+      ...((row?.line ?? row?.linha) != null ? { line: String(row.line ?? row.linha).replace(",", ".") } : {}),
       ...(row?.side != null ? { side: row.side } : {}),
       ...(row?.team != null ? { team: row.team } : {})
     }
