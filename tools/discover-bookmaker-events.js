@@ -5,7 +5,7 @@
  */
 import { chromium } from "playwright";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { selectUniqueEventLink } from "../lib/bookmakers/event-discovery.js";
 
