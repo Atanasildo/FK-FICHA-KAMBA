@@ -62,3 +62,28 @@ test("normaliza linha sem colapsar valores diferentes", () => {
   assert.notEqual(canonicalLine("2.25"), canonicalLine("2.5"));
   assert.equal(canonicalLine("-1.5"), "-1.5");
 });
+
+
+test("não compara total do jogo com total de golos por intervalo de minutos", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{ market: "Total de golos no jogo", selection: "Mais de 1", odds: 2.08, line: "1", side: "over" }]),
+    fixture("Elephant Bet", [{ market: "Total de Golos no minuto 1-15", selection: "Mais de 1", odds: 2.2, line: "1", side: "over" }])
+  ]);
+  assert.equal(result.comparisonCount, 0);
+});
+
+test("não compara resultado normal com resultado com um golo de avanço", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{ market: "Resultado do Jogo", selection: "Club Brugge", odds: 2.08 }]),
+    fixture("Elephant Bet", [{ market: "Resultado do Jogo (1 Golo de Avanço)", selection: "Club Brugge", odds: 2.2 }])
+  ]);
+  assert.equal(result.comparisonCount, 0);
+});
+
+test("continua a comparar aliases legítimos do mesmo total de golos", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{ market: "Total de golos no jogo", selection: "Mais de 2.5", odds: 1.8, line: "2.5", side: "over" }]),
+    fixture("Elephant Bet", [{ market: "Total de Golos", selection: "Mais de 2.5", odds: 1.9, line: "2.5", side: "over" }])
+  ]);
+  assert.equal(result.comparisonCount, 1);
+});
