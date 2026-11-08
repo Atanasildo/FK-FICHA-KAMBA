@@ -22,10 +22,14 @@ Only published tickets and their legs are publicly readable. No public write pol
 
 ## App client
 `src/lib/supabase.js` exports `supabase` and `isSupabaseConfigured`.
-The frontend client is intentionally limited to public read operations. Trusted collection,
-AI, publishing and cron jobs must use a server-only Supabase secret key, with strict
-authorization and validation, in a later backend implementation.
+The frontend uses Supabase email OTP authentication. A signed-in user can save a comparison
+from the Comparar Odds page. The Vercel Function `api/bookmakers/save-comparison.js`
+validates the user's access token, then writes the match, bookmaker references, imported
+market odds and comparison summary with the server-only service/secret key. The privileged
+key is never included in the Vite bundle. RLS remains enabled and no anonymous write policies
+are added.
 
 ## Current scope
-This is the database foundation, not yet the complete automated collection/publishing
-pipeline. Existing manual odds comparison remains local until server persistence is added.
+Manual comparison imports remain local until the user explicitly chooses **Guardar na base de dados**.
+The user must sign in with the email OTP flow. Automated bookmaker collection, AI ticket
+publishing, live scores and ticket settlement are separate later integrations.
