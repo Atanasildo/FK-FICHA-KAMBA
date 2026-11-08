@@ -164,11 +164,11 @@
         // não formar pares exactos nem se a contagem divergir das odds do DOM.
         if (selecoes.length === 0 && odds.length > 0) {
           const linhas = grupo.innerText
-            .split(/\\r?\\n/)
+            .split(/\r?\n/)
             .map(linha => linha.trim())
             .filter(linha => linha && !/^NOVO$/i.test(linha));
 
-          const tituloBase = titulo.split(/\\r?\\n/)[0].trim().toLocaleLowerCase();
+          const tituloBase = titulo.split(/\r?\n/)[0].trim().toLocaleLowerCase();
           while (linhas.length && (
             linhas[0].toLocaleLowerCase() === titulo.toLocaleLowerCase() ||
             linhas[0].toLocaleLowerCase() === tituloBase
