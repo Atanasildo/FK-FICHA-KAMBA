@@ -14,7 +14,7 @@ A interface não disponibiliza ao utilizador formulários para elaborar jogos ou
 
 ## Estado actual e integrações pendentes
 
-Esta versão é a estrutura de interface do produto. **A publicação automática pela IA ainda não está ligada** e, por isso, o painel não inventa nem apresenta fichas, odds, IDs de reserva, marcadores ou eventos como se fossem reais.
+Esta versão já contém a interface, normalizadores das duas casas, comparador de odds, endpoint de análise Groq e persistência de contexto/analise no Supabase. **A publicação automática de bilhetes ainda não está activa**: a recolha autónoma das casas e a obtenção automática de estatísticas completas continuam dependentes de acesso autorizado e verificável às fontes.
 
 Ainda é necessário implementar e configurar:
 
@@ -24,7 +24,7 @@ Ainda é necessário implementar e configurar:
 4. Integrações permitidas com BantuBet Angola e Elephant Bet Angola para obter IDs de reserva genuínos. Se não existir integração autorizada, o ID terá de ser registado por um operador.
 5. Serviço de notificações e relatórios.
 
-O endpoint opcional `/api/matches` consulta calendário e estado de partidas via football-data.org quando a variável `FOOTBALL_DATA_TOKEN` está configurada no servidor. Esse fornecedor não fornece, por si só, as odds das casas nem garante cobertura de todas as competições.
+O endpoint `GET /api/football-data?date=YYYY-MM-DD` consulta os jogos da SportAPI através de `SPORTAPI_KEY`. A SportAPI é a fonte de descoberta de jogos; não é fonte de odds das casas.
 
 Não contornar autenticação, CAPTCHA, controlos anti-bot ou restrições dos fornecedores. O FK não coloca apostas nem recebe ou movimenta dinheiro.
 
@@ -55,7 +55,7 @@ Importa `Atanasildo/FK-FICHA-KAMBA` na Vercel. Configuração:
 - Build Command: `npm run build`
 - Output Directory: `dist`
 
-Para activar a consulta opcional de jogos, adiciona `FOOTBALL_DATA_TOKEN` às variáveis de ambiente do projecto na Vercel. Nunca coloques a chave no código do navegador.
+Para activar a consulta de jogos, adiciona `SPORTAPI_KEY` às variáveis de ambiente do projecto na Vercel. Nunca coloques a chave no código do navegador.
 
 ## Motor de análise com Groq
 
@@ -67,19 +67,19 @@ Variáveis necessárias na Vercel:
 - `GROQ_MODEL`: opcional; por defeito `openai/gpt-oss-20b`.
 - `CRON_SECRET`: segredo longo e aleatório; o endpoint exige `Authorization: Bearer <CRON_SECRET>`.
 
-O pedido deve conter jogos reais em `fixtures`, cada um com `id`, `home`, `away` e uma lista `markets` com `market`, `selection` e `odds`. O endpoint valida novamente cada selecção contra os mercados recebidos e rejeita selecções que não correspondam exactamente aos dados de entrada ou tenham odds inferiores a 1.40.
+O pedido deve conter jogos reais em `fixtures`, cada um com `id`, `home`, `away`, `stats` e `markets`. As odds são usadas apenas depois da selecção da IA: a Groq recebe estatísticas e uma lista sem odds, escolhe o mercado, e o servidor compara então as cotações BantuBet/ElephantBet. Só são devolvidas selecções com pelo menos duas cotações equivalentes e melhor odd mínima de 1.40. Jogos live/terminados e jogos sem estatísticas são excluídos.
 
-Este endpoint é apenas a primeira integração do motor de IA. Ainda não obtém automaticamente odds, não cria IDs de reserva, não guarda/publica fichas numa base de dados e não agenda a geração diária. Essas etapas dependem da integração das fontes desportivas, armazenamento central e agendamento. Os limites gratuitos da Groq variam por modelo e conta.
+O endpoint não recolhe por si só odds nem estatísticas; recebe dados já recolhidos. `POST /api/pipeline/save-analysis` guarda estatísticas, análises e odds verificadas no Supabase, protegido por `CRON_SECRET` e usando a chave secreta apenas no servidor. Esta rota não publica bilhetes nem cria referências de reserva. A execução diária continua desligada até a recolha das duas casas e a primeira execução completa serem validadas.
 
-## Fonte de jogos e odds: API-Football
+## Fonte de jogos: SportAPI
 
-O endpoint `GET /api/football-data?date=YYYY-MM-DD` consulta os jogos do dia no fuso `Africa/Luanda` e tenta associar as odds pré-jogo disponibilizadas pela API-Football. A variável necessária é `API_FOOTBALL_KEY`, configurada apenas no servidor Vercel.
+O endpoint `GET /api/football-data?date=YYYY-MM-DD` consulta os jogos do dia no fuso `Africa/Luanda`, usando `SPORTAPI_KEY` no servidor.
 
-A resposta distingue jogos com e sem odds. A disponibilidade de mercados depende da competição, partida, bookmaker e plano da API. A consulta de odds é paginada pelo fornecedor; esta primeira versão lê a página 1. Não trata ausência de odds como odd zero e não inventa mercados.
+A resposta inclui equipas, competição, início e estado do jogo. A SportAPI não fornece as odds BantuBet/ElephantBet; estas têm de vir exclusivamente dos recolhedores das casas.
 
-A API-Football documenta actualização e cobertura variáveis por competição; odds pré-jogo podem estar disponíveis apenas numa janela anterior ao início do jogo. Confirma no painel do fornecedor se o plano da conta dá acesso aos endpoints de odds e acompanha o consumo diário.
+Os dados estatísticos detalhados ainda precisam de ser ligados a um endpoint de estatísticas com cobertura comprovada. O motor Groq rejeita jogos sem estatísticas recebidas, em vez de inventar forma, H2H ou ausências.
 
-A rota existente `POST /api/ai-analyze` é protegida por `CRON_SECRET`. O próximo passo é um processo interno que obtenha a resposta desta fonte, prepare o payload de mercados reais e chame a análise Groq; esta integração de ponta a ponta e a publicação persistente ainda não estão activadas.
+A rota `POST /api/ai-analyze` é protegida por `CRON_SECRET`. Para guardar o resultado, executar `POST /api/pipeline/save-analysis` com o contexto original e a resposta validada da análise. A migração `supabase/migrations/20261108_match_context.sql` deve ser aplicada no SQL Editor do Supabase.
 
 
 ## Comparação de odds entre casas
