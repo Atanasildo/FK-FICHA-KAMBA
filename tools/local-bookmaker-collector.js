@@ -95,12 +95,24 @@ try {
       console.log(`\nA abrir ${bookmaker}: ${event.home} — ${event.away}`);
       try {
         const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
+        // As casas podem demorar cerca de 30 segundos a carregar os mercados.
+        // Espera activa até 90 segundos, em vez de verificar apenas no primeiro instante.
+        const marketDeadline = Date.now() + 90000;
         let snapshot = await page.evaluate(() => ({
           title: document.title,
           body: document.body?.innerText || "",
           tabs: document.querySelectorAll(".horizontal-sl-tab-bc").length,
           groups: document.querySelectorAll(".sgm-market-g").length
         }));
+        while (!snapshot.tabs && !snapshot.groups && Date.now() < marketDeadline) {
+          await page.waitForTimeout(1500);
+          snapshot = await page.evaluate(() => ({
+            title: document.title,
+            body: document.body?.innerText || "",
+            tabs: document.querySelectorAll(".horizontal-sl-tab-bc").length,
+            groups: document.querySelectorAll(".sgm-market-g").length
+          }));
+        }
         if (isBlocked(response?.status(), snapshot.title, snapshot.body)) {
           console.log(`${bookmaker}: foi apresentado um bloqueio/verificação. Não será contornado.`);
           await rl.question("Se for uma verificação normal apresentada pelo site, resolve-a manualmente e carrega ENTER. Para ignorar, carrega ENTER sem resolver: ");
