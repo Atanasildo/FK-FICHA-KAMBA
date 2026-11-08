@@ -24,6 +24,9 @@ function findInstalledBrowser() {
   const env = process.env;
   const candidates = [
     env.FK_BROWSER_EXECUTABLE_PATH,
+    // Caminhos confirmados no Windows do utilizador.
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
     env.CHROME_PATH,
     env.CHROME_EXECUTABLE,
     env.LOCALAPPDATA && path.join(env.LOCALAPPDATA, "Google", "Chrome", "Application", "chrome.exe"),
