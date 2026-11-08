@@ -1,26 +1,56 @@
 /**
  * FK — diagnóstico local das casas de apostas.
  *
- * Executar num computador em Angola:
- *   npm install
- *   npx playwright install chromium
- *   node tools/local-bookmaker-check.js
+ * Usa um navegador já instalado no Windows (Chrome, Edge, Brave ou Chromium).
+ * Não descarrega nem instala browsers.
+ * Se o navegador estiver noutra localização, define FK_BROWSER_EXECUTABLE_PATH.
  *
- * Abre Chromium local (não um IP de datacenter). Se surgir uma verificação
- * anti-bot, permite resolução manual no próprio navegador; nunca tenta
- * contornar CAPTCHA, autenticação ou restrições da casa.
+ * Executar:
+ *   npm install
+ *   node tools/local-bookmaker-check.js
  */
 import { chromium } from "playwright";
 import readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
+import { existsSync } from "node:fs";
+import path from "node:path";
 
 const targets = [
   { bookmaker: "BantuBet", url: "https://m.bantubet.co.ao/pt/sports" },
   { bookmaker: "ElephantBet", url: "https://www.elephantbet.co.ao/pt/sports" },
 ];
 
+function findInstalledBrowser() {
+  const env = process.env;
+  const candidates = [
+    env.FK_BROWSER_EXECUTABLE_PATH,
+    env.CHROME_PATH,
+    env.CHROME_EXECUTABLE,
+    env.LOCALAPPDATA && path.join(env.LOCALAPPDATA, "Google", "Chrome", "Application", "chrome.exe"),
+    env.PROGRAMFILES && path.join(env.PROGRAMFILES, "Google", "Chrome", "Application", "chrome.exe"),
+    env["PROGRAMFILES(X86)"] && path.join(env["PROGRAMFILES(X86)"], "Google", "Chrome", "Application", "chrome.exe"),
+    env["PROGRAMFILES(X86)"] && path.join(env["PROGRAMFILES(X86)"], "Microsoft", "Edge", "Application", "msedge.exe"),
+    env.PROGRAMFILES && path.join(env.PROGRAMFILES, "Microsoft", "Edge", "Application", "msedge.exe"),
+    env.LOCALAPPDATA && path.join(env.LOCALAPPDATA, "Microsoft", "Edge", "Application", "msedge.exe"),
+    env.LOCALAPPDATA && path.join(env.LOCALAPPDATA, "BraveSoftware", "Brave-Browser", "Application", "brave.exe"),
+    env.PROGRAMFILES && path.join(env.PROGRAMFILES, "BraveSoftware", "Brave-Browser", "Application", "brave.exe"),
+    env.LOCALAPPDATA && path.join(env.LOCALAPPDATA, "Chromium", "Application", "chrome.exe"),
+  ].filter(Boolean);
+
+  return candidates.find(candidate => existsSync(candidate));
+}
+
+const executablePath = findInstalledBrowser();
+if (!executablePath) {
+  console.error("Não encontrei Chrome, Edge, Brave ou Chromium nas localizações habituais.");
+  console.error("Define FK_BROWSER_EXECUTABLE_PATH com o caminho completo do browser já instalado.");
+  process.exit(1);
+}
+
+console.log("Navegador existente seleccionado:", executablePath);
 const browser = await chromium.launch({
   headless: false,
+  executablePath,
   args: ["--no-sandbox"],
 });
 const context = await browser.newContext({
@@ -55,7 +85,6 @@ try {
     const page = await context.newPage();
     console.log("\nA abrir " + target.bookmaker + ": " + target.url);
     let status = null;
-    let errorText = null;
     try {
       const response = await page.goto(target.url, {
         waitUntil: "domcontentloaded",
@@ -98,9 +127,8 @@ try {
       results.push({ bookmaker: target.bookmaker, httpStatus: status, accessible, ...snapshot });
       console.log(JSON.stringify(results.at(-1), null, 2));
     } catch (error) {
-      errorText = error.message;
-      results.push({ bookmaker: target.bookmaker, httpStatus: status, accessible: false, error: errorText });
-      console.error(errorText);
+      results.push({ bookmaker: target.bookmaker, httpStatus: status, accessible: false, error: error.message });
+      console.error(error.message);
     }
   }
 
@@ -108,6 +136,7 @@ try {
     checkedAt: new Date().toISOString(),
     timezone: "Africa/Luanda",
     exitIp: ip,
+    browserExecutable: executablePath,
     results,
   };
   const fs = await import("node:fs/promises");
