@@ -63,6 +63,10 @@
           || grupo.querySelector(".sgm-market-g-h-title-bc")
             ?.innerText.trim()
           || `Mercado ${indice + 1}`;
+        // O handicap de golos a 3 opções tem uma grelha própria.
+        // Até existir evidência suficiente da relação linha/equipa/empate,
+        // recolhemos a estrutura DOM para diagnóstico e não fazemos pares por suposição.
+        const handicapGolos3Opcoes = /handicap.*golos.*3.?op[cç][aã]o/i.test(titulo);
 
         const blocos = [...grupo.querySelectorAll(".sgm-market-g-item-bc")];
         const selecoes = [];
@@ -86,7 +90,7 @@
           // Handicap de equipas: a interface apresenta dois cabeçalhos
           // (equipas) e depois células alternadas: handicap+odd da equipa 1,
           // handicap+odd da equipa 2. Não há .market-base neste layout.
-          if (!bases.length && cabecalhos.length === 2 && /handicap/i.test(titulo)) {
+          if (!handicapGolos3Opcoes && !bases.length && cabecalhos.length === 2 && /handicap/i.test(titulo)) {
             const celulasComOdd = celulas
               .filter(el => !el.classList.contains("m-g-header"))
               .map(el => {
@@ -162,7 +166,7 @@
         // como duas linhas consecutivas (nome da selecção + odd), por exemplo
         // minutos, combos e mercados de jogadores. Não inferir se a sequência
         // não formar pares exactos nem se a contagem divergir das odds do DOM.
-        if (selecoes.length === 0 && odds.length > 0) {
+        if (selecoes.length === 0 && odds.length > 0 && !handicapGolos3Opcoes) {
           const linhas = grupo.innerText
             .split(/\r?\n/)
             .map(linha => linha.trim())
@@ -203,6 +207,34 @@
           }
         }
 
+        // Diagnóstico específico da grelha de handicap de golos (3 opções).
+        // Guardamos textos/classes/atributos e HTML limitado para identificar
+        // com precisão as colunas e linhas na próxima recolha.
+        let diagnosticoEstrutura = null;
+        if (handicapGolos3Opcoes) {
+          selecoes.length = 0;
+          selecoesParciais.length = 0;
+          oddsSemNome.length = 0;
+          oddsSemNome.push(...odds);
+          diagnosticoEstrutura = blocos.map((bloco, blocoIndex) => ({
+            bloco: blocoIndex,
+            texto: bloco.innerText.trim(),
+            celulas: [...bloco.children]
+              .filter(el => el.matches(".sgm-market-g-i-cell-bc"))
+              .map((el, celulaIndex) => ({
+                indice: celulaIndex,
+                classes: el.className,
+                texto: el.innerText.trim(),
+                atributos: [...el.attributes].reduce((acc, attr) => {
+                  acc[attr.name] = attr.value;
+                  return acc;
+                }, {}),
+                classesFilhos: [...el.children].map(child => child.className),
+                html: el.outerHTML.slice(0, 1800)
+              }))
+          }));
+        }
+
         // Só declarar associação completa quando todas as odds do mercado
         // tiverem nome de selecção validamente associado.
         const associacaoCompleta = odds.length > 0 && selecoes.length === odds.length;
@@ -214,6 +246,7 @@
           selecoesParciais,
           oddsSemNome,
           associacaoCompleta,
+          ...(diagnosticoEstrutura ? { diagnosticoEstrutura } : {}),
           conteudo: grupo.innerText.trim()
         };
       }).filter(mercado =>
