@@ -104,7 +104,7 @@ try {
           tabs: document.querySelectorAll(".horizontal-sl-tab-bc").length,
           groups: document.querySelectorAll(".sgm-market-g").length
         }));
-        while (!snapshot.tabs && !snapshot.groups && Date.now() < marketDeadline) {
+        while ((!snapshot.tabs || !snapshot.groups) && Date.now() < marketDeadline) {
           await page.waitForTimeout(1500);
           snapshot = await page.evaluate(() => ({
             title: document.title,
@@ -124,7 +124,7 @@ try {
             groups: document.querySelectorAll(".sgm-market-g").length
           }));
         }
-        if (!snapshot.tabs && !snapshot.groups) {
+        if (!snapshot.tabs || !snapshot.groups) {
           throw new Error("A página abriu, mas não apresentou categorias/mercados reconhecíveis. Recolha ignorada.");
         }
 
