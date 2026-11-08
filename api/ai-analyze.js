@@ -200,6 +200,8 @@ export default async function handler(req, res) {
         fixtureId: item.fixtureId,
         market: item.market,
         selection: item.selection,
+        period: candidate.period,
+        line: candidate.line,
         rationale: item.rationale,
         confidence: item.confidence,
         bestOdds: candidate.bestOdds,
