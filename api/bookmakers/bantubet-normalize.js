@@ -11,8 +11,25 @@ export default async function handler(req, res) {
   }
 
   const secret = process.env.CRON_SECRET;
-  if (!secret || req.headers.authorization !== `Bearer ${secret}`) {
-    return res.status(401).json({ error: "Não autorizado." });
+
+  if (!secret) {
+    return res.status(500).json({
+      error: "CRON_SECRET não está disponível no runtime."
+    });
+  }
+
+  const authorization = req.headers.authorization || "";
+
+  if (!authorization.startsWith("Bearer ")) {
+    return res.status(401).json({
+      error: "Cabeçalho Authorization ausente ou inválido."
+    });
+  }
+
+  if (authorization.slice(7) !== secret) {
+    return res.status(401).json({
+      error: "O token recebido não corresponde ao segredo configurado."
+    });
   }
 
   const payload = req.body?.payload;
