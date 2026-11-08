@@ -92,12 +92,11 @@ function lineFromSelection(row) {
   const explicit = canonicalLine(row.line);
   if (explicit) return explicit;
   const label = String(row.selection || "");
-  const total = label.match(/(?:mais de|mais|over|menos de|menos|under)\\s+([+-]?\\d+(?:[.,]\\d+)?)/i);
+  const total = label.match(/(?:mais de|mais|over|menos de|menos|under)\s+([+-]?\d+(?:[.,]\d+)?)/i);
   if (total) return canonicalLine(total[1]);
-  const handicap = label.match(/\\(([+-]?\\d+(?:[.,]\\d+)?)\\)$/);
+  const handicap = label.match(/\(([+-]?\d+(?:[.,]\d+)?)\)$/);
   return handicap ? canonicalLine(handicap[1]) : null;
 }
-
 function eventKey(fixture) {
   const home = clean(fixture.home);
   const away = clean(fixture.away);
