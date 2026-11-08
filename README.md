@@ -71,6 +71,12 @@ O pedido deve conter jogos reais em `fixtures`, cada um com `id`, `home`, `away`
 
 O endpoint não recolhe odds por si só. Para contexto desportivo, `GET /api/fixture-context?fixtureId=<id>` consulta detalhes, estatísticas, eventos, escalações, H2H, classificação e forma das equipas na SportAPI; cada secção indica se os dados estão disponíveis. Lesões/ausências não são inventadas porque a documentação consultada não apresenta esse endpoint. `POST /api/pipeline/save-analysis` guarda estatísticas, análises e odds verificadas no Supabase, protegido por `CRON_SECRET` e usando a chave secreta apenas no servidor. Esta rota não publica bilhetes nem cria referências de reserva. A execução diária continua desligada até a recolha das duas casas e a primeira execução completa serem validadas.
 
+## Descoberta local de URLs nas casas
+
+Depois de actualizar o projecto, executa `npm run discover:local`. O comando consulta a rota pública SportAPI do FK para hoje e amanhã, abre as páginas de futebol da BantuBet e ElephantBet no Chrome/Edge local e procura os eventos pelos nomes das duas equipas. Só grava em `tools/events.local.json` os jogos encontrados sem ambiguidade nas duas casas. Em seguida, executa `npm run collect:local` para recolher os mercados e odds com os colectores já existentes.
+
+A descoberta usa o perfil local `.fk-browser-profile`; se a casa apresentar um bloqueio ou CAPTCHA, não tenta contorná-lo. URLs das páginas de futebol e endpoint de fixtures podem ser substituídos pelas variáveis `FK_BANTUBET_SPORTS_URL`, `FK_ELEPHANTBET_SPORTS_URL` e `FK_FIXTURES_API_URL`. Os jogos não encontrados ou ambíguos ficam fora da recolha automática e são registados em `data/collections/event-discovery-latest.json`.
+
 ## Descoberta automática e pipeline
 
 A rota protegida `POST /api/pipeline/discover-fixtures` consulta a SportAPI e guarda os jogos futuros na tabela `matches` do Supabase. Envia `Authorization: Bearer <CRON_SECRET>`; o corpo pode conter `{"days":2}` (entre 1 e 7 dias, no fuso `Africa/Luanda`). A chave da SportAPI e a chave de serviço do Supabase permanecem no servidor. A origem é guardada como `SportAPI`, igual à rota de persistência de análises, para impedir duplicação do mesmo jogo por diferenças de maiúsculas/minúsculas.
