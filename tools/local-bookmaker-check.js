@@ -16,8 +16,14 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 
 const targets = [
-  { bookmaker: "BantuBet", url: "https://m.bantubet.co.ao/pt/sports" },
-  { bookmaker: "ElephantBet", url: "https://www.elephantbet.co.ao/pt/sports" },
+  {
+    bookmaker: "BantuBet",
+    url: "https://m.bantubet.co.ao/pt/sports/live/event-view/Soccer/Germany/541-bundesliga/31343301-tsg-1899-hoffenheim-schalke-04/search"
+  },
+  {
+    bookmaker: "ElephantBet",
+    url: "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/Germany/541-bundesliga/31343301-tsg-1899-hoffenheim-schalke-04"
+  },
 ];
 
 function findInstalledBrowser() {
@@ -94,7 +100,7 @@ try {
         timeout: 60000,
       });
       status = response?.status() ?? null;
-      await page.waitForTimeout(8000);
+      await page.waitForTimeout(15000);
 
       let snapshot = await page.evaluate(() => ({
         title: document.title,
