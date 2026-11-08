@@ -82,13 +82,13 @@ async function readEventLinks(page) {
       let node = anchor;
       let bestText = "";
       for (let depth = 0; node && depth < 8; depth++, node = node.parentElement) {
-        const value = (node.innerText || "").replace(/\\s+/g, " ").trim();
+        const value = (node.innerText || "").replace(/\s+/g, " ").trim();
         if (value.length > bestText.length && value.length <= 1800) bestText = value;
       }
       const anchorText = (anchor.innerText || anchor.getAttribute("aria-label") || "").trim();
       const text = bestText || anchorText;
       const path = parsed.pathname.toLowerCase();
-      const looksLikeEvent = /event|match|fixture|game|evento|jogo|detail|\\d{6,}/i.test(path);
+      const looksLikeEvent = /event|match|fixture|game|evento|jogo|detail|\d{6,}/i.test(path);
       if (!looksLikeEvent || text.length < 8) continue;
       const previous = byUrl.get(url);
       if (!previous || text.length > previous.text.length) byUrl.set(url, { url, text });
