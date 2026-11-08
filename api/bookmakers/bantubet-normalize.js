@@ -1,4 +1,4 @@
-import { normalizeBantuBetPayload } from "./bantubet.js";
+import { normalizeBantuBetPayload } from "../../lib/bookmakers/bantubet.js";
 
 function isText(value) {
   return typeof value === "string" && value.trim().length > 0;
