@@ -42,7 +42,7 @@ function findBrowser() {
 }
 
 function safeName(value) {
-  return String(value).normalize("NFD").replace(/\\p{Diacritic}/gu, "")
+  return String(value).normalize("NFD").replace(/\p{Diacritic}/gu, "")
     .replace(/[^a-z0-9_-]+/gi, "-").replace(/^-|-$/g, "").slice(0, 70);
 }
 
