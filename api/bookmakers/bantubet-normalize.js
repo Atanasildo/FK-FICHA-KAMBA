@@ -80,7 +80,13 @@ export default async function handler(req, res) {
         market: market.market,
         selection: selection.selection,
         odds: Number(selection.odd),
-        bookmaker: "BantuBet"
+        bookmaker: "BantuBet",
+        category: market.category,
+        line: selection.line ?? null,
+        side: selection.side ?? null,
+        team: selection.team ?? null,
+        sourceUrl: isText(payload.urlPagina) ? payload.urlPagina : null,
+        collectedAt: isText(payload.recolhidoEm) ? payload.recolhidoEm : null
       }))
   );
 
