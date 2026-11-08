@@ -83,7 +83,7 @@ async function readEventLinks(page) {
       return { url: anchor.href, text: text || anchor.innerText || "" };
     }).filter(item =>
       /^https?:/.test(item.url) &&
-      /\\/(event|match|fixture)\\/|event|match/i.test(item.url) &&
+      /\/(event|match|fixture)\/|event|match/i.test(item.url) &&
       item.text.length > 0
     );
   });
