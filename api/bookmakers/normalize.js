@@ -100,7 +100,12 @@ function parseStructuredSelections(market) {
   if (!Array.isArray(rows) || rows.length === 0) return null;
   const parsed = rows.map(row => makeSelection(
     row?.selecao || row?.selection || row?.nome || row?.label,
-    row?.odd ?? row?.odds
+    row?.odd ?? row?.odds,
+    {
+      ...(row?.line != null ? { line: String(row.line).replace(",", ".") } : {}),
+      ...(row?.side != null ? { side: row.side } : {}),
+      ...(row?.team != null ? { team: row.team } : {})
+    }
   ));
   if (parsed.some(item => !item)) return null;
   return parsed;
