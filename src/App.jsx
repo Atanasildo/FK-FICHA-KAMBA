@@ -199,13 +199,13 @@ function OddsComparePage() {
       <div className="odds-section-title"><span>02</span><div><h3>Importar recolhas</h3><p>Selecciona os ficheiros JSON gerados pelos recolhedores. Máximo de 12 MB por ficheiro.</p></div></div>
       <div className="odds-upload-grid">
         <label className="odds-upload-card">
-          <input type="file" accept=".json,application/json" onChange={e => loadFile('bantubet', e.target.files?.[0])}/>
+          <input type="file" accept=".json,.txt,application/json,text/plain" onChange={e => loadFile('bantubet', e.target.files?.[0])}/>
           <div className="odds-upload-icon"><FileJson size={22}/></div>
           <b>BantuBet</b><span>Seleccionar recolha.json</span>
           {files.bantubet ? <small className="upload-success"><CheckCircle2 size={13}/>{files.bantubet.name}</small> : <small>Ficheiro JSON</small>}
         </label>
         <label className="odds-upload-card elephant">
-          <input type="file" accept=".json,application/json" onChange={e => loadFile('elephantbet', e.target.files?.[0])}/>
+          <input type="file" accept=".json,.txt,application/json,text/plain" onChange={e => loadFile('elephantbet', e.target.files?.[0])}/>
           <div className="odds-upload-icon"><FileJson size={22}/></div>
           <b>ElephantBet</b><span>Seleccionar recolha.json</span>
           {files.elephantbet ? <small className="upload-success"><CheckCircle2 size={13}/>{files.elephantbet.name}</small> : <small>Ficheiro JSON</small>}
