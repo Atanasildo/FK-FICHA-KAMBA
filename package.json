@@ -8,7 +8,8 @@
     "build": "node --test && vite build",
     "preview": "vite preview",
     "test": "node --test",
-    "collect:local": "node tools/local-bookmaker-collector.js"
+    "collect:local": "node tools/local-bookmaker-collector.js",
+    "discover:local": "node tools/discover-bookmaker-events.js"
   },
   "dependencies": {
     "@browserbasehq/sdk": "^2.5.0",
