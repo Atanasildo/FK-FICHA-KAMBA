@@ -137,3 +137,15 @@ npm test
 ```
 
 O comando de build também executa os testes antes de gerar a aplicação.
+
+## Recolha local assistida das odds (Windows)
+
+Enquanto não houver um método remoto autorizado com acesso estável a Angola, o projecto inclui um recolhedor local que usa o Chrome/Edge já instalado, mantém um perfil de navegador e reutiliza os extractores de BantuBet e ElephantBet. Não instala browsers, não faz apostas e não contorna CAPTCHA, autenticação ou bloqueios.
+
+1. Copia `tools/events.local.example.json` para `tools/events.local.json`.
+2. Para cada jogo, preenche o ID real da SportAPI, nomes, competição, hora e os URLs públicos do mesmo evento nas duas casas.
+3. Executa `npm run collect:local` no terminal, na pasta do projecto.
+4. Se o site apresentar uma verificação normal, resolve-a manualmente no Chrome aberto. Se continuar bloqueado, a recolha desse site é marcada como falhada.
+5. Consulta `data/collections`: ficam guardados o JSON bruto, o resultado normalizado e a comparação de cada jogo, além de `latest-run.json`.
+
+O perfil do navegador fica em `.fk-browser-profile`, para preservar cookies/sessão entre execuções. O ficheiro `events.local.json`, o perfil e os resultados locais estão no `.gitignore` e não são enviados para o GitHub. Esta é uma etapa assistida: ainda é necessário fornecer os URLs dos eventos. A recolha local ainda não alimenta automaticamente a análise Groq, não grava os bilhetes no Supabase e não agenda a execução diária; essas etapas só devem ser activadas depois de uma recolha real ser validada.
