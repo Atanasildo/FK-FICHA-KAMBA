@@ -26,3 +26,12 @@ test("does not silently choose between equally strong event URLs", () => {
   );
   assert.equal(result.status, "ambiguous");
 });
+
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+
+test("automatic discovery runner has valid JavaScript syntax", () => {
+  const script = new URL("../tools/discover-bookmaker-events.js", import.meta.url);
+  const result = spawnSync(process.execPath, ["--check", fileURLToPath(script)], { encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+});
