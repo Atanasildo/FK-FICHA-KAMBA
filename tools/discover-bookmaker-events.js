@@ -71,22 +71,41 @@ async function fetchFixtures() {
 
 async function readEventLinks(page) {
   return page.evaluate(() => {
-    const selectors = "a[href]";
-    return [...document.querySelectorAll(selectors)].map(anchor => {
+    const currentHost = location.hostname;
+    const byUrl = new Map();
+    for (const anchor of document.querySelectorAll("a[href]")) {
+      const url = anchor.href;
+      if (!/^https?:/.test(url)) continue;
+      let parsed;
+      try { parsed = new URL(url); } catch { continue; }
+      if (parsed.hostname !== currentHost) continue;
       let node = anchor;
-      let text = "";
-      // Inclui o texto do cartão que envolve a ligação, mas limita a dimensão.
-      for (let depth = 0; node && depth < 4; depth++, node = node.parentElement) {
-        const value = (node.innerText || "").trim();
-        if (value.length > text.length && value.length <= 900) text = value;
+      let bestText = "";
+      for (let depth = 0; node && depth < 8; depth++, node = node.parentElement) {
+        const value = (node.innerText || "").replace(/\\s+/g, " ").trim();
+        if (value.length > bestText.length && value.length <= 1800) bestText = value;
       }
-      return { url: anchor.href, text: text || anchor.innerText || "" };
-    }).filter(item =>
-      /^https?:/.test(item.url) &&
-      /\/(event|match|fixture)\/|event|match/i.test(item.url) &&
-      item.text.length > 0
-    );
+      const anchorText = (anchor.innerText || anchor.getAttribute("aria-label") || "").trim();
+      const text = bestText || anchorText;
+      const path = parsed.pathname.toLowerCase();
+      const looksLikeEvent = /event|match|fixture|game|evento|jogo|detail|\\d{6,}/i.test(path);
+      if (!looksLikeEvent || text.length < 8) continue;
+      const previous = byUrl.get(url);
+      if (!previous || text.length > previous.text.length) byUrl.set(url, { url, text });
+    }
+    return [...byUrl.values()].slice(0, 2500);
   });
+}
+
+async function waitForEventLinks(page, timeoutMs = 60000) {
+  const started = Date.now();
+  let links = [];
+  while (Date.now() - started < timeoutMs) {
+    links = await readEventLinks(page);
+    if (links.length >= 10) return links;
+    await page.waitForTimeout(3000);
+  }
+  return links;
 }
 
 async function main() {
@@ -109,12 +128,18 @@ async function main() {
       try {
         console.log("A procurar eventos em " + bookmaker.name + ": " + bookmaker.url);
         const response = await page.goto(bookmaker.url, { waitUntil: "domcontentloaded", timeout: 60000 });
-        await page.waitForTimeout(12000);
+        await page.waitForTimeout(5000);
         if (response?.status() === 403 || /cloudflare|captcha|access denied|attention required/i.test(await page.title())) {
-          report.push({ bookmaker: bookmaker.name, status: "blocked", detail: "A casa bloqueou ou pediu verificação; não foi contornado." });
+          report.push({
+            bookmaker: bookmaker.name,
+            status: "blocked",
+            detail: "A casa bloqueou ou pediu verificação; não foi contornado.",
+            pageTitle: await page.title(),
+            finalUrl: page.url()
+          });
           continue;
         }
-        const candidates = await readEventLinks(page);
+        const candidates = await waitForEventLinks(page);
         let found = 0;
         for (const fixture of fixtures) {
           const result = selectUniqueEventLink(fixture, candidates);
@@ -126,7 +151,18 @@ async function main() {
             (record.discovery || (record.discovery = {}))[bookmaker.name] = result.status;
           }
         }
-        report.push({ bookmaker: bookmaker.name, status: "scanned", links: candidates.length, matches: found });
+        report.push({
+          bookmaker: bookmaker.name,
+          status: "scanned",
+          pageTitle: await page.title(),
+          finalUrl: page.url(),
+          links: candidates.length,
+          matches: found,
+          sampleCandidates: candidates.slice(0, 8).map(item => ({
+            url: item.url,
+            text: item.text.slice(0, 220)
+          }))
+        });
       } catch (error) {
         report.push({ bookmaker: bookmaker.name, status: "failed", detail: error.message });
       } finally {
