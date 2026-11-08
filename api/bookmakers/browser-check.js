@@ -45,11 +45,31 @@ export default async function handler(req, res) {
     const browserbase = new Browserbase({ apiKey: process.env.BROWSERBASE_API_KEY });
     const session = await browserbase.sessions.create({
       projectId: process.env.BROWSERBASE_PROJECT_ID,
+      proxies: [{ type: "browserbase", geolocation: { country: "AO" } }],
     });
     sessionId = session.id;
     browser = await chromium.connectOverCDP(session.connectUrl);
 
     const context = browser.contexts()[0] || await browser.newContext();
+    const ipPage = await context.newPage();
+    let exitLocation = null;
+    try {
+      await ipPage.goto("https://ipinfo.io/json", { waitUntil: "domcontentloaded", timeout: 20000 });
+      exitLocation = await ipPage.evaluate(() => {
+        const text = document.body?.innerText || "";
+        try {
+          const parsed = JSON.parse(text);
+          return { country: parsed.country || null, region: parsed.region || null, city: parsed.city || null };
+        } catch {
+          return { response: text.slice(0, 300) };
+        }
+      });
+    } catch (error) {
+      exitLocation = { error: error.message };
+    } finally {
+      await ipPage.close().catch(() => {});
+    }
+
     const results = [];
     for (const target of TARGETS) {
       const page = await context.newPage();
@@ -83,6 +103,7 @@ export default async function handler(req, res) {
     return send(res, accessible === TARGETS.length ? 200 : 207, {
       ok: accessible === TARGETS.length,
       sessionId,
+      exitLocation,
       checkedAt: new Date().toISOString(),
       results,
       note: "Diagnóstico de acesso. A recolha de odds só será activada depois de validar os seletores e a correspondência dos mesmos jogos nas duas casas.",
