@@ -170,8 +170,8 @@ function stableKey(market) {
 
 /**
  * Normaliza os mercados recolhidos na interface pública da casa.
- * A categoria "Tudo" é usada como fallback; quando a mesma oferta surge
- * numa categoria específica, mantém-se apenas uma cópia e guardam-se as categorias.
+ * A categoria "Tudo" é ignorada porque agrega os mercados das categorias específicas
+ * e pode introduzir duplicações. Apenas as categorias específicas são processadas.
  */
 export function normalizeBookmakerMarkets(categories = [], options = {}) {
   const bookmaker = options.bookmaker || "BantuBet";
@@ -179,7 +179,8 @@ export function normalizeBookmakerMarkets(categories = [], options = {}) {
   const byKey = new Map();
 
   for (const category of categories) {
-    const categoryName = String(category?.categoria || category?.name || "Sem categoria");
+    const categoryName = String(category?.categoria || category?.name || "Sem categoria").trim();
+    if (categoryName.toLocaleLowerCase() === "tudo") continue;
     if (!Array.isArray(category?.mercados || category?.markets)) continue;
 
     for (const rawMarket of category.mercados || category.markets) {
