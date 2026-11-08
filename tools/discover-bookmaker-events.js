@@ -81,12 +81,16 @@ async function readEventLinks(page) {
       if (parsed.hostname !== currentHost) continue;
       let node = anchor;
       let bestText = "";
+      let cardText = "";
       for (let depth = 0; node && depth < 8; depth++, node = node.parentElement) {
         const value = (node.innerText || "").replace(/\s+/g, " ").trim();
         if (value.length > bestText.length && value.length <= 1800) bestText = value;
+        // Prefer the nearest compact event card; larger ancestors often contain
+        // several matches and can create false associations between fixtures.
+        if (!cardText && value.length >= 25 && value.length <= 700) cardText = value;
       }
       const anchorText = (anchor.innerText || anchor.getAttribute("aria-label") || "").trim();
-      const text = bestText || anchorText;
+      const text = cardText || bestText || anchorText;
       const path = parsed.pathname.toLowerCase();
       const looksLikeEvent = /event|match|fixture|game|evento|jogo|detail|\d{6,}/i.test(path);
       if (!looksLikeEvent || text.length < 8) continue;
