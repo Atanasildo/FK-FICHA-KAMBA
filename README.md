@@ -128,7 +128,7 @@ A aplicação inclui uma área visual para comparar directamente duas recolhas J
 4. Clica em **Comparar odds**. O painel mostra as selecções encontradas nas duas casas, as cotações de cada uma e destaca a melhor odd.
 5. Usa o filtro para procurar mercados e exporta os resultados em CSV, se necessário.
 
-Os ficheiros são lidos e processados no próprio navegador; não é necessário introduzir segredos ou tokens. O limite da interface é 12 MB por ficheiro. A categoria agregadora «Tudo» é ignorada para evitar duplicações. Mercados marcados com associação incompleta (incluindo o handicap de três opções ainda não resolvido) são excluídos e listados no diagnóstico. A comparação só é possível quando ambas as casas têm a mesma selecção e linha; sem equivalência segura, o sistema não inventa correspondências.
+Os ficheiros são lidos e processados no próprio navegador; não é necessário introduzir segredos ou tokens. O limite da interface é 12 MB por ficheiro. Também aceita ficheiros `.txt` quando o conteúdo é JSON válido. A categoria agregadora «Tudo» é ignorada para evitar duplicações. Mercados marcados com associação incompleta (incluindo o handicap de três opções ainda não resolvido) são excluídos e listados no diagnóstico. A comparação só é possível quando ambas as casas têm a mesma selecção e linha; sem equivalência segura, o sistema não inventa correspondências.
 
 Para executar os testes dos normalizadores e comparador:
 
