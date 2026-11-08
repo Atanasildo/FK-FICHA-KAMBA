@@ -54,6 +54,9 @@ export default async function handler(req, res) {
 
     const fixtures = (payload.data || []).map(item => ({
       id: String(item.id),
+      homeId: item.home_id ?? null,
+      awayId: item.away_id ?? null,
+      leagueId: item.league_id ?? null,
       provider: "SportAPI",
       kickoff: item.kickoff_utc
         ? new Intl.DateTimeFormat("sv-SE", {
