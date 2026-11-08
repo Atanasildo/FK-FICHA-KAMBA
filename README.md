@@ -80,3 +80,48 @@ A resposta distingue jogos com e sem odds. A disponibilidade de mercados depende
 A API-Football documenta actualização e cobertura variáveis por competição; odds pré-jogo podem estar disponíveis apenas numa janela anterior ao início do jogo. Confirma no painel do fornecedor se o plano da conta dá acesso aos endpoints de odds e acompanha o consumo diário.
 
 A rota existente `POST /api/ai-analyze` é protegida por `CRON_SECRET`. O próximo passo é um processo interno que obtenha a resposta desta fonte, prepare o payload de mercados reais e chame a análise Groq; esta integração de ponta a ponta e a publicação persistente ainda não estão activadas.
+
+
+## Comparação de odds entre casas
+
+A rota protegida `POST /api/bookmakers/compare` compara recolhas já normalizadas de duas ou mais casas. Envia `Authorization: Bearer <CRON_SECRET>` e um corpo JSON com `fixtures`, usando o objecto `fixture` devolvido por cada recolha normalizada.
+
+Exemplo de estrutura:
+
+```json
+{
+  "fixtures": [
+    {
+      "id": "evento-123",
+      "home": "Club Brugge",
+      "away": "RSC Anderlecht",
+      "competition": "Belgium Pro League",
+      "kickoff": "2026-11-10T19:00:00Z",
+      "bookmaker": "BantuBet",
+      "sourceUrl": "https://...",
+      "collectedAt": "2026-11-08T10:00:00Z",
+      "markets": [
+        {
+          "market": "Total de golos no jogo",
+          "selection": "Mais de 2.5",
+          "odds": 1.80,
+          "line": "2.5",
+          "side": "over"
+        }
+      ]
+    }
+  ]
+}
+```
+
+A comparação exige correspondência de equipas e competição, e separa período, tipo de mercado, equipa e linha. Variações como `Menos 1.5` e `Menos de 1.5` são normalizadas para a mesma selecção. Linhas diferentes (por exemplo, 2.25 e 2.5), primeira parte e jogo completo, handicaps de equipas diferentes e mercados de categorias distintas não são misturados. A resposta conserva bookmaker, odd, origem e hora de recolha e apresenta a melhor odd observada por selecção equivalente.
+
+A rota não calcula arbitragem garantida nem recomenda apostas; apenas compara os preços recebidos. Os dados têm de ser recolhidos e normalizados antes da comparação. O motor não inventa odds nem preenche casas sem dados.
+
+Para executar os testes dos normalizadores e comparador:
+
+```bash
+npm test
+```
+
+O comando de build também executa os testes antes de gerar a aplicação.

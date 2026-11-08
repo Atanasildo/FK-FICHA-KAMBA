@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
+    "build": "node --test api/bookmakers/*.test.js && vite build",
     "preview": "vite preview",
     "test": "node --test api/bookmakers/*.test.js"
   },
