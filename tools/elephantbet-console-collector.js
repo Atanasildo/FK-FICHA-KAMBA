@@ -182,9 +182,12 @@
             for (let j = 0; j < linhas.length; j += 2) {
               const label = linhas[j];
               const odd = linhas[j + 1];
-              const oddValida = /^\\d+(?:[.,]\\d+)?$/.test(odd) &&
+              const oddValida = /^\d+(?:[.,]\d+)?$/.test(odd) &&
                 Number(odd.replace(",", ".")) > 1;
-              const labelValida = label && !/^\\d+(?:[.,]\\d+)?$/.test(label);
+              // Rótulos numéricos de intervalo (ex.: 0, 1-2, 11-20) são válidos;
+              // só rejeitar um rótulo que pareça, ele próprio, uma odd decimal.
+              const labelValida = label && !(/^\d+(?:[.,]\d+)?$/.test(label) &&
+                Number(label.replace(",", ".")) > 1);
               if (!oddValida || !labelValida) {
                 pares.length = 0;
                 break;
