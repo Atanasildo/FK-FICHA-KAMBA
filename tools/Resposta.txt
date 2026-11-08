@@ -1,11 +1,11 @@
 {
     "bookmaker": "ElephantBet",
     "urlPagina": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/Germany/541-bundesliga/31343301-tsg-1899-hoffenheim-schalke-04",
-    "recolhidoEm": "2026-11-08T18:23:40.773Z",
-    "categoriasLidas": 15,
-    "totalMercados": 36,
-    "totalOdds": 210,
-    "mercadosComAssociacaoCompleta": 35,
+    "recolhidoEm": "2026-11-08T18:32:26.242Z",
+    "categoriasLidas": 7,
+    "totalMercados": 12,
+    "totalOdds": 94,
+    "mercadosComAssociacaoCompleta": 11,
     "categorias": [
         {
             "categoria": "Jogo",
@@ -16,81 +16,81 @@
                     "mercado": "Resultado do Jogo",
                     "quantidadeOdds": 3,
                     "odds": [
-                        "1.54",
-                        "4.50",
-                        "5.70"
+                        "1.58",
+                        "4.15",
+                        "4.90"
                     ],
                     "selecoes": [
                         {
                             "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "1.54"
+                            "odd": "1.58"
                         },
                         {
                             "selecao": "Empate",
-                            "odd": "4.50"
+                            "odd": "4.15"
                         },
                         {
                             "selecao": "Schalke 04",
-                            "odd": "5.70"
+                            "odd": "4.90"
                         }
                     ],
                     "selecoesParciais": [
                         {
                             "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "1.54"
+                            "odd": "1.58"
                         },
                         {
                             "selecao": "Empate",
-                            "odd": "4.50"
+                            "odd": "4.15"
                         },
                         {
                             "selecao": "Schalke 04",
-                            "odd": "5.70"
+                            "odd": "4.90"
                         }
                     ],
                     "oddsSemNome": [],
                     "associacaoCompleta": true,
-                    "conteudo": "Resultado do Jogo\n\nTSG 1899 Hoffenheim\nEmpate\nSchalke 04\n1.54\n4.50\n5.70"
+                    "conteudo": "Resultado do Jogo\n\nTSG 1899 Hoffenheim\nEmpate\nSchalke 04\n1.58\n4.15\n4.90"
                 },
                 {
-                    "mercado": "Resultado do Jogo (1 Golo de Avanço)",
+                    "mercado": "Dupla Chance",
                     "quantidadeOdds": 3,
                     "odds": [
-                        "1.25",
-                        "4.10",
-                        "2.52"
+                        "1.15",
+                        "1.20",
+                        "2.18"
                     ],
                     "selecoes": [
                         {
-                            "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "1.25"
+                            "selecao": "1X",
+                            "odd": "1.15"
                         },
                         {
-                            "selecao": "Empate",
-                            "odd": "4.10"
+                            "selecao": "12",
+                            "odd": "1.20"
                         },
                         {
-                            "selecao": "Schalke 04",
-                            "odd": "2.52"
+                            "selecao": "X2",
+                            "odd": "2.18"
                         }
                     ],
                     "selecoesParciais": [
                         {
-                            "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "1.25"
+                            "selecao": "1X",
+                            "odd": "1.15"
                         },
                         {
-                            "selecao": "Empate",
-                            "odd": "4.10"
+                            "selecao": "12",
+                            "odd": "1.20"
                         },
                         {
-                            "selecao": "Schalke 04",
-                            "odd": "2.52"
+                            "selecao": "X2",
+                            "odd": "2.18"
                         }
                     ],
                     "oddsSemNome": [],
                     "associacaoCompleta": true,
-                    "conteudo": "Resultado do Jogo (1 Golo de Avanço)\n\nTSG 1899 Hoffenheim\nEmpate\nSchalke 04\n1.25\n4.10\n2.52"
+                    "conteudo": "Dupla Chance\n\n1X\n12\nX2\n1.15\n1.20\n2.18"
                 }
             ]
         },
@@ -101,44 +101,40 @@
             "mercados": [
                 {
                     "mercado": "Total de golos no jogo",
-                    "quantidadeOdds": 24,
+                    "quantidadeOdds": 20,
                     "odds": [
-                        "1.017",
-                        "9.20",
+                        "1.01",
+                        "8.00",
                         "1.13",
-                        "4.80",
-                        "1.19",
-                        "4.00",
-                        "1.46",
-                        "2.45",
+                        "4.30",
+                        "1.18",
+                        "3.70",
+                        "1.47",
+                        "2.30",
                         "1.72",
-                        "1.95",
-                        "2.20",
-                        "1.60",
-                        "3.00",
-                        "1.32",
-                        "3.50",
-                        "1.24",
-                        "5.45",
-                        "1.10",
-                        "6.00",
+                        "1.87",
+                        "2.12",
+                        "1.55",
+                        "3.05",
+                        "1.27",
+                        "3.35",
+                        "1.22",
+                        "5.20",
                         "1.08",
-                        "8.60",
-                        "1.025",
-                        "8.70",
+                        "7.30",
                         "1.02"
                     ],
                     "selecoes": [
                         {
-                            "selecao": "Mais de 1",
-                            "odd": "1.017",
-                            "linha": "1",
+                            "selecao": "Mais de 0.5",
+                            "odd": "1.01",
+                            "linha": "0.5",
                             "coluna": "Mais de"
                         },
                         {
-                            "selecao": "Menos 1",
-                            "odd": "9.20",
-                            "linha": "1",
+                            "selecao": "Menos 0.5",
+                            "odd": "8.00",
+                            "linha": "0.5",
                             "coluna": "Menos"
                         },
                         {
@@ -149,31 +145,31 @@
                         },
                         {
                             "selecao": "Menos 1.5",
-                            "odd": "4.80",
+                            "odd": "4.30",
                             "linha": "1.5",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 2",
-                            "odd": "1.19",
+                            "odd": "1.18",
                             "linha": "2",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 2",
-                            "odd": "4.00",
+                            "odd": "3.70",
                             "linha": "2",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 2.5",
-                            "odd": "1.46",
+                            "odd": "1.47",
                             "linha": "2.5",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 2.5",
-                            "odd": "2.45",
+                            "odd": "2.30",
                             "linha": "2.5",
                             "coluna": "Menos"
                         },
@@ -185,106 +181,82 @@
                         },
                         {
                             "selecao": "Menos 3",
-                            "odd": "1.95",
+                            "odd": "1.87",
                             "linha": "3",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 3.5",
-                            "odd": "2.20",
+                            "odd": "2.12",
                             "linha": "3.5",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 3.5",
-                            "odd": "1.60",
+                            "odd": "1.55",
                             "linha": "3.5",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 4",
-                            "odd": "3.00",
+                            "odd": "3.05",
                             "linha": "4",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 4",
-                            "odd": "1.32",
+                            "odd": "1.27",
                             "linha": "4",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 4.5",
-                            "odd": "3.50",
+                            "odd": "3.35",
                             "linha": "4.5",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 4.5",
-                            "odd": "1.24",
+                            "odd": "1.22",
                             "linha": "4.5",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 5",
-                            "odd": "5.45",
+                            "odd": "5.20",
                             "linha": "5",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 5",
-                            "odd": "1.10",
+                            "odd": "1.08",
                             "linha": "5",
                             "coluna": "Menos"
                         },
                         {
-                            "selecao": "Mais de 5.5",
-                            "odd": "6.00",
-                            "linha": "5.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 5.5",
-                            "odd": "1.08",
-                            "linha": "5.5",
-                            "coluna": "Menos"
-                        },
-                        {
                             "selecao": "Mais de 6",
-                            "odd": "8.60",
+                            "odd": "7.30",
                             "linha": "6",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 6",
-                            "odd": "1.025",
-                            "linha": "6",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 6.5",
-                            "odd": "8.70",
-                            "linha": "6.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 6.5",
                             "odd": "1.02",
-                            "linha": "6.5",
+                            "linha": "6",
                             "coluna": "Menos"
                         }
                     ],
                     "selecoesParciais": [
                         {
-                            "selecao": "Mais de 1",
-                            "odd": "1.017",
-                            "linha": "1",
+                            "selecao": "Mais de 0.5",
+                            "odd": "1.01",
+                            "linha": "0.5",
                             "coluna": "Mais de"
                         },
                         {
-                            "selecao": "Menos 1",
-                            "odd": "9.20",
-                            "linha": "1",
+                            "selecao": "Menos 0.5",
+                            "odd": "8.00",
+                            "linha": "0.5",
                             "coluna": "Menos"
                         },
                         {
@@ -295,31 +267,31 @@
                         },
                         {
                             "selecao": "Menos 1.5",
-                            "odd": "4.80",
+                            "odd": "4.30",
                             "linha": "1.5",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 2",
-                            "odd": "1.19",
+                            "odd": "1.18",
                             "linha": "2",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 2",
-                            "odd": "4.00",
+                            "odd": "3.70",
                             "linha": "2",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 2.5",
-                            "odd": "1.46",
+                            "odd": "1.47",
                             "linha": "2.5",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 2.5",
-                            "odd": "2.45",
+                            "odd": "2.30",
                             "linha": "2.5",
                             "coluna": "Menos"
                         },
@@ -331,98 +303,74 @@
                         },
                         {
                             "selecao": "Menos 3",
-                            "odd": "1.95",
+                            "odd": "1.87",
                             "linha": "3",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 3.5",
-                            "odd": "2.20",
+                            "odd": "2.12",
                             "linha": "3.5",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 3.5",
-                            "odd": "1.60",
+                            "odd": "1.55",
                             "linha": "3.5",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 4",
-                            "odd": "3.00",
+                            "odd": "3.05",
                             "linha": "4",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 4",
-                            "odd": "1.32",
+                            "odd": "1.27",
                             "linha": "4",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 4.5",
-                            "odd": "3.50",
+                            "odd": "3.35",
                             "linha": "4.5",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 4.5",
-                            "odd": "1.24",
+                            "odd": "1.22",
                             "linha": "4.5",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 5",
-                            "odd": "5.45",
+                            "odd": "5.20",
                             "linha": "5",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 5",
-                            "odd": "1.10",
+                            "odd": "1.08",
                             "linha": "5",
                             "coluna": "Menos"
                         },
                         {
-                            "selecao": "Mais de 5.5",
-                            "odd": "6.00",
-                            "linha": "5.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 5.5",
-                            "odd": "1.08",
-                            "linha": "5.5",
-                            "coluna": "Menos"
-                        },
-                        {
                             "selecao": "Mais de 6",
-                            "odd": "8.60",
+                            "odd": "7.30",
                             "linha": "6",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 6",
-                            "odd": "1.025",
-                            "linha": "6",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 6.5",
-                            "odd": "8.70",
-                            "linha": "6.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 6.5",
                             "odd": "1.02",
-                            "linha": "6.5",
+                            "linha": "6",
                             "coluna": "Menos"
                         }
                     ],
                     "oddsSemNome": [],
                     "associacaoCompleta": true,
-                    "conteudo": "Total de golos no jogo\n\nMais de\nMenos\n1\n1.017\n9.20\n1.5\n1.13\n4.80\n2\n1.19\n4.00\n2.5\n1.46\n2.45\n3\n1.72\n1.95\n3.5\n2.20\n1.60\n4\n3.00\n1.32\n4.5\n3.50\n1.24\n5\n5.45\n1.10\n5.5\n6.00\n1.08\n6\n8.60\n1.025\n6.5\n8.70\n1.02"
+                    "conteudo": "Total de golos no jogo\n\nMais de\nMenos\n0.5\n1.01\n8.00\n1.5\n1.13\n4.30\n2\n1.18\n3.70\n2.5\n1.47\n2.30\n3\n1.72\n1.87\n3.5\n2.12\n1.55\n4\n3.05\n1.27\n4.5\n3.35\n1.22\n5\n5.20\n1.08\n6\n7.30\n1.02"
                 }
             ]
         },
@@ -435,37 +383,37 @@
                     "mercado": "Handicap de Golos (3-opções)",
                     "quantidadeOdds": 12,
                     "odds": [
-                        "8.10",
-                        "6.40",
-                        "1.21",
-                        "3.90",
-                        "4.70",
-                        "1.53",
-                        "2.31",
-                        "3.63",
-                        "2.43",
-                        "1.14",
-                        "7.00",
-                        "11.00"
+                        "6.20",
+                        "7.20",
+                        "1.18",
+                        "3.70",
+                        "5.10",
+                        "1.47",
+                        "2.30",
+                        "4.00",
+                        "2.18",
+                        "1.15",
+                        "6.80",
+                        "6.80"
                     ],
                     "selecoes": [],
                     "selecoesParciais": [],
                     "oddsSemNome": [
-                        "8.10",
-                        "6.40",
-                        "1.21",
-                        "3.90",
-                        "4.70",
-                        "1.53",
-                        "2.31",
-                        "3.63",
-                        "2.43",
-                        "1.14",
-                        "7.00",
-                        "11.00"
+                        "6.20",
+                        "7.20",
+                        "1.18",
+                        "3.70",
+                        "5.10",
+                        "1.47",
+                        "2.30",
+                        "4.00",
+                        "2.18",
+                        "1.15",
+                        "6.80",
+                        "6.80"
                     ],
                     "associacaoCompleta": false,
-                    "conteudo": "Handicap de Golos (3-opções)\n\nTSG 1899 Hoffenheim\nEmpate Schalke 04\nSchalke 04\n-3\n8.10\n+3\n6.40\n+3\n1.21\n-2\n3.90\n+2\n4.70\n+2\n1.53\n-1\n2.31\n+1\n3.63\n+1\n2.43\n+1\n1.14\n-1\n7.00\n-1\n11.00"
+                    "conteudo": "Handicap de Golos (3-opções)\n\nTSG 1899 Hoffenheim\nEmpate Schalke 04\nSchalke 04\n-3\n6.20\n+3\n7.20\n+3\n1.18\n-2\n3.70\n+2\n5.10\n+2\n1.47\n-1\n2.30\n+1\n4.00\n+1\n2.18\n+1\n1.15\n-1\n6.80\n-1\n6.80"
                 }
             ]
         },
@@ -478,428 +426,354 @@
                     "mercado": "Resultado da 1º Parte",
                     "quantidadeOdds": 3,
                     "odds": [
-                        "1.90",
-                        "2.55",
-                        "5.10"
+                        "1.87",
+                        "2.50",
+                        "4.30"
                     ],
                     "selecoes": [
                         {
                             "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "1.90"
+                            "odd": "1.87"
                         },
                         {
                             "selecao": "Empate",
-                            "odd": "2.55"
+                            "odd": "2.50"
                         },
                         {
                             "selecao": "Schalke 04",
-                            "odd": "5.10"
+                            "odd": "4.30"
                         }
                     ],
                     "selecoesParciais": [
                         {
                             "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "1.90"
+                            "odd": "1.87"
                         },
                         {
                             "selecao": "Empate",
-                            "odd": "2.55"
+                            "odd": "2.50"
                         },
                         {
                             "selecao": "Schalke 04",
-                            "odd": "5.10"
+                            "odd": "4.30"
                         }
                     ],
                     "oddsSemNome": [],
                     "associacaoCompleta": true,
-                    "conteudo": "Resultado da 1º Parte\n\nTSG 1899 Hoffenheim\nEmpate\nSchalke 04\n1.90\n2.55\n5.10"
+                    "conteudo": "Resultado da 1º Parte\n\nTSG 1899 Hoffenheim\nEmpate\nSchalke 04\n1.87\n2.50\n4.30"
                 },
                 {
                     "mercado": "Dupla Chance da 1º parte",
                     "quantidadeOdds": 3,
                     "odds": [
-                        "1.15",
-                        "1.43",
-                        "1.79"
+                        "1.13",
+                        "1.45",
+                        "1.72"
                     ],
                     "selecoes": [
                         {
                             "selecao": "1X",
-                            "odd": "1.15"
+                            "odd": "1.13"
                         },
                         {
                             "selecao": "12",
-                            "odd": "1.43"
+                            "odd": "1.45"
                         },
                         {
                             "selecao": "X2",
-                            "odd": "1.79"
+                            "odd": "1.72"
                         }
                     ],
                     "selecoesParciais": [
                         {
                             "selecao": "1X",
-                            "odd": "1.15"
+                            "odd": "1.13"
                         },
                         {
                             "selecao": "12",
-                            "odd": "1.43"
+                            "odd": "1.45"
                         },
                         {
                             "selecao": "X2",
-                            "odd": "1.79"
+                            "odd": "1.72"
                         }
                     ],
                     "oddsSemNome": [],
                     "associacaoCompleta": true,
-                    "conteudo": "Dupla Chance da 1º parte\n\n1X\n12\nX2\n1.15\n1.43\n1.79"
-                }
-            ]
-        },
-        {
-            "categoria": "Minutos",
-            "categoriaId": "193",
-            "quantidadeMercados": 2,
-            "mercados": [
-                {
-                    "mercado": "Minuto do primeiro golo",
-                    "quantidadeOdds": 10,
-                    "odds": [
-                        "3.11",
-                        "4.10",
-                        "5.30",
-                        "7.10",
-                        "8.90",
-                        "14.00",
-                        "19.00",
-                        "29.00",
-                        "31.00",
-                        "13.00"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "1-10",
-                            "odd": "3.11"
-                        },
-                        {
-                            "selecao": "11-20",
-                            "odd": "4.10"
-                        },
-                        {
-                            "selecao": "21-30",
-                            "odd": "5.30"
-                        },
-                        {
-                            "selecao": "31-40",
-                            "odd": "7.10"
-                        },
-                        {
-                            "selecao": "41-50",
-                            "odd": "8.90"
-                        },
-                        {
-                            "selecao": "51-60",
-                            "odd": "14.00"
-                        },
-                        {
-                            "selecao": "61-70",
-                            "odd": "19.00"
-                        },
-                        {
-                            "selecao": "71-80",
-                            "odd": "29.00"
-                        },
-                        {
-                            "selecao": "81-90+",
-                            "odd": "31.00"
-                        },
-                        {
-                            "selecao": "Sem golo",
-                            "odd": "13.00"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "1-10",
-                            "odd": "3.11"
-                        },
-                        {
-                            "selecao": "11-20",
-                            "odd": "4.10"
-                        },
-                        {
-                            "selecao": "21-30",
-                            "odd": "5.30"
-                        },
-                        {
-                            "selecao": "31-40",
-                            "odd": "7.10"
-                        },
-                        {
-                            "selecao": "41-50",
-                            "odd": "8.90"
-                        },
-                        {
-                            "selecao": "51-60",
-                            "odd": "14.00"
-                        },
-                        {
-                            "selecao": "61-70",
-                            "odd": "19.00"
-                        },
-                        {
-                            "selecao": "71-80",
-                            "odd": "29.00"
-                        },
-                        {
-                            "selecao": "81-90+",
-                            "odd": "31.00"
-                        },
-                        {
-                            "selecao": "Sem golo",
-                            "odd": "13.00"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Minuto do primeiro golo\n\n1-10\n3.11\n11-20\n4.10\n21-30\n5.30\n31-40\n7.10\n41-50\n8.90\n51-60\n14.00\n61-70\n19.00\n71-80\n29.00\n81-90+\n31.00\nSem golo\n13.00"
-                },
-                {
-                    "mercado": "Tempo do 1º golo de TSG 1899 Hoffenheim (intervalo de 10 minutos)",
-                    "quantidadeOdds": 10,
-                    "odds": [
-                        "4.10",
-                        "5.00",
-                        "6.20",
-                        "7.30",
-                        "8.10",
-                        "11.00",
-                        "14.00",
-                        "17.00",
-                        "17.00",
-                        "5.70"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "1-10",
-                            "odd": "4.10"
-                        },
-                        {
-                            "selecao": "11-20",
-                            "odd": "5.00"
-                        },
-                        {
-                            "selecao": "21-30",
-                            "odd": "6.20"
-                        },
-                        {
-                            "selecao": "31-40",
-                            "odd": "7.30"
-                        },
-                        {
-                            "selecao": "41-50",
-                            "odd": "8.10"
-                        },
-                        {
-                            "selecao": "51-60",
-                            "odd": "11.00"
-                        },
-                        {
-                            "selecao": "61-70",
-                            "odd": "14.00"
-                        },
-                        {
-                            "selecao": "71-80",
-                            "odd": "17.00"
-                        },
-                        {
-                            "selecao": "81-90+",
-                            "odd": "17.00"
-                        },
-                        {
-                            "selecao": "Sem golo",
-                            "odd": "5.70"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "1-10",
-                            "odd": "4.10"
-                        },
-                        {
-                            "selecao": "11-20",
-                            "odd": "5.00"
-                        },
-                        {
-                            "selecao": "21-30",
-                            "odd": "6.20"
-                        },
-                        {
-                            "selecao": "31-40",
-                            "odd": "7.30"
-                        },
-                        {
-                            "selecao": "41-50",
-                            "odd": "8.10"
-                        },
-                        {
-                            "selecao": "51-60",
-                            "odd": "11.00"
-                        },
-                        {
-                            "selecao": "61-70",
-                            "odd": "14.00"
-                        },
-                        {
-                            "selecao": "71-80",
-                            "odd": "17.00"
-                        },
-                        {
-                            "selecao": "81-90+",
-                            "odd": "17.00"
-                        },
-                        {
-                            "selecao": "Sem golo",
-                            "odd": "5.70"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Tempo do 1º golo de TSG 1899 Hoffenheim (intervalo de 10 minutos)\n\n1-10\n4.10\n11-20\n5.00\n21-30\n6.20\n31-40\n7.30\n41-50\n8.10\n51-60\n11.00\n61-70\n14.00\n71-80\n17.00\n81-90+\n17.00\nSem golo\n5.70"
+                    "conteudo": "Dupla Chance da 1º parte\n\n1X\n12\nX2\n1.13\n1.45\n1.72"
                 }
             ]
         },
         {
             "categoria": "Combos",
             "categoriaId": "305",
-            "quantidadeMercados": 2,
+            "quantidadeMercados": 3,
             "mercados": [
                 {
-                    "mercado": "TSG 1899 Hoffenheim marcará e resultado do jogo",
-                    "quantidadeOdds": 5,
+                    "mercado": "Resultado Final e Ambas Equipas Marcam",
+                    "quantidadeOdds": 6,
                     "odds": [
-                        "1.54",
-                        "4.40",
-                        "17.00",
-                        "7.30",
-                        "9.70"
+                        "2.80",
+                        "8.00",
+                        "2.75",
+                        "7.50",
+                        "4.75",
+                        "6.40"
                     ],
                     "selecoes": [
                         {
-                            "selecao": "Sim e TSG 1899 Hoffenheim",
-                            "odd": "1.54"
+                            "selecao": "TSG 1899 Hoffenheim e sim",
+                            "odd": "2.80"
                         },
                         {
-                            "selecao": "Sim e empate",
-                            "odd": "4.40"
+                            "selecao": "Empate e Não",
+                            "odd": "8.00"
                         },
                         {
-                            "selecao": "Não e empate",
-                            "odd": "17.00"
+                            "selecao": "TSG 1899 Hoffenheim e não",
+                            "odd": "2.75"
                         },
                         {
-                            "selecao": "Sim e Schalke 04",
-                            "odd": "7.30"
+                            "selecao": "Schalke 04 e Sim",
+                            "odd": "7.50"
                         },
                         {
-                            "selecao": "Não e Schalke 04",
-                            "odd": "9.70"
+                            "selecao": "Empate e sim",
+                            "odd": "4.75"
+                        },
+                        {
+                            "selecao": "Schalke 04 e não",
+                            "odd": "6.40"
                         }
                     ],
                     "selecoesParciais": [
                         {
-                            "selecao": "Sim e TSG 1899 Hoffenheim",
-                            "odd": "1.54"
+                            "selecao": "TSG 1899 Hoffenheim e sim",
+                            "odd": "2.80"
                         },
                         {
-                            "selecao": "Sim e empate",
-                            "odd": "4.40"
+                            "selecao": "Empate e Não",
+                            "odd": "8.00"
                         },
                         {
-                            "selecao": "Não e empate",
-                            "odd": "17.00"
+                            "selecao": "TSG 1899 Hoffenheim e não",
+                            "odd": "2.75"
                         },
                         {
-                            "selecao": "Sim e Schalke 04",
-                            "odd": "7.30"
+                            "selecao": "Schalke 04 e Sim",
+                            "odd": "7.50"
                         },
                         {
-                            "selecao": "Não e Schalke 04",
-                            "odd": "9.70"
+                            "selecao": "Empate e sim",
+                            "odd": "4.75"
+                        },
+                        {
+                            "selecao": "Schalke 04 e não",
+                            "odd": "6.40"
                         }
                     ],
                     "oddsSemNome": [],
                     "associacaoCompleta": true,
-                    "conteudo": "TSG 1899 Hoffenheim marcará e resultado do jogo\n\nSim e TSG 1899 Hoffenheim\n1.54\nSim e empate\n4.40\nNão e empate\n17.00\nSim e Schalke 04\n7.30\nNão e Schalke 04\n9.70"
+                    "conteudo": "Resultado Final e Ambas Equipas Marcam\n\nTSG 1899 Hoffenheim e sim\n2.80\nEmpate e Não\n8.00\nTSG 1899 Hoffenheim e não\n2.75\nSchalke 04 e Sim\n7.50\nEmpate e sim\n4.75\nSchalke 04 e não\n6.40"
                 },
                 {
-                    "mercado": "Schalke 04 marcará e resultado do jogo",
-                    "quantidadeOdds": 5,
+                    "mercado": "Dupla Chance e Ambas equipas marcarão",
+                    "quantidadeOdds": 6,
                     "odds": [
-                        "2.50",
-                        "2.95",
-                        "4.57",
-                        "21.00",
-                        "4.90"
+                        "1.88",
+                        "2.37",
+                        "2.55",
+                        "3.10",
+                        "2.15",
+                        "5.20"
                     ],
                     "selecoes": [
                         {
-                            "selecao": "Sim e TSG 1899 Hoffenheim",
-                            "odd": "2.50"
+                            "selecao": "1X e (Ambos vão marcar - Sim)",
+                            "odd": "1.88"
                         },
                         {
-                            "selecao": "Não e TSG 1899 Hoffenheim",
-                            "odd": "2.95"
+                            "selecao": "12 e (Ambos vão marcar - Não)",
+                            "odd": "2.37"
                         },
                         {
-                            "selecao": "Sim e empate",
-                            "odd": "4.57"
+                            "selecao": "1X e (Ambos vão marcar - Não)",
+                            "odd": "2.55"
                         },
                         {
-                            "selecao": "Não e empate",
-                            "odd": "21.00"
+                            "selecao": "X2 e (Ambos vão marcar - Sim)",
+                            "odd": "3.10"
                         },
                         {
-                            "selecao": "Sim e Schalke 04",
-                            "odd": "4.90"
+                            "selecao": "12 e (Ambos vão marcar - Sim)",
+                            "odd": "2.15"
+                        },
+                        {
+                            "selecao": "X2 e (Ambos vão marcar - Não)",
+                            "odd": "5.20"
                         }
                     ],
                     "selecoesParciais": [
                         {
-                            "selecao": "Sim e TSG 1899 Hoffenheim",
-                            "odd": "2.50"
+                            "selecao": "1X e (Ambos vão marcar - Sim)",
+                            "odd": "1.88"
                         },
                         {
-                            "selecao": "Não e TSG 1899 Hoffenheim",
-                            "odd": "2.95"
+                            "selecao": "12 e (Ambos vão marcar - Não)",
+                            "odd": "2.37"
                         },
                         {
-                            "selecao": "Sim e empate",
-                            "odd": "4.57"
+                            "selecao": "1X e (Ambos vão marcar - Não)",
+                            "odd": "2.55"
                         },
                         {
-                            "selecao": "Não e empate",
-                            "odd": "21.00"
+                            "selecao": "X2 e (Ambos vão marcar - Sim)",
+                            "odd": "3.10"
                         },
                         {
-                            "selecao": "Sim e Schalke 04",
-                            "odd": "4.90"
+                            "selecao": "12 e (Ambos vão marcar - Sim)",
+                            "odd": "2.15"
+                        },
+                        {
+                            "selecao": "X2 e (Ambos vão marcar - Não)",
+                            "odd": "5.20"
                         }
                     ],
                     "oddsSemNome": [],
                     "associacaoCompleta": true,
-                    "conteudo": "Schalke 04 marcará e resultado do jogo\n\nSim e TSG 1899 Hoffenheim\n2.50\nNão e TSG 1899 Hoffenheim\n2.95\nSim e empate\n4.57\nNão e empate\n21.00\nSim e Schalke 04\n4.90"
+                    "conteudo": "Dupla Chance e Ambas equipas marcarão\n\n1X e (Ambos vão marcar - Sim)\n1.88\n12 e (Ambos vão marcar - Não)\n2.37\n1X e (Ambos vão marcar - Não)\n2.55\nX2 e (Ambos vão marcar - Sim)\n3.10\n12 e (Ambos vão marcar - Sim)\n2.15\nX2 e (Ambos vão marcar - Não)\n5.20"
+                },
+                {
+                    "mercado": "Resultado do Jogo e Total de Golos 1.5",
+                    "quantidadeOdds": 12,
+                    "odds": [
+                        "1.75",
+                        "8.00",
+                        "4.75",
+                        "8.00",
+                        "5.70",
+                        "14.00",
+                        "1.35",
+                        "6.00",
+                        "1.42",
+                        "5.00",
+                        "2.75",
+                        "8.70"
+                    ],
+                    "selecoes": [
+                        {
+                            "selecao": "TSG 1899 Hoffenheim e mais de 1.5",
+                            "odd": "1.75"
+                        },
+                        {
+                            "selecao": "TSG 1899 Hoffenheim e menos de 1.5",
+                            "odd": "8.00"
+                        },
+                        {
+                            "selecao": "Empate e mais de 1.5",
+                            "odd": "4.75"
+                        },
+                        {
+                            "selecao": "Empate e menos de 1.5",
+                            "odd": "8.00"
+                        },
+                        {
+                            "selecao": "Schalke 04 e mais de 1.5",
+                            "odd": "5.70"
+                        },
+                        {
+                            "selecao": "Schalke 04 e menos de1.5",
+                            "odd": "14.00"
+                        },
+                        {
+                            "selecao": "1X e mais de 1.5",
+                            "odd": "1.35"
+                        },
+                        {
+                            "selecao": "1X e menos de 1.5",
+                            "odd": "6.00"
+                        },
+                        {
+                            "selecao": "12 e mais de 1.5",
+                            "odd": "1.42"
+                        },
+                        {
+                            "selecao": "12 e menos de 1.5",
+                            "odd": "5.00"
+                        },
+                        {
+                            "selecao": "X2 e mais de 1.5",
+                            "odd": "2.75"
+                        },
+                        {
+                            "selecao": "X2 e menos de 1.5",
+                            "odd": "8.70"
+                        }
+                    ],
+                    "selecoesParciais": [
+                        {
+                            "selecao": "TSG 1899 Hoffenheim e mais de 1.5",
+                            "odd": "1.75"
+                        },
+                        {
+                            "selecao": "TSG 1899 Hoffenheim e menos de 1.5",
+                            "odd": "8.00"
+                        },
+                        {
+                            "selecao": "Empate e mais de 1.5",
+                            "odd": "4.75"
+                        },
+                        {
+                            "selecao": "Empate e menos de 1.5",
+                            "odd": "8.00"
+                        },
+                        {
+                            "selecao": "Schalke 04 e mais de 1.5",
+                            "odd": "5.70"
+                        },
+                        {
+                            "selecao": "Schalke 04 e menos de1.5",
+                            "odd": "14.00"
+                        },
+                        {
+                            "selecao": "1X e mais de 1.5",
+                            "odd": "1.35"
+                        },
+                        {
+                            "selecao": "1X e menos de 1.5",
+                            "odd": "6.00"
+                        },
+                        {
+                            "selecao": "12 e mais de 1.5",
+                            "odd": "1.42"
+                        },
+                        {
+                            "selecao": "12 e menos de 1.5",
+                            "odd": "5.00"
+                        },
+                        {
+                            "selecao": "X2 e mais de 1.5",
+                            "odd": "2.75"
+                        },
+                        {
+                            "selecao": "X2 e menos de 1.5",
+                            "odd": "8.70"
+                        }
+                    ],
+                    "oddsSemNome": [],
+                    "associacaoCompleta": true,
+                    "conteudo": "Resultado do Jogo e Total de Golos 1.5\n\nTSG 1899 Hoffenheim e mais de 1.5\n1.75\nTSG 1899 Hoffenheim e menos de 1.5\n8.00\nEmpate e mais de 1.5\n4.75\nEmpate e menos de 1.5\n8.00\nSchalke 04 e mais de 1.5\n5.70\nSchalke 04 e menos de1.5\n14.00\n1X e mais de 1.5\n1.35\n1X e menos de 1.5\n6.00\n12 e mais de 1.5\n1.42\n12 e menos de 1.5\n5.00\nX2 e mais de 1.5\n2.75\nX2 e menos de 1.5\n8.70"
                 }
             ]
         },
         {
             "categoria": "Cantos",
             "categoriaId": "131",
-            "quantidadeMercados": 2,
+            "quantidadeMercados": 1,
             "mercados": [
                 {
                     "mercado": "Total de Cantos",
-                    "quantidadeOdds": 22,
+                    "quantidadeOdds": 20,
                     "odds": [
                         "1.22",
                         "3.35",
@@ -907,10 +781,10 @@
                         "2.65",
                         "1.42",
                         "2.45",
-                        "1.60",
-                        "2.04",
-                        "1.78",
-                        "1.82",
+                        "1.62",
+                        "2.00",
+                        "1.80",
+                        "1.80",
                         "2.00",
                         "1.62",
                         "2.35",
@@ -920,9 +794,7 @@
                         "3.15",
                         "1.25",
                         "3.35",
-                        "1.22",
-                        "4.60",
-                        "1.11"
+                        "1.22"
                     ],
                     "selecoes": [
                         {
@@ -963,25 +835,25 @@
                         },
                         {
                             "selecao": "Mais de 9.5",
-                            "odd": "1.60",
+                            "odd": "1.62",
                             "linha": "9.5",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 9.5",
-                            "odd": "2.04",
+                            "odd": "2.00",
                             "linha": "9.5",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 10",
-                            "odd": "1.78",
+                            "odd": "1.80",
                             "linha": "10",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 10",
-                            "odd": "1.82",
+                            "odd": "1.80",
                             "linha": "10",
                             "coluna": "Menos"
                         },
@@ -1044,18 +916,6 @@
                             "odd": "1.22",
                             "linha": "12.5",
                             "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 13.5",
-                            "odd": "4.60",
-                            "linha": "13.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 13.5",
-                            "odd": "1.11",
-                            "linha": "13.5",
-                            "coluna": "Menos"
                         }
                     ],
                     "selecoesParciais": [
@@ -1097,25 +957,25 @@
                         },
                         {
                             "selecao": "Mais de 9.5",
-                            "odd": "1.60",
+                            "odd": "1.62",
                             "linha": "9.5",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 9.5",
-                            "odd": "2.04",
+                            "odd": "2.00",
                             "linha": "9.5",
                             "coluna": "Menos"
                         },
                         {
                             "selecao": "Mais de 10",
-                            "odd": "1.78",
+                            "odd": "1.80",
                             "linha": "10",
                             "coluna": "Mais de"
                         },
                         {
                             "selecao": "Menos 10",
-                            "odd": "1.82",
+                            "odd": "1.80",
                             "linha": "10",
                             "coluna": "Menos"
                         },
@@ -1178,63 +1038,11 @@
                             "odd": "1.22",
                             "linha": "12.5",
                             "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 13.5",
-                            "odd": "4.60",
-                            "linha": "13.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 13.5",
-                            "odd": "1.11",
-                            "linha": "13.5",
-                            "coluna": "Menos"
                         }
                     ],
                     "oddsSemNome": [],
                     "associacaoCompleta": true,
-                    "conteudo": "Total de Cantos\n\nMais de\nMenos\n8\n1.22\n3.35\n8.5\n1.35\n2.65\n9\n1.42\n2.45\n9.5\n1.60\n2.04\n10\n1.78\n1.82\n10.5\n2.00\n1.62\n11\n2.35\n1.45\n11.5\n2.55\n1.38\n12\n3.15\n1.25\n12.5\n3.35\n1.22\n13.5\n4.60\n1.11"
-                },
-                {
-                    "mercado": "Resultado de Cantos",
-                    "quantidadeOdds": 3,
-                    "odds": [
-                        "1.32",
-                        "7.90",
-                        "4.30"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "1.32"
-                        },
-                        {
-                            "selecao": "X",
-                            "odd": "7.90"
-                        },
-                        {
-                            "selecao": "Schalke 04",
-                            "odd": "4.30"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "1.32"
-                        },
-                        {
-                            "selecao": "X",
-                            "odd": "7.90"
-                        },
-                        {
-                            "selecao": "Schalke 04",
-                            "odd": "4.30"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Resultado de Cantos\n\nTSG 1899 Hoffenheim\nX\nSchalke 04\n1.32\n7.90\n4.30"
+                    "conteudo": "Total de Cantos\n\nMais de\nMenos\n8\n1.22\n3.35\n8.5\n1.35\n2.65\n9\n1.42\n2.45\n9.5\n1.62\n2.00\n10\n1.80\n1.80\n10.5\n2.00\n1.62\n11\n2.35\n1.45\n11.5\n2.55\n1.38\n12\n3.15\n1.25\n12.5\n3.35\n1.22"
                 }
             ]
         },
@@ -1244,1432 +1052,84 @@
             "quantidadeMercados": 2,
             "mercados": [
                 {
-                    "mercado": "Cartões: Resultado de pontos",
+                    "mercado": "Resultado de Cartões Amarelo",
                     "quantidadeOdds": 3,
                     "odds": [
-                        "2.66",
-                        "3.72",
-                        "2.15"
+                        "2.30",
+                        "4.35",
+                        "2.08"
                     ],
                     "selecoes": [
                         {
                             "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "2.66"
+                            "odd": "2.30"
                         },
                         {
                             "selecao": "X",
-                            "odd": "3.72"
+                            "odd": "4.35"
                         },
                         {
                             "selecao": "Schalke 04",
-                            "odd": "2.15"
+                            "odd": "2.08"
                         }
                     ],
                     "selecoesParciais": [
                         {
                             "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "2.66"
+                            "odd": "2.30"
                         },
                         {
                             "selecao": "X",
-                            "odd": "3.72"
+                            "odd": "4.35"
                         },
                         {
                             "selecao": "Schalke 04",
-                            "odd": "2.15"
+                            "odd": "2.08"
                         }
                     ],
                     "oddsSemNome": [],
                     "associacaoCompleta": true,
-                    "conteudo": "Cartões: Resultado de pontos\n\nTSG 1899 Hoffenheim\nX\nSchalke 04\n2.66\n3.72\n2.15"
+                    "conteudo": "Resultado de Cartões Amarelo\n\nTSG 1899 Hoffenheim\nX\nSchalke 04\n2.30\n4.35\n2.08"
                 },
                 {
-                    "mercado": "Total de Pontos de Cartões",
-                    "quantidadeOdds": 24,
-                    "odds": [
-                        "1.02",
-                        "10.00",
-                        "1.10",
-                        "5.85",
-                        "1.30",
-                        "3.20",
-                        "1.38",
-                        "2.80",
-                        "1.67",
-                        "2.07",
-                        "2.04",
-                        "1.69",
-                        "2.39",
-                        "1.51",
-                        "3.40",
-                        "1.27",
-                        "3.30",
-                        "1.28",
-                        "4.90",
-                        "1.14",
-                        "7.10",
-                        "1.065",
-                        "9.30",
-                        "1.027"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "Mais de 0.5",
-                            "odd": "1.02",
-                            "linha": "0.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 0.5",
-                            "odd": "10.00",
-                            "linha": "0.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 1.5",
-                            "odd": "1.10",
-                            "linha": "1.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 1.5",
-                            "odd": "5.85",
-                            "linha": "1.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 2.5",
-                            "odd": "1.30",
-                            "linha": "2.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 2.5",
-                            "odd": "3.20",
-                            "linha": "2.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 3",
-                            "odd": "1.38",
-                            "linha": "3",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 3",
-                            "odd": "2.80",
-                            "linha": "3",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 3.5",
-                            "odd": "1.67",
-                            "linha": "3.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 3.5",
-                            "odd": "2.07",
-                            "linha": "3.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 4",
-                            "odd": "2.04",
-                            "linha": "4",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 4",
-                            "odd": "1.69",
-                            "linha": "4",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 4.5",
-                            "odd": "2.39",
-                            "linha": "4.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 4.5",
-                            "odd": "1.51",
-                            "linha": "4.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 5",
-                            "odd": "3.40",
-                            "linha": "5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 5",
-                            "odd": "1.27",
-                            "linha": "5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 5.5",
-                            "odd": "3.30",
-                            "linha": "5.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 5.5",
-                            "odd": "1.28",
-                            "linha": "5.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 6.5",
-                            "odd": "4.90",
-                            "linha": "6.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 6.5",
-                            "odd": "1.14",
-                            "linha": "6.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 7.5",
-                            "odd": "7.10",
-                            "linha": "7.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 7.5",
-                            "odd": "1.065",
-                            "linha": "7.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 8.5",
-                            "odd": "9.30",
-                            "linha": "8.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 8.5",
-                            "odd": "1.027",
-                            "linha": "8.5",
-                            "coluna": "Menos de"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "Mais de 0.5",
-                            "odd": "1.02",
-                            "linha": "0.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 0.5",
-                            "odd": "10.00",
-                            "linha": "0.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 1.5",
-                            "odd": "1.10",
-                            "linha": "1.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 1.5",
-                            "odd": "5.85",
-                            "linha": "1.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 2.5",
-                            "odd": "1.30",
-                            "linha": "2.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 2.5",
-                            "odd": "3.20",
-                            "linha": "2.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 3",
-                            "odd": "1.38",
-                            "linha": "3",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 3",
-                            "odd": "2.80",
-                            "linha": "3",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 3.5",
-                            "odd": "1.67",
-                            "linha": "3.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 3.5",
-                            "odd": "2.07",
-                            "linha": "3.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 4",
-                            "odd": "2.04",
-                            "linha": "4",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 4",
-                            "odd": "1.69",
-                            "linha": "4",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 4.5",
-                            "odd": "2.39",
-                            "linha": "4.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 4.5",
-                            "odd": "1.51",
-                            "linha": "4.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 5",
-                            "odd": "3.40",
-                            "linha": "5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 5",
-                            "odd": "1.27",
-                            "linha": "5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 5.5",
-                            "odd": "3.30",
-                            "linha": "5.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 5.5",
-                            "odd": "1.28",
-                            "linha": "5.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 6.5",
-                            "odd": "4.90",
-                            "linha": "6.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 6.5",
-                            "odd": "1.14",
-                            "linha": "6.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 7.5",
-                            "odd": "7.10",
-                            "linha": "7.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 7.5",
-                            "odd": "1.065",
-                            "linha": "7.5",
-                            "coluna": "Menos de"
-                        },
-                        {
-                            "selecao": "Mais de 8.5",
-                            "odd": "9.30",
-                            "linha": "8.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 8.5",
-                            "odd": "1.027",
-                            "linha": "8.5",
-                            "coluna": "Menos de"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de Pontos de Cartões\n\nMais de\nMenos de\n0.5\n1.02\n10.00\n1.5\n1.10\n5.85\n2.5\n1.30\n3.20\n3\n1.38\n2.80\n3.5\n1.67\n2.07\n4\n2.04\n1.69\n4.5\n2.39\n1.51\n5\n3.40\n1.27\n5.5\n3.30\n1.28\n6.5\n4.90\n1.14\n7.5\n7.10\n1.065\n8.5\n9.30\n1.027"
-                }
-            ]
-        },
-        {
-            "categoria": "Remates à baliza",
-            "categoriaId": "168",
-            "quantidadeMercados": 3,
-            "mercados": [
-                {
-                    "mercado": "Total de remates à baliza\n\nNOVO",
-                    "quantidadeOdds": 5,
-                    "odds": [
-                        "1.41",
-                        "1.69",
-                        "2.11",
-                        "2.75",
-                        "3.80"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "9+",
-                            "odd": "1.41"
-                        },
-                        {
-                            "selecao": "10+",
-                            "odd": "1.69"
-                        },
-                        {
-                            "selecao": "11+",
-                            "odd": "2.11"
-                        },
-                        {
-                            "selecao": "12+",
-                            "odd": "2.75"
-                        },
-                        {
-                            "selecao": "13+",
-                            "odd": "3.80"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "9+",
-                            "odd": "1.41"
-                        },
-                        {
-                            "selecao": "10+",
-                            "odd": "1.69"
-                        },
-                        {
-                            "selecao": "11+",
-                            "odd": "2.11"
-                        },
-                        {
-                            "selecao": "12+",
-                            "odd": "2.75"
-                        },
-                        {
-                            "selecao": "13+",
-                            "odd": "3.80"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de remates à baliza\n\nNOVO\n9+\n1.41\n10+\n1.69\n11+\n2.11\n12+\n2.75\n13+\n3.80"
-                },
-                {
-                    "mercado": "Total de remates à baliza de TSG 1899 Hoffenheim\n\nNOVO",
-                    "quantidadeOdds": 5,
-                    "odds": [
-                        "1.25",
-                        "1.48",
-                        "1.88",
-                        "2.55",
-                        "3.70"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "5+",
-                            "odd": "1.25"
-                        },
-                        {
-                            "selecao": "6+",
-                            "odd": "1.48"
-                        },
-                        {
-                            "selecao": "7+",
-                            "odd": "1.88"
-                        },
-                        {
-                            "selecao": "8+",
-                            "odd": "2.55"
-                        },
-                        {
-                            "selecao": "9+",
-                            "odd": "3.70"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "5+",
-                            "odd": "1.25"
-                        },
-                        {
-                            "selecao": "6+",
-                            "odd": "1.48"
-                        },
-                        {
-                            "selecao": "7+",
-                            "odd": "1.88"
-                        },
-                        {
-                            "selecao": "8+",
-                            "odd": "2.55"
-                        },
-                        {
-                            "selecao": "9+",
-                            "odd": "3.70"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de remates à baliza de TSG 1899 Hoffenheim\n\nNOVO\n5+\n1.25\n6+\n1.48\n7+\n1.88\n8+\n2.55\n9+\n3.70"
-                },
-                {
-                    "mercado": "Total de remates à baliza de Schalke 04\n\nNOVO",
-                    "quantidadeOdds": 5,
-                    "odds": [
-                        "1.43",
-                        "2.03",
-                        "3.25",
-                        "5.70",
-                        "11.00"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "3+",
-                            "odd": "1.43"
-                        },
-                        {
-                            "selecao": "4+",
-                            "odd": "2.03"
-                        },
-                        {
-                            "selecao": "5+",
-                            "odd": "3.25"
-                        },
-                        {
-                            "selecao": "6+",
-                            "odd": "5.70"
-                        },
-                        {
-                            "selecao": "7+",
-                            "odd": "11.00"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "3+",
-                            "odd": "1.43"
-                        },
-                        {
-                            "selecao": "4+",
-                            "odd": "2.03"
-                        },
-                        {
-                            "selecao": "5+",
-                            "odd": "3.25"
-                        },
-                        {
-                            "selecao": "6+",
-                            "odd": "5.70"
-                        },
-                        {
-                            "selecao": "7+",
-                            "odd": "11.00"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de remates à baliza de Schalke 04\n\nNOVO\n3+\n1.43\n4+\n2.03\n5+\n3.25\n6+\n5.70\n7+\n11.00"
-                }
-            ]
-        },
-        {
-            "categoria": "Remates",
-            "categoriaId": "186",
-            "quantidadeMercados": 3,
-            "mercados": [
-                {
-                    "mercado": "Total de remates\n\nNOVO",
-                    "quantidadeOdds": 7,
-                    "odds": [
-                        "1.52",
-                        "1.68",
-                        "1.89",
-                        "2.16",
-                        "2.50",
-                        "2.95",
-                        "3.50"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "27+",
-                            "odd": "1.52"
-                        },
-                        {
-                            "selecao": "28+",
-                            "odd": "1.68"
-                        },
-                        {
-                            "selecao": "29+",
-                            "odd": "1.89"
-                        },
-                        {
-                            "selecao": "30+",
-                            "odd": "2.16"
-                        },
-                        {
-                            "selecao": "31+",
-                            "odd": "2.50"
-                        },
-                        {
-                            "selecao": "32+",
-                            "odd": "2.95"
-                        },
-                        {
-                            "selecao": "33+",
-                            "odd": "3.50"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "27+",
-                            "odd": "1.52"
-                        },
-                        {
-                            "selecao": "28+",
-                            "odd": "1.68"
-                        },
-                        {
-                            "selecao": "29+",
-                            "odd": "1.89"
-                        },
-                        {
-                            "selecao": "30+",
-                            "odd": "2.16"
-                        },
-                        {
-                            "selecao": "31+",
-                            "odd": "2.50"
-                        },
-                        {
-                            "selecao": "32+",
-                            "odd": "2.95"
-                        },
-                        {
-                            "selecao": "33+",
-                            "odd": "3.50"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de remates\n\nNOVO\n27+\n1.52\n28+\n1.68\n29+\n1.89\n30+\n2.16\n31+\n2.50\n32+\n2.95\n33+\n3.50"
-                },
-                {
-                    "mercado": "Total de remates de TSG 1899 Hoffenheim\n\nNOVO",
-                    "quantidadeOdds": 6,
-                    "odds": [
-                        "1.44",
-                        "1.60",
-                        "1.81",
-                        "2.07",
-                        "2.42",
-                        "2.85"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "16+",
-                            "odd": "1.44"
-                        },
-                        {
-                            "selecao": "17+",
-                            "odd": "1.60"
-                        },
-                        {
-                            "selecao": "18+",
-                            "odd": "1.81"
-                        },
-                        {
-                            "selecao": "19+",
-                            "odd": "2.07"
-                        },
-                        {
-                            "selecao": "20+",
-                            "odd": "2.42"
-                        },
-                        {
-                            "selecao": "21+",
-                            "odd": "2.85"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "16+",
-                            "odd": "1.44"
-                        },
-                        {
-                            "selecao": "17+",
-                            "odd": "1.60"
-                        },
-                        {
-                            "selecao": "18+",
-                            "odd": "1.81"
-                        },
-                        {
-                            "selecao": "19+",
-                            "odd": "2.07"
-                        },
-                        {
-                            "selecao": "20+",
-                            "odd": "2.42"
-                        },
-                        {
-                            "selecao": "21+",
-                            "odd": "2.85"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de remates de TSG 1899 Hoffenheim\n\nNOVO\n16+\n1.44\n17+\n1.60\n18+\n1.81\n19+\n2.07\n20+\n2.42\n21+\n2.85"
-                },
-                {
-                    "mercado": "Total de remates de Schalke 04\n\nNOVO",
-                    "quantidadeOdds": 6,
-                    "odds": [
-                        "1.40",
-                        "1.62",
-                        "1.94",
-                        "2.41",
-                        "3.10",
-                        "4.10"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "9+",
-                            "odd": "1.40"
-                        },
-                        {
-                            "selecao": "10+",
-                            "odd": "1.62"
-                        },
-                        {
-                            "selecao": "11+",
-                            "odd": "1.94"
-                        },
-                        {
-                            "selecao": "12+",
-                            "odd": "2.41"
-                        },
-                        {
-                            "selecao": "13+",
-                            "odd": "3.10"
-                        },
-                        {
-                            "selecao": "14+",
-                            "odd": "4.10"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "9+",
-                            "odd": "1.40"
-                        },
-                        {
-                            "selecao": "10+",
-                            "odd": "1.62"
-                        },
-                        {
-                            "selecao": "11+",
-                            "odd": "1.94"
-                        },
-                        {
-                            "selecao": "12+",
-                            "odd": "2.41"
-                        },
-                        {
-                            "selecao": "13+",
-                            "odd": "3.10"
-                        },
-                        {
-                            "selecao": "14+",
-                            "odd": "4.10"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de remates de Schalke 04\n\nNOVO\n9+\n1.40\n10+\n1.62\n11+\n1.94\n12+\n2.41\n13+\n3.10\n14+\n4.10"
-                }
-            ]
-        },
-        {
-            "categoria": "Foras de jogo",
-            "categoriaId": "133",
-            "quantidadeMercados": 3,
-            "mercados": [
-                {
-                    "mercado": "Total de foras de jogo\n\nNOVO",
-                    "quantidadeOdds": 5,
-                    "odds": [
-                        "1.39",
-                        "1.77",
-                        "2.43",
-                        "3.60",
-                        "5.60"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "4+",
-                            "odd": "1.39"
-                        },
-                        {
-                            "selecao": "5+",
-                            "odd": "1.77"
-                        },
-                        {
-                            "selecao": "6+",
-                            "odd": "2.43"
-                        },
-                        {
-                            "selecao": "7+",
-                            "odd": "3.60"
-                        },
-                        {
-                            "selecao": "8+",
-                            "odd": "5.60"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "4+",
-                            "odd": "1.39"
-                        },
-                        {
-                            "selecao": "5+",
-                            "odd": "1.77"
-                        },
-                        {
-                            "selecao": "6+",
-                            "odd": "2.43"
-                        },
-                        {
-                            "selecao": "7+",
-                            "odd": "3.60"
-                        },
-                        {
-                            "selecao": "8+",
-                            "odd": "5.60"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de foras de jogo\n\nNOVO\n4+\n1.39\n5+\n1.77\n6+\n2.43\n7+\n3.60\n8+\n5.60"
-                },
-                {
-                    "mercado": "Total de foras de jogo de TSG 1899 Hoffenheim\n\nNOVO",
-                    "quantidadeOdds": 5,
-                    "odds": [
-                        "1.24",
-                        "1.61",
-                        "2.32",
-                        "3.65",
-                        "6.20"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "2+",
-                            "odd": "1.24"
-                        },
-                        {
-                            "selecao": "3+",
-                            "odd": "1.61"
-                        },
-                        {
-                            "selecao": "4+",
-                            "odd": "2.32"
-                        },
-                        {
-                            "selecao": "5+",
-                            "odd": "3.65"
-                        },
-                        {
-                            "selecao": "6+",
-                            "odd": "6.20"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "2+",
-                            "odd": "1.24"
-                        },
-                        {
-                            "selecao": "3+",
-                            "odd": "1.61"
-                        },
-                        {
-                            "selecao": "4+",
-                            "odd": "2.32"
-                        },
-                        {
-                            "selecao": "5+",
-                            "odd": "3.65"
-                        },
-                        {
-                            "selecao": "6+",
-                            "odd": "6.20"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de foras de jogo de TSG 1899 Hoffenheim\n\nNOVO\n2+\n1.24\n3+\n1.61\n4+\n2.32\n5+\n3.65\n6+\n6.20"
-                },
-                {
-                    "mercado": "Total de foras de jogo de Schalke 04\n\nNOVO",
-                    "quantidadeOdds": 5,
-                    "odds": [
-                        "1.20",
-                        "1.77",
-                        "3.15",
-                        "6.40",
-                        "13.00"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "1+",
-                            "odd": "1.20"
-                        },
-                        {
-                            "selecao": "2+",
-                            "odd": "1.77"
-                        },
-                        {
-                            "selecao": "3+",
-                            "odd": "3.15"
-                        },
-                        {
-                            "selecao": "4+",
-                            "odd": "6.40"
-                        },
-                        {
-                            "selecao": "5+",
-                            "odd": "13.00"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "1+",
-                            "odd": "1.20"
-                        },
-                        {
-                            "selecao": "2+",
-                            "odd": "1.77"
-                        },
-                        {
-                            "selecao": "3+",
-                            "odd": "3.15"
-                        },
-                        {
-                            "selecao": "4+",
-                            "odd": "6.40"
-                        },
-                        {
-                            "selecao": "5+",
-                            "odd": "13.00"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de foras de jogo de Schalke 04\n\nNOVO\n1+\n1.20\n2+\n1.77\n3+\n3.15\n4+\n6.40\n5+\n13.00"
-                }
-            ]
-        },
-        {
-            "categoria": "Faltas",
-            "categoriaId": "134",
-            "quantidadeMercados": 5,
-            "mercados": [
-                {
-                    "mercado": "Pelo menos um penálti no jogo",
-                    "quantidadeOdds": 2,
-                    "odds": [
-                        "3.05",
-                        "1.33"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "Sim",
-                            "odd": "3.05"
-                        },
-                        {
-                            "selecao": "Não",
-                            "odd": "1.33"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "Sim",
-                            "odd": "3.05"
-                        },
-                        {
-                            "selecao": "Não",
-                            "odd": "1.33"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Pelo menos um penálti no jogo\n\nSim\nNão\n3.05\n1.33"
-                },
-                {
-                    "mercado": "Penálti assinalado a favor de TSG 1899 Hoffenheim",
-                    "quantidadeOdds": 1,
-                    "odds": [
-                        "4.30"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "Sim",
-                            "odd": "4.30"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "Sim",
-                            "odd": "4.30"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Penálti assinalado a favor de TSG 1899 Hoffenheim\n\nSim\n4.30"
-                },
-                {
-                    "mercado": "Penálti assinalado a favor de Schalke 04",
-                    "quantidadeOdds": 1,
-                    "odds": [
-                        "5.90"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "Sim",
-                            "odd": "5.90"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "Sim",
-                            "odd": "5.90"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Penálti assinalado a favor de Schalke 04\n\nSim\n5.90"
-                },
-                {
-                    "mercado": "Ambas as equipas receberão um penálti",
-                    "quantidadeOdds": 1,
-                    "odds": [
-                        "21.00"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "Sim",
-                            "odd": "21.00"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "Sim",
-                            "odd": "21.00"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Ambas as equipas receberão um penálti\n\nSim\n21.00"
-                },
-                {
-                    "mercado": "Dois penáltis no jogo",
-                    "quantidadeOdds": 1,
-                    "odds": [
-                        "4.85"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "Sim",
-                            "odd": "4.85"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "Sim",
-                            "odd": "4.85"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Dois penáltis no jogo\n\nSim\n4.85"
-                }
-            ]
-        },
-        {
-            "categoria": "Lançamentos Lateral",
-            "categoriaId": "176",
-            "quantidadeMercados": 3,
-            "mercados": [
-                {
-                    "mercado": "Total de lançamentos laterais\n\nNOVO",
+                    "mercado": "Dupla Chance de Cartões Amarelo",
                     "quantidadeOdds": 3,
                     "odds": [
-                        "1.48",
                         "1.57",
-                        "1.68"
+                        "1.20",
+                        "1.47"
                     ],
                     "selecoes": [
                         {
-                            "selecao": "48+",
-                            "odd": "1.48"
-                        },
-                        {
-                            "selecao": "49+",
+                            "selecao": "1X",
                             "odd": "1.57"
                         },
                         {
-                            "selecao": "50+",
-                            "odd": "1.68"
+                            "selecao": "12",
+                            "odd": "1.20"
+                        },
+                        {
+                            "selecao": "X2",
+                            "odd": "1.47"
                         }
                     ],
                     "selecoesParciais": [
                         {
-                            "selecao": "48+",
-                            "odd": "1.48"
-                        },
-                        {
-                            "selecao": "49+",
+                            "selecao": "1X",
                             "odd": "1.57"
                         },
                         {
-                            "selecao": "50+",
-                            "odd": "1.68"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de lançamentos laterais\n\nNOVO\n48+\n1.48\n49+\n1.57\n50+\n1.68"
-                },
-                {
-                    "mercado": "Total de lançamentos laterais de TSG 1899 Hoffenheim\n\nNOVO",
-                    "quantidadeOdds": 3,
-                    "odds": [
-                        "1.71",
-                        "1.90",
-                        "2.14"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "28+",
-                            "odd": "1.71"
+                            "selecao": "12",
+                            "odd": "1.20"
                         },
                         {
-                            "selecao": "29+",
-                            "odd": "1.90"
-                        },
-                        {
-                            "selecao": "30+",
-                            "odd": "2.14"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "28+",
-                            "odd": "1.71"
-                        },
-                        {
-                            "selecao": "29+",
-                            "odd": "1.90"
-                        },
-                        {
-                            "selecao": "30+",
-                            "odd": "2.14"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de lançamentos laterais de TSG 1899 Hoffenheim\n\nNOVO\n28+\n1.71\n29+\n1.90\n30+\n2.14"
-                },
-                {
-                    "mercado": "Total de lançamentos laterais de Schalke 04\n\nNOVO",
-                    "quantidadeOdds": 3,
-                    "odds": [
-                        "1.84",
-                        "2.11",
-                        "2.46"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "23+",
-                            "odd": "1.84"
-                        },
-                        {
-                            "selecao": "24+",
-                            "odd": "2.11"
-                        },
-                        {
-                            "selecao": "25+",
-                            "odd": "2.46"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "23+",
-                            "odd": "1.84"
-                        },
-                        {
-                            "selecao": "24+",
-                            "odd": "2.11"
-                        },
-                        {
-                            "selecao": "25+",
-                            "odd": "2.46"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de lançamentos laterais de Schalke 04\n\nNOVO\n23+\n1.84\n24+\n2.11\n25+\n2.46"
-                }
-            ]
-        },
-        {
-            "categoria": "Passes",
-            "categoriaId": "541",
-            "quantidadeMercados": 4,
-            "mercados": [
-                {
-                    "mercado": "Total de passes de TSG 1899 Hoffenheim\n\nNOVO",
-                    "quantidadeOdds": 4,
-                    "odds": [
-                        "1.25",
-                        "1.54",
-                        "2.10",
-                        "3.15"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "450+",
-                            "odd": "1.25"
-                        },
-                        {
-                            "selecao": "500+",
-                            "odd": "1.54"
-                        },
-                        {
-                            "selecao": "550+",
-                            "odd": "2.10"
-                        },
-                        {
-                            "selecao": "600+",
-                            "odd": "3.15"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "450+",
-                            "odd": "1.25"
-                        },
-                        {
-                            "selecao": "500+",
-                            "odd": "1.54"
-                        },
-                        {
-                            "selecao": "550+",
-                            "odd": "2.10"
-                        },
-                        {
-                            "selecao": "600+",
-                            "odd": "3.15"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de passes de TSG 1899 Hoffenheim\n\nNOVO\n450+\n1.25\n500+\n1.54\n550+\n2.10\n600+\n3.15"
-                },
-                {
-                    "mercado": "Total de passes de Schalke 04\n\nNOVO",
-                    "quantidadeOdds": 3,
-                    "odds": [
-                        "1.25",
-                        "1.90",
-                        "3.60"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "250+",
-                            "odd": "1.25"
-                        },
-                        {
-                            "selecao": "300+",
-                            "odd": "1.90"
-                        },
-                        {
-                            "selecao": "350+",
-                            "odd": "3.60"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "250+",
-                            "odd": "1.25"
-                        },
-                        {
-                            "selecao": "300+",
-                            "odd": "1.90"
-                        },
-                        {
-                            "selecao": "350+",
-                            "odd": "3.60"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de passes de Schalke 04\n\nNOVO\n250+\n1.25\n300+\n1.90\n350+\n3.60"
-                },
-                {
-                    "mercado": "Total de passes tentados de TSG 1899 Hoffenheim\n\nNOVO",
-                    "quantidadeOdds": 4,
-                    "odds": [
-                        "1.22",
-                        "1.47",
-                        "2.01",
-                        "3.10"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "550+",
-                            "odd": "1.22"
-                        },
-                        {
-                            "selecao": "600+",
+                            "selecao": "X2",
                             "odd": "1.47"
-                        },
-                        {
-                            "selecao": "650+",
-                            "odd": "2.01"
-                        },
-                        {
-                            "selecao": "700+",
-                            "odd": "3.10"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "550+",
-                            "odd": "1.22"
-                        },
-                        {
-                            "selecao": "600+",
-                            "odd": "1.47"
-                        },
-                        {
-                            "selecao": "650+",
-                            "odd": "2.01"
-                        },
-                        {
-                            "selecao": "700+",
-                            "odd": "3.10"
                         }
                     ],
                     "oddsSemNome": [],
                     "associacaoCompleta": true,
-                    "conteudo": "Total de passes tentados de TSG 1899 Hoffenheim\n\nNOVO\n550+\n1.22\n600+\n1.47\n650+\n2.01\n700+\n3.10"
-                },
-                {
-                    "mercado": "Total de passes tentados de Schalke 04\n\nNOVO",
-                    "quantidadeOdds": 3,
-                    "odds": [
-                        "1.25",
-                        "1.82",
-                        "3.35"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "350+",
-                            "odd": "1.25"
-                        },
-                        {
-                            "selecao": "400+",
-                            "odd": "1.82"
-                        },
-                        {
-                            "selecao": "450+",
-                            "odd": "3.35"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "350+",
-                            "odd": "1.25"
-                        },
-                        {
-                            "selecao": "400+",
-                            "odd": "1.82"
-                        },
-                        {
-                            "selecao": "450+",
-                            "odd": "3.35"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de passes tentados de Schalke 04\n\nNOVO\n350+\n1.25\n400+\n1.82\n450+\n3.35"
-                }
-            ]
-        },
-        {
-            "categoria": "Outro",
-            "categoriaId": "336",
-            "quantidadeMercados": 1,
-            "mercados": [
-                {
-                    "mercado": "Total de intervenções do VAR (apenas revisão no campo ou sinal de revisão)",
-                    "quantidadeOdds": 2,
-                    "odds": [
-                        "2.37",
-                        "1.52"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "Mais de 0.5",
-                            "odd": "2.37",
-                            "linha": "0.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 0.5",
-                            "odd": "1.52",
-                            "linha": "0.5",
-                            "coluna": "Menos de"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "Mais de 0.5",
-                            "odd": "2.37",
-                            "linha": "0.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos de 0.5",
-                            "odd": "1.52",
-                            "linha": "0.5",
-                            "coluna": "Menos de"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de intervenções do VAR (apenas revisão no campo ou sinal de revisão)\n\nMais de\nMenos de\n0.5\n2.37\n1.52"
+                    "conteudo": "Dupla Chance de Cartões Amarelo\n\n1X\n12\nX2\n1.57\n1.20\n1.47"
                 }
             ]
         }
