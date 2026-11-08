@@ -50,6 +50,21 @@ export default async function handler(req, res) {
   ]);
 
   const [matchStats, events, lineups, h2h, standings, homeTeam, awayTeam] = requests;
+  const table = standings.available && Array.isArray(standings.data.data) ? standings.data.data : [];
+  const homeStanding = table.find(row => Number(row.team?.id) === homeId) || null;
+  const awayStanding = table.find(row => Number(row.team?.id) === awayId) || null;
+  const teamSummary = result => {
+    if (!result.available) return null;
+    const team = result.data.team || result.data;
+    const recent = Array.isArray(result.data.matches)
+      ? result.data.matches.filter(match => /^(FT|AET|PENS)$/i.test(String(match.status || ""))).slice(-8)
+      : [];
+    return {
+      id: team.id || null, name: team.name || team.full_name || null,
+      coach: team.coach_name || null, stadium: team.stadium_name || null,
+      recentResults: recent
+    };
+  };
   const stats = {
     source: "SportAPI",
     collectedAt: new Date().toISOString(),
@@ -68,12 +83,13 @@ export default async function handler(req, res) {
     standings: standings.available ? {
       league: standings.data.league || null,
       season: standings.data.season || null,
-      table: standings.data.data || []
+      home: homeStanding ? { ...homeStanding, form: (homeStanding.form || []).slice(-6) } : null,
+      away: awayStanding ? { ...awayStanding, form: (awayStanding.form || []).slice(-6) } : null
     } : null,
-    headToHead: h2h.available ? h2h.data.data || [] : null,
-    homeTeam: homeTeam.available ? homeTeam.data.team || homeTeam.data : null,
-    awayTeam: awayTeam.available ? awayTeam.data.team || awayTeam.data : null,
-    events: events.available ? events.data.data || [] : null,
+    headToHead: h2h.available ? (h2h.data.data || []).slice(-10) : null,
+    homeTeam: teamSummary(homeTeam),
+    awayTeam: teamSummary(awayTeam),
+    events: events.available ? (events.data.data || []).slice(-40) : null,
     lineups: lineups.available ? lineups.data.data || null : null,
     absences: {
       available: false,
