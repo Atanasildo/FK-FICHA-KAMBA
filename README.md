@@ -71,6 +71,12 @@ O pedido deve conter jogos reais em `fixtures`, cada um com `id`, `home`, `away`
 
 O endpoint não recolhe odds por si só. Para contexto desportivo, `GET /api/fixture-context?fixtureId=<id>` consulta detalhes, estatísticas, eventos, escalações, H2H, classificação e forma das equipas na SportAPI; cada secção indica se os dados estão disponíveis. Lesões/ausências não são inventadas porque a documentação consultada não apresenta esse endpoint. `POST /api/pipeline/save-analysis` guarda estatísticas, análises e odds verificadas no Supabase, protegido por `CRON_SECRET` e usando a chave secreta apenas no servidor. Esta rota não publica bilhetes nem cria referências de reserva. A execução diária continua desligada até a recolha das duas casas e a primeira execução completa serem validadas.
 
+## Descoberta automática e pipeline
+
+A rota protegida `POST /api/pipeline/discover-fixtures` consulta a SportAPI e guarda os jogos futuros na tabela `matches` do Supabase. Envia `Authorization: Bearer <CRON_SECRET>`; o corpo pode conter `{"days":2}` (entre 1 e 7 dias, no fuso `Africa/Luanda`). A chave da SportAPI e a chave de serviço do Supabase permanecem no servidor. A origem é guardada como `SportAPI`, igual à rota de persistência de análises, para impedir duplicação do mesmo jogo por diferenças de maiúsculas/minúsculas.
+
+Esta rota apenas descobre e guarda jogos. Não recolhe odds, não chama a Groq e não publica fichas. A recolha das casas continua a depender de URLs reais dos eventos e de acesso permitido às páginas; não são construídos URLs a partir do ID da SportAPI nem contornados bloqueios.
+
 ## Fonte de jogos: SportAPI
 
 O endpoint `GET /api/football-data?date=YYYY-MM-DD` consulta os jogos do dia no fuso `Africa/Luanda`, usando `SPORTAPI_KEY` no servidor.
