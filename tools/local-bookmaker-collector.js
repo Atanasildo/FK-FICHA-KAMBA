@@ -42,7 +42,7 @@ function findBrowser() {
 }
 
 function safeName(value) {
-  return String(value).normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+  return String(value).normalize("NFD").replace(/\\p{Diacritic}/gu, "")
     .replace(/[^a-z0-9_-]+/gi, "-").replace(/^-|-$/g, "").slice(0, 70);
 }
 
@@ -92,7 +92,7 @@ try {
       ["ElephantBet", event.elephantbetUrl]
     ]) {
       const page = await context.newPage();
-      console.log(`\\nA abrir ${bookmaker}: ${event.home} — ${event.away}`);
+      console.log(`\nA abrir ${bookmaker}: ${event.home} — ${event.away}`);
       try {
         const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
         let snapshot = await page.evaluate(() => ({
@@ -118,7 +118,7 @@ try {
 
         await page.evaluate(() => { delete window.__FK_COLLECTOR_RESULT__; });
         await page.addScriptTag({ path: collectors[bookmaker] });
-        await page.waitForFunction(() => Boolean(window.__FK_COLLECTOR_RESULT__), { timeout: 180000 });
+        await page.waitForFunction(() => Boolean(window.__FK_COLLECTOR_RESULT__), null, { timeout: 180000 });
         const payload = await page.evaluate(() => window.__FK_COLLECTOR_RESULT__);
         const eventMeta = {
           id: String(event.id), home: event.home, away: event.away,
@@ -168,7 +168,7 @@ try {
   report.fixtureCollections = allFixtures.length;
   report.outputDirectory = "data/collections";
   await writeFile(path.join(OUTPUT, "latest-run.json"), JSON.stringify({ report, comparison: report.comparison }, null, 2));
-  console.log("\\nRecolha concluída.");
+  console.log("\nRecolha concluída.");
   console.log(JSON.stringify({
     jogos: report.events.length,
     recolhas: report.fixtureCollections,
