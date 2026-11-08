@@ -1,4 +1,4 @@
-import { normalizeElephantBetPayload } from "./elephantbet.js";
+import { normalizeElephantBetPayload } from "../../lib/bookmakers/elephantbet.js";
 
 function isText(value) {
   return typeof value === "string" && value.trim().length > 0;
