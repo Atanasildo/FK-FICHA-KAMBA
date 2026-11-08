@@ -60,13 +60,13 @@ test("normaliza jogador e combinações como pares descrição/odd", () => {
   ]);
 });
 
-test("remove duplicados entre Tudo e categoria específica", () => {
+test("ignora a categoria Tudo e conserva as categorias específicas", () => {
   const result = normalizeBookmakerMarkets([
     { categoria: "Tudo", mercados: [{ mercado: "Resultado do Jogo", conteudo: "Resultado do Jogo\n\nCasa\nEmpate\nFora\n2.1\n3.2\n3.4" }] },
     { categoria: "Jogo", mercados: [{ mercado: "Resultado do Jogo", conteudo: "Resultado do Jogo\n\nCasa\nEmpate\nFora\n2.1\n3.2\n3.4" }] }
   ]);
   assert.equal(result.length, 1);
-  assert.deepEqual(result[0].categories, ["Tudo", "Jogo"]);
+  assert.deepEqual(result[0].categories, ["Jogo"]);
   assert.equal(result[0].category, "Jogo");
 });
 

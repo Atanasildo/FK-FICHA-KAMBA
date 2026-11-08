@@ -90,6 +90,9 @@ export default async function handler(req, res) {
     away: event.away.trim(),
     competition: isText(event.competition) ? event.competition.trim() : null,
     kickoff: isText(event.kickoff) ? event.kickoff.trim() : null,
+    bookmaker: "BantuBet",
+    sourceUrl: isText(payload.urlPagina) ? payload.urlPagina : null,
+    collectedAt: isText(payload.recolhidoEm) ? payload.recolhidoEm : null,
     markets
   };
 

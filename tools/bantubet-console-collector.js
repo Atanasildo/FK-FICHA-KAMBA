@@ -15,14 +15,17 @@
   const ESPERA = 1500;
   const aguardar = ms => new Promise(resolve => setTimeout(resolve, ms));
   const abas = [...document.querySelectorAll(".horizontal-sl-tab-bc")]
-    .filter(el => el.getAttribute("data-id") !== "-2");
+    .filter(el =>
+      el.getAttribute("data-id") !== "-2" &&
+      !/^tudo$/i.test(el.innerText.trim())
+    );
   const abaOriginal = document.querySelector(".horizontal-sl-tab-bc.active");
   const categoriaOriginal = abaOriginal?.getAttribute("data-id");
   const urlPagina = location.href;
   const recolhidoEm = new Date().toISOString();
   const resultado = [];
-  // Categorias de jogadores não entram nas fichas FK:
-  // são ignoradas na recolha para evitar odds sem associação.
+  // A categoria "Tudo" agrega os mercados das restantes categorias e é ignorada.
+  // Categorias de jogadores também ficam fora do âmbito FK.
   const CATEGORIAS_EXCLUIDAS = /jogadores|players/i;
   const MERCADOS_EXCLUIDOS = /jogadores|players/i;
 
