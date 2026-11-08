@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Activity, CalendarDays, ChevronDown, ChevronRight, Clock3, FileText, History, LayoutDashboard, Radio, RefreshCw, Settings, ShieldCheck, Ticket, Trophy, Download, Bell, Menu, X, BarChart3, FileJson, AlertTriangle, CheckCircle2, ArrowUpDown, ExternalLink } from 'lucide-react';
 import { prepareOddsComparison } from '../lib/bookmakers/prepare-comparison.js';
+import { isSupabaseConfigured, supabase } from './lib/supabase.js';
 
 const NAV = [['Bilhetes do dia', LayoutDashboard], ['Comparar Odds', BarChart3], ['Acompanhamento ao vivo', Activity], ['Histórico', History], ['Definições', Settings]];
 const STORE = 'fk-ficha-kamba-v1';
@@ -98,6 +99,62 @@ function OddsComparePage() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [filter, setFilter] = useState('');
+  const [session, setSession] = useState(null);
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [authBusy, setAuthBusy] = useState(false);
+  const [authMessage, setAuthMessage] = useState('');
+  const [saveBusy, setSaveBusy] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
+
+  useEffect(() => {
+    if (!supabase) return undefined;
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => setSession(nextSession));
+    return () => data.subscription.unsubscribe();
+  }, []);
+
+  const requestCode = async () => {
+    if (!supabase || !email.trim()) return;
+    setAuthBusy(true); setAuthMessage('');
+    const { error } = await supabase.auth.signInWithOtp({ email: email.trim(), options: { shouldCreateUser: true } });
+    setAuthBusy(false);
+    if (error) setAuthMessage(error.message);
+    else { setOtpSent(true); setAuthMessage('Enviámos um código/link de acesso para o teu email.'); }
+  };
+
+  const confirmCode = async () => {
+    if (!supabase || !email.trim() || !otp.trim()) return;
+    setAuthBusy(true); setAuthMessage('');
+    const { error } = await supabase.auth.verifyOtp({ email: email.trim(), token: otp.trim(), type: 'email' });
+    setAuthBusy(false);
+    setAuthMessage(error ? error.message : 'Sessão iniciada com sucesso.');
+  };
+
+  const signOut = async () => {
+    if (supabase) await supabase.auth.signOut();
+    setSession(null);
+    setSaveMessage('');
+  };
+
+  const saveComparison = async () => {
+    const accessToken = session?.access_token;
+    if (!accessToken || !prepared) return;
+    setSaveBusy(true); setSaveMessage('');
+    try {
+      const response = await fetch('/api/bookmakers/save-comparison', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+        body: JSON.stringify({ fixtures: prepared.fixtures, comparison: prepared.result })
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || 'Não foi possível guardar a comparação.');
+      setSaveMessage(`Guardado na base de dados: ${payload.insertedMarkets} odds registadas.`);
+    } catch (error) {
+      setSaveMessage(error.message || 'Falha ao guardar na base de dados.');
+    } finally { setSaveBusy(false); }
+  };
 
   const updateEvent = (key, value) => {
     setEvent(current => ({ ...current, [key]: value }));
@@ -186,6 +243,17 @@ function OddsComparePage() {
     </div>
 
     <section className="panel odds-step">
+      <div className="odds-section-title"><span>BD</span><div><h3>Sincronização com a base de dados</h3><p>Entra com o teu email para guardar as recolhas e consultar o histórico em qualquer dispositivo.</p></div></div>
+      {!isSupabaseConfigured ? <div className="odds-error">A ligação ao Supabase ainda não está configurada nesta versão.</div> : session ? <div className="setting-row"><div><b>Sessão activa</b><small>{session.user?.email}</small></div><button className="secondary-btn" onClick={signOut}>Terminar sessão</button></div> : <div className="odds-auth-row">
+        <label className="field">Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="teuemail@exemplo.com"/></label>
+        {otpSent && <label className="field">Código recebido<input value={otp} onChange={e => setOtp(e.target.value)} placeholder="Código de 6 dígitos"/></label>}
+        {!otpSent ? <button className="primary-btn" onClick={requestCode} disabled={authBusy || !email.trim()}>{authBusy ? 'A enviar...' : 'Enviar código'}</button> : <button className="primary-btn" onClick={confirmCode} disabled={authBusy || !otp.trim()}>{authBusy ? 'A confirmar...' : 'Confirmar código'}</button>}
+      </div>}
+      {authMessage && <p className="muted-copy">{authMessage}</p>}
+      {saveMessage && <div className="notice"><ShieldCheck size={16}/>{saveMessage}</div>}
+    </section>
+
+    <section className="panel odds-step">
       <div className="odds-section-title"><span>01</span><div><h3>Identificação do jogo</h3><p>Preenche os nomes como aparecem nas duas casas de apostas.</p></div></div>
       <div className="odds-event-grid">
         <label className="field">Equipa da casa *<input value={event.home} onChange={e => updateEvent('home', e.target.value)} placeholder="Ex.: Twente"/></label>
@@ -224,7 +292,7 @@ function OddsComparePage() {
         <div><small>BANTUBET</small><b>{prepared.diagnostics[0].selectionCount}</b><span>selecções válidas · {prepared.diagnostics[0].excludedMarketCount} mercados excluídos</span></div>
         <div><small>ELEPHANTBET</small><b>{prepared.diagnostics[1].selectionCount}</b><span>selecções válidas · {prepared.diagnostics[1].excludedMarketCount} mercados excluídos</span></div>
       </section>
-      <div className="odds-result-heading"><div><div className="eyebrow"><span className="status-dot"/> RESULTADO DA ANÁLISE</div><h2>{event.home} <span>vs</span> {event.away}</h2><p>{event.competition || 'Competição não indicada'} · {prepared.result.note}</p></div><button className="secondary-btn" onClick={exportCsv} disabled={!allComparisons.length}><Download size={15}/> Exportar CSV</button></div>
+      <div className="odds-result-heading"><div><div className="eyebrow"><span className="status-dot"/> RESULTADO DA ANÁLISE</div><h2>{event.home} <span>vs</span> {event.away}</h2><p>{event.competition || 'Competição não indicada'} · {prepared.result.note}</p></div><div className="odds-actions"><button className="secondary-btn" onClick={exportCsv} disabled={!allComparisons.length}><Download size={15}/> Exportar CSV</button><button className="primary-btn" onClick={saveComparison} disabled={!session || saveBusy || !allComparisons.length}><ShieldCheck size={15}/>{saveBusy ? 'A guardar...' : 'Guardar na base de dados'}</button></div></div>
       {!allComparisons.length ? <div className="empty-state"><div className="empty-state-icon"><BarChart3 size={22}/></div><b>Não foram encontradas selecções comparáveis</b><span>Confirma se os dois ficheiros correspondem ao mesmo jogo e se têm mercados equivalentes. O sistema não compara mercados apenas parecidos.</span></div> : <>
         <div className="toolbar odds-filter"><div className="searchbox"><BarChart3 size={16}/><input value={filter} onChange={e => setFilter(e.target.value)} placeholder="Filtrar por mercado, selecção ou casa..."/></div><span>{visibleComparisons.length} de {allComparisons.length} resultados</span></div>
         <div className="odds-results-list">{visibleComparisons.map((item, index) => <article className="odds-result-card" key={item.market + item.selection + item.period + index}>
