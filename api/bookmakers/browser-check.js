@@ -11,30 +11,41 @@ function send(res, status, body) {
 }
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
+  // GET is deliberately restricted to protected Preview deployments so the
+  // Vercel-authenticated preview can be diagnosed without exposing a public
+  // browser-launch endpoint in Production. Production/cron remains POST-only.
+  const previewDiagnostic = req.method === "GET" && process.env.VERCEL_ENV === "preview";
+  const cronRun = req.method === "POST";
+  if (!previewDiagnostic && !cronRun) {
+    res.setHeader("Allow", "GET, POST");
     return send(res, 405, { error: "Method not allowed" });
   }
 
-  const secret = process.env.CRON_SECRET;
-  const supplied = (req.headers.authorization || "").replace(/^Bearer\\s+/i, "");
-  if (!secret || supplied !== secret) {
-    return send(res, 401, { error: "Unauthorized" });
+  if (cronRun) {
+    const secret = process.env.CRON_SECRET;
+    const supplied = (req.headers.authorization || "").replace(/^Bearer\\s+/i, "");
+    if (!secret || supplied !== secret) {
+      return send(res, 401, { error: "Unauthorized" });
+    }
   }
 
-  if (!process.env.BROWSERBASE_API_KEY) {
-    return send(res, 503, { error: "BROWSERBASE_API_KEY não configurada" });
+  if (!process.env.BROWSERBASE_API_KEY || !process.env.BROWSERBASE_PROJECT_ID) {
+    return send(res, 503, {
+      error: "Configuração Browserbase incompleta",
+      missing: [
+        ...(!process.env.BROWSERBASE_API_KEY ? ["BROWSERBASE_API_KEY"] : []),
+        ...(!process.env.BROWSERBASE_PROJECT_ID ? ["BROWSERBASE_PROJECT_ID"] : []),
+      ],
+    });
   }
 
   let browser;
   let sessionId;
   try {
     const browserbase = new Browserbase({ apiKey: process.env.BROWSERBASE_API_KEY });
-    const session = await browserbase.sessions.create(
-      process.env.BROWSERBASE_PROJECT_ID
-        ? { projectId: process.env.BROWSERBASE_PROJECT_ID }
-        : {},
-    );
+    const session = await browserbase.sessions.create({
+      projectId: process.env.BROWSERBASE_PROJECT_ID,
+    });
     sessionId = session.id;
     browser = await chromium.connectOverCDP(session.connectUrl);
 
@@ -47,7 +58,7 @@ export default async function handler(req, res) {
           waitUntil: "domcontentloaded",
           timeout: 60000,
         });
-        await page.waitForTimeout(5000);
+        await page.waitForTimeout(7000);
         const data = await page.evaluate(() => ({
           title: document.title,
           url: location.href,
