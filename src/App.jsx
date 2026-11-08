@@ -162,7 +162,7 @@ function OddsComparePage() {
         ]);
       }
     }
-    const csv = rows.map(row => row.map(value => { const cell = String(value ?? ''); const safe = /^[=+\\-@\\t\\r]/.test(cell) ? "'" + cell : cell; return '"' + safe.replace(/"/g, '""') + '"'; }).join(';')).join('\\n');
+    const csv = rows.map(row => row.map(value => { const cell = String(value ?? ''); const first = cell.charAt(0); const safe = ['=', '+', '-', '@'].includes(first) || first === String.fromCharCode(9) || first === String.fromCharCode(13) ? "'" + cell : cell; return '"' + safe.replace(/"/g, '""') + '"'; }).join(';')).join('\n');
     const url = URL.createObjectURL(new Blob(['\\uFEFF' + csv], { type: 'text/csv;charset=utf-8' }));
     const anchor = document.createElement('a');
     anchor.href = url;
