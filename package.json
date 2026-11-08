@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "node --test api/bookmakers/*.test.js && vite build",
+    "build": "node --test && vite build",
     "preview": "vite preview",
-    "test": "node --test api/bookmakers/*.test.js"
+    "test": "node --test"
   },
   "dependencies": {
     "react": "^18.3.1",
