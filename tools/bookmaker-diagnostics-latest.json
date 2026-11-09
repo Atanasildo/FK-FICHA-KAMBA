@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T04:56:13.936Z",
+  "generatedAt": "2026-11-09T05:04:33.635Z",
   "note": "Diagnóstico local DOM e XHR/fetch; URLs sem query string e campos sensíveis redigidos.",
   "files": [
     "data/collections/bantubet-diagnostics.json",
@@ -17,8 +17,8 @@
     {
       "bookmaker": "ElephantBet",
       "status": "scanned",
-      "pageTitle": "Ofertas de Desportos | Elephant Bet Angola",
-      "finalUrl": "https://www.elephantbet.co.ao/pt/sports/home",
+      "pageTitle": "Melhores Odds Manchester City vs Fulham | Elephant Bet",
+      "finalUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
       "links": 45,
       "matches": 0
     }
