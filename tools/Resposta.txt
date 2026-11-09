@@ -1,1137 +1,2653 @@
 {
-    "bookmaker": "ElephantBet",
-    "urlPagina": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/Germany/541-bundesliga/31343301-tsg-1899-hoffenheim-schalke-04",
-    "recolhidoEm": "2026-11-08T18:32:26.242Z",
-    "categoriasLidas": 7,
-    "totalMercados": 12,
-    "totalOdds": 94,
-    "mercadosComAssociacaoCompleta": 11,
-    "categorias": [
-        {
-            "categoria": "Jogo",
-            "categoriaId": "8",
-            "quantidadeMercados": 2,
-            "mercados": [
-                {
-                    "mercado": "Resultado do Jogo",
-                    "quantidadeOdds": 3,
-                    "odds": [
-                        "1.58",
-                        "4.15",
-                        "4.90"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "1.58"
-                        },
-                        {
-                            "selecao": "Empate",
-                            "odd": "4.15"
-                        },
-                        {
-                            "selecao": "Schalke 04",
-                            "odd": "4.90"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "1.58"
-                        },
-                        {
-                            "selecao": "Empate",
-                            "odd": "4.15"
-                        },
-                        {
-                            "selecao": "Schalke 04",
-                            "odd": "4.90"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Resultado do Jogo\n\nTSG 1899 Hoffenheim\nEmpate\nSchalke 04\n1.58\n4.15\n4.90"
-                },
-                {
-                    "mercado": "Dupla Chance",
-                    "quantidadeOdds": 3,
-                    "odds": [
-                        "1.15",
-                        "1.20",
-                        "2.18"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "1X",
-                            "odd": "1.15"
-                        },
-                        {
-                            "selecao": "12",
-                            "odd": "1.20"
-                        },
-                        {
-                            "selecao": "X2",
-                            "odd": "2.18"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "1X",
-                            "odd": "1.15"
-                        },
-                        {
-                            "selecao": "12",
-                            "odd": "1.20"
-                        },
-                        {
-                            "selecao": "X2",
-                            "odd": "2.18"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Dupla Chance\n\n1X\n12\nX2\n1.15\n1.20\n2.18"
-                }
-            ]
-        },
-        {
-            "categoria": "Totais",
-            "categoriaId": "129",
-            "quantidadeMercados": 1,
-            "mercados": [
-                {
-                    "mercado": "Total de golos no jogo",
-                    "quantidadeOdds": 20,
-                    "odds": [
-                        "1.01",
-                        "8.00",
-                        "1.13",
-                        "4.30",
-                        "1.18",
-                        "3.70",
-                        "1.47",
-                        "2.30",
-                        "1.72",
-                        "1.87",
-                        "2.12",
-                        "1.55",
-                        "3.05",
-                        "1.27",
-                        "3.35",
-                        "1.22",
-                        "5.20",
-                        "1.08",
-                        "7.30",
-                        "1.02"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "Mais de 0.5",
-                            "odd": "1.01",
-                            "linha": "0.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 0.5",
-                            "odd": "8.00",
-                            "linha": "0.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 1.5",
-                            "odd": "1.13",
-                            "linha": "1.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 1.5",
-                            "odd": "4.30",
-                            "linha": "1.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 2",
-                            "odd": "1.18",
-                            "linha": "2",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 2",
-                            "odd": "3.70",
-                            "linha": "2",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 2.5",
-                            "odd": "1.47",
-                            "linha": "2.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 2.5",
-                            "odd": "2.30",
-                            "linha": "2.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 3",
-                            "odd": "1.72",
-                            "linha": "3",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 3",
-                            "odd": "1.87",
-                            "linha": "3",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 3.5",
-                            "odd": "2.12",
-                            "linha": "3.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 3.5",
-                            "odd": "1.55",
-                            "linha": "3.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 4",
-                            "odd": "3.05",
-                            "linha": "4",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 4",
-                            "odd": "1.27",
-                            "linha": "4",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 4.5",
-                            "odd": "3.35",
-                            "linha": "4.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 4.5",
-                            "odd": "1.22",
-                            "linha": "4.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 5",
-                            "odd": "5.20",
-                            "linha": "5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 5",
-                            "odd": "1.08",
-                            "linha": "5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 6",
-                            "odd": "7.30",
-                            "linha": "6",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 6",
-                            "odd": "1.02",
-                            "linha": "6",
-                            "coluna": "Menos"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "Mais de 0.5",
-                            "odd": "1.01",
-                            "linha": "0.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 0.5",
-                            "odd": "8.00",
-                            "linha": "0.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 1.5",
-                            "odd": "1.13",
-                            "linha": "1.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 1.5",
-                            "odd": "4.30",
-                            "linha": "1.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 2",
-                            "odd": "1.18",
-                            "linha": "2",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 2",
-                            "odd": "3.70",
-                            "linha": "2",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 2.5",
-                            "odd": "1.47",
-                            "linha": "2.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 2.5",
-                            "odd": "2.30",
-                            "linha": "2.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 3",
-                            "odd": "1.72",
-                            "linha": "3",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 3",
-                            "odd": "1.87",
-                            "linha": "3",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 3.5",
-                            "odd": "2.12",
-                            "linha": "3.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 3.5",
-                            "odd": "1.55",
-                            "linha": "3.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 4",
-                            "odd": "3.05",
-                            "linha": "4",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 4",
-                            "odd": "1.27",
-                            "linha": "4",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 4.5",
-                            "odd": "3.35",
-                            "linha": "4.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 4.5",
-                            "odd": "1.22",
-                            "linha": "4.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 5",
-                            "odd": "5.20",
-                            "linha": "5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 5",
-                            "odd": "1.08",
-                            "linha": "5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 6",
-                            "odd": "7.30",
-                            "linha": "6",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 6",
-                            "odd": "1.02",
-                            "linha": "6",
-                            "coluna": "Menos"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de golos no jogo\n\nMais de\nMenos\n0.5\n1.01\n8.00\n1.5\n1.13\n4.30\n2\n1.18\n3.70\n2.5\n1.47\n2.30\n3\n1.72\n1.87\n3.5\n2.12\n1.55\n4\n3.05\n1.27\n4.5\n3.35\n1.22\n5\n5.20\n1.08\n6\n7.30\n1.02"
-                }
-            ]
-        },
-        {
-            "categoria": "Handicaps",
-            "categoriaId": "128",
-            "quantidadeMercados": 1,
-            "mercados": [
-                {
-                    "mercado": "Handicap de Golos (3-opções)",
-                    "quantidadeOdds": 12,
-                    "odds": [
-                        "6.20",
-                        "7.20",
-                        "1.18",
-                        "3.70",
-                        "5.10",
-                        "1.47",
-                        "2.30",
-                        "4.00",
-                        "2.18",
-                        "1.15",
-                        "6.80",
-                        "6.80"
-                    ],
-                    "selecoes": [],
-                    "selecoesParciais": [],
-                    "oddsSemNome": [
-                        "6.20",
-                        "7.20",
-                        "1.18",
-                        "3.70",
-                        "5.10",
-                        "1.47",
-                        "2.30",
-                        "4.00",
-                        "2.18",
-                        "1.15",
-                        "6.80",
-                        "6.80"
-                    ],
-                    "associacaoCompleta": false,
-                    "conteudo": "Handicap de Golos (3-opções)\n\nTSG 1899 Hoffenheim\nEmpate Schalke 04\nSchalke 04\n-3\n6.20\n+3\n7.20\n+3\n1.18\n-2\n3.70\n+2\n5.10\n+2\n1.47\n-1\n2.30\n+1\n4.00\n+1\n2.18\n+1\n1.15\n-1\n6.80\n-1\n6.80"
-                }
-            ]
-        },
-        {
-            "categoria": "Partes",
-            "categoriaId": "130",
-            "quantidadeMercados": 2,
-            "mercados": [
-                {
-                    "mercado": "Resultado da 1º Parte",
-                    "quantidadeOdds": 3,
-                    "odds": [
-                        "1.87",
-                        "2.50",
-                        "4.30"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "1.87"
-                        },
-                        {
-                            "selecao": "Empate",
-                            "odd": "2.50"
-                        },
-                        {
-                            "selecao": "Schalke 04",
-                            "odd": "4.30"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "1.87"
-                        },
-                        {
-                            "selecao": "Empate",
-                            "odd": "2.50"
-                        },
-                        {
-                            "selecao": "Schalke 04",
-                            "odd": "4.30"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Resultado da 1º Parte\n\nTSG 1899 Hoffenheim\nEmpate\nSchalke 04\n1.87\n2.50\n4.30"
-                },
-                {
-                    "mercado": "Dupla Chance da 1º parte",
-                    "quantidadeOdds": 3,
-                    "odds": [
-                        "1.13",
-                        "1.45",
-                        "1.72"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "1X",
-                            "odd": "1.13"
-                        },
-                        {
-                            "selecao": "12",
-                            "odd": "1.45"
-                        },
-                        {
-                            "selecao": "X2",
-                            "odd": "1.72"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "1X",
-                            "odd": "1.13"
-                        },
-                        {
-                            "selecao": "12",
-                            "odd": "1.45"
-                        },
-                        {
-                            "selecao": "X2",
-                            "odd": "1.72"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Dupla Chance da 1º parte\n\n1X\n12\nX2\n1.13\n1.45\n1.72"
-                }
-            ]
-        },
-        {
-            "categoria": "Combos",
-            "categoriaId": "305",
-            "quantidadeMercados": 3,
-            "mercados": [
-                {
-                    "mercado": "Resultado Final e Ambas Equipas Marcam",
-                    "quantidadeOdds": 6,
-                    "odds": [
-                        "2.80",
-                        "8.00",
-                        "2.75",
-                        "7.50",
-                        "4.75",
-                        "6.40"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "TSG 1899 Hoffenheim e sim",
-                            "odd": "2.80"
-                        },
-                        {
-                            "selecao": "Empate e Não",
-                            "odd": "8.00"
-                        },
-                        {
-                            "selecao": "TSG 1899 Hoffenheim e não",
-                            "odd": "2.75"
-                        },
-                        {
-                            "selecao": "Schalke 04 e Sim",
-                            "odd": "7.50"
-                        },
-                        {
-                            "selecao": "Empate e sim",
-                            "odd": "4.75"
-                        },
-                        {
-                            "selecao": "Schalke 04 e não",
-                            "odd": "6.40"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "TSG 1899 Hoffenheim e sim",
-                            "odd": "2.80"
-                        },
-                        {
-                            "selecao": "Empate e Não",
-                            "odd": "8.00"
-                        },
-                        {
-                            "selecao": "TSG 1899 Hoffenheim e não",
-                            "odd": "2.75"
-                        },
-                        {
-                            "selecao": "Schalke 04 e Sim",
-                            "odd": "7.50"
-                        },
-                        {
-                            "selecao": "Empate e sim",
-                            "odd": "4.75"
-                        },
-                        {
-                            "selecao": "Schalke 04 e não",
-                            "odd": "6.40"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Resultado Final e Ambas Equipas Marcam\n\nTSG 1899 Hoffenheim e sim\n2.80\nEmpate e Não\n8.00\nTSG 1899 Hoffenheim e não\n2.75\nSchalke 04 e Sim\n7.50\nEmpate e sim\n4.75\nSchalke 04 e não\n6.40"
-                },
-                {
-                    "mercado": "Dupla Chance e Ambas equipas marcarão",
-                    "quantidadeOdds": 6,
-                    "odds": [
-                        "1.88",
-                        "2.37",
-                        "2.55",
-                        "3.10",
-                        "2.15",
-                        "5.20"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "1X e (Ambos vão marcar - Sim)",
-                            "odd": "1.88"
-                        },
-                        {
-                            "selecao": "12 e (Ambos vão marcar - Não)",
-                            "odd": "2.37"
-                        },
-                        {
-                            "selecao": "1X e (Ambos vão marcar - Não)",
-                            "odd": "2.55"
-                        },
-                        {
-                            "selecao": "X2 e (Ambos vão marcar - Sim)",
-                            "odd": "3.10"
-                        },
-                        {
-                            "selecao": "12 e (Ambos vão marcar - Sim)",
-                            "odd": "2.15"
-                        },
-                        {
-                            "selecao": "X2 e (Ambos vão marcar - Não)",
-                            "odd": "5.20"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "1X e (Ambos vão marcar - Sim)",
-                            "odd": "1.88"
-                        },
-                        {
-                            "selecao": "12 e (Ambos vão marcar - Não)",
-                            "odd": "2.37"
-                        },
-                        {
-                            "selecao": "1X e (Ambos vão marcar - Não)",
-                            "odd": "2.55"
-                        },
-                        {
-                            "selecao": "X2 e (Ambos vão marcar - Sim)",
-                            "odd": "3.10"
-                        },
-                        {
-                            "selecao": "12 e (Ambos vão marcar - Sim)",
-                            "odd": "2.15"
-                        },
-                        {
-                            "selecao": "X2 e (Ambos vão marcar - Não)",
-                            "odd": "5.20"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Dupla Chance e Ambas equipas marcarão\n\n1X e (Ambos vão marcar - Sim)\n1.88\n12 e (Ambos vão marcar - Não)\n2.37\n1X e (Ambos vão marcar - Não)\n2.55\nX2 e (Ambos vão marcar - Sim)\n3.10\n12 e (Ambos vão marcar - Sim)\n2.15\nX2 e (Ambos vão marcar - Não)\n5.20"
-                },
-                {
-                    "mercado": "Resultado do Jogo e Total de Golos 1.5",
-                    "quantidadeOdds": 12,
-                    "odds": [
-                        "1.75",
-                        "8.00",
-                        "4.75",
-                        "8.00",
-                        "5.70",
-                        "14.00",
-                        "1.35",
-                        "6.00",
-                        "1.42",
-                        "5.00",
-                        "2.75",
-                        "8.70"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "TSG 1899 Hoffenheim e mais de 1.5",
-                            "odd": "1.75"
-                        },
-                        {
-                            "selecao": "TSG 1899 Hoffenheim e menos de 1.5",
-                            "odd": "8.00"
-                        },
-                        {
-                            "selecao": "Empate e mais de 1.5",
-                            "odd": "4.75"
-                        },
-                        {
-                            "selecao": "Empate e menos de 1.5",
-                            "odd": "8.00"
-                        },
-                        {
-                            "selecao": "Schalke 04 e mais de 1.5",
-                            "odd": "5.70"
-                        },
-                        {
-                            "selecao": "Schalke 04 e menos de1.5",
-                            "odd": "14.00"
-                        },
-                        {
-                            "selecao": "1X e mais de 1.5",
-                            "odd": "1.35"
-                        },
-                        {
-                            "selecao": "1X e menos de 1.5",
-                            "odd": "6.00"
-                        },
-                        {
-                            "selecao": "12 e mais de 1.5",
-                            "odd": "1.42"
-                        },
-                        {
-                            "selecao": "12 e menos de 1.5",
-                            "odd": "5.00"
-                        },
-                        {
-                            "selecao": "X2 e mais de 1.5",
-                            "odd": "2.75"
-                        },
-                        {
-                            "selecao": "X2 e menos de 1.5",
-                            "odd": "8.70"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "TSG 1899 Hoffenheim e mais de 1.5",
-                            "odd": "1.75"
-                        },
-                        {
-                            "selecao": "TSG 1899 Hoffenheim e menos de 1.5",
-                            "odd": "8.00"
-                        },
-                        {
-                            "selecao": "Empate e mais de 1.5",
-                            "odd": "4.75"
-                        },
-                        {
-                            "selecao": "Empate e menos de 1.5",
-                            "odd": "8.00"
-                        },
-                        {
-                            "selecao": "Schalke 04 e mais de 1.5",
-                            "odd": "5.70"
-                        },
-                        {
-                            "selecao": "Schalke 04 e menos de1.5",
-                            "odd": "14.00"
-                        },
-                        {
-                            "selecao": "1X e mais de 1.5",
-                            "odd": "1.35"
-                        },
-                        {
-                            "selecao": "1X e menos de 1.5",
-                            "odd": "6.00"
-                        },
-                        {
-                            "selecao": "12 e mais de 1.5",
-                            "odd": "1.42"
-                        },
-                        {
-                            "selecao": "12 e menos de 1.5",
-                            "odd": "5.00"
-                        },
-                        {
-                            "selecao": "X2 e mais de 1.5",
-                            "odd": "2.75"
-                        },
-                        {
-                            "selecao": "X2 e menos de 1.5",
-                            "odd": "8.70"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Resultado do Jogo e Total de Golos 1.5\n\nTSG 1899 Hoffenheim e mais de 1.5\n1.75\nTSG 1899 Hoffenheim e menos de 1.5\n8.00\nEmpate e mais de 1.5\n4.75\nEmpate e menos de 1.5\n8.00\nSchalke 04 e mais de 1.5\n5.70\nSchalke 04 e menos de1.5\n14.00\n1X e mais de 1.5\n1.35\n1X e menos de 1.5\n6.00\n12 e mais de 1.5\n1.42\n12 e menos de 1.5\n5.00\nX2 e mais de 1.5\n2.75\nX2 e menos de 1.5\n8.70"
-                }
-            ]
-        },
-        {
-            "categoria": "Cantos",
-            "categoriaId": "131",
-            "quantidadeMercados": 1,
-            "mercados": [
-                {
-                    "mercado": "Total de Cantos",
-                    "quantidadeOdds": 20,
-                    "odds": [
-                        "1.22",
-                        "3.35",
-                        "1.35",
-                        "2.65",
-                        "1.42",
-                        "2.45",
-                        "1.62",
-                        "2.00",
-                        "1.80",
-                        "1.80",
-                        "2.00",
-                        "1.62",
-                        "2.35",
-                        "1.45",
-                        "2.55",
-                        "1.38",
-                        "3.15",
-                        "1.25",
-                        "3.35",
-                        "1.22"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "Mais de 8",
-                            "odd": "1.22",
-                            "linha": "8",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 8",
-                            "odd": "3.35",
-                            "linha": "8",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 8.5",
-                            "odd": "1.35",
-                            "linha": "8.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 8.5",
-                            "odd": "2.65",
-                            "linha": "8.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 9",
-                            "odd": "1.42",
-                            "linha": "9",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 9",
-                            "odd": "2.45",
-                            "linha": "9",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 9.5",
-                            "odd": "1.62",
-                            "linha": "9.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 9.5",
-                            "odd": "2.00",
-                            "linha": "9.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 10",
-                            "odd": "1.80",
-                            "linha": "10",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 10",
-                            "odd": "1.80",
-                            "linha": "10",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 10.5",
-                            "odd": "2.00",
-                            "linha": "10.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 10.5",
-                            "odd": "1.62",
-                            "linha": "10.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 11",
-                            "odd": "2.35",
-                            "linha": "11",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 11",
-                            "odd": "1.45",
-                            "linha": "11",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 11.5",
-                            "odd": "2.55",
-                            "linha": "11.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 11.5",
-                            "odd": "1.38",
-                            "linha": "11.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 12",
-                            "odd": "3.15",
-                            "linha": "12",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 12",
-                            "odd": "1.25",
-                            "linha": "12",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 12.5",
-                            "odd": "3.35",
-                            "linha": "12.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 12.5",
-                            "odd": "1.22",
-                            "linha": "12.5",
-                            "coluna": "Menos"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "Mais de 8",
-                            "odd": "1.22",
-                            "linha": "8",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 8",
-                            "odd": "3.35",
-                            "linha": "8",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 8.5",
-                            "odd": "1.35",
-                            "linha": "8.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 8.5",
-                            "odd": "2.65",
-                            "linha": "8.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 9",
-                            "odd": "1.42",
-                            "linha": "9",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 9",
-                            "odd": "2.45",
-                            "linha": "9",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 9.5",
-                            "odd": "1.62",
-                            "linha": "9.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 9.5",
-                            "odd": "2.00",
-                            "linha": "9.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 10",
-                            "odd": "1.80",
-                            "linha": "10",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 10",
-                            "odd": "1.80",
-                            "linha": "10",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 10.5",
-                            "odd": "2.00",
-                            "linha": "10.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 10.5",
-                            "odd": "1.62",
-                            "linha": "10.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 11",
-                            "odd": "2.35",
-                            "linha": "11",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 11",
-                            "odd": "1.45",
-                            "linha": "11",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 11.5",
-                            "odd": "2.55",
-                            "linha": "11.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 11.5",
-                            "odd": "1.38",
-                            "linha": "11.5",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 12",
-                            "odd": "3.15",
-                            "linha": "12",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 12",
-                            "odd": "1.25",
-                            "linha": "12",
-                            "coluna": "Menos"
-                        },
-                        {
-                            "selecao": "Mais de 12.5",
-                            "odd": "3.35",
-                            "linha": "12.5",
-                            "coluna": "Mais de"
-                        },
-                        {
-                            "selecao": "Menos 12.5",
-                            "odd": "1.22",
-                            "linha": "12.5",
-                            "coluna": "Menos"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Total de Cantos\n\nMais de\nMenos\n8\n1.22\n3.35\n8.5\n1.35\n2.65\n9\n1.42\n2.45\n9.5\n1.62\n2.00\n10\n1.80\n1.80\n10.5\n2.00\n1.62\n11\n2.35\n1.45\n11.5\n2.55\n1.38\n12\n3.15\n1.25\n12.5\n3.35\n1.22"
-                }
-            ]
-        },
-        {
-            "categoria": "Cartões",
-            "categoriaId": "132",
-            "quantidadeMercados": 2,
-            "mercados": [
-                {
-                    "mercado": "Resultado de Cartões Amarelo",
-                    "quantidadeOdds": 3,
-                    "odds": [
-                        "2.30",
-                        "4.35",
-                        "2.08"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "2.30"
-                        },
-                        {
-                            "selecao": "X",
-                            "odd": "4.35"
-                        },
-                        {
-                            "selecao": "Schalke 04",
-                            "odd": "2.08"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "TSG 1899 Hoffenheim",
-                            "odd": "2.30"
-                        },
-                        {
-                            "selecao": "X",
-                            "odd": "4.35"
-                        },
-                        {
-                            "selecao": "Schalke 04",
-                            "odd": "2.08"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Resultado de Cartões Amarelo\n\nTSG 1899 Hoffenheim\nX\nSchalke 04\n2.30\n4.35\n2.08"
-                },
-                {
-                    "mercado": "Dupla Chance de Cartões Amarelo",
-                    "quantidadeOdds": 3,
-                    "odds": [
-                        "1.57",
-                        "1.20",
-                        "1.47"
-                    ],
-                    "selecoes": [
-                        {
-                            "selecao": "1X",
-                            "odd": "1.57"
-                        },
-                        {
-                            "selecao": "12",
-                            "odd": "1.20"
-                        },
-                        {
-                            "selecao": "X2",
-                            "odd": "1.47"
-                        }
-                    ],
-                    "selecoesParciais": [
-                        {
-                            "selecao": "1X",
-                            "odd": "1.57"
-                        },
-                        {
-                            "selecao": "12",
-                            "odd": "1.20"
-                        },
-                        {
-                            "selecao": "X2",
-                            "odd": "1.47"
-                        }
-                    ],
-                    "oddsSemNome": [],
-                    "associacaoCompleta": true,
-                    "conteudo": "Dupla Chance de Cartões Amarelo\n\n1X\n12\nX2\n1.57\n1.20\n1.47"
-                }
-            ]
-        }
-    ]
+  "summary": {
+    "generatedAt": "2026-11-08T19:39:06.436Z",
+    "fixturesFromSportAPI": 213,
+    "fixturesWithBothBookmakers": 0,
+    "fixturesMissingAtLeastOneBookmaker": 213,
+    "bookmakerScans": [
+      {
+        "bookmaker": "BantuBet",
+        "status": "scanned",
+        "pageTitle": "Bantubet Angola | Apostas Desportivas e Casino Online",
+        "finalUrl": "https://m.bantubet.co.ao/pt/sports/home",
+        "links": 10,
+        "matches": 0,
+        "sampleCandidates": [
+          {
+            "url": "https://m.bantubet.co.ao/pt/help/8587/jogo-responsavel",
+            "text": "Jogo Responsável Termos E Condições Política De Privacidade Regulamento De Apostas Regulamento De Casino Regulamento De Poker"
+          },
+          {
+            "url": "https://m.bantubet.co.ao/pt/help/211324/como-apostar-com-seguranca",
+            "text": "Como Apostar Com Segurança"
+          },
+          {
+            "url": "https://m.bantubet.co.ao/pt/help/211342/como-melhorar-as-tuas-apostas",
+            "text": "Como Melhorar As Tuas Apostas"
+          },
+          {
+            "url": "https://m.bantubet.co.ao/pt/help/211348/como-fazer-apostas-sensacionais",
+            "text": "Como Fazer Apostas Sensacionais"
+          },
+          {
+            "url": "https://m.bantubet.co.ao/pt/help/214018/conselhos-de-apostas-para-o-futebol",
+            "text": "Conselhos De Apostas Para O Futebol"
+          },
+          {
+            "url": "https://m.bantubet.co.ao/pt/help/396173/descobrindo-a-confianca-nas-apostas-online",
+            "text": "Descobrindo A Confiança Nas Apostas Online"
+          },
+          {
+            "url": "https://m.bantubet.co.ao/pt/help/396525/desbloqueando-a-emocao-nas-apostas-online",
+            "text": "Desbloqueando A Emoção Nas Apostas Online"
+          },
+          {
+            "url": "https://m.bantubet.co.ao/pt/help/736832/como-jogar-aviator-online-na-bantubet",
+            "text": "Como Jogar Aviator Online Na Bantubet"
+          }
+        ]
+      },
+      {
+        "bookmaker": "ElephantBet",
+        "status": "scanned",
+        "pageTitle": "Ofertas de Desportos | Elephant Bet Angola",
+        "finalUrl": "https://www.elephantbet.co.ao/pt/sports/home",
+        "links": 45,
+        "matches": 0,
+        "sampleCandidates": [
+          {
+            "url": "https://www.elephantbet.co.ao/pt/sports/live/event-view",
+            "text": "Home Ao vivo Desportos Virada Torneios Aviator Crash Casino Casino ao vivo Promoções Academia Jogos do Mês"
+          },
+          {
+            "url": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer?specialSection=popular-matches",
+            "text": "Home Ao vivo Desportos Virada Torneios Aviator Crash Casino Casino ao vivo Promoções Academia Jogos do Mês"
+          },
+          {
+            "url": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view",
+            "text": "Home Ao vivo Desportos Virada Torneios Aviator Crash Casino Casino ao vivo Promoções Academia Jogos do Mês"
+          },
+          {
+            "url": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer?specialSection=multiple-of-the-day",
+            "text": "Home Ao vivo Desportos Virada Torneios Aviator Crash Casino Casino ao vivo Promoções Academia Jogos do Mês"
+          },
+          {
+            "url": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer?specialSection=boosted-bets",
+            "text": "Home Ao vivo Desportos Virada Torneios Aviator Crash Casino Casino ao vivo Promoções Academia Jogos do Mês"
+          },
+          {
+            "url": "https://www.elephantbet.co.ao/pt/casino/game-view/525/virada",
+            "text": "Home Ao vivo Desportos Virada Torneios Aviator Crash Casino Casino ao vivo Promoções Academia Jogos do Mês"
+          },
+          {
+            "url": "https://www.elephantbet.co.ao/pt/casino/game-view/806666/aviator",
+            "text": "Home Ao vivo Desportos Virada Torneios Aviator Crash Casino Casino ao vivo Promoções Academia Jogos do Mês"
+          },
+          {
+            "url": "https://www.elephantbet.co.ao/pt/casino/slots/406/crash-games",
+            "text": "Home Ao vivo Desportos Virada Torneios Aviator Crash Casino Casino ao vivo Promoções Academia Jogos do Mês"
+          }
+        ]
+      }
+    ],
+    "output": "tools/events.local.json"
+  },
+  "fixtures": [
+    {
+      "id": "18635883",
+      "home": "Instituto (Córdoba)",
+      "away": "Newell's Old Boys",
+      "competition": "Argentine Liga Profesional",
+      "kickoff": "2026-11-08T02:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18635879",
+      "home": "Central Córdoba (Santiago del Estero)",
+      "away": "Lanús",
+      "competition": "Argentine Liga Profesional",
+      "kickoff": "2026-11-08T23:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123037",
+      "home": "Macarthur",
+      "away": "Brisbane Roar",
+      "competition": "Australian A-League Men",
+      "kickoff": "2026-11-08T05:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123038",
+      "home": "Adelaide United",
+      "away": "Melbourne Victory",
+      "competition": "Australian A-League Men",
+      "kickoff": "2026-11-08T07:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122928",
+      "home": "Hartberg",
+      "away": "Rheindorf Altach",
+      "competition": "Austrian Bundesliga",
+      "kickoff": "2026-11-08T14:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122929",
+      "home": "WSG Tirol",
+      "away": "Austria Wien",
+      "competition": "Austrian Bundesliga",
+      "kickoff": "2026-11-08T14:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122930",
+      "home": "Sturm Graz",
+      "away": "Red Bull Salzburg",
+      "competition": "Austrian Bundesliga",
+      "kickoff": "2026-11-08T17:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122931",
+      "home": "Club Brugge",
+      "away": "Anderlecht",
+      "competition": "Belgian Pro League",
+      "kickoff": "2026-11-08T13:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122932",
+      "home": "Gent",
+      "away": "Kortrijk",
+      "competition": "Belgian Pro League",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122933",
+      "home": "Union Saint-Gilloise",
+      "away": "Racing Genk",
+      "competition": "Belgian Pro League",
+      "kickoff": "2026-11-08T18:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18639102",
+      "home": "Bolívar",
+      "away": "The Strongest",
+      "competition": "Bolivian División Profesional",
+      "kickoff": "2026-11-08T22:15",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18639103",
+      "home": "Blooming",
+      "away": "Oriente Petrolero",
+      "competition": "Bolivian División Profesional",
+      "kickoff": "2026-11-09T00:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18636903",
+      "home": "Náutico",
+      "away": "CRB",
+      "competition": "Brazilian Serie B",
+      "kickoff": "2026-11-08T01:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18636905",
+      "home": "Ceará",
+      "away": "América Mineiro",
+      "competition": "Brazilian Serie B",
+      "kickoff": "2026-11-08T23:15",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18636906",
+      "home": "Goiás",
+      "away": "Ponte Preta",
+      "competition": "Brazilian Serie B",
+      "kickoff": "2026-11-08T23:15",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637125",
+      "home": "Audax Italiano",
+      "away": "Coquimbo Unido",
+      "competition": "Chilean Primera División",
+      "kickoff": "2026-11-08T16:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637130",
+      "home": "Universidad Católica",
+      "away": "Deportes Limache",
+      "competition": "Chilean Primera División",
+      "kickoff": "2026-11-08T16:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637129",
+      "home": "Unión La Calera",
+      "away": "Huachipato",
+      "competition": "Chilean Primera División",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637132",
+      "home": "Universidad de Concepción",
+      "away": "O'Higgins",
+      "competition": "Chilean Primera División",
+      "kickoff": "2026-11-09T00:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123046",
+      "home": "Beijing Guoan",
+      "away": "Chongqing Tonglianglong",
+      "competition": "Chinese Super League",
+      "kickoff": "2026-11-08T08:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123047",
+      "home": "Dalian Yingbo",
+      "away": "Tianjin Jinmen Tiger",
+      "competition": "Chinese Super League",
+      "kickoff": "2026-11-08T08:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123048",
+      "home": "Qingdao Hainiu",
+      "away": "Shenzhen Peng City",
+      "competition": "Chinese Super League",
+      "kickoff": "2026-11-08T08:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123049",
+      "home": "Shandong Taishan",
+      "away": "Chengdu Rongcheng",
+      "competition": "Chinese Super League",
+      "kickoff": "2026-11-08T08:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123050",
+      "home": "Shanghai Port",
+      "away": "Liaoning Tieren",
+      "competition": "Chinese Super League",
+      "kickoff": "2026-11-08T08:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123051",
+      "home": "Shanghai Shenhua",
+      "away": "Qingdao West Coast",
+      "competition": "Chinese Super League",
+      "kickoff": "2026-11-08T08:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123052",
+      "home": "Yunnan Yukun",
+      "away": "Wuhan Three Towns",
+      "competition": "Chinese Super League",
+      "kickoff": "2026-11-08T08:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123053",
+      "home": "Zhejiang",
+      "away": "Henan",
+      "competition": "Chinese Super League",
+      "kickoff": "2026-11-08T08:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637521",
+      "home": "Águilas Doradas",
+      "away": "Independiente Medellín",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637522",
+      "home": "Atlético Bucaramanga",
+      "away": "Fortaleza CEIF",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637523",
+      "home": "Atlético Nacional",
+      "away": "Once Caldas",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637524",
+      "home": "Cúcuta Deportivo",
+      "away": "Jaguares de Córdoba",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637525",
+      "home": "Deportivo Cali",
+      "away": "Deportes Tolima",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637526",
+      "home": "Deportivo Pasto",
+      "away": "Junior",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637527",
+      "home": "Deportivo Pereira",
+      "away": "América de Cali",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637528",
+      "home": "Internacional de Bogotá",
+      "away": "Independiente Santa Fe",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637529",
+      "home": "Llaneros FC",
+      "away": "Boyacá Chicó FC",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637530",
+      "home": "Millonarios",
+      "away": "Alianza",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637531",
+      "home": "Jaguares de Córdoba",
+      "away": "Atlético Bucaramanga",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-08T22:05",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637517",
+      "home": "Deportes Tolima",
+      "away": "Millonarios",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-09T00:10",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18641983",
+      "home": "AD San Carlos",
+      "away": "Pérez Zeledón",
+      "competition": "Costa Rican Primera División",
+      "kickoff": "2026-11-08T01:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18641984",
+      "home": "Alajuelense",
+      "away": "Sporting San José",
+      "competition": "Costa Rican Primera División",
+      "kickoff": "2026-11-08T03:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18641985",
+      "home": "Cartaginés",
+      "away": "Escorpiones Belén",
+      "competition": "Costa Rican Primera División",
+      "kickoff": "2026-11-08T18:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18641986",
+      "home": "Saprissa",
+      "away": "Puntarenas FC",
+      "competition": "Costa Rican Primera División",
+      "kickoff": "2026-11-08T23:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096656",
+      "home": "Osijek",
+      "away": "Hajduk Split",
+      "competition": "Croatia Prva HNL",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096657",
+      "home": "Varaždin",
+      "away": "Dinamo Zagreb",
+      "competition": "Croatia Prva HNL",
+      "kickoff": "2026-11-08T18:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122935",
+      "home": "Teplice",
+      "away": "Pardubice",
+      "competition": "Czech First League",
+      "kickoff": "2026-11-08T13:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122936",
+      "home": "Jablonec",
+      "away": "Mladá Boleslav",
+      "competition": "Czech First League",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122937",
+      "home": "Slavia Prague",
+      "away": "Artis Brno",
+      "competition": "Czech First League",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122938",
+      "home": "Viktoria Plzeň",
+      "away": "Sparta Prague",
+      "competition": "Czech First League",
+      "kickoff": "2026-11-08T18:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122939",
+      "home": "Copenhagen",
+      "away": "Brøndby",
+      "competition": "Danish Superligaen",
+      "kickoff": "2026-11-08T12:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122940",
+      "home": "AGF",
+      "away": "Horsens",
+      "competition": "Danish Superligaen",
+      "kickoff": "2026-11-08T14:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122941",
+      "home": "Randers",
+      "away": "Nordsjælland",
+      "competition": "Danish Superligaen",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122942",
+      "home": "Midtjylland",
+      "away": "Sønderjyske",
+      "competition": "Danish Superligaen",
+      "kickoff": "2026-11-08T18:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18640938",
+      "home": "Emmen",
+      "away": "MVV Maastricht",
+      "competition": "Dutch Eerste Divisie",
+      "kickoff": "2026-11-08T16:45",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122943",
+      "home": "Heerenveen",
+      "away": "Feyenoord",
+      "competition": "Dutch Eredivisie",
+      "kickoff": "2026-11-08T12:15",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122944",
+      "home": "Twente",
+      "away": "Ajax",
+      "competition": "Dutch Eredivisie",
+      "kickoff": "2026-11-08T14:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122945",
+      "home": "AZ",
+      "away": "Groningen",
+      "competition": "Dutch Eredivisie",
+      "kickoff": "2026-11-08T16:45",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122946",
+      "home": "Cambuur",
+      "away": "PSV",
+      "competition": "Dutch Eredivisie",
+      "kickoff": "2026-11-08T16:45",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18638406",
+      "home": "Macará",
+      "away": "Universidad Católica (Quito)",
+      "competition": "Ecuadorian LigaPro",
+      "kickoff": "2026-11-08T17:15",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18638403",
+      "home": "Deportivo Cuenca",
+      "away": "Orense",
+      "competition": "Ecuadorian LigaPro",
+      "kickoff": "2026-11-08T17:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18638402",
+      "home": "Barcelona",
+      "away": "LDU Quito",
+      "competition": "Ecuadorian LigaPro",
+      "kickoff": "2026-11-08T22:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123001",
+      "home": "Durham Women",
+      "away": "Sunderland Women",
+      "competition": "English WSL 2",
+      "kickoff": "2026-11-08T13:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123002",
+      "home": "Ipswich Town Women",
+      "away": "Bristol City Women",
+      "competition": "English WSL 2",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123003",
+      "home": "Newcastle United Women",
+      "away": "Burnley",
+      "competition": "English WSL 2",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123004",
+      "home": "Southampton Women",
+      "away": "Sheffield United Women",
+      "competition": "English WSL 2",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123005",
+      "home": "Wolverhampton",
+      "away": "Nottingham Forest Women",
+      "competition": "English WSL 2",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123006",
+      "home": "Leicester City Women",
+      "away": "Watford Women",
+      "competition": "English WSL 2",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18295240",
+      "home": "Stafford Rangers",
+      "away": "Grimsby Town",
+      "competition": "FA Cup",
+      "kickoff": "2026-11-08T13:00",
+      "status": "PENS",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18295239",
+      "home": "Cray Wanderers",
+      "away": "Stockport County",
+      "competition": "FA Cup",
+      "kickoff": "2026-11-08T15:15",
+      "status": "AET",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18295242",
+      "home": "Wimborne Town",
+      "away": "Crawley Town",
+      "competition": "FA Cup",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122948",
+      "home": "Gnistan",
+      "away": "VPS",
+      "competition": "Finnish Veikkausliiga",
+      "kickoff": "2026-11-08T14:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122949",
+      "home": "HJK",
+      "away": "Oulu",
+      "competition": "Finnish Veikkausliiga",
+      "kickoff": "2026-11-08T14:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122950",
+      "home": "KuPS Kuopio",
+      "away": "Inter Turku",
+      "competition": "Finnish Veikkausliiga",
+      "kickoff": "2026-11-08T14:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122922",
+      "home": "Rennes",
+      "away": "Lille",
+      "competition": "French Ligue 1",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122923",
+      "home": "Angers SCO",
+      "away": "Nice",
+      "competition": "French Ligue 1",
+      "kickoff": "2026-11-08T17:15",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122924",
+      "home": "Brest",
+      "away": "Olympique Lyonnais",
+      "competition": "French Ligue 1",
+      "kickoff": "2026-11-08T17:15",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122925",
+      "home": "Le Havre",
+      "away": "Lorient",
+      "competition": "French Ligue 1",
+      "kickoff": "2026-11-08T17:15",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122926",
+      "home": "Le Mans",
+      "away": "Monaco",
+      "competition": "French Ligue 1",
+      "kickoff": "2026-11-08T17:15",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122927",
+      "home": "Lens",
+      "away": "Marseille",
+      "competition": "French Ligue 1",
+      "kickoff": "2026-11-08T20:45",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18640004",
+      "home": "Heidenheim",
+      "away": "Hannover 96",
+      "competition": "German 2. Bundesliga",
+      "kickoff": "2026-11-08T13:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18640005",
+      "home": "Magdeburg",
+      "away": "St. Pauli",
+      "competition": "German 2. Bundesliga",
+      "kickoff": "2026-11-08T13:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18640006",
+      "home": "Bochum",
+      "away": "Karlsruher SC",
+      "competition": "German 2. Bundesliga",
+      "kickoff": "2026-11-08T13:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122914",
+      "home": "Köln",
+      "away": "Bayer Leverkusen",
+      "competition": "German Bundesliga",
+      "kickoff": "2026-11-08T15:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122915",
+      "home": "Freiburg",
+      "away": "Union Berlin",
+      "competition": "German Bundesliga",
+      "kickoff": "2026-11-08T17:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122951",
+      "home": "AEK Athens",
+      "away": "Levadiakos",
+      "competition": "Greek Super League",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122952",
+      "home": "Asteras Tripolis",
+      "away": "Kalamata",
+      "competition": "Greek Super League",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122953",
+      "home": "Iraklis 1908",
+      "away": "Panathinaikos",
+      "competition": "Greek Super League",
+      "kickoff": "2026-11-08T16:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122954",
+      "home": "OFI",
+      "away": "Atromitos",
+      "competition": "Greek Super League",
+      "kickoff": "2026-11-08T17:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18642250",
+      "home": "Marquense",
+      "away": "Comunicaciones",
+      "competition": "Guatemalan Liga Nacional",
+      "kickoff": "2026-11-08T03:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18642251",
+      "home": "Cobán Imperial",
+      "away": "Xelajú MC",
+      "competition": "Guatemalan Liga Nacional",
+      "kickoff": "2026-11-08T22:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18641796",
+      "home": "Club Deportivo Olimpia",
+      "away": "Olancho FC",
+      "competition": "Honduran Liga Nacional",
+      "kickoff": "2026-11-08T02:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18641797",
+      "home": "Platense",
+      "away": "Génesis PN",
+      "competition": "Honduran Liga Nacional",
+      "kickoff": "2026-11-08T22:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18641798",
+      "home": "CA Independiente Siguatepeque",
+      "away": "Real España",
+      "competition": "Honduran Liga Nacional",
+      "kickoff": "2026-11-09T00:15",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123012",
+      "home": "Derry City",
+      "away": "Waterford",
+      "competition": "Irish FAI Cup",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122917",
+      "home": "Napoli",
+      "away": "Lazio",
+      "competition": "Italian Serie A",
+      "kickoff": "2026-11-08T12:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122918",
+      "home": "Genoa",
+      "away": "AC Milan",
+      "competition": "Italian Serie A",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122919",
+      "home": "Monza",
+      "away": "Atalanta",
+      "competition": "Italian Serie A",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122920",
+      "home": "Inter Milan",
+      "away": "Como",
+      "competition": "Italian Serie A",
+      "kickoff": "2026-11-08T18:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122921",
+      "home": "Fiorentina",
+      "away": "Juventus",
+      "competition": "Italian Serie A",
+      "kickoff": "2026-11-08T20:45",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18640335",
+      "home": "Virtus Entella",
+      "away": "Modena",
+      "competition": "Italian Serie B",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18640336",
+      "home": "Carrarese",
+      "away": "Sampdoria",
+      "competition": "Italian Serie B",
+      "kickoff": "2026-11-08T17:15",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123075",
+      "home": "Machida Zelvia",
+      "away": "Sanfrecce Hiroshima",
+      "competition": "Japanese J1 League",
+      "kickoff": "2026-11-08T06:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123076",
+      "home": "Vissel Kobe",
+      "away": "Urawa Reds",
+      "competition": "Japanese J1 League",
+      "kickoff": "2026-11-08T06:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123077",
+      "home": "Gamba Osaka",
+      "away": "Cerezo Osaka",
+      "competition": "Japanese J1 League",
+      "kickoff": "2026-11-08T07:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123078",
+      "home": "JEF United",
+      "away": "Mito Hollyhock",
+      "competition": "Japanese J1 League",
+      "kickoff": "2026-11-08T09:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18765062",
+      "home": "Atlético Morelia",
+      "away": "Venados FC",
+      "competition": "Liga de Expansión MX",
+      "kickoff": "2026-11-08T02:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18782147",
+      "home": "Club Atlético La Paz",
+      "away": "Tlaxcala FC",
+      "competition": "Liga de Expansión MX",
+      "kickoff": "2026-11-08T04:05",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096874",
+      "home": "Tigres UANL",
+      "away": "Cruz Azul",
+      "competition": "Liga MX",
+      "kickoff": "2026-11-08T02:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123079",
+      "home": "Toluca",
+      "away": "Monterrey",
+      "competition": "Liga MX",
+      "kickoff": "2026-11-08T02:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123080",
+      "home": "Pumas UNAM",
+      "away": "Club América",
+      "competition": "Liga MX",
+      "kickoff": "2026-11-08T04:10",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123088",
+      "home": "Abia Warriors",
+      "away": "Doma United",
+      "competition": "Nigerian Premier League",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123089",
+      "home": "Barau",
+      "away": "Shooting Stars",
+      "competition": "Nigerian Premier League",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123090",
+      "home": "Bendel Insurance",
+      "away": "Niger Tornadoes",
+      "competition": "Nigerian Premier League",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123091",
+      "home": "Enugu Rangers",
+      "away": "Kwara United",
+      "competition": "Nigerian Premier League",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123094",
+      "home": "Nasarawa United",
+      "away": "Plateau United",
+      "competition": "Nigerian Premier League",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123095",
+      "home": "Ranchers Bees",
+      "away": "Enyimba",
+      "competition": "Nigerian Premier League",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123096",
+      "home": "Warri Wolves",
+      "away": "Katsina United",
+      "competition": "Nigerian Premier League",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122956",
+      "home": "Tromsø",
+      "away": "Bodø / Glimt",
+      "competition": "Norwegian Eliteserien",
+      "kickoff": "2026-11-08T14:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122959",
+      "home": "Sandefjord",
+      "away": "Molde",
+      "competition": "Norwegian Eliteserien",
+      "kickoff": "2026-11-08T17:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122957",
+      "home": "HamKam",
+      "away": "Sarpsborg 08",
+      "competition": "Norwegian Eliteserien",
+      "kickoff": "2026-11-08T17:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122958",
+      "home": "Lillestrøm",
+      "away": "Aalesund",
+      "competition": "Norwegian Eliteserien",
+      "kickoff": "2026-11-08T17:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122960",
+      "home": "Viking",
+      "away": "KFUM",
+      "competition": "Norwegian Eliteserien",
+      "kickoff": "2026-11-08T17:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18638656",
+      "home": "Cerro Porteño",
+      "away": "Deportivo Recoleta",
+      "competition": "Paraguayan Primera División",
+      "kickoff": "2026-11-08T21:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18638661",
+      "home": "Sportivo Trinidense",
+      "away": "Sportivo Ameliano",
+      "competition": "Paraguayan Primera División",
+      "kickoff": "2026-11-08T23:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637827",
+      "home": "Cienciano del Cusco",
+      "away": "Sport Huancayo",
+      "competition": "Peruvian Liga 1",
+      "kickoff": "2026-11-08T02:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637829",
+      "home": "Sport Boys",
+      "away": "UTC",
+      "competition": "Peruvian Liga 1",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637830",
+      "home": "Deportivo Garcilaso",
+      "away": "Comerciantes Unidos",
+      "competition": "Peruvian Liga 1",
+      "kickoff": "2026-11-09T00:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096671",
+      "home": "Jagiellonia Białystok",
+      "away": "GKS Katowice",
+      "competition": "Polish Ekstraklasa",
+      "kickoff": "2026-11-08T14:45",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096674",
+      "home": "Legia Warszawa",
+      "away": "Raków Częstochowa",
+      "competition": "Polish Ekstraklasa",
+      "kickoff": "2026-11-08T17:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096679",
+      "home": "Nacional",
+      "away": "Académico de Viseu",
+      "competition": "Portuguese Primeira Liga",
+      "kickoff": "2026-11-08T16:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122963",
+      "home": "Santa Clara",
+      "away": "Gil Vicente",
+      "competition": "Portuguese Primeira Liga",
+      "kickoff": "2026-11-08T16:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122965",
+      "home": "Estrela",
+      "away": "Benfica",
+      "competition": "Portuguese Primeira Liga",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122966",
+      "home": "Rio Ave",
+      "away": "Sporting Braga",
+      "competition": "Portuguese Primeira Liga",
+      "kickoff": "2026-11-08T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122979",
+      "home": "Brighton & Hove Albion",
+      "away": "Brentford",
+      "competition": "Premier League",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122980",
+      "home": "Crystal Palace",
+      "away": "Liverpool",
+      "competition": "Premier League",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122981",
+      "home": "Ipswich Town",
+      "away": "AFC Bournemouth",
+      "competition": "Premier League",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122982",
+      "home": "Sunderland",
+      "away": "Chelsea",
+      "competition": "Premier League",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122983",
+      "home": "Manchester United",
+      "away": "Aston Villa",
+      "competition": "Premier League",
+      "kickoff": "2026-11-08T17:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18639319",
+      "home": "Krylia Sovetov",
+      "away": "Gazovik Orenburg",
+      "competition": "Russian Premier League",
+      "kickoff": "2026-11-08T12:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18639320",
+      "home": "Spartak Moscow",
+      "away": "Akron Tolyatti",
+      "competition": "Russian Premier League",
+      "kickoff": "2026-11-08T14:15",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18639321",
+      "home": "Zenit St Petersburg",
+      "away": "Rostov",
+      "competition": "Russian Premier League",
+      "kickoff": "2026-11-08T16:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18642520",
+      "home": "Internacional Santa Tecla",
+      "away": "Luis Ángel Firpo",
+      "competition": "Salvadoran Primera División",
+      "kickoff": "2026-11-08T01:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18642521",
+      "home": "Alianza FC",
+      "away": "Águila",
+      "competition": "Salvadoran Primera División",
+      "kickoff": "2026-11-08T03:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18642522",
+      "home": "CD Municipal Limeño",
+      "away": "Atletico Balboa",
+      "competition": "Salvadoran Primera División",
+      "kickoff": "2026-11-09T00:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122994",
+      "home": "Hearts",
+      "away": "Falkirk",
+      "competition": "Scottish Premiership",
+      "kickoff": "2026-11-08T16:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122995",
+      "home": "Celtic",
+      "away": "Kilmarnock",
+      "competition": "Scottish Premiership",
+      "kickoff": "2026-11-08T17:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123010",
+      "home": "Spartans Women",
+      "away": "Glasgow City Women",
+      "competition": "Scottish SWPL 1",
+      "kickoff": "2026-11-08T14:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123007",
+      "home": "Hibernian Women",
+      "away": "Aberdeen Women",
+      "competition": "Scottish SWPL 1",
+      "kickoff": "2026-11-08T14:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123008",
+      "home": "Montrose Women",
+      "away": "Partick Thistle Women",
+      "competition": "Scottish SWPL 1",
+      "kickoff": "2026-11-08T14:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123009",
+      "home": "Motherwell Women",
+      "away": "Celtic Women",
+      "competition": "Scottish SWPL 1",
+      "kickoff": "2026-11-08T17:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123011",
+      "home": "Rangers Women",
+      "away": "Hearts Women",
+      "competition": "Scottish SWPL 1",
+      "kickoff": "2026-11-08T17:10",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096682",
+      "home": "Novi Pazar",
+      "away": "Mladost Lučani",
+      "competition": "Serbian Super Liga",
+      "kickoff": "2026-11-08T13:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096684",
+      "home": "Radnik Surdulica",
+      "away": "OFK Beograd",
+      "competition": "Serbian Super Liga",
+      "kickoff": "2026-11-08T13:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096683",
+      "home": "Partizan",
+      "away": "Mačva Šabac",
+      "competition": "Serbian Super Liga",
+      "kickoff": "2026-11-08T17:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122906",
+      "home": "Elche",
+      "away": "Real Betis",
+      "competition": "Spanish La Liga",
+      "kickoff": "2026-11-08T14:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122910",
+      "home": "Real Sociedad",
+      "away": "Rayo Vallecano",
+      "competition": "Spanish La Liga",
+      "kickoff": "2026-11-08T16:15",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122905",
+      "home": "Celta Vigo",
+      "away": "Levante",
+      "competition": "Spanish La Liga",
+      "kickoff": "2026-11-08T18:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122913",
+      "home": "Villarreal",
+      "away": "Getafe",
+      "competition": "Spanish La Liga",
+      "kickoff": "2026-11-08T18:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122904",
+      "home": "Atletico Madrid",
+      "away": "Barcelona",
+      "competition": "Spanish La Liga",
+      "kickoff": "2026-11-08T21:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18639729",
+      "home": "Girona",
+      "away": "Almería",
+      "competition": "Spanish La Liga 2",
+      "kickoff": "2026-11-08T16:15",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18639731",
+      "home": "Sporting de Gijón",
+      "away": "Real Valladolid",
+      "competition": "Spanish La Liga 2",
+      "kickoff": "2026-11-08T18:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122968",
+      "home": "IFK Göteborg",
+      "away": "Malmö FF",
+      "competition": "Swedish Allsvenskan",
+      "kickoff": "2026-11-08T14:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122967",
+      "home": "Halmstad",
+      "away": "Djurgården",
+      "competition": "Swedish Allsvenskan",
+      "kickoff": "2026-11-08T14:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122970",
+      "home": "Brommapojkarna",
+      "away": "Mjällby",
+      "competition": "Swedish Allsvenskan",
+      "kickoff": "2026-11-08T16:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122969",
+      "home": "AIK",
+      "away": "Häcken",
+      "competition": "Swedish Allsvenskan",
+      "kickoff": "2026-11-08T16:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122971",
+      "home": "Kalmar",
+      "away": "Sirius",
+      "competition": "Swedish Allsvenskan",
+      "kickoff": "2026-11-08T16:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122972",
+      "home": "St.Gallen",
+      "away": "Lugano",
+      "competition": "Swiss Super League",
+      "kickoff": "2026-11-08T14:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122973",
+      "home": "Servette",
+      "away": "Zürich",
+      "competition": "Swiss Super League",
+      "kickoff": "2026-11-08T16:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122974",
+      "home": "FC Thun",
+      "away": "Basel",
+      "competition": "Swiss Super League",
+      "kickoff": "2026-11-08T16:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122975",
+      "home": "Rizespor",
+      "away": "Erzurumspor FK",
+      "competition": "Turkish Super Lig",
+      "kickoff": "2026-11-08T11:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122976",
+      "home": "Çorum",
+      "away": "Fenerbahçe",
+      "competition": "Turkish Super Lig",
+      "kickoff": "2026-11-08T14:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122977",
+      "home": "Alanyaspor",
+      "away": "Trabzonspor",
+      "competition": "Turkish Super Lig",
+      "kickoff": "2026-11-08T16:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096698",
+      "home": "Bukovyna",
+      "away": "Kolos Kovalivka",
+      "competition": "Ukraine Premier League",
+      "kickoff": "2026-11-08T12:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096705",
+      "home": "Zorya",
+      "away": "LNZ Cherkasy",
+      "competition": "Ukraine Premier League",
+      "kickoff": "2026-11-08T12:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096704",
+      "home": "Shakhtar Donetsk",
+      "away": "Dynamo Kyiv",
+      "competition": "Ukraine Premier League",
+      "kickoff": "2026-11-08T17:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123081",
+      "home": "Austin",
+      "away": "Portland Timbers",
+      "competition": "US Major League Soccer",
+      "kickoff": "2026-11-08T01:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123082",
+      "home": "Dallas",
+      "away": "Colorado Rapids",
+      "competition": "US Major League Soccer",
+      "kickoff": "2026-11-08T01:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123083",
+      "home": "Houston Dynamo",
+      "away": "St. Louis City",
+      "competition": "US Major League Soccer",
+      "kickoff": "2026-11-08T01:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123084",
+      "home": "Minnesota United",
+      "away": "SJ Earthquakes",
+      "competition": "US Major League Soccer",
+      "kickoff": "2026-11-08T01:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123085",
+      "home": "Real Salt Lake",
+      "away": "LA Galaxy",
+      "competition": "US Major League Soccer",
+      "kickoff": "2026-11-08T01:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123086",
+      "home": "San Diego",
+      "away": "Sporting KC",
+      "competition": "US Major League Soccer",
+      "kickoff": "2026-11-08T01:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123087",
+      "home": "Seattle Sounders",
+      "away": "Los Angeles",
+      "competition": "US Major League Soccer",
+      "kickoff": "2026-11-08T01:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18802640",
+      "home": "Louisville City",
+      "away": "Miami FC",
+      "competition": "USL Championship",
+      "kickoff": "2026-11-08T01:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18802641",
+      "home": "Charleston Battery",
+      "away": "Hartford Athletic",
+      "competition": "USL Championship",
+      "kickoff": "2026-11-08T01:30",
+      "status": "PENS",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18802642",
+      "home": "New Mexico United",
+      "away": "Colorado Springs Switchbacks FC",
+      "competition": "USL Championship",
+      "kickoff": "2026-11-08T03:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18802643",
+      "home": "Sacramento Republic FC",
+      "away": "El Paso Locomotive FC",
+      "competition": "USL Championship",
+      "kickoff": "2026-11-08T04:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18638899",
+      "home": "Portuguesa",
+      "away": "Metropolitanos",
+      "competition": "Venezuelan Primera División",
+      "kickoff": "2026-11-08T22:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18638900",
+      "home": "Deportivo La Guaira",
+      "away": "Carabobo",
+      "competition": "Venezuelan Primera División",
+      "kickoff": "2026-11-08T22:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "15913358",
+      "home": "Lye Town",
+      "away": "Peterborough United",
+      "competition": "Women's FA Cup",
+      "kickoff": "2026-11-08T15:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122984",
+      "home": "Aston Villa Women",
+      "away": "Manchester United Women",
+      "competition": "Women's Super League",
+      "kickoff": "2026-11-08T13:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122985",
+      "home": "Liverpool Women",
+      "away": "Arsenal Women",
+      "competition": "Women's Super League",
+      "kickoff": "2026-11-08T13:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122986",
+      "home": "Crystal Palace Women",
+      "away": "Charlton Athletic Women",
+      "competition": "Women's Super League",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122987",
+      "home": "Tottenham Hotspur Women",
+      "away": "Brighton & Hove Albion Women",
+      "competition": "Women's Super League",
+      "kickoff": "2026-11-08T15:00",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16122988",
+      "home": "London City Lionesses Women",
+      "away": "Birmingham City Women",
+      "competition": "Women's Super League",
+      "kickoff": "2026-11-08T15:30",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637533",
+      "home": "Alianza",
+      "away": "Llaneros FC",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-09T02:15",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637519",
+      "home": "América de Cali",
+      "away": "Deportivo Cali",
+      "competition": "Colombian Primera A",
+      "kickoff": "2026-11-09T02:45",
+      "status": "FT",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18641987",
+      "home": "Herediano",
+      "away": "Inter de San Carlos",
+      "competition": "Costa Rican Primera División",
+      "kickoff": "2026-11-09T01:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18638407",
+      "home": "Mushuc Runa",
+      "away": "Delfín",
+      "competition": "Ecuadorian LigaPro",
+      "kickoff": "2026-11-09T19:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18638408",
+      "home": "Técnico Universitario",
+      "away": "Manta F.C.",
+      "competition": "Ecuadorian LigaPro",
+      "kickoff": "2026-11-09T21:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18295235",
+      "home": "Plymouth Parkway",
+      "away": "Berkhamsted",
+      "competition": "FA Cup",
+      "kickoff": "2026-11-09T20:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18642252",
+      "home": "Antigua GFC",
+      "away": "CD Malacateco",
+      "competition": "Guatemalan Liga Nacional",
+      "kickoff": "2026-11-09T01:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18641799",
+      "home": "Club Deportivo Marathón",
+      "away": "CD Choloma",
+      "competition": "Honduran Liga Nacional",
+      "kickoff": "2026-11-09T02:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18765063",
+      "home": "Piratas",
+      "away": "Cancún",
+      "competition": "Liga de Expansión MX",
+      "kickoff": "2026-11-09T02:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16210536",
+      "home": "Querétaro",
+      "away": "Puebla",
+      "competition": "Liga MX",
+      "kickoff": "2026-11-09T01:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16210537",
+      "home": "León",
+      "away": "Guadalajara",
+      "competition": "Liga MX",
+      "kickoff": "2026-11-09T03:10",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "8071739",
+      "home": "Chelmsford City",
+      "away": "Ebbsfleet United",
+      "competition": "National League N / S",
+      "kickoff": "2026-11-09T20:45",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16123092",
+      "home": "Ikorodu City",
+      "away": "Inter Lagos",
+      "competition": "Nigerian Premier League",
+      "kickoff": "2026-11-09T16:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "16096668",
+      "home": "Kristiansund",
+      "away": "Vålerenga",
+      "competition": "Norwegian Eliteserien",
+      "kickoff": "2026-11-09T19:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18638660",
+      "home": "Sportivo San Lorenzo",
+      "away": "Rubio Ñú",
+      "competition": "Paraguayan Primera División",
+      "kickoff": "2026-11-09T21:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18638659",
+      "home": "Sportivo Luqueño",
+      "away": "2 de Mayo",
+      "competition": "Paraguayan Primera División",
+      "kickoff": "2026-11-09T23:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18637831",
+      "home": "Universitario",
+      "away": "Deportivo Moquegua",
+      "competition": "Peruvian Liga 1",
+      "kickoff": "2026-11-09T02:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18642523",
+      "home": "CD FAS",
+      "away": "Fuerte San Francisco",
+      "competition": "Salvadoran Primera División",
+      "kickoff": "2026-11-09T02:00",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    },
+    {
+      "id": "18639732",
+      "home": "Sabadell",
+      "away": "Real Sociedad II",
+      "competition": "Spanish La Liga 2",
+      "kickoff": "2026-11-09T20:30",
+      "status": "Scheduled",
+      "discovery": {
+        "BantuBet": "not_found",
+        "ElephantBet": "not_found"
+      }
+    }
+  ]
 }
