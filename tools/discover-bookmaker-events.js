@@ -16,8 +16,9 @@ const OUTPUT = path.join(ROOT, "data", "collections");
 const TZ = "Africa/Luanda";
 const API_URL = process.env.FK_FIXTURES_API_URL || "https://fk-ficha-kamba.vercel.app/api/football-data";
 const BOOKMAKERS = [
-  { name: "BantuBet", url: process.env.FK_BANTUBET_SPORTS_URL || "https://m.bantubet.co.ao/pt/sports", key: "bantubetUrl" },
-  { name: "ElephantBet", url: process.env.FK_ELEPHANTBET_SPORTS_URL || "https://www.elephantbet.co.ao/pt/sports", key: "elephantbetUrl" }
+  // Rotas observadas nos diagnósticos reais do DOM das casas.
+  { name: "BantuBet", url: process.env.FK_BANTUBET_SPORTS_URL || "https://m.bantubet.co.ao/pt/sports/home", key: "bantubetUrl" },
+  { name: "ElephantBet", url: process.env.FK_ELEPHANTBET_SPORTS_URL || "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer", key: "elephantbetUrl" }
 ];
 
 function localDate(offset = 0) {
@@ -81,7 +82,7 @@ function redact(value, depth = 0) {
   return value;
 }
 
-async function collectPageDiagnostics(page, bookmaker, network, failures) {
+async function collectPageDiagnostics(page, bookmaker, network, failures, websocketFrames) {
   const dom = await page.evaluate(() => ({
     bodyText: (document.body?.innerText || "").replace(/\s+/g, " ").trim().slice(0, 12000),
     headings: [...document.querySelectorAll("h1,h2,h3,[role=heading]")].slice(0, 40)
@@ -98,7 +99,9 @@ async function collectPageDiagnostics(page, bookmaker, network, failures) {
   }));
   return {
     bookmaker, pageTitle: await page.title(), finalUrl: safeUrl(page.url()), dom,
-    responseCount: network.length, network: network.slice(0, 80),
+    responseCount: network.length, network: network.slice(0, 100),
+    websocketFrameCount: websocketFrames.length,
+    websocketFrames: websocketFrames.slice(0, 100),
     requestFailures: failures.slice(0, 60)
   };
 }
@@ -179,6 +182,24 @@ async function main() {
       const page = await context.newPage();
       const network = [];
       const failures = [];
+      const websocketFrames = [];
+      page.on("websocket", ws => {
+        const record = { url: safeUrl(ws.url()), received: 0, sent: 0 };
+        websocketFrames.push(record);
+        ws.on("framereceived", payload => {
+          record.received++;
+          if (record.samples?.length >= 8) return;
+          let value = payload;
+          if (Buffer.isBuffer(value)) value = value.toString("utf8");
+          if (typeof value === "string") {
+            try { value = redact(JSON.parse(value)); }
+            catch { value = redact(value); }
+          } else value = "[non-text frame]";
+          record.samples ||= [];
+          record.samples.push(value);
+        });
+        ws.on("framesent", payload => { record.sent++; });
+      });
       page.on("response", async response => {
         try {
           const req = response.request();
@@ -232,7 +253,7 @@ async function main() {
       } catch (error) {
         report.push({ bookmaker:bookmaker.name, status:"failed", detail:error.message });
       } finally {
-        const diagnostic = await collectPageDiagnostics(page, bookmaker.name, network, failures);
+        const diagnostic = await collectPageDiagnostics(page, bookmaker.name, network, failures, websocketFrames);
         await writeFile(path.join(OUTPUT, bookmaker.name.toLowerCase()+"-diagnostics.json"), JSON.stringify(diagnostic,null,2));
         await page.close();
       }
