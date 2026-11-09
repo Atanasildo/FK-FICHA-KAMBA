@@ -45,7 +45,7 @@ function normalizeFixtures(payload) {
   const list = payload?.fixtures || payload?.data || [];
   if (!Array.isArray(list)) throw new Error("A resposta da SportAPI não contém uma lista de jogos.");
   const now = Date.now();
-  const terminalOrLive = /live|in.?play|finished|full.?time|after.?extra|penalt|cancel|postpon|abandon|\\b(ft|aet|pens|ht|1h|2h)\\b/i;
+  const terminalOrLive = /live|in.?play|finished|full.?time|after.?extra|penalt|cancel|postpon|abandon|\b(ft|aet|pens|ht|1h|2h)\b/i;
   return list.map(item => ({
     id: String(item.id), home: item.home || item.home_team || "",
     away: item.away || item.away_team || "",
@@ -76,14 +76,14 @@ function redact(value, depth = 0) {
     return out;
   }
   if (typeof value === "string") return value
-    .replace(/Bearer\\s+[^\\s"'<>]+/gi, "Bearer [redacted]")
-    .replace(/([?&](?:token|key|secret|auth|session)=)[^&\\s]+/gi, "$1[redacted]").slice(0, 500);
+    .replace(/Bearer\s+[^\s"'<>]+/gi, "Bearer [redacted]")
+    .replace(/([?&](?:token|key|secret|auth|session)=)[^&\s]+/gi, "$1[redacted]").slice(0, 500);
   return value;
 }
 
 async function collectPageDiagnostics(page, bookmaker, network, failures) {
   const dom = await page.evaluate(() => ({
-    bodyText: (document.body?.innerText || "").replace(/\\s+/g, " ").trim().slice(0, 12000),
+    bodyText: (document.body?.innerText || "").replace(/\s+/g, " ").trim().slice(0, 12000),
     headings: [...document.querySelectorAll("h1,h2,h3,[role=heading]")].slice(0, 40)
       .map(e => (e.innerText || e.getAttribute("aria-label") || "").trim()).filter(Boolean),
     links: [...document.querySelectorAll("a[href]")].slice(0, 100).map(a => ({
@@ -195,7 +195,7 @@ async function main() {
                 item.bodyKeys = body && typeof body === "object" && !Array.isArray(body) ? Object.keys(body).slice(0,60) : [];
                 item.bodyPreview = JSON.stringify(body).slice(0,5000);
               } catch {
-                item.bodyPreview = raw.replace(/Bearer\\s+[^\\s"'<>]+/gi,"Bearer [redacted]").slice(0,1200);
+                item.bodyPreview = raw.replace(/Bearer\s+[^\s"'<>]+/gi,"Bearer [redacted]").slice(0,1200);
               }
             } else item.bodyPreview = raw ? "[body over 1.5 MB]" : "";
           }
