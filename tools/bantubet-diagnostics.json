@@ -565,20 +565,13 @@
       "url": "https://geoapi2.bcapps.org/",
       "contentType": "application/json; charset=utf8",
       "bodyKeys": [
-        "city",
         "continentCode",
         "continentName",
         "countryCode",
         "countryName",
-        "ipAddress",
-        "latitude",
-        "longitude",
-        "statusCode",
-        "subdivisions_iso_code",
-        "subdivisions_name",
-        "zipCode"
+        "statusCode"
       ],
-      "bodyPreview": "{\"city\":\"Luanda\",\"continentCode\":\"AF\",\"continentName\":\"Africa\",\"countryCode\":\"AO\",\"countryName\":\"Angola\",\"ipAddress\":\"105.168.31.162\",\"latitude\":-8.8371,\"longitude\":13.2333,\"statusCode\":\"OK\",\"subdivisions_iso_code\":\"LUA\",\"subdivisions_name\":\"Luanda Province\",\"zipCode\":\"\"}"
+      "bodyPreview": "[geolocation response omitted for privacy]"
     },
     {
       "method": "POST",
