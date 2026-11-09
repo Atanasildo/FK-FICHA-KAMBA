@@ -187,7 +187,7 @@ async function main() {
           const item = { method: req.method(), resourceType: req.resourceType(),
             status: response.status(), url: safeUrl(response.url()),
             contentType: headers["content-type"] || "" };
-          if (/json|javascript|text\\/plain/i.test(item.contentType)) {
+          if (/json|javascript|text\/plain/i.test(item.contentType)) {
             const raw = await response.text().catch(() => "");
             if (raw && raw.length <= 1500000) {
               try {
