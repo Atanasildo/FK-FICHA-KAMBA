@@ -44,16 +44,64 @@ function findBrowser() {
 function normalizeFixtures(payload) {
   const list = payload?.fixtures || payload?.data || [];
   if (!Array.isArray(list)) throw new Error("A resposta da SportAPI não contém uma lista de jogos.");
+  const now = Date.now();
+  const terminalOrLive = /live|in.?play|finished|full.?time|after.?extra|penalt|cancel|postpon|abandon|\\b(ft|aet|pens|ht|1h|2h)\\b/i;
   return list.map(item => ({
-    id: String(item.id),
-    home: item.home || item.home_team || "",
+    id: String(item.id), home: item.home || item.home_team || "",
     away: item.away || item.away_team || "",
     competition: item.competition || item.league_name || null,
     kickoff: item.kickoff || item.sourceKickoffUtc || item.kickoff_utc || null,
     status: item.status || "TBD"
-  })).filter(item => item.id && item.home && item.away && !/live|finished|cancel|postpon|abandon/i.test(item.status));
+  })).filter(item => {
+    const kickoffMs = Date.parse(item.kickoff || "");
+    return item.id && item.home && item.away && !terminalOrLive.test(String(item.status)) &&
+      Number.isFinite(kickoffMs) && kickoffMs > now;
+  });
 }
 
+function safeUrl(value) {
+  try { const u = new URL(value); return u.origin + u.pathname; }
+  catch { return String(value || "").split("?")[0].split("#")[0]; }
+}
+
+function redact(value, depth = 0) {
+  if (depth > 5) return "[depth-limit]";
+  if (Array.isArray(value)) return value.slice(0, 8).map(v => redact(v, depth + 1));
+  if (value && typeof value === "object") {
+    const out = {};
+    for (const [key, item] of Object.entries(value).slice(0, 80)) {
+      out[key] = /token|secret|password|cookie|authorization|session|credential|api.?key/i.test(key)
+        ? "[redacted]" : redact(item, depth + 1);
+    }
+    return out;
+  }
+  if (typeof value === "string") return value
+    .replace(/Bearer\\s+[^\\s"'<>]+/gi, "Bearer [redacted]")
+    .replace(/([?&](?:token|key|secret|auth|session)=)[^&\\s]+/gi, "$1[redacted]").slice(0, 500);
+  return value;
+}
+
+async function collectPageDiagnostics(page, bookmaker, network, failures) {
+  const dom = await page.evaluate(() => ({
+    bodyText: (document.body?.innerText || "").replace(/\\s+/g, " ").trim().slice(0, 12000),
+    headings: [...document.querySelectorAll("h1,h2,h3,[role=heading]")].slice(0, 40)
+      .map(e => (e.innerText || e.getAttribute("aria-label") || "").trim()).filter(Boolean),
+    links: [...document.querySelectorAll("a[href]")].slice(0, 100).map(a => ({
+      text: (a.innerText || a.getAttribute("aria-label") || "").trim().slice(0, 180),
+      url: a.href.split("?")[0].split("#")[0]
+    })),
+    controls: [...document.querySelectorAll("input,button,[role=button],[role=tab],select")].slice(0, 100).map(e => ({
+      tag: e.tagName.toLowerCase(), text: (e.innerText || "").trim().slice(0, 120),
+      placeholder: e.getAttribute("placeholder"), ariaLabel: e.getAttribute("aria-label"),
+      title: e.getAttribute("title")
+    }))
+  }));
+  return {
+    bookmaker, pageTitle: await page.title(), finalUrl: safeUrl(page.url()), dom,
+    responseCount: network.length, network: network.slice(0, 80),
+    requestFailures: failures.slice(0, 60)
+  };
+}
 async function fetchFixtures() {
   const dates = [localDate(0), localDate(1)];
   const responses = await Promise.all(dates.map(async date => {
@@ -129,47 +177,63 @@ async function main() {
   try {
     for (const bookmaker of BOOKMAKERS) {
       const page = await context.newPage();
-      try {
-        console.log("A procurar eventos em " + bookmaker.name + ": " + bookmaker.url);
-        const response = await page.goto(bookmaker.url, { waitUntil: "domcontentloaded", timeout: 60000 });
-        await page.waitForTimeout(5000);
-        if (response?.status() === 403 || /cloudflare|captcha|access denied|attention required/i.test(await page.title())) {
-          report.push({
-            bookmaker: bookmaker.name,
-            status: "blocked",
-            detail: "A casa bloqueou ou pediu verificação; não foi contornado.",
-            pageTitle: await page.title(),
-            finalUrl: page.url()
-          });
-          continue;
-        }
-        const candidates = await waitForEventLinks(page);
-        let found = 0;
-        for (const fixture of fixtures) {
-          const result = selectUniqueEventLink(fixture, candidates);
-          const record = discoveries.get(fixture.id);
-          if (result.status === "matched") {
-            record[bookmaker.key] = result.candidate.url;
-            found++;
-          } else {
-            (record.discovery || (record.discovery = {}))[bookmaker.name] = result.status;
+      const network = [];
+      const failures = [];
+      page.on("response", async response => {
+        try {
+          const req = response.request();
+          if (!["xhr", "fetch"].includes(req.resourceType())) return;
+          const headers = response.headers();
+          const item = { method: req.method(), resourceType: req.resourceType(),
+            status: response.status(), url: safeUrl(response.url()),
+            contentType: headers["content-type"] || "" };
+          if (/json|javascript|text\\/plain/i.test(item.contentType)) {
+            const raw = await response.text().catch(() => "");
+            if (raw && raw.length <= 1500000) {
+              try {
+                const body = redact(JSON.parse(raw));
+                item.bodyKeys = body && typeof body === "object" && !Array.isArray(body) ? Object.keys(body).slice(0,60) : [];
+                item.bodyPreview = JSON.stringify(body).slice(0,5000);
+              } catch {
+                item.bodyPreview = raw.replace(/Bearer\\s+[^\\s"'<>]+/gi,"Bearer [redacted]").slice(0,1200);
+              }
+            } else item.bodyPreview = raw ? "[body over 1.5 MB]" : "";
           }
-        }
-        report.push({
-          bookmaker: bookmaker.name,
-          status: "scanned",
-          pageTitle: await page.title(),
-          finalUrl: page.url(),
-          links: candidates.length,
-          matches: found,
-          sampleCandidates: candidates.slice(0, 8).map(item => ({
-            url: item.url,
-            text: item.text.slice(0, 220)
-          }))
+          network.push(item);
+        } catch (error) { network.push({ captureError: error.message }); }
+      });
+      page.on("requestfailed", req => {
+        if (["xhr","fetch"].includes(req.resourceType())) failures.push({
+          method:req.method(), url:safeUrl(req.url()), error:req.failure()?.errorText || "request failed"
         });
+      });
+      try {
+        console.log("A diagnosticar " + bookmaker.name + ": " + bookmaker.url);
+        const response = await page.goto(bookmaker.url, { waitUntil: "domcontentloaded", timeout: 60000 });
+        await page.waitForTimeout(25000);
+        if (response?.status() === 403 || /cloudflare|captcha|access denied|attention required/i.test(await page.title())) {
+          report.push({ bookmaker:bookmaker.name, status:"blocked",
+            detail:"A casa bloqueou ou pediu verificação; não foi contornado.",
+            pageTitle:await page.title(), finalUrl:safeUrl(page.url()) });
+        } else {
+          const candidates = await readEventLinks(page);
+          let found = 0;
+          for (const fixture of fixtures) {
+            const result = selectUniqueEventLink(fixture, candidates);
+            const record = discoveries.get(fixture.id);
+            if (result.status === "matched") { record[bookmaker.key] = result.candidate.url; found++; }
+            else (record.discovery || (record.discovery = {}))[bookmaker.name] = result.status;
+          }
+          report.push({ bookmaker:bookmaker.name, status:"scanned",
+            pageTitle:await page.title(), finalUrl:safeUrl(page.url()),
+            links:candidates.length, matches:found,
+            sampleCandidates:candidates.slice(0,8).map(x=>({url:safeUrl(x.url),text:x.text.slice(0,220)})) });
+        }
       } catch (error) {
-        report.push({ bookmaker: bookmaker.name, status: "failed", detail: error.message });
+        report.push({ bookmaker:bookmaker.name, status:"failed", detail:error.message });
       } finally {
+        const diagnostic = await collectPageDiagnostics(page, bookmaker.name, network, failures);
+        await writeFile(path.join(OUTPUT, bookmaker.name.toLowerCase()+"-diagnostics.json"), JSON.stringify(diagnostic,null,2));
         await page.close();
       }
     }
@@ -189,7 +253,13 @@ async function main() {
   };
   await writeFile(path.join(OUTPUT, "event-discovery-latest.json"), JSON.stringify({ summary, fixtures: [...discoveries.values()] }, null, 2));
   console.log(JSON.stringify(summary, null, 2));
-  console.log("Só os jogos encontrados nas DUAS casas foram preparados para recolha.");
+  await writeFile(path.join(OUTPUT, "bookmaker-diagnostics-latest.json"), JSON.stringify({
+    generatedAt:new Date().toISOString(),
+    note:"Diagnóstico local DOM e XHR/fetch; URLs sem query string e campos sensíveis redigidos.",
+    files:BOOKMAKERS.map(x=>"data/collections/"+x.name.toLowerCase()+"-diagnostics.json"),
+    scans:report.map(x=>({bookmaker:x.bookmaker,status:x.status,pageTitle:x.pageTitle,finalUrl:x.finalUrl,links:x.links,matches:x.matches,detail:x.detail}))
+  },null,2));
+  console.log("Diagnósticos guardados em data/collections/bookmaker-diagnostics-latest.json.");
 }
 
 main().catch(error => {
