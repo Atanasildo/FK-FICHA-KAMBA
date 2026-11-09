@@ -186,15 +186,21 @@ async function main() {
       page.on("websocket", ws => {
         const record = { url: safeUrl(ws.url()), received: 0, sent: 0 };
         websocketFrames.push(record);
-        ws.on("framereceived", payload => {
+        ws.on("framereceived", event => {
           record.received++;
           if (record.samples?.length >= 8) return;
-          let value = payload;
+          // Playwright entrega um objecto { payload }; não o payload directamente.
+          let value = event && typeof event === "object" && "payload" in event
+            ? event.payload : event;
           if (Buffer.isBuffer(value)) value = value.toString("utf8");
           if (typeof value === "string") {
             try { value = redact(JSON.parse(value)); }
             catch { value = redact(value); }
-          } else value = "[non-text frame]";
+          } else if (value instanceof ArrayBuffer) {
+            value = Buffer.from(value).toString("utf8");
+            try { value = redact(JSON.parse(value)); }
+            catch { value = redact(value); }
+          } else value = "[frame format not text]";
           record.samples ||= [];
           record.samples.push(value);
         });
