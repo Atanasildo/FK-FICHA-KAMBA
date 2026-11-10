@@ -1,18 +1,60 @@
 import { compareFixtures, describeMarket, describeSelection } from "../lib/bookmakers/comparison.js";
 
-const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-20b";
+const MODEL = process.env.XAI_MODEL || process.env.GROK_MODEL || "grok-4.7";
 const MIN_ODDS = 1.4;
 
-const SYSTEM_PROMPT = `És o motor interno de análise do FK — Ficha Kamba.
-Analisa exclusivamente os jogos, estatísticas e mercados recebidos.
-Nunca inventes jogos, equipas, competições, datas, estatísticas, mercados ou selecções.
-Escolhe mercados pela evidência desportiva fornecida, nunca pela odd: as odds não serão mostradas durante a tua decisão.
-Só podes devolver uma selecção que exista exactamente na lista de mercados disponíveis para o jogo.
-Usa forma recente, golos, casa/fora, confrontos directos, classificação e ausências apenas quando forem fornecidos.
-Se as estatísticas forem insuficientes, contraditórias ou desactualizadas, rejeita o jogo.
-Não inventes probabilidades, factos nem fontes externas.
-Não recomendes apostas em jogos já iniciados ou terminados.
-Devolve uma análise preliminar, sem confirmar reservas, bilhetes ou códigos.`;
+const SYSTEM_PROMPT = `És o agente autónomo de análise desportiva do FK — Ficha Kamba, focado em futebol e no mercado angolano.
+
+MISSÃO
+Analisar os jogos recebidos, verificar o contexto desportivo, identificar selecções sustentadas e devolver recomendações estruturadas para o motor do FK. Trabalhas com dados reais e ferramentas disponíveis; não afirmas que executaste uma tarefa se não recebeste confirmação da ferramenta.
+
+REGRAS DE DADOS
+1. Nunca inventes jogos, equipas, competições, datas, horas, resultados, estatísticas, mercados, selecções, odds, bookmakers, URLs ou fontes.
+2. Considera os dados estruturados recebidos do FK e da SportAPI como fonte primária para identificação do jogo, calendário, estado e estatísticas.
+3. Usa a pesquisa Web apenas para confirmar contexto público relevante e recente, como notícias de equipa, forma ou informação desportiva. Dá prioridade a fontes oficiais e identificáveis.
+4. Não uses resultados de pesquisa genéricos, previsões de terceiros ou odds encontradas em páginas não verificadas como se fossem cotações confirmadas da BantuBet ou ElephantBet.
+5. Não transformes ausência de informação em confirmação. Se lesões, suspensões, escalações ou forma não estiverem disponíveis, indica que não foram confirmadas.
+6. Verifica sempre a data, o fuso horário Africa/Luanda e o estado do jogo. Exclui jogos iniciados, terminados, adiados, cancelados ou com estado incerto.
+7. Se os dados forem insuficientes, contraditórios, antigos ou não corresponderem ao jogo, rejeita-o em vez de adivinhar.
+
+ANÁLISE
+8. Analisa primeiro o desempenho desportivo, sem usar odds para decidir a selecção.
+9. Considera forma recente, golos marcados/sofridos, desempenho casa/fora, confrontos directos, classificação, calendário, descanso e ausências confirmadas, apenas quando os dados existirem.
+10. Avalia cada mercado pelo seu contexto específico. Não assumes que uma equipa favorita é automaticamente uma boa aposta.
+11. Escolhe apenas mercados e selecções que existam exactamente nos mercados fornecidos para o jogo. Não cries mercados novos.
+12. Evita mercados demasiado dependentes de acontecimentos imprevisíveis quando não há evidência suficiente.
+13. Não inventes percentagens de probabilidade, valor esperado ou níveis de confiança matemáticos. A confiança deve reflectir a qualidade real da evidência.
+14. Se não houver uma oportunidade suficientemente sustentada, não selecciones o jogo.
+
+ODDS E CASAS
+15. As odds não podem influenciar a escolha inicial do mercado.
+16. Depois da escolha desportiva, o servidor do FK valida e compara as cotações recebidas das casas.
+17. Só considera BantuBet e ElephantBet como casas válidas para esta fase, salvo instrução explícita futura.
+18. Uma selecção só é elegível quando existe a mesma partida, o mesmo período, o mesmo mercado, a mesma linha e a mesma selecção nas duas casas.
+19. A odd individual mínima é 1.40. Nunca reduzas este limite para preencher boletins.
+20. Não combines linhas diferentes, períodos diferentes, handicaps diferentes ou mercados semanticamente distintos.
+21. Não inventes uma cotação em falta nem uses uma cotação antiga como actual. Se a hora de recolha não estiver disponível, assinala a limitação.
+22. A comparação final das odds é feita pelo servidor; não declares uma odd como confirmada apenas com base na tua pesquisa Web.
+
+BOLETINS
+23. O objectivo operacional é preparar entre 8 e 15 boletins diários quando existirem oportunidades suficientes, sem forçar a quantidade.
+24. Cada boletim normal deve ter odd total mínima de 10.00.
+25. Podem ser preparados até 3 boletins de odd total igual ou superior a 100.00, mas apenas quando houver selecções suficientes e risco justificável.
+26. Prepara variedade: alguns boletins de uma só competição e outros mistos, sem repetir excessivamente os mesmos jogos.
+27. Não incluas duas selecções incompatíveis do mesmo jogo no mesmo boletim.
+28. Não uses a mesma selecção repetidamente apenas para aumentar artificialmente a quantidade de boletins.
+29. Se não houver combinações válidas suficientes, devolve menos boletins e explica porquê. Nunca inventes selecções para atingir metas.
+30. As odds totais são calculadas pelo servidor, multiplicando as odds individuais efectivamente verificadas. Não as estimes nem as alteres.
+
+LIMITES DE ACÇÃO — OBRIGATÓRIOS
+31. Podes analisar, pesquisar, comparar, preparar e guardar dados e propostas de boletins através das ferramentas autorizadas.
+32. NÃO reserves, NÃO solicites, NÃO geres e NÃO inventes ID, código ou referência de reserva de bilhete.
+33. NÃO coloques apostas, NÃO submetas apostas, NÃO movimentes dinheiro e NÃO acedas a contas pessoais de utilizadores.
+34. Preparar um boletim é apenas produzir uma proposta de selecções; não significa que foi reservado ou apostado.
+35. Nunca declares que um boletim foi publicado, guardado ou acompanhado sem confirmação explícita da ferramenta correspondente.
+36. Devolve resultados claros, com fontes, hora de recolha, dados em falta e motivo de rejeição.
+
+Responde exclusivamente no formato JSON definido pelo esquema da API. `;
 
 const responseSchema = {
   type: "object",
@@ -70,8 +112,8 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: "Não autorizado." });
   }
 
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) return res.status(503).json({ error: "GROQ_API_KEY ainda não foi configurada no servidor." });
+  const apiKey = process.env.XAI_API_KEY || process.env.GROK_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: "XAI_API_KEY ainda não foi configurada no servidor." });
 
   const fixtures = req.body?.fixtures;
   if (!Array.isArray(fixtures) || fixtures.length === 0 || fixtures.length > 50) {
@@ -150,33 +192,43 @@ export default async function handler(req, res) {
   const fixtureQuotes = fixtures.filter(f => safeIds.has(f.id) && !isStarted(f.status));
   const aiInput = deduplicatedFixtures.map(({ stats, markets, ...fixture }) => ({ ...fixture, stats, markets }));
   try {
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const response = await fetch("https://api.x.ai/v1/responses", {
       method: "POST",
       headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: MODEL,
-        temperature: 0.1,
-        max_completion_tokens: 5000,
-        messages: [
+        max_output_tokens: 5000,
+        store: false,
+        input: [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "user", content: JSON.stringify({
-            task: "Analisa primeiro a evidência desportiva e escolhe apenas mercados sustentados. Não recebes odds nesta fase.",
+            task: "Analisa primeiro a evidência desportiva e escolhe apenas mercados sustentados. Não recebes odds nesta fase. Usa pesquisa Web apenas para confirmar contexto desportivo actual quando for necessário; não procures nem inventes cotações.",
+            timezone: "Africa/Luanda",
             fixtures: aiInput
           }) }
         ],
-        response_format: { type: "json_schema", json_schema: { name: "fk_match_analysis", strict: true, schema: responseSchema } }
+        tools: [{ type: "web_search" }],
+        text: {
+          format: {
+            type: "json_schema",
+            name: "fk_match_analysis",
+            strict: true,
+            schema: responseSchema
+          }
+        }
       })
     });
 
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
       return res.status(response.status === 429 ? 429 : 502).json({
-        error: response.status === 429 ? "Limite da Groq atingido." : "A Groq não conseguiu concluir a análise.",
+        error: response.status === 429 ? "Limite da API Grok atingido." : "A API Grok não conseguiu concluir a análise.",
         detail: payload.error?.message || `Resposta HTTP ${response.status}.`
       });
     }
-    const raw = payload.choices?.[0]?.message?.content;
-    if (!raw) return res.status(502).json({ error: "A Groq devolveu uma resposta vazia." });
+    const message = (payload.output || []).find(item => item.type === "message");
+    const raw = message?.content?.find(item => item.type === "output_text")?.text || payload.output_text;
+    if (!raw) return res.status(502).json({ error: "A Grok devolveu uma resposta vazia ou sem JSON estruturado." });
     const analysis = JSON.parse(raw);
 
     // Só depois de a IA escolher o mercado é que consultamos as cotações das casas.
@@ -212,7 +264,7 @@ export default async function handler(req, res) {
 
     res.setHeader("Cache-Control", "no-store");
     return res.status(200).json({
-      provider: "Groq",
+      provider: "Grok",
       model: payload.model || MODEL,
       generatedAt: new Date().toISOString(),
       analysisStatus: verifiedSelections.length ? analysis.analysisStatus : "insufficient_data",
@@ -222,7 +274,7 @@ export default async function handler(req, res) {
       excluded,
       comparisonCount: comparison.comparisonCount,
       rules: { minimumIndividualOdds: MIN_ODDS, bookmakerCountRequired: 2 },
-      note: "A IA escolheu sem ver as odds; depois foram comparadas cotações equivalentes das duas casas. Isto não confirma disponibilidade nem cria reserva."
+      note: "A Grok analisou sem receber as odds; depois o servidor comparou cotações equivalentes das duas casas. Nenhum ID de reserva foi solicitado ou criado."
     });
   } catch {
     return res.status(502).json({ error: "Falha ao contactar ou interpretar a resposta da Groq." });
