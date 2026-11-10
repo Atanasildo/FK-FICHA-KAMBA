@@ -1,6 +1,6 @@
 import { compareFixtures, describeMarket, describeSelection } from "../lib/bookmakers/comparison.js";
 
-const MODEL = process.env.XAI_MODEL || process.env.GROK_MODEL || "grok-4.7";
+const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-20b";
 const MIN_ODDS = 1.4;
 
 const SYSTEM_PROMPT = `És o agente autónomo de análise desportiva do FK — Ficha Kamba, focado em futebol e no mercado angolano.
@@ -112,8 +112,8 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: "Não autorizado." });
   }
 
-  const apiKey = process.env.XAI_API_KEY || process.env.GROK_API_KEY;
-  if (!apiKey) return res.status(503).json({ error: "XAI_API_KEY ainda não foi configurada no servidor." });
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: "GROQ_API_KEY ainda não foi configurada no servidor." });
 
   const fixtures = req.body?.fixtures;
   if (!Array.isArray(fixtures) || fixtures.length === 0 || fixtures.length > 50) {
@@ -192,43 +192,34 @@ export default async function handler(req, res) {
   const fixtureQuotes = fixtures.filter(f => safeIds.has(f.id) && !isStarted(f.status));
   const aiInput = deduplicatedFixtures.map(({ stats, markets, ...fixture }) => ({ ...fixture, stats, markets }));
   try {
-    const response = await fetch("https://api.x.ai/v1/responses", {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model: MODEL,
-        max_output_tokens: 5000,
-        store: false,
-        input: [
+        temperature: 0.1,
+        max_completion_tokens: 5000,
+        messages: [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "user", content: JSON.stringify({
-            task: "Analisa primeiro a evidência desportiva e escolhe apenas mercados sustentados. Não recebes odds nesta fase. Usa pesquisa Web apenas para confirmar contexto desportivo actual quando for necessário; não procures nem inventes cotações.",
+            task: "Analisa primeiro a evidência desportiva e escolhe apenas mercados sustentados. Não recebes odds nesta fase.",
             timezone: "Africa/Luanda",
             fixtures: aiInput
           }) }
         ],
-        tools: [{ type: "web_search" }],
-        text: {
-          format: {
-            type: "json_schema",
-            name: "fk_match_analysis",
-            strict: true,
-            schema: responseSchema
-          }
-        }
-      })
+        response_format: { type: "json_schema", json_schema: { name: "fk_match_analysis", strict: true, schema: responseSchema } }
+      }))
     });
 
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
       return res.status(response.status === 429 ? 429 : 502).json({
-        error: response.status === 429 ? "Limite da API Grok atingido." : "A API Grok não conseguiu concluir a análise.",
+        error: response.status === 429 ? "Limite da Groq atingido." : "A API Groq não conseguiu concluir a análise.",
         detail: payload.error?.message || `Resposta HTTP ${response.status}.`
       });
     }
-    const message = (payload.output || []).find(item => item.type === "message");
-    const raw = message?.content?.find(item => item.type === "output_text")?.text || payload.output_text;
-    if (!raw) return res.status(502).json({ error: "A Grok devolveu uma resposta vazia ou sem JSON estruturado." });
+    const raw = payload.choices?.[0]?.message?.content;
+    if (!raw) return res.status(502).json({ error: "A Groq devolveu uma resposta vazia ou sem JSON estruturado." });
     const analysis = JSON.parse(raw);
 
     // Só depois de a IA escolher o mercado é que consultamos as cotações das casas.
@@ -264,7 +255,7 @@ export default async function handler(req, res) {
 
     res.setHeader("Cache-Control", "no-store");
     return res.status(200).json({
-      provider: "Grok",
+      provider: "Groq",
       model: payload.model || MODEL,
       generatedAt: new Date().toISOString(),
       analysisStatus: verifiedSelections.length ? analysis.analysisStatus : "insufficient_data",
@@ -274,9 +265,9 @@ export default async function handler(req, res) {
       excluded,
       comparisonCount: comparison.comparisonCount,
       rules: { minimumIndividualOdds: MIN_ODDS, bookmakerCountRequired: 2 },
-      note: "A Grok analisou sem receber as odds; depois o servidor comparou cotações equivalentes das duas casas. Nenhum ID de reserva foi solicitado ou criado."
+      note: "A Groq analisou sem receber as odds; depois o servidor comparou cotações equivalentes das duas casas. Nenhum ID de reserva foi solicitado ou criado."
     });
   } catch {
-    return res.status(502).json({ error: "Falha ao contactar ou interpretar a resposta da Grok." });
+    return res.status(502).json({ error: "Falha ao contactar ou interpretar a resposta da Groq." });
   }
 }
