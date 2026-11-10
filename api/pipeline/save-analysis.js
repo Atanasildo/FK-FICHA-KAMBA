@@ -23,7 +23,7 @@ export default async function handler(req, res) {
   const { fixtures, analysis } = req.body || {};
   if (!Array.isArray(fixtures) || !fixtures.length || fixtures.length > 50 ||
       !analysis || !Array.isArray(analysis.selections)) {
-    return send(res, 400, { error: "Envia fixtures e o resultado validado da análise Grok." });
+    return send(res, 400, { error: "Envia fixtures e o resultado validado da análise Groq." });
   }
 
   const admin = createClient(url, serviceKey, { auth: { persistSession: false, autoRefreshToken: false } });
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
 
     const { error: analysisError } = await admin.from("match_analyses").insert({
       match_id: match.id,
-      provider: analysis.provider || "Grok",
+      provider: analysis.provider || "Groq",
       model: analysis.model || null,
       status: validPicks.length ? "ready" : "insufficient_data",
       summary: analysis.summary || null,
