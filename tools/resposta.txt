@@ -1,210 +1,301 @@
-C:\Users\Atanásio Lutiki\Downloads\FK-FICHA-KAMBA>node -e "const fs=require('fs'); for(const n of ['bantubet','elephantbet']){const d=JSON.parse(fs.readFileSync('data/collections/'+n+'-diagnostics.json','utf8')); console.log('\n### '+n); console.log('URL:',d.finalUrl); console.log('TEXTO:',d.dom.bodyText); console.log('TITULOS:',JSON.stringify(d.dom.headings)); console.log('REDE:',JSON.stringify(d.network.map(x=>({status:x.status,url:x.url,bodyKeys:x.bodyKeys,bodyPreview:x.bodyPreview})),null,2).slice(0,14000));}"
+C:\Users\Atanásio Lutiki\Downloads\FK-FICHA-KAMBA>node -e "const d=require('./data/collections/bantubet-diagnostics.json'); console.log(JSON.stringify({eventLikeNodes:d.dom.eventLikeNodes.filter(x=>/real madrid|paris|bayern|chelsea|roma|manchester city/i.test(x.text)), network:d.network.map(x=>({url:x.url,status:x.status,bodyKeys:x.bodyKeys,bodyPreview:x.bodyPreview})).slice(0,30)},null,2))"
+{
+  "eventLikeNodes": [],
+  "network": [
+    {
+      "url": "https://m.bantubet.co.ao/assets.json",
+      "status": 200,
+      "bodyKeys": [
+        "favicon",
+        "loader",
+        "logo"
+      ],
+      "bodyPreview": "{\"favicon\":\"/favicon.ico\",\"loader\":\"/loader.gif\",\"logo\":\"/logo.png\"}"
+    },
+    {
+      "url": "https://m.bantubet.co.ao/conf.json",
+      "status": 200,
+      "bodyKeys": [
+        "enabledProducts",
+        "cms",
+        "app",
+        "userAuthentication",
+        "statistics",
+        "sportsbook",
+        "releaseDate",
+        "accountNavigation",
+        "casino"
+      ],
+      "bodyPreview": "{\"enabledProducts\":{\"live\":true,\"pre_match\":true,\"live_calendar\":true,\"casino\":true,\"live_casino\":true,\"tournaments\":true,\"jackpots\":true,\"games\":true,\"e_sports\":true,\"virtual_sports\":true,\"tv_games\":true,\"horse_racing\":true,\"wonder_wheel\":true,\"promotions\":true,\"results\":true,\"poker\":true,\"pinnacle\":true,\"sport_tournaments\":true,\"casino_tournaments\":true,\"tv_game_atm\":true,\"exchange_shop\":true,\"win_wheel\":true,\"wonder_wheel_harmony\":true,\"horse_racing_bc\":true,\"pinnacle_esports\":true,\"asian_view\":true,\"wonder_wheel_world_cup\":true,\"popular_bets\":true,\"crypto_exchange\":true,\"vmania\":true,\"sport\":true,\"invest_book\":true,\"vivaro_social\":true,\"casino_live_rtp\":true},\"cms\":{\"cacheLayerSubdomain\":\"go\",\"enableFastDb\":true},\"app\":{\"footer\":{\"copyrightSince\":2021,\"showAgeRestriction\":true},\"preferences\":{\"language\":\"por\",\"timeFormat\":\"24h\",\"oddFormat\":0,\"hideBalance\":false,\"theme\":\"blue\"},\"site_id\":1869146,\"siteName\":\"Bantubet\",\"swarm\":{\"socketUrl\":\"wss://eu-swarm-newm.betconstruct.com/\"},\"logo\":{\"source\":\"/logo.png\"},\"socialIcons\":[{\"network\":\"youtube\",\"url\":{\"default\":\"https://www.youtube.com/channel/UCIX6M75y1dk0IWyvFpUNLbw\"}},{\"url\":{\"default\":\"https://t.me/BantuBet_Ang_bot\"},\"network\":\"telegram\"},{\"url\":{\"default\":\"https://www.instagram.com/bantubet\"},\"network\":\"instagram\"},{\"network\":\"facebook\",\"url\":{\"default\":\"https://www.facebook.com/bantubet/\"}}],\"availableLanguages\":{\"por\":{\"short\":\"PT\",\"full\":\"Português\",\"order\":2},\"eng\":{\"short\":\"EN\",\"full\":\"English\",\"order\":1,\"rtl\":false}},\"availableCountriesList\":[\"AO\"],\"promotionalBonuses\":{\"showClaimableInfoBeforeDeposit\":false},\"themes\":[{\"title\":\"Default theme\",\"theme\":\"default\",\"scheme\":{\"b\":\"#f1f1f1\",\"hero\":\"#ec6338\",\"accent\":\"#3769bb\",\"oc-1\":\"#ec6338\",\"oc-2\":\"#3769bb\"}},{\"title\":\"Dark theme\",\"theme\":\"blue\",\"scheme\":{\"hero\":\"#ec6338\",\"accent\":\"#eacb0b\",\"oc-1\":\"#1a7051\",\"oc-2\":\"#eacb0b\",\"b\":\"#1B2138\",\"header\":\"#0F1421\",\"menu\":\"#0f1321\",\"tab-navigation\":\"#0f1321\"}}],\"header\":{\"headerIcons\":[{\"target\":\"_self\",\"href\":\"?profile=open&account=balance&page=deposit&selectedGroup=all\",\"className\":\"bc-i-wallet\",\"showTo\":0},{\"target\":\"_self\",\"href\":\"/promotions/all\",\"className\":\"bc-i-promotions-3\",\"showTo\":0},{\"target\":\"_self\",\"href\":\"?profile=open&account=messages&page=inbox\",\"showTo\":1,\"className\":\"bc-i-message\"},{\"target\":\"_self\",\"href\":\"?profile=open&account=bonuses\",\"className\":\"bc-i-bonus\",\"showTo\":1}],\"navigation\":{\"mobile\":{\"genericMenu\":true}},\"headerCallPanel\":[{\"target\":\"_blank\",\"href\":\"https://www.facebook.com/bantubet/\",\"title\":\"facebook\"},{\"target\":\"_blank\",\"href\":\"https://www.instagram.com/bantubet/#\",\"title\":\"instagram\"},{\"target\":\"_blank\",\"href\":\"https://t.me/BantuBet_Ang_bot\",\"title\":\"telegram\"},{\"target\":\"_blank\",\"href\":\"https://www.youtube.com/channel/UCIX6M75y1dk0IWyvFpUNLbw\",\"title\":\"youtube\"}],\"showToHeaderCallPanel\":0,\"headerIconsStaticViewMaxCount\":5},\"tracking\":{\"internalDataspot\":{\"url\":\"https://dataspot-int-bucket.{domain}/configs/e1a28d395523bb8f26ee50e327f56c84.js\"},\"googleTagManagerId\":\"GTM-5W4N5DGF\",\"dataspot\":{\"url\":\"https://dataspot-bucket.{domain}/configs/4922dddb2ecdc7fca0a49d613a9e8079.js\"}},\"licences\":[[{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"},{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"}],[{\"config\":{\"eng\":\"[depth-limit]\",\"por\":\"[depth-limit]\"},\"type\":\"text\"}],[{\"config\":{\"src\":\"[depth-limit]\",\"fullWidth\":\"[depth-limit]\"},\"type\":\"image\"}]],\"liveChat\":{\"enabled\":true,\"showRegularButton\":false,\"hoory\":{\"token\":\"[redacted]\",\"baseUrl\":\"https://app.hoory.com\"}},\"socialSharingPlatforms\":[\"facebook\",\"twitter\",\"telegram\",\"whatsapp\"],\"partnerHost\":\"https://m.bantubet.co.ao\",\"jackpot\":{\"socketUrl\":\"wss://rgs-wss.betconstruct.com/jackpot\",\"enabled\":true},\"enableVerificationAutoGetCode\":true,\"promotions\":{\"showTitle\":false},\"getFormsConfigFromCms\":true,\"clientOrtakRewardPopup\":{\"enableRewardPopup\":false,\"destinationUrl\":\"destinationUrl\"},\"pageBuilderLayouts\":[\"homepage\",\"liveCasinoLandingPage\",\"casinoLandingPage\",\"casinoLobbyLandingPage\"],\"enableDynamicDomains\":1},\"userAuthentication\":{\"registration\":{\"autoSetCurrency\":{\"enabled\":true,\"availableList\":{}},\"minimumAllowedAgeByCountry\":{\"default\":\"18\"},\"defaultCountry\":\"AO\"},\"login\":{\"enabledForRestrictedCountries\":true},\"forgetPassword\":\"[redacted]\"},\"statistics\":{\"enabled\":true,\"showTeamLogos\":true,\"host\":\"https://statistics.fjykjczttspydxcx.com\"},\"sportsbook\":{\"betCloud\":{\"enabled\":false},\"betslip\":{\"favoriteStakesMultipliers\":[2,5,10],\"contentTabs\":[{\"type\":3,\"title\":\"Booking\",\"loginRequired\":false},{\"type\":0,\"title\":\"Betslip\"},{\"type\":4,\"title\":\"Bet Status\"},{\"title\":\"Open Bets\",\"loginRequired\":true,\"type\":1}],\"enableFrenchFreebet\":false},\"specialOptions\":[{\"label\":\"Popular Matches\",\"value\":\"popular-matches\"},{\"label\":\"Multiple of the day\",\"value\":\"multiple-of-the-day\"},{\"label\":\"Upcoming Matches\",\"value\":\"upcoming-matches\"},{\"label\":\"Popular competitions\",\"value\":\"popular-competitions\"},{\"label\":\"Boosted bets\",\"value\":\"boosted-bets\"},{\"label\":\"Today's bets\",\"value\":\"today-bets\"}],"
+    },
+    {
+      "url": "https://m.bantubet.co.ao/localConf.json",
+      "status": 200,
+      "bodyKeys": [
+        "firebase",
+        "formElements",
+        "userAuthentication",
+        "app",
+        "sportsbook",
+        "profile"
+      ],
+      "bodyPreview": "{\"firebase\":{\"apiKey\":\"[redacted]\",\"authDomain\":\"bantubet-a0814.firebaseapp.com\",\"projectId\":\"bantubet-a0814\",\"storageBucket\":\"bantubet-a0814.firebasestorage.app\",\"messagingSenderId\":\"1088402807482\",\"appId\":\"1:1088402807482:web:c5124547dfe660cbf5c083\"},\"formElements\":{\"password\":\"[redacted]\"},\"userAuthentication\":{\"login\":{\"formConfig\":[[[\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\"]]]},\"registration\":{\"formConfig\":[[[\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\"]]]},\"forgetPassword\":\"[redacted]\"},\"app\":{\"site_id\":1869146},\"sportsbook\":{\"betHistory\":{\"filterFormConfig\":[[[\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\"]]]}},\"profile\":{\"profileDetailsConfig\":[[[{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"}],[{\"type\":\"[depth-limit]\",\"props\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"className\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"options\":\"[depth-limit]\"}],[{\"type\":\"[depth-limit]\",\"className\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"props\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"}]]],\"profileSelfExclusionConfig\":[[[{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\"}]]],\"profileVerifyAccountFormConfig\":[[[{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"}]]],\"profileTimeOutConfig\":[[[{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\"}]]]}}"
+    },
+    {
+      "url": "https://m.bantubet.co.ao/pageBuilder/pageBuilderCssConfig.json",
+      "status": 200,
+      "bodyKeys": [
+        "colorScheme",
+        "selectedFont",
+        "contentBorder",
+        "backgroundImage"
+      ],
+      "bodyPreview": "{\"colorScheme\":{\"--b\":\"#f1f1f1\",\"--oc-1\":\"#ec6338\",\"--hero\":\"#ec6338\",\"--oc-2\":\"#3769bb\",\"--accent\":\"#3769bb\",\"--header\":\"#000C24\",\"--menu\":\"#000C24\",\"--tab-navigation\":\"#000C24\"},\"selectedFont\":\"Roboto, Arial, Helvetica, sans-serif\",\"contentBorder\":\"4px\",\"backgroundImage\":\"\"}"
+    },
+    {
+      "url": "https://m.bantubet.co.ao/dynamicallyStructuredPages.json",
+      "status": 200,
+      "bodyKeys": [
+        "dynamicallyStructuredPages"
+      ],
+      "bodyPreview": "{\"dynamicallyStructuredPages\":{\"28\":[{\"type\":\"ROW\",\"id\":\"-999917d3b47\",\"content\":[{\"type\":\"[depth-limit]\",\"id\":\"[depth-limit]\",\"content\":\"[depth-limit]\"}],\"settings\":{\"gridTemplate\":[\"[depth-limit]\"]}},{\"type\":\"ROW\",\"id\":\"-999917d3b4888\",\"content\":[{\"type\":\"[depth-limit]\",\"id\":\"[depth-limit]\",\"content\":\"[depth-limit]\"}],\"settings\":{\"gridTemplate\":[\"[depth-limit]\"]}},{\"type\":\"ROW\",\"id\":\"-999917d3b4777\",\"content\":[{\"type\":\"[depth-limit]\",\"id\":\"[depth-limit]\",\"content\":\"[depth-limit]\"}],\"settings\":{\"gridTemplate\":[\"[depth-limit]\"]}}]}}"
+    },
+    {
+      "url": "https://m.bantubet.co.ao/loader.gif",
+      "status": 200
+    },
+    {
+      "url": "https://www.google.com/ccm/collect",
+      "status": 200
+    },
+    {
+      "url": "https://m.bantubet.co.ao/pageBuilder/homepage.json",
+      "status": 200,
+      "bodyKeys": [
+        "name",
+        "layout",
+        "loading"
+      ],
+      "bodyPreview": "{\"name\":\"homepage\",\"layout\":[{\"type\":\"ROW\",\"id\":\"-999917d3b47\",\"content\":[{\"type\":\"COLUMN\",\"id\":\"-99991773f51\",\"content\":[\"[depth-limit]\"]}],\"settings\":{\"gridTemplate\":[12]}},{\"type\":\"ROW\",\"id\":\"-9999e9f3062\",\"content\":[{\"type\":\"COLUMN\",\"id\":\"-9999d6b3ca3\",\"content\":[\"[depth-limit]\"]}],\"settings\":{\"gridTemplate\":[12]}},{\"type\":\"ROW\",\"id\":\"id-999915a3e56\",\"content\":[{\"id\":\"id-99992ec35bb\",\"type\":\"COLUMN\",\"content\":[\"[depth-limit]\"]}],\"settings\":{\"gridTemplate\":[12]}},{\"type\":\"ROW\",\"id\":\"id-99995a735ea\",\"content\":[{\"id\":\"id-99996a53b1f\",\"type\":\"COLUMN\",\"content\":[\"[depth-limit]\"]}],\"settings\":{\"gridTemplate\":[12]}},{\"type\":\"ROW\",\"id\":\"-9999PromotedProduct1\",\"content\":[{\"type\":\"COLUMN\",\"id\":\"-99PromotedProductsWidget1\",\"content\":[\"[depth-limit]\"]}],\"settings\":{\"gridTemplate\":[12]}},{\"type\":\"ROW\",\"id\":\"id-999951b3f17\",\"content\":[{\"id\":\"id-9999c063ea1\",\"type\":\"COLUMN\",\"content\":[\"[depth-limit]\"]}],\"settings\":{\"gridTemplate\":[12]}},{\"type\":\"ROW\",\"id\":\"id-99990f93930\",\"content\":[{\"id\":\"id-99994bf3ed8\",\"type\":\"COLUMN\",\"content\":[\"[depth-limit]\"]}],\"settings\":{\"gridTemplate\":[12]}},{\"type\":\"ROW\",\"id\":\"-99994953d1cSkillGames\",\"content\":[{\"type\":\"COLUMN\",\"id\":\"-9999f293c65SkillGames\",\"content\":[\"[depth-limit]\"]}],\"settings\":{\"gridTemplate\":[12]}}],\"loading\":false}"
+    },
+    {
+      "url": "https://m.bantubet.co.ao/payments.json",
+      "status": 200,
+      "bodyKeys": [],
+      "bodyPreview": "[{\"name\":\"Dummy4\",\"order\":10,\"hideWithdrawButton\":true,\"depositFormFields\":[[[]]],\"withdrawFormFields\":[[[]]],\"depositPrefilledAmount\":0,\"withdrawPrefilledAmount\":0,\"depositInfoTextKey\":\"deposit_info_dummy3\",\"withdrawInfoTextKey\":\"withdraw_info_dummy3\",\"info\":{\"USD\":{\"depositProcessTime\":0,\"depositFee\":0,\"minDeposit\":1,\"maxDeposit\":10000},\"EUR\":{\"depositProcessTime\":0,\"depositFee\":0,\"minDeposit\":1,\"maxDeposit\":10000},\"TRY\":{\"depositProcessTime\":0,\"depositFee\":0,\"minDeposit\":1,\"maxDeposit\":10000},\"TOM\":{\"depositProcessTime\":0,\"depositFee\":0,\"minDeposit\":1,\"maxDeposit\":100000000},\"AOA\":{\"depositProcessTime\":0,\"depositFee\":0,\"minDeposit\":100,\"maxDeposit\":300000}},\"displayName\":\"AKI\",\"paymentId\":1518,\"backendId\":4218,\"badge\":\"instant\",\"translations\":{\"default\":{\"withdraw\":\"<p>.</p>\\n\",\"deposit\":\"<p>Faz o teu deposito com um agente AKI autorizado ou diretamente pelo aplicativo AKI</p>\\n\\n<p>Encontra um agente AKI&nbsp;<a href=\\\"https://aki.co.ao/agentes/localizar\\\">https://aki.co.ao/agentes/localizar</a>&nbsp;</p>\\n\\n<p>Baixa o aplicativo AKI:&nbsp;</p>\\n\\n<ul>\\n\\t<li><strong>Android</strong>: <a href=\\\"https://play.google.com/store/apps/details?id=ao.co.aki&amp;utm_source=website&amp;pli=1\\\">https://play.google.com/store/apps/details?id=ao.co.aki&amp;utm_source=website&amp;pli=1</a></li>\\n\\t<li><stro\",\"displayName\":\"AKI\",\"badge\":\"Instantâneo\"},\"eng\":{\"withdraw\":\"<p>.</p>\\n\",\"deposit\":\"<p>Make your deposit with an authorized AKI agent or directly through the AKI app.</p>\\n\\n<p>Find an AKI agent:&nbsp;<a href=\\\"https://aki.co.ao/agentes/localizar\\\" rel=\\\"noopener\\\" target=\\\"_new\\\">https://aki.co.ao/agentes/localizar</a></p>\\n\\n<p>Download the AKI app:</p>\\n\\n<ul>\\n\\t<li><strong>Android</strong>: <a href=\\\"https://play.google.com/store/apps/details?id=ao.co.aki&amp;utm_source=website&amp;pli=1\\\" rel=\\\"noopener\\\" target=\\\"_new\\\">https://play.google.com/store/apps/details?id=ao.co.aki&amp;utm_source=\",\"displayName\":\"AKI\",\"badge\":\"Instant\"}},\"image\":\"https://cmsbetconstruct.com/storage/medias/banutbet/payment_1518_1869146_6f5ce270dc6935fdb0c01f7da883f7c9.png\",\"src\":\"/storage/medias/banutbet/payment_1518_1869146_6f5ce270dc6935fdb0c01f7da883f7c9.png\"},{\"order\":3,\"name\":\"cash\",\"hasBetShops\":true,\"depositFormFields\":[[[]]],\"withdrawFormFields\":[[[{\"name\":\"[depth-limit]\",\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"placeholder\":\"[depth-limit]\",\"className\":\"[depth-limit]\",\"customAttrs\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"},{\"name\":\"[depth-limit]\",\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"className\":\"[depth-limit]\"}]]],\"depositInfoTextKey\":\"deposit_info_cash\",\"withdrawInfoTextKey\":\"withdraw_info_cash\",\"image\":\"https://cmsbetconstruct.com/storage/medias/banutbet/payment_1869146_9645131b1a09953bf8b086681e2782c9.png\",\"displayName\":\"Cash\",\"paymentId\":353,\"backendId\":0,\"info\":{\"AOA\":{\"withdrawProcessTime\":12,\"withdrawFee\":0,\"minWithdraw\":500,\"maxWithdraw\":10000}},\"badge\":null,\"translations\":{\"default\":{\"withdraw\":\"<p>Para efetuares um levantamento em dinheiro, deves:<p>\\n\\n<p>1. Escolher uma loja ou a localização de um Agente Autorizado<p>\\n\\n<p>Bantubet<p>\\n\\n<p>2. Introduzir o valor<p>\\n\\n<p>3. Carregar em RETIRAR<p>\\n\\n<p>Deves apresentar a tua identificação e ID de levantamento. Não<p>\\n\\n<p>há custos adicionais para este meio de levantamento.<p>\",\"deposit\":\"<p style=\\\"font-size: 14px;\\\">Para depositar sua conta de jogo através da&nbsp;<strong>Caixa</strong>&nbsp;registradora, é necessário:</p>\\n<ul>\\n<li>-Aproxime-se da loja de apostas do Organizador</li>\\n<li>-Forneça o seu ID de conta de jogo registrado no site do Organizador</li>\\n<li>-Forneça&nbsp;os fundos a serem depositados para o funcionário da caixa registradora</li>\\n<li>-Receba o recibo do valor depositado</li>\\n</ul>\",\"displayName\":\"Dinheiro\"},\"eng\":{\"withdraw\":\"<p class=\\\"MsoNormal\\\">To withdraw funds from your gaming account via cashier, it is necessary to:<br />Approach the Organizer's bet shops operating on the whole territory of RA at the addresses presented below, maintaining all anti-epidemic rules, i.e., keep social distance, wear a mask and gloves, avoid crowds.</p>\",\"deposit\":\"\",\"displayName\":\"Dinheiro\"}},\"src\":\"/storage/medias/banutbet/payment_1869146_9645131b1a09953bf8b086681e2782c9.png\"},{\"name\":\"ScrechCards\",\"order\":13,\"depositPrefilledAmount\":1,\"depositFormFields\":[[[{\"name\":\"[depth-limit]\",\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"required\":\"[depth-limit]\",\"placeholder\":\"[depth-limit]\",\"className\":\"[depth-limit]\",\"customAttrs\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"},{\"name\":\"[depth-limit]\",\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"value\":\"[depth-limit]\",\"placeholder\":\"[depth-limit]\",\"className\":\"[depth-limit]\",\"customAttrs\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"},{\"name\":\"[depth-limit]\",\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"className\":\"[depth-limit]\"}]]],\"withdrawFormFields\":[[[{\"name\":\"[depth-limit]\",\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"placeholder\":\"[depth-limit]\",\"className\":\"[depth-limit]\",\"custo"
+    },
+    {
+      "url": "https://ad.doubleclick.net/ccm/s/collect",
+      "status": 204
+    },
+    {
+      "url": "https://www.google.com/rmkt/collect/16911533166/",
+      "status": 200
+    },
+    {
+      "url": "https://www.google.com/ccm/collect",
+      "status": 200
+    },
+    {
+      "url": "https://www.googleadservices.com/ccm/conversion/16911533166/",
+      "status": 200
+    },
+    {
+      "url": "https://m.bantubet.co.ao/translations/por.json",
+      "status": 200,
+      "bodyKeys": [
+        "Code",
+        "IBAN",
+        "Bank Code",
+        "Amount is required",
+        "Do Deposit",
+        "Do Withdraw",
+        "amount",
+        "Wallet Number",
+        "Name Surname",
+        "Dummy4",
+        "Cash",
+        "Voucher",
+        "QR",
+        "Cards",
+        "ScrechCards",
+        "Bank transfer",
+        "Transferencia Bancaria",
+        "Crypto",
+        "Mobile",
+        "cash",
+        "Agent",
+        "WithdrawalNotAllowedUnplayedAmount",
+        "Bank Name",
+        "PendingWithdrawalRequests",
+        "PendingDepositRequests",
+        "Please make a successful card deposit through this method",
+        "Wallet",
+        "Open banking",
+        "Msisdn",
+        "ProxyPay",
+        "active_time_0_label",
+        "active_time_1200_label",
+        "active_time_14400_label",
+        "active_time_1800_label",
+        "active_time_21600_label",
+        "active_time_28800_label",
+        "active_time_3600_label",
+        "active_time_600_label",
+        "active_time_7200_label",
+        "agree_label",
+        "agree_required_message",
+        "balance_history_filter_from_date_label",
+        "bet_history_filter_from_date_label",
+        "bet_id_label",
+        "bet_type_label",
+        "body_label",
+        "body_placeholder",
+        "bonus_history_filter_from_date_label",
+        "casino_max_daily_bet_label",
+        "casino_max_single_bet_label",
+        "city_label",
+        "currency_name_label",
+        "currency_name_placeholder",
+        "daily_loss_label",
+        "doc_number_label",
+        "email_label",
+        "email_pattern_message",
+        "first_name_label",
+        "from_date_placeholder",
+        "gender_f_label"
+      ],
+      "bodyPreview": "{\"Code\":\"Código Voucher\",\"IBAN\":\"IBAN/extracto\",\"Bank Code\":\"Código bancário\",\"Amount is required\":\"O montante é obrigatório\",\"Do Deposit\":\"Depositar\",\"Do Withdraw\":\"Retirar\",\"amount\":\"Valor\",\"Wallet Number\":\"Número da carteira\",\"Name Surname\":\"Nome sobrenome\",\"Dummy4\":\"Dummy4\",\"Cash\":\"Dinheiro\",\"Voucher\":\"Voucher\",\"QR\":\"QR\",\"Cards\":\"Cartões\",\"ScrechCards\":\"ScrechCards\",\"Bank transfer\":\"Transferência bancária\",\"Transferencia Bancaria\":\"Transferencia Bancária\",\"Crypto\":\"Cripto\",\"Mobile\":\"Móvel\",\"cash\":\"dinheiro\",\"Agent\":\"Agente\",\"WithdrawalNotAllowedUnplayedAmount\":\"O levantamento de valores não jogados não é autorizado\",\"Bank Name\":\"Nome do banco\",\"PendingWithdrawalRequests\":\"Max. solicitações diarias : 3\",\"PendingDepositRequests\":\"Solicitudes pendentes de depósito\",\"Please make a successful card deposit through this method\":\"para fazer um saque deve fazer um depósito com sucesso mediante este método\",\"Wallet\":\"Carteira\",\"Open banking\":\"Banco aberto\",\"Msisdn\":\"Msisdn\",\"ProxyPay\":\"ProxyPay\",\"active_time_0_label\":\"Sem limite\",\"active_time_1200_label\":\"20 mins\",\"active_time_14400_label\":\"4 horas\",\"active_time_1800_label\":\"30 mins\",\"active_time_21600_label\":\"6 horas\",\"active_time_28800_label\":\"8 horas\",\"active_time_3600_label\":\"1 hora\",\"active_time_600_label\":\"10 mins\",\"active_time_7200_label\":\"2 horas\",\"agree_label\":\"Concordar com os termos e condições\",\"agree_required_message\":\"Você deve concordar com os termos e condições para continuar\",\"balance_history_filter_from_date_label\":\"Intervalo\",\"bet_history_filter_from_date_label\":\"Intervalo\",\"bet_id_label\":\"ID da aposta\",\"bet_type_label\":\"Tipo de aposta\",\"body_label\":\"Mensagem\",\"body_placeholder\":\"Insira o texto aqui\",\"bonus_history_filter_from_date_label\":\"Intervalo\",\"casino_max_daily_bet_label\":\"Quantia máxima para apostas diárias no Cassino\",\"casino_max_single_bet_label\":\"Quantia máxima para apostas únicas no Cassino\",\"city_label\":\"Cidade de Residência\",\"currency_name_label\":\"Moeda\",\"currency_name_placeholder\":\"Escolher moeda\",\"daily_loss_label\":\"Dia\",\"doc_number_label\":\"NIF / B.I. / Passaporte\",\"email_label\":\"E-mail\",\"email_pattern_message\":\"Por favor, insira um endereço de e-mail válido\",\"first_name_label\":\"Primeiro Nome\",\"from_date_placeholder\":\"De\",\"gender_f_label\":\"Feminino\",\"gender_label\":\"Género\",\"gender_m_label\":\"Masculino\",\"gender_placeholder\":\"Escolha o sexo\",\"iban_label\":\"AO06 xxxx xxxx xxxx\",\"last_name_label\":\"Último Nome\",\"last_name_pattern_message\":\"Forneça um sobrenome válido\",\"length_message\":\"Deve conter exatamente {1} dígitos\",\"login_limit_duration_0_label\":\"sem limite\",\"login_limit_duration_120_label\":\"2 horas\",\"login_limit_duration_240_label\":\"4 horas\",\"login_limit_duration_30_label\":\"30 mins\",\"login_limit_duration_360_label\":\"6 horas\",\"login_limit_duration_480_label\":\"8 horas\",\"login_limit_duration_60_label\":\"1 hora\",\"maxLength_message\":\"Máximo de {1} caracteres permitidos\",\"maxLength_v2_message\":\"Demasiado longo\",\"max_day_deposit_label\":\"Dia\",\"max_month_deposit_label\":\"Mês\",\"max_session_duration_daily_label\":\"[redacted]\",\"max_session_duration_monthly_label\":\"[redacted]\"}"
+    },
+    {
+      "url": "https://m.bantubet.co.ao/menus/header_menu_1869146_por.json",
+      "status": 200,
+      "bodyKeys": [],
+      "bodyPreview": "[{\"id\":7808,\"title\":\"AO VIVO\",\"type\":\"product\",\"value\":\"live\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"live\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"children\":[{\"id\":229749,\"title\":\"Eventos\",\"type\":\"product\",\"value\":\"live\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"live-2\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":229329,\"title\":\"Torneios\",\"type\":\"product\",\"value\":\"sport_tournaments\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"tournament-1\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":229345,\"title\":\"Estatísticas \",\"type\":\"link\",\"value\":\"https://statistics.bantubet.co.ao\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_blank\",\"icon\":\"stats\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]}]},{\"id\":7809,\"title\":\"DESPORTOS\",\"type\":\"product\",\"value\":\"live\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"sport\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"children\":[{\"id\":96669,\"title\":\"Eventos \",\"type\":\"product\",\"value\":\"pre_match\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"Balls\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":96877,\"title\":\"Torneios\",\"type\":\"product\",\"value\":\"sport_tournaments\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"tournament-1\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":183048,\"title\":\"Estatísticas\",\"type\":\"link\",\"value\":\"https://statistics.bantubet.co.ao\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_blank\",\"icon\":\"stats\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":278512,\"title\":\"Resultados\",\"type\":\"product\",\"value\":\"results\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":null,\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":278513,\"title\":\"Calendário ao vivo\",\"type\":\"product\",\"value\":\"live_calendar\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":null,\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]}]},{\"id\":7814,\"title\":\"CASINO\",\"type\":\"link\",\"value\":null,\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"casino\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"children\":[{\"id\":165304,\"title\":\"Casino\",\"type\":\"product\",\"value\":\"casino\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"LiveCasino\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":165305,\"title\":\"Torneios\",\"type\":\"product\",\"value\":\"casino_tournaments\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"Tournament3\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":275967,\"title\":\"Jackpots\",\"type\":\"product\",\"value\":\"jackpots\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"Jackpots2\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]}]},{\"id\":7815,\"title\":\"CASINO AO VIVO\",\"type\":\"product\",\"value\":\"live_casino\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"livecasino\",\"badge\":null,\"includedCou"
+    },
+    {
+      "url": "https://m.bantubet.co.ao/menus/app_menu_1869146_por.json",
+      "status": 200,
+      "bodyKeys": [],
+      "bodyPreview": "[{\"id\":7937,\"title\":\"Promoções\",\"type\":\"product\",\"value\":\"promotions\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"promotion\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":7939,\"title\":\"Torneios\",\"type\":\"product\",\"value\":\"casino_tournaments\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"tournament\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"children\":[{\"id\":17848,\"title\":\"Sport Tournaments\",\"type\":\"product\",\"value\":\"sport_tournaments\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"tournament\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":17846,\"title\":\"Casino Tournaments\",\"type\":\"product\",\"value\":\"sport_tournaments\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"tournament\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]}]},{\"id\":7925,\"title\":\"DESPORTOS\",\"type\":\"group\",\"value\":null,\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":null,\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":7927,\"title\":\"Ao-Vivo\",\"type\":\"product\",\"value\":\"live\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"live\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":7928,\"title\":\"Desportos\",\"type\":\"product\",\"value\":\"pre_match\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"prematch\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":7929,\"title\":\"E-sports\",\"type\":\"product\",\"value\":\"e_sports\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"E-sports\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]},{\"id\":7930,\"title\":\"Desportos virtuais\",\"type\":\"product\",\"value\":\"virtual_sports\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"virtualbetting\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"children\":[{\"id\":8295,\"title\":\"KIRON\",\"type\":\"game\",\"value\":\"40004001\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"VirtualFootballPro\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"kiron\"},{\"id\":8296,\"title\":\"EDGE GAMING\",\"type\":\"game\",\"value\":\"155000\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"virtualbetting\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"virtual-cock-fighting\"},{\"id\":8297,\"title\":\"EDGE GAMING\",\"type\":\"game\",\"value\":\"155001\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"RinkHockey\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"virtual-ice-hockey\"}]},{\"id\":7931,\"title\":\"CASINO\",\"type\":\"group\",\"value\":null,\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":null,\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]}]"
+    },
+    {
+      "url": "https://m.bantubet.co.ao/menus/footer_menu_1869146_por.json",
+      "status": 200,
+      "bodyKeys": [],
+      "bodyPreview": "[{\"id\":7829,\"title\":\"SOBRE NÓS\",\"type\":\"link\",\"value\":null,\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"children\":[{\"id\":8236,\"title\":\"Sobre nós\",\"type\":\"content\",\"value\":\"8579\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"sobre-nos\"},{\"id\":8237,\"title\":\"Contacte-nos\",\"type\":\"content\",\"value\":\"8580\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"contactenos\"},{\"id\":8238,\"title\":\"Programa de Afiliados\",\"type\":\"link\",\"value\":\"https://affiliates.bantubet.co.ao\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_blank\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[]}]},{\"id\":7844,\"title\":\"AJUDA\",\"type\":\"link\",\"value\":null,\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"children\":[{\"id\":8239,\"title\":\"Como Depositar\",\"type\":\"content\",\"value\":\"8581\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"como-depositar\"},{\"id\":8241,\"title\":\"Como Levantar\",\"type\":\"content\",\"value\":\"8582\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"como-levantar\"},{\"id\":8242,\"title\":\"Perguntas Frequentes\",\"type\":\"content\",\"value\":\"8583\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"perguntas-frequentes\"}]},{\"id\":7858,\"title\":\"INFORMAÇÕES\",\"type\":\"link\",\"value\":null,\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"children\":[{\"id\":8247,\"title\":\"Jogo Responsável\",\"type\":\"content\",\"value\":\"8587\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"jogo-responsavel\"},{\"id\":8248,\"title\":\"Termos e Condições\",\"type\":\"content\",\"value\":\"8588\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"termos-e-condicoes\"},{\"id\":8249,\"title\":\"Política De Privacidade\",\"type\":\"content\",\"value\":\"8589\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"politica-de-privacidade\"},{\"id\":8243,\"title\":\"Regulamento De Apostas\",\"type\":\"content\",\"value\":\"8584\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":\"\",\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"regulamento-de-apostas\"},{\"id\":101488,\"title\":\"Regulamento De Casino\",\"type\":\"content\",\"value\":\"8585\",\"profileTypes\":[],\"customProfileTypes\":[],\"profileStatus\":0,\"depositType\":0,\"showTo\":0,\"target\":\"_self\",\"icon\":null,\"badge\":null,\"includedCountries\":[],\"excludedCountries\":[],\"excludedCurrencies\":[],\"profileActionType\":1,\"ageRestriction\":null,\"middlewares\":[],\"alias\":\"regulamento-de-casino\"},{\"id\":101489,\"title\":\"Regulamento De Poker\",\"type\":\"content\",\"value\":\"858"
+    },
+    {
+      "url": "https://www.googleadservices.com/pagead/conversion/16911533166/",
+      "status": 200,
+      "bodyPreview": "event: message\ndata: {\"fetch\":[\"https://googleads.g.doubleclick.net/pagead/viewthroughconversion/16911533166/?random=1919350643&cv=11&fst=1794317646102&fmt=8&bg=ffffff&guid=ON&async=1&en=conversion&gtm=45be6b61v9242561738za20gzb9243541573zd9243541573xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~118131810~118897920~118897930~120213116~120385423~120412526~120420416~120469145~120469153~121191153~121246026~121246034~123329123~123814185&u_w=1440&u_h=1000&url=https%3A%2F%2Fm.bantubet.co.ao%2Fpt%2Fsports%2Fhome&rcb=6&label=LEz5CKixhKkaEO6IhoA_&gtm_ee=1&frm=0&tiba=Bantubet%20Angola%20%7C%20Apostas%20Desportivas%20e%20Casino%20Online&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=217392550.1794316700&uaa=x86&uab=64&uafvl=Not-A.Brand%3B99.0.0.0%7CGoogle%2520Chrome%3B157.0.8103.39%7CChromium%3B157.0.8103.39&uamb=0&uam=&uap=Windows&uapv=14.0.0&uaw=0&ec_mode=a&oidsrc=3&ecsid2=1430726590.1794316700&_tu=ABA&gcl_ctr=2~0~0~0&data=event%3Dconversion&category=acrcp_v1_512&em=tv.1&emd=tvd.1&ept=5&ct_cookie_present=false&eoid=CkgKEQiAnsvXBhDn0buQ-9D63LkBEjMAKrkUFFpolvQlRdu8N9EJsZz4-R_iavz9A_emFqSw-UxyjjAsjUcyfS6bbCLKKaJZc_Lw_wcB&crd=CLTesQII8t-xAgit4bECCK_hsQIIobixAgixwbECCLDBsQIIscOxAg"
+    },
+    {
+      "url": "https://geoapi2.bcapps.org/",
+      "status": 200,
+      "bodyKeys": [
+        "city",
+        "continentCode",
+        "continentName",
+        "countryCode",
+        "countryName",
+        "ipAddress",
+        "latitude",
+        "longitude",
+        "statusCode",
+        "subdivisions_iso_code",
+        "subdivisions_name",
+        "zipCode"
+      ],
+      "bodyPreview": "{\"city\":\"Luanda\",\"continentCode\":\"AF\",\"continentName\":\"Africa\",\"countryCode\":\"AO\",\"countryName\":\"Angola\",\"ipAddress\":\"[redacted]\",\"latitude\":\"[redacted]\",\"longitude\":\"[redacted]\",\"statusCode\":\"OK\",\"subdivisions_iso_code\":\"LUA\",\"subdivisions_name\":\"Luanda Province\",\"zipCode\":\"[redacted]\"}"
+    },
+    {
+      "url": "https://analytics.google.com/g/collect",
+      "status": 204,
+      "bodyPreview": ""
+    },
+    {
+      "url": "https://m.bantubet.co.ao/header.json",
+      "status": 200,
+      "bodyKeys": [],
+      "bodyPreview": "[{\"type\":\"ROW\",\"id\":\"-9999PromotedProducts\",\"content\":[{\"type\":\"COLUMN\",\"id\":\"-99PromotedProductsWidget\",\"content\":[{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"settings\":\"[depth-limit]\"}]}],\"settings\":{\"gridTemplate\":[12]}}]"
+    },
+    {
+      "url": "https://m.bantubet.co.ao/pageBuilder/pageBuilderHeaderInfo.json",
+      "status": 200,
+      "bodyKeys": [
+        "name",
+        "layout",
+        "loading"
+      ],
+      "bodyPreview": "{\"name\":\"pageBuilderHeaderInfo\",\"layout\":[{\"type\":\"ROW\",\"id\":\"-9999PromotedProducts\",\"content\":[{\"type\":\"COLUMN\",\"id\":\"-99PromotedProductsWidget\",\"content\":[\"[depth-limit]\"]}],\"settings\":{\"gridTemplate\":[12]}}],\"loading\":false}"
+    },
+    {
+      "url": "https://icons.bantubet.co.ao/svg/live.json",
+      "status": 200,
+      "bodyKeys": [
+        "paths",
+        "viewBox"
+      ],
+      "bodyPreview": "{\"paths\":[\"M512 832.009c-176.736 0-320.002-143.273-320.002-320.005 0-176.725 143.266-320.002 320.002-320.002 176.728 0 320.002 143.277 320.002 320.002 0 176.732-143.273 320.005-320.002 320.005zM512 64.005c-247.424 0-448.002 200.578-448.002 448.002s200.578 448.002 448.002 448.002c247.424 0 448.002-200.578 448.002-448.002s-200.578-448.002-448.002-448.002zM512 1024c-282.772 0-512-229.228-512-511.996s229.228-512.004 512-512.004c282.772 0 512 229.235 512 512.004s-229.228 511.996-512 511.996z\"],\"viewBox\":\"0 0 1024 1024\"}"
+    },
+    {
+      "url": "https://icons.bantubet.co.ao/svg/prematch.json",
+      "status": 200,
+      "bodyKeys": [
+        "paths",
+        "viewBox"
+      ],
+      "bodyPreview": "{\"paths\":[\"M560.599-0h-195.048c-26.819 0-48.762 21.943-48.762 48.762s21.943 48.762 48.762 48.762h195.048c26.819 0 48.762-21.943 48.762-48.762s-21.943-48.762-48.762-48.762zM463.075 633.905c26.819 0 48.762-21.943 48.762-48.762v-195.048c0-26.819-21.943-48.762-48.762-48.762s-48.762 21.943-48.762 48.762v195.048c0 26.819 21.943 48.762 48.762 48.762zM805.871 311.589l36.571-36.571c18.53-18.53 19.017-49.25 0-68.267l-0.488-0.488c-19.017-19.017-49.25-18.53-68.267 0l-36.571 36.571c-75.581-60.465-170.667-96.549-274.042\"],\"viewBox\":\"0 0 926 1024\"}"
+    },
+    {
+      "url": "https://icons.bantubet.co.ao/svg/betslip.json",
+      "status": 200,
+      "bodyKeys": [
+        "paths",
+        "viewBox"
+      ],
+      "bodyPreview": "{\"paths\":[\"M982.204 0.522c-6.792 0-13.584 2.612-18.286 7.837l-41.273 41.273c-10.449 10.449-26.645 10.449-37.094 0l-41.273-41.273c-10.449-10.449-26.645-10.449-37.094 0l-41.273 41.273c-10.449 10.449-26.645 10.449-37.094 0l-41.273-41.273c-10.449-10.449-26.645-10.449-37.094 0l-41.273 41.273c-10.449 10.449-26.645 10.449-37.094 0l-41.273-41.273c-10.449-10.449-26.645-10.449-37.094 0l-41.273 41.273c-10.449 10.449-26.645 10.449-37.094 0l-41.796-41.796c-10.449-10.449-26.645-10.449-37.094 0l-41.273 41.796c-10.449 10.\"],\"viewBox\":\"0 0 1024 1024\"}"
+    },
+    {
+      "url": "https://icons.bantubet.co.ao/svg/slots.json",
+      "status": 200,
+      "bodyKeys": [
+        "paths",
+        "viewBox"
+      ],
+      "bodyPreview": "{\"paths\":[\"M905.576 175.995c53.123 0 96.167 46.287 96.167 103.363v0 465.281c0 57.098-43.044 103.363-96.167 103.363v0h-275.152c-53.123 0-96.167-46.267-96.167-103.363v0-465.281c0-57.077 43.044-103.363 96.167-103.363v0zM371.312 175.995c53.12 0 96.163 46.287 96.163 103.363v0 465.281c0 57.098-43.043 103.363-96.163 103.363v0h-275.16c-53.101 0-96.163-46.267-96.163-103.363v0-465.281c0-57.077 43.062-103.363 96.163-103.363v0zM1439.843 175.995c53.123 0 96.167 46.268 96.167 103.368v0 465.275c0 57.1-43.044 103.368-96.1\"],\"viewBox\":\"0 0 1536 1024\"}"
+    },
+    {
+      "url": "https://bc-status.betconstruct.workers.dev/",
+      "status": 200,
+      "bodyKeys": [
+        "maintenance",
+        "startTime",
+        "endTime"
+      ],
+      "bodyPreview": "{\"maintenance\":false,\"startTime\":null,\"endTime\":null}"
+    },
+    {
+      "url": "https://go-cms.bantubet.co.ao/api/public/v1/por/partners/1869146/popups",
+      "status": 200,
+      "bodyKeys": [
+        "code",
+        "text",
+        "success",
+        "data"
+      ],
+      "bodyPreview": "{\"code\":200,\"text\":\"OK\",\"success\":true,\"data\":[{\"profileTypes\":[],\"depositType\":0,\"profileStatus\":0,\"customProfileTypes\":[],\"profileActionType\":1,\"ageRestriction\":null,\"id\":28918,\"showTo\":1,\"target\":\"_blank\",\"repeatTime\":0,\"excludedCurrencies\":[],\"showOnPages\":[\"casino\"],\"showOnPage\":null,\"type\":\"per_page\",\"showOnType\":1,\"archivedAt\":null,\"title\":\"AVI COM 4 APOSTAS\",\"content\":\"<p><img alt=\\\"\\\" src=\\\"https://icons.bantubet.co.ao/storage/medias/banutbet/media_1869146_34750d8b8ceb18afdd783070dc7eb4d4.png\\\" style=\\\"width: 1200px; height: 1200px;\\\" /></p>\\n\",\"href\":\"https://m.bantubet.co.ao/pt/casino/slots?openGames=500000397-real&gameNames=Avi\"}]}"
+    },
+    {
+      "url": "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/16911533166/",
+      "status": 302
+    },
+    {
+      "url": "https://www.google.com/pagead/1p-conversion/16911533166/",
+      "status": 302
+    }
+  ]
+}
 
-### bantubet
-URL: https://m.bantubet.co.ao/pt/sports/home
-TEXTO: ENTRAR INSCREVER-SE Jogos em destaque UEFA Liga de Campeões (Feminino) BK Hacken (Wom) 10 nov 18:45 Chelsea LFC (Mulh) W1 11.00 X 7.00 W2 1.16 UEFA Liga de Campeões (Feminino) Real Madrid (Wom) 10 nov 18:45 Paris (Mulh) W1 1.46 X 5.50 W2 4.40 UEFA Liga de Campeões (Feminino) AS Roma (Wom) 10 nov 21:00 Servette FC Chenois (Wom) W1 1.23 X 5.90 W2 8.80 UEFA Liga de Campeões (Feminino) Paris Saint-Germain (Wom) 10 nov 21:00 Bayern Munich (Wom) W1 3.84 X 3.76 W2 1.76 UEFA Liga de Campeões (Feminino) Inter Milan (Wom) 10 nov 21:00 Manchester City LFC (Wom) W1 5.70 X 5.90 W2 1.33 WTA Finals - Quadra Dura Marta Kostyuk 10 nov 21:00 Jessica Pegula W1 2.40 W2 1.52 WTA Finals - Quadra Dura Coco Gauff 10 nov 22:30 Linda Noskova W1 1.57 W2 2.28 Ao Vivo Odds melhoradas Múltiplas do Dia Competições populares Jogos populares Próximas partidas Futebol 39 Basquetebol 50 Voleibol 17 Ténis 48 Hóquei no Gelo 6 Ténis de Mesa 32 Futsal 1 MMA 2 Críquete 7 Sinuca 1 Pólo Aquático 1 Counter-Strike 2 7 Dota 2 7 League of Legends 1 Valorant 1 Mobile Legends 2 E-Futebol 12 E-basquetebol 2 StarCraft 2 1 Resultado do Jogo Dupla Chance Empate anula aposta Handicap de Golos Total de golos no jogo Ambas equipas marcarão Ambas as Equipas Marcam 2 ou mais Golos Team 1 Marcará Team 2 Marcará Resultado da 1º Parte Total de Golos na 1º Parte Inglaterra Professional Development League Hull City U21 0 Fleetwood Town U21 0 Resultado do Jogo 1 1.42 X 4.35 2 5.40 Dupla Chance - - - Empate anula aposta - - Handicap de Golos - - Total de golos no jogo - - Ambas equipas marcarão - - Ambas as Equipas Marcam 2 ou mais Golos - - Hull City U21 Marcará - - Fleetwood Town U21 Marcará - - Resultado da 1º Parte - - - Total de Golos na 1º Parte - - 1ra metade 0 : 0, (0:0) 16` +125 SRL Matches Club Friendlies SRL OGC Nice SRL 1 Trabzonspor SRL 1 Resultado do Jogo 1 3.00 X 1.90 2 3.80 Dupla Chance - - - Empate anula aposta - - Handicap de Golos - - Total de golos no jogo - - Ambas equipas marcarão - - Ambas as Equipas Marcam 2 ou mais Golos - - OGC Nice SRL Marcará - - Trabzonspor SRL Marcará - - Resultado da 1º Parte - - - Total de Golos na 1º Parte - - 2da metade 1 : 1, (1:1), (0:0) 61` +42 Partidas Virtuais Betual England Premier League Sunderland Virtual 2 Aston Villa Virtual 0 Resultado do Jogo 1 1.05 X 15.00 2 90.00 Dupla Chance - - - Empate anula aposta - - Handicap de Golos - - Total de golos no jogo - - Ambas equipas marcarão - - Ambas as Equipas Marcam 2 ou mais Golos - - Sunderland Virtual Marcará - - Aston Villa Virtual Marcará - - Resultado da 1º Parte - - - Total de Golos na 1º Parte - - 2da metade 2 : 0, (2:0), (0:0) 19` +35 Chelsea Virtual 1 Everton Virtual 0 Resultado do Jogo 1 1.20 X 6.20 2 32.00 Dupla Chance - - - Empate anula aposta - - Handicap de Golos - - Total de golos no jogo - - Ambas equipas marcarão - - Ambas as Equipas Marcam 2 ou mais Golos - - Chelsea Virtual Marcará - - Everton Virtual Marcará - - Resultado da 1º Parte - - - Total de Golos na 1º Parte - - 2da metade 1 : 0, (1:0), (0:0) 19` +37 Newcastle United Virtual 1 Fulham Virtual 0 Resultado do Jogo 1 1.23 X 5.60 2 26.00 Dupla Chance - - - Empate anula aposta - - Handicap de Golos - - Total de golos no jogo - - Ambas equipas marcarão - - Ambas as Equipas Marcam 2 ou mais Golos - - Newcastle United Virtual Marcará - - Fulham Virtual Marcará - - Resultado da 1º Parte - - - Total de Golos na 1º Parte - - 2da metade 1 : 0, (1:0), (0:0) 19` +36 Hull City Virtual 1 Arsenal Virtual 1 Resultado do Jogo 1 10.00 X 2.65 2 1.80 Dupla Chance - - - Empate anula aposta - - Handicap de Golos - - Total de golos no jogo - - Ambas equipas marcarão - - Ambas as Equipas Marcam 2 ou mais Golos - - Hull City Virtual Marcará - - Arsenal Virtual Marcará - - Resultado da 1º Parte - - - Total de Golos na 1º Parte - - 2da metade 1 : 1, (1:1), (0:0) 19` +36 Ipswich Town Virtual 0 Brighton and Hove Albion Virtual 2 Resultado do Jogo 1 140.00 X 19.00 2 1.03 Dupla Chance - - - Empate anula aposta - - Handicap de Golos - - Total de golos no jogo - - Ambas equipas marcarão - - Ambas as Equipas Marcam 2 ou mais Golos - - Ipswich Town Virtual Marcará - - Brighton and Hove Albion Virtual Marcará - - Resultado da 1º Parte - - - Total de Golos na 1º Parte - - 2da metade 0 : 2, (0:2), (0:0) 19` +36 Brentford Virtual 0 Crystal Palace Virtual 0 Resultado do Jogo 1 3.20 X 2.18 2 3.80 Dupla Chance - - - Empate anula aposta - - Handicap de Golos - - Total de golos no jogo - - Ambas equipas marcarão - - Ambas as Equipas Marcam 2 ou mais Golos - - Brentford Virtual Marcará - - Crystal Palace Virtual Marcará - - Resultado da 1º Parte - - - Total de Golos na 1º Parte - - 2da metade 0 : 0, (0:0), (0:0) 19` +38 Nottingham Forest Virtual 2 Manchester United Virtual 1 Resultado do Jogo 1 1.47 X 3.85 2 11.00 Dupla Chance - - - Empate anula aposta - - Handicap de Golos - - Total de golos no jogo - - Ambas equipas marcarão - - Ambas as Equipas Marcam 2 ou mais Golos - - Nottingham Forest Virtual Marcará - - Manchester United Virtual Marcará - - Resultado da 1º Parte - - - Total de Golos na 1º Parte - - 2da metade 2 : 1, (2:1), (0:0) 19` +36 Manchester City Virtual 0 Bournemouth Virtual 1 Resultado do Jogo 1 5.90 X 3.15 2 1.83 Dupla Chance - - - Empate anula aposta - - Handicap de Golos - - Total de golos no jogo - - Ambas equipas marcarão - - Ambas as Equipas Marcam 2 ou mais Golos - - Manchester City Virtual Marcará - - Bournemouth Virtual Marcará - - Resultado da 1º Parte - - - Total de Golos na 1º Parte - - 2da metade 0 : 1, (0:1), (0:0) 19` +40 Mostrar mais CONTATE O SUPORTE ENG POR SOBRE NÓS Sobre Nós Contacte-Nos Programa De Afiliados AJUDA Como Depositar Como Levantar Perguntas Frequentes INFORMAÇÕES Jogo Responsável Termos E Condições Política De Privacidade Regulamento De Apostas Regulamento De Casino Regulamento De Poker OUTROS Calendário Estatísticas BLOG Como Apostar Com Segurança Como Melhorar As Tuas Apostas Como Fazer Apostas Sensacionais Conselhos De Apostas Para O Futebol Descobrindo A Confiança Nas Apostas Online Desbloqueando A Emoção Nas Apostas Online Como Jogar Aviator Online Na Bantubet A Bantubet.co.ao é licenciada e regulada pelo Instituto de Supervisão de Jogos de Angola, de acordo com a Licença de jogos on-line Nº B20081200360166656754/ISJ/MF/20 Jogue com responsabilidade, para mais informações contacte www.begambleaware.org PAGAMENTOS 18+ 2021 - 2026 Bantubet Ao Vivo Desportos Boletim de apostas Casino A última Aposta Especial durou 32 minutos Quem não tinha notificações ativas, não chegou a tempo. Ativa agora e não fiques de fora da próxima Agora não Ativar Notificações You have a new message 💫 Come back to keep chatting
-TITULOS: ["Jogos em destaque","SOBRE NÓS","AJUDA","INFORMAÇÕES","OUTROS","BLOG"]
-REDE: [
-  {
-    "status": 200,
-    "url": "https://m.bantubet.co.ao/localConf.json",
-    "bodyKeys": [
-      "firebase",
-      "formElements",
-      "userAuthentication",
-      "app",
-      "sportsbook",
-      "profile"
-    ],
-    "bodyPreview": "{\"firebase\":{\"apiKey\":\"[redacted]\",\"authDomain\":\"bantubet-a0814.firebaseapp.com\",\"projectId\":\"bantubet-a0814\",\"storageBucket\":\"bantubet-a0814.firebasestorage.app\",\"messagingSenderId\":\"1088402807482\",\"appId\":\"1:1088402807482:web:c5124547dfe660cbf5c083\"},\"formElements\":{\"password\":\"[redacted]\"},\"userAuthentication\":{\"login\":{\"formConfig\":[[[\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\"]]]},\"registration\":{\"formConfig\":[[[\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\"]]]},\"forgetPassword\":\"[redacted]\"},\"app\":{\"site_id\":1869146},\"sportsbook\":{\"betHistory\":{\"filterFormConfig\":[[[\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\"]]]}},\"profile\":{\"profileDetailsConfig\":[[[{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"}],[{\"type\":\"[depth-limit]\",\"props\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"className\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"options\":\"[depth-limit]\"}],[{\"type\":\"[depth-limit]\",\"className\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"props\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"}]]],\"profileSelfExclusionConfig\":[[[{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\"}]]],\"profileVerifyAccountFormConfig\":[[[{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"}]]],\"profileTimeOutConfig\":[[[{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\"}]]]}}"
-  },
-  {
-    "status": 200,
-    "url": "https://m.bantubet.co.ao/conf.json",
-    "bodyKeys": [
-      "enabledProducts",
-      "cms",
-      "app",
-      "userAuthentication",
-      "statistics",
-      "sportsbook",
-      "releaseDate",
-      "accountNavigation",
-      "casino"
-    ],
-    "bodyPreview": "{\"enabledProducts\":{\"live\":true,\"pre_match\":true,\"live_calendar\":true,\"casino\":true,\"live_casino\":true,\"tournaments\":true,\"jackpots\":true,\"games\":true,\"e_sports\":true,\"virtual_sports\":true,\"tv_games\":true,\"horse_racing\":true,\"wonder_wheel\":true,\"promotions\":true,\"results\":true,\"poker\":true,\"pinnacle\":true,\"sport_tournaments\":true,\"casino_tournaments\":true,\"tv_game_atm\":true,\"exchange_shop\":true,\"win_wheel\":true,\"wonder_wheel_harmony\":true,\"horse_racing_bc\":true,\"pinnacle_esports\":true,\"asian_view\":true,\"wonder_wheel_world_cup\":true,\"popular_bets\":true,\"crypto_exchange\":true,\"vmania\":true,\"sport\":true,\"invest_book\":true,\"vivaro_social\":true,\"casino_live_rtp\":true},\"cms\":{\"cacheLayerSubdomain\":\"go\",\"enableFastDb\":true},\"app\":{\"footer\":{\"copyrightSince\":2021,\"showAgeRestriction\":true},\"preferences\":{\"language\":\"por\",\"timeFormat\":\"24h\",\"oddFormat\":0,\"hideBalance\":false,\"theme\":\"blue\"},\"site_id\":1869146,\"siteName\":\"Bantubet\",\"swarm\":{\"socketUrl\":\"wss://eu-swarm-newm.betconstruct.com/\"},\"logo\":{\"source\":\"/logo.png\"},\"socialIcons\":[{\"network\":\"youtube\",\"url\":{\"default\":\"https://www.youtube.com/channel/UCIX6M75y1dk0IWyvFpUNLbw\"}},{\"url\":{\"default\":\"https://t.me/BantuBet_Ang_bot\"},\"network\":\"telegram\"},{\"url\":{\"default\":\"https://www.instagram.com/bantubet\"},\"network\":\"instagram\"},{\"network\":\"facebook\",\"url\":{\"default\":\"https://www.facebook.com/bantubet/\"}}],\"availableLanguages\":{\"por\":{\"short\":\"PT\",\"full\":\"Português\",\"order\":2},\"eng\":{\"short\":\"EN\",\"full\":\"English\",\"order\":1,\"rtl\":false}},\"availableCountriesList\":[\"AO\"],\"promotionalBonuses\":{\"showClaimableInfoBeforeDeposit\":false},\"themes\":[{\"title\":\"Default theme\",\"theme\":\"default\",\"scheme\":{\"b\":\"#f1f1f1\",\"hero\":\"#ec6338\",\"accent\":\"#3769bb\",\"oc-1\":\"#ec6338\",\"oc-2\":\"#3769bb\"}},{\"title\":\"Dark theme\",\"theme\":\"blue\",\"scheme\":{\"hero\":\"#ec6338\",\"accent\":\"#eacb0b\",\"oc-1\":\"#1a7051\",\"oc-2\":\"#eacb0b\",\"b\":\"#1B2138\",\"header\":\"#0F1421\",\"menu\":\"#0f1321\",\"tab-navigation\":\"#0f1321\"}}],\"header\":{\"headerIcons\":[{\"target\":\"_self\",\"href\":\"?profile=open&account=balance&page=deposit&selectedGroup=all\",\"className\":\"bc-i-wallet\",\"showTo\":0},{\"target\":\"_self\",\"href\":\"/promotions/all\",\"className\":\"bc-i-promotions-3\",\"showTo\":0},{\"target\":\"_self\",\"href\":\"?profile=open&account=messages&page=inbox\",\"showTo\":1,\"className\":\"bc-i-message\"},{\"target\":\"_self\",\"href\":\"?profile=open&account=bonuses\",\"className\":\"bc-i-bonus\",\"showTo\":1}],\"navigation\":{\"mobile\":{\"genericMenu\":true}},\"headerCallPanel\":[{\"target\":\"_blank\",\"href\":\"https://www.facebook.com/bantubet/\",\"title\":\"facebook\"},{\"target\":\"_blank\",\"href\":\"https://www.instagram.com/bantubet/#\",\"title\":\"instagram\"},{\"target\":\"_blank\",\"href\":\"https://t.me/BantuBet_Ang_bot\",\"title\":\"telegram\"},{\"target\":\"_blank\",\"href\":\"https://www.youtube.com/channel/UCIX6M75y1dk0IWyvFpUNLbw\",\"title\":\"youtube\"}],\"showToHeaderCallPanel\":0,\"headerIconsStaticViewMaxCount\":5},\"tracking\":{\"internalDataspot\":{\"url\":\"https://dataspot-int-bucket.{domain}/configs/e1a28d395523bb8f26ee50e327f56c84.js\"},\"googleTagManagerId\":\"GTM-5W4N5DGF\",\"dataspot\":{\"url\":\"https://dataspot-bucket.{domain}/configs/4922dddb2ecdc7fca0a49d613a9e8079.js\"}},\"licences\":[[{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"},{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"}],[{\"config\":{\"eng\":\"[depth-limit]\",\"por\":\"[depth-limit]\"},\"type\":\"text\"}],[{\"config\":{\"src\":\"[depth-limit]\",\"fullWidth\":\"[depth-limit]\"},\"type\":\"image\"}]],\"liveChat\":{\"enabled\":true,\"showRegularButton\":false,\"hoory\":{\"token\":\"[redacted]\",\"baseUrl\":\"https://app.hoory.com\"}},\"socialSharingPlatforms\":[\"facebook\",\"twitter\",\"telegram\",\"whatsapp\"],\"partnerHost\":\"https://m.bantubet.co.ao\",\"jackpot\":{\"socketUrl\":\"wss://rgs-wss.betconstruct.com/jackpot\",\"enabled\":true},\"enableVerificationAutoGetCode\":true,\"promotions\":{\"showTitle\":false},\"getFormsConfigFromCms\":true,\"clientOrtakRewardPopup\":{\"enableRewardPopup\":false,\"destinationUrl\":\"destinationUrl\"},\"pageBuilderLayouts\":[\"homepage\",\"liveCasinoLandingPage\",\"casinoLandingPage\",\"casinoLobbyLandingPage\"],\"enableDynamicDomains\":1},\"userAuthentication\":{\"registration\":{\"autoSetCurrency\":{\"enabled\":true,\"availableList\":{}},\"minimumAllowedAgeByCountry\":{\"default\":\"18\"},\"defaultCountry\":\"AO\"},\"login\":{\"enabledForRestrictedCountries\":true},\"forgetPassword\":\"[redacted]\"},\"statistics\":{\"enabled\":true,\"showTeamLogos\":true,\"host\":\"https://statistics.fjykjczttspydxcx.com\"},\"sportsbook\":{\"betCloud\":{\"enabled\":false},\"betslip\":{\"favoriteStakesMultipliers\":[2,5,10],\"contentTabs\":[{\"type\":3,\"title\":\"Booking\",\"loginRequired\":false},{\"type\":0,\"title\":\"Betslip\"},{\"type\":4,\"title\":\"Bet Status\"},{\"title\":\"Open Bets\",\"loginRequired\":true,\"type\":1}],\"enableFrenchFreebet\":false},\"specialOptions\":[{\"label\":\"Popular Matches\",\"value\":\"popular-matches\"},{\"label\":\"Multiple of the day\",\"value\":\"multiple-of-the-day\"},{\"label\":\"Upcoming Matches\",\"value\":\"upcoming-matches\"},{\"label\":\"Popular competitions\",\"value\":\"popular-competitions\"},{\"label\":\"Boosted bets\",\"value\":\"boosted-bets\"},{\"label\":\"Today's bets\",\"value\":\"today-bets\"}],"
-  },
-  {
-    "status": 200,
-    "url": "https://m.bantubet.co.ao/assets.json",
-    "bodyKeys": [
-      "favicon",
-      "loader",
-      "logo"
-    ],
-    "bodyPreview": "{\"favicon\":\"/favicon.ico\",\"loader\":\"/loader.gif\",\"logo\":\"/logo.png\"}"
-  },
-  {
-    "status": 200,
-    "url": "https://m.bantubet.co.ao/pageBuilder/pageBuilderCssConfig.json",
-    "bodyKeys": [
-      "colorScheme",
-      "selectedFont",
-      "contentBorder",
-      "backgroundImage"
-    ],
-    "bodyPreview": "{\"colorScheme\":{\"--b\":\"#f1f1f1\",\"--oc-1\":\"#ec6338\",\"--hero\":\"#ec6338\",\"--oc-2\":\"#3769bb\",\"--accent\":\"#3769bb\",\"--header\":\"#000C24\",\"--menu\":\"#000C24\",\"--tab-navigation\":\"#000C24\"},\"selectedFont\":\"Roboto, Arial, Helvetica, sans-serif\",\"contentBorder\":\"4px\",\"backgroundImage\":\"\"}"
-  },
-  {
-    "status": 200,
-    "url": "https://m.bantubet.co.ao/dynamicallyStructuredPages.json",
-    "bodyKeys": [
-      "dynamicallyStructuredPages"
-    ],
-    "bodyPreview": "{\"dynamicallyStructuredPages\":{\"28\":[{\"type\":\"ROW\",\"id\":\"-999917d3b47\",\"content\":[{\"type\":\"[depth-limit]\",\"id\":\"[depth-limit]\",\"content\":\"[depth-limit]\"}],\"settings\":{\"gridTemplate\":[\"[depth-limit]\"]}},{\"type\":\"ROW\",\"id\":\"-999917d3b4888\",\"content\":[{\"type\":\"[depth-limit]\",\"id\":\"[depth-limit]\",\"content\":\"[depth-limit]\"}],\"settings\":{\"gridTemplate\":[\"[depth-limit]\"]}},{\"type\":\"ROW\",\"id\":\"-999917d3b4777\",\"content\":[{\"type\":\"[depth-limit]\",\"id\":\"[depth-limit]\",\"content\":\"[depth-limit]\"}],\"settings\":{\"gridTemplate\":[\"[depth-limit]\"]}}]}}"
-  },
-  {
-    "status": 200,
-    "url": "https://m.bantubet.co.ao/loader.gif"
-  },
-  {
-    "status": 200,
-    "url": "https://www.google.com/rmkt/collect/16911533166/"
-  },
-  {
-    "status": 200,
-    "url": "https://www.google.com/ccm/collect"
-  },
-  {
-    "status": 200,
-    "url": "https://www.google.com/ccm/collect"
-  },
-  {
-    "status": 200,
-    "url": "https://www.googleadservices.com/ccm/conversion/16911533166/"
-  },
-  {
-    "status": 204,
-    "url": "https://ad.doubleclick.net/ccm/s/collect"
-  },
-  {
-    "status": 200,
-    "url": "https://www.googleadservices.com/pagead/conversion/16911533166/",
-    "bodyPreview": "event: message\ndata: {\"fetch\":[\"https://googleads.g.doubleclick.net/pagead/viewthroughconversion/16911533166/?random=1892501075&cv=11&fst=1794316700042&fmt=8&bg=ffffff&guid=ON&async=1&en=conversion&gtm=45be6b61v9242561738za200zd9242561738xecxf1&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616986~115938465~115938469~118131810~118897920~118897930~119863601~120213116~120385423~120412526~120420416~120469145~120469153~121191153~121246026~121246034~123814183&u_w=1440&u_h=1000&url=https%3A%2F%2Fm.bantubet.co.ao%2Fpt%2Fsports%2Fhome&rcb=19&label=LEz5CKixhKkaEO6IhoA_&gtm_ee=1&frm=0&tiba=Bantubet%20Angola%20%7C%20Apostas%20Desportivas%20e%20Casino%20Online&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=217392550.1794316700&uaa=x86&uab=64&uafvl=Not-A.Brand%3B99.0.0.0%7CGoogle%2520Chrome%3B157.0.8103.39%7CChromium%3B157.0.8103.39&uamb=0&uam=&uap=Windows&uapv=14.0.0&uaw=0&ec_mode=a&oidsrc=3&ecsid2=1430726590.1794316700&_tu=ABA&gcl_ctr=1~0~0~0&data=event%3Dconversion&category=acrcp_v1_512&em=tv.1&emd=tvd.1&ept=5&ct_cookie_present=false&eoid=CkcKEQiAnsvXBhDn0buQ-9D63LkBEjIAKrkUFBePPKcytkePvOlKL09XjLNbHMjLpDMPFnqF_nwP829g-UqYFcXMvWzhdMztG_D_BwE&crd=CLTesQII8t-xAgit4bECCK_hsQIIobixAgixwbECCLDBsQIIscOxAgiK"
-  },
-  {
-    "status": 200,
-    "url": "https://geoapi2.bcapps.org/",
-    "bodyKeys": [
-      "city",
-      "continentCode",
-      "continentName",
-      "countryCode",
-      "countryName",
-      "ipAddress",
-      "latitude",
-      "longitude",
-      "statusCode",
-      "subdivisions_iso_code",
-      "subdivisions_name",
-      "zipCode"
-    ],
-    "bodyPreview": "{\"city\":\"Luanda\",\"continentCode\":\"AF\",\"continentName\":\"Africa\",\"countryCode\":\"AO\",\"countryName\":\"Angola\",\"ipAddress\":\"[redacted]\",\"latitude\":\"[redacted]\",\"longitude\":\"[redacted]\",\"statusCode\":\"OK\",\"subdivisions_iso_code\":\"LUA\",\"subdivisions_name\":\"Luanda Province\",\"zipCode\":\"[redacted]\"}"
-  },
-  {
-    "status": 200,
-    "url": "https://m.bantubet.co.ao/pageBuilder/homepage.json",
-    "bodyKeys": [
-      "name",
-      "layout",
-      "loading"
-    ],
-    "bodyPreview
-
-### elephantbet
-URL: https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/1842-trof%C3%A9u-efl/31500744-stevenage-fulham-u21
-TEXTO: Know the moment your bet settles Turn on notifications and we'll ping you about this bet's result, cashout chances and live score changes Não agora Allow Notifications ENTRAR INSCREVER-SE POR 14:19:14 Home Ao vivo Desportos Aviator Crash Casino Casino ao vivo Torneios desportos Torneios casino Promoções Virada Academia Jogos do Mês MAIS Visão do Evento Calendário 🔥 Boost⚡ 🚀 Torneios Resultados Statistics Ao Vivo (200) PRÉ-JOGO (2,569) Tudo Jogos Populares Jogos De Hoje BOOST⚡ Jogos Boosted Competições Populares Futebol 1,083 Inglaterra 168 Troféu EFL 19 Premier League 20 Taça Da Inglaterra 3 Championship 12 Terceira Divisão 12 Quarta Divisão 12 Liga Nacional 12 Taça Da Liga Inglesa 4 Liga Nacional Do Norte 3 Liga Nacional Do Sul 2 Isthmian Divisão Premier 5 Primeira Divisão Do Norte 7 Primeira Divisão Do Sul 16 FA WSL 7 Isthmian League Cup 1 Northern Division One 6 Southern Football League Division One 2 Isthmian Division One 1 FA WSL League Cup 6 Premier League (Longo Prazo) 1 Professional Development League 1 Premier League Cup 1 Taça Da Liga Inglesa (Longo Prazo) 1 Championship (Longo Prazo) 1 Terceira Divisão (Longo Prazo) 1 Quarta Divisão (Longo Prazo) 1 Liga Nacional (Longo Prazo) 1 Liga Nacional Norte (Longo Prazo) 1 Liga Nacional Sul (Longo Prazo) 1 EFL Trophy (Longo Prazo) 1 Southern Football League Premier Division. Outright 2 Northern Premier Division. Outright 1 Isthmian Premier Division. Outright 1 FA WSL (Longo Prazo) 1 Baller League. Outright 1 Premier League. Manager Of The Month 1 Espanha 89 Alemanha 41 Itália 50 França 32 Portugal 15 Países Baixos 20 Turquia 11 Argentina 25 Brasil 27 Arábia Saudita 1 EUA 7 África 25 Europa 132 Mundo 11 América 5 Ásia 2 América Do Sul 2 Argélia 4 Austrália 13 Áustria 17 Bielorrússia 1 Bélgica 13 Bulgária 16 Chile 10 Colômbia 14 Chipre 8 República Tcheca 2 Dinamarca 10 Egito 11 El Salvador 6 Grécia 17 Guatemala 1 Japão 15 Jordânia 1 México 5 Irlanda Do Norte 7 Noruega 9 Paraguai 1 Peru 11 Polônia 107 Romênia 19 Rússia 22 Escócia 29 Sérvia 1 Eslováquia 9 Suécia 9 Suíça 7 Ucrânia 11 Uruguai 13 País De Gales 1 Basquetebol 192 Ténis 233 E-Futebol 2 Basebol 2 Hóquei No Gelo 240 Andebol 85 Voleibol 70 MMA 76 Boxe 50 Liga De Rugby 5 Rugby Union 15 Futebol Americano 77 Futsal 14 Futebol Australiano 4 Automobilismo 1 Esqui Alpino 3 Biatlo 12 Badminton 54 Críquete 65 Xadrez 4 Ciclismo 2 Esqui Cross-Country 5 Dardos 24 Formula 1 3 Hóquei Em Campo 2 Floorball 18 Golfe 58 Futebol Gaélico 6 Hurling 7 The Oscars 1 Vela 1 Sinuca 9 Pista 1 Salto De Esqui 3 Sumô 8 Pólo Aquático 12 Ball Hockey 6 Lacrosse 2 Jogos Olímpicos 1 Bilhar 1 Russian Pyramid 2 Counter-Strike 2 53 Dota 2 14 League Of Legends 8 Valorant 1 Mobile Legends 6 Fogo Cruzado 3 King Of Glory 1 Overwatch 2 3 Rainbow Six 3 Standoff 2 1 Warcraft III 2 Troféu EFL Multi coluna VENCEDOR W1 X W2 10.11.2026 Stevenage Fulham U21 20:00 1.38 5.00 6.40 +289 Stockport County Tranmere Rovers 20:00 1.36 4.85 7.10 +286 Huddersfield Town Liverpool U21 20:00 1.31 5.60 7.20 +287 Leicester City Walsall 20:00 1.27 6.20 7.80 +296 Grimsby Town Nottingham Forest U21 20:00 1.37 5.40 6.20 +290 Crewe Alexandra Wigan Athletic 20:00 2.22 3.30 3.06 +277 ristol Rovers Reading 20:00 4.20 4.20 1.65 +286 Barnet FC Leyton Orient 20:00 2.31 3.59 2.61 +289 Burton Albion Notts County 20:00 2.40 3.75 2.52 +282 Oxford United Cheltenham Town 20:00 1.22 5.70 10.00 +287 Plymouth Argyle Swindon Town 20:00 1.41 5.50 5.20 +282 Mansfield Town Chesterfield FC 20:00 1.79 4.30 3.45 +266 Northampton Town Gillingham 20:00 2.25 3.37 2.96 +278 Crawley Town Brentford U21 20:30 1.41 4.85 6.00 +263 Bromley FC Milton Keynes Dons 20:30 3.25 4.00 1.92 +289 Bradford City York City FC 20:30 1.52 4.60 4.90 +283 Colchester United Ipswich Town U21 20:45 1.81 4.20 3.41 +260 11.11.2026 Sheffield Wednesday Accrington Stanley 20:00 1.49 4.20 5.00 +87 Barnsley Oldham Athletic 20:00 1.76 4.00 3.39 +98 Troféu EFL 10.11.2026, 20:00 Stevenage Posição: 1 | Pontos: 6 Fulham U21 Posição: 4 | Pontos: 0 W W L L Dicas Pro Tudo Jogo Totais Handicaps Partes Minutos Combos Jogadores Cantos Mercados Resultado do Jogo Stevenage Empate Fulham U21 1.38 5.00 6.40 Resultado do Jogo (1 Golo de Avanço) Stevenage Empate Fulham U21 1.16 5.00 2.50 Dupla Chance 1X 12 X2 1.11 1.16 2.65 Ambas equipas marcarão Sim Não 1.40 2.50 Total de golos no jogo Mais de Menos 2.5 1.26 3.10 3 1.35 2.65 3.5 1.67 1.93 4 2.00 1.62 4.5 2.45 1.42 5 3.55 1.20 Total de golos do Stevenage Mais de Menos 1.5 1.25 3.15 2 1.38 2.55 2.5 1.78 1.82 3 2.35 1.45 3.5 2.90 1.30 4 4.60 1.11 Total de golos do Fulham U21 Mais de Menos 0.5 1.33 2.75 1 1.72 1.87 1.5 2.55 1.38 2 4.60 1.11 14:19:14 POR SOBRE Termos Gerais Termos De Privacidade Jogo Responsavel Contactos Porquê A Elephant Bet? Escolha Do Apostador COMEÇAR A APOSTAR Criar Conta Como Apostar Como Usar Bónus Fazer Download App Como Jogar Aviator Códigos Promocionais Melhores Horas Aviator FAQ Desportos FAQ Casino Perguntas Frequentes Escolhas De Casino APOIO Recuperar Acesso Dificuldade Login App Não Abre Como Levantar Dinheiro Distinguir Websites Falsos Reclamações OUTRO Afiliados Verificação De Conta REGULAMENTOS E PARCEIROS A empresa MOTA, TAVARES & BARROS S.A, sociedade comercial de direito angolano, está sediada em Luanda, Rua Major Kanhangulo, nº133, Município da Ingombota. Para qualquer questionamento, entre em contato pelo telefone 923169929. O jogo é estritamente proibido para menores de idade. Priorizamos um ambiente de jogo responsável, alertando sobre os riscos do jogo descontrolado e oferecendo medidas de apoio aos jogadores, incluindo opções de autoexclusão e limites de depósito. A Elephant Bet Angola é licenciada e regulada pelo Instituto de Supervisão de Jogos de Angola, de acordo com a Licença de Jogos On-line N°B20081200360166654582/ISJ/MF/20 e NºB20081200360166654683/ISJ/MF/20 - Jogue com responsabilidade, para mais informações contacte begambleaware.org . PAGAMENTOS 18+ 2023 - 2026 Elephantbet Pergunte sempre Seu boletim de apostas está vazio Please click on the odds to add a selection, or enable Quick Bet to place instant single bets with one click. Para fazer a sua aposta, por favor Iniciar sessão ouRegiste-se APOSTAR AGORA
-TITULOS: ["SOBRE","COMEÇAR A APOSTAR","APOIO","OUTRO"]
-REDE: [
-  {
-    "status": 200,
-    "url": "https://www.elephantbet.co.ao/assets.json",
-    "bodyKeys": [
-      "logo",
-      "favicon",
-      "loader"
-    ],
-    "bodyPreview": "{\"logo\":\"/logo.png\",\"favicon\":\"/favicon.ico\",\"loader\":\"/loader.gif\"}"
-  },
-  {
-    "status": 200,
-    "url": "https://www.elephantbet.co.ao/dynamicallyStructuredPages.json",
-    "bodyKeys": [
-      "dynamicallyStructuredPages"
-    ],
-    "bodyPreview": "{\"dynamicallyStructuredPages\":{\"28\":[{\"type\":\"ROW\",\"id\":\"-999917d3b47\",\"content\":[{\"type\":\"[depth-limit]\",\"id\":\"[depth-limit]\",\"content\":\"[depth-limit]\"}],\"settings\":{\"gridTemplate\":[\"[depth-limit]\"]}},{\"type\":\"ROW\",\"id\":\"-999917d3b4888\",\"content\":[{\"type\":\"[depth-limit]\",\"id\":\"[depth-limit]\",\"content\":\"[depth-limit]\"}],\"settings\":{\"gridTemplate\":[\"[depth-limit]\"]}},{\"type\":\"ROW\",\"id\":\"-999917d3b4777\",\"content\":[{\"type\":\"[depth-limit]\",\"id\":\"[depth-limit]\",\"content\":\"[depth-limit]\"}],\"settings\":{\"gridTemplate\":[\"[depth-limit]\"]}}]}}"
-  },
-  {
-    "status": 200,
-    "url": "https://www.elephantbet.co.ao/pageBuilder/pageBuilderCssConfig.json",
-    "bodyKeys": [
-      "colorScheme",
-      "selectedFont",
-      "contentBorder",
-      "backgroundImage"
-    ],
-    "bodyPreview": "{\"colorScheme\":{\"--b\":\"#0D0F20\",\"--oc-1\":\"#ed0d9b\",\"--hero\":\"#F72585\",\"--oc-2\":\"#ffffff\",\"--accent\":\"#F72585\",\"--header\":\"#0D0F20\",\"--menu\":\"#191B2B\",\"--tab-navigation\":\"#191B2B\"},\"selectedFont\":\"Roboto, Arial, Helvetica, sans-serif\",\"contentBorder\":\"10px\",\"backgroundImage\":\"\"}"
-  },
-  {
-    "status": 200,
-    "url": "https://www.elephantbet.co.ao/conf.json",
-    "bodyKeys": [
-      "enabledProducts",
-      "app",
-      "statistics",
-      "sportsbook",
-      "releaseDate",
-      "virtualSports",
-      "accountNavigation",
-      "userAuthentication",
-      "cms",
-      "casino",
-      "payment"
-    ],
-    "bodyPreview": "{\"enabledProducts\":{\"live\":true,\"pre_match\":true,\"live_calendar\":true,\"statistics\":true,\"casino\":true,\"live_casino\":true,\"tournaments\":true,\"jackpots\":true,\"games\":true,\"e_sports\":true,\"virtual_sports\":true,\"tv_games\":true,\"horse_racing\":true,\"wonder_wheel\":true,\"promotions\":true,\"results\":true,\"pinnacle\":true,\"sport_tournaments\":true,\"casino_tournaments\":true,\"tv_game_atm\":true,\"exchange_shop\":true,\"win_wheel\":true,\"wonder_wheel_harmony\":true,\"horse_racing_bc\":true,\"pinnacle_esports\":true,\"asian_view\":true,\"wonder_wheel_world_cup\":true,\"popular_bets\":true,\"crypto_exchange\":true,\"vmania\":true,\"sport\":true,\"invest_book\":true,\"vivaro_social\":true,\"casino_live_rtp\":true},\"app\":{\"footer\":{\"copyrightSince\":2023,\"showAgeRestriction\":true},\"logo\":{\"source\":\"https://cmsbetconstruct.com/storage/medias/elephantbet-18756188/media_18756188_909a1a60c492d1605e4647c8fe04b7bd.png\"},\"preferences\":{\"timeFormat\":\"24h\",\"oddFormat\":0,\"theme\":\"default\",\"language\":\"por\"},\"site_id\":18756188,\"siteName\":\"Elephantbet\",\"swarm\":{\"socketUrl\":\"wss://eu-swarm-newm.betconstruct.com/\"},\"themes\":[{\"title\":\"Default theme\",\"theme\":\"default\",\"scheme\":{\"b\":\"#0D0F20\",\"hero\":\"#F72585\",\"accent\":\"#F72585\",\"oc-1\":\"#ed0d9b\",\"oc-2\":\"#ffffff\",\"header\":\"#0D0F20\",\"menu\":\"#191B2B\",\"tab-navigation\":\"#191B2B\"}},{\"title\":\"\",\"theme\":\"\",\"scheme\":{\"hero\":\"#b40864\",\"accent\":\"#aa7f00\",\"oc-1\":\"#109121\",\"oc-2\":\"#ffd700\",\"b\":\"#0d0d0d\",\"header\":\"#2b2b2b\",\"menu\":\"#050505\",\"tab-navigation\":\"#2b2b2b\"}}],\"restrictedCountriesList\":[\"XC\"],\"smartPanel\":{\"items\":[{\"title\":\"What's new\",\"target\":\"PANEL\",\"component\":\"Notifications\",\"iconClass\":\"bc-i-notification\",\"actions\":[],\"permissions\":null,\"hasBonuses\":false},{\"title\":\"Favorite Games\",\"target\":\"PANEL\",\"component\":\"FavoriteGames\",\"iconClass\":\"bc-i-favorite\",\"actions\":[],\"permissions\":null,\"hasBonuses\":false},{\"title\":\"Messages\",\"target\":\"\",\"component\":\"Messages\",\"iconClass\":\"bc-i-message\",\"actions\":[\"[depth-limit]\"],\"permissions\":{\"loggedIn\":\"[depth-limit]\"}},{\"title\":\"Bonuses\",\"target\":\"\",\"component\":\"Bonuses\",\"iconClass\":\"bc-i-bonus\",\"actions\":[\"[depth-limit]\"],\"permissions\":{\"loggedIn\":\"[depth-limit]\"}},{\"title\":\"Settings\",\"target\":\"PANEL\",\"component\":\"Settings\",\"iconClass\":\"bc-i-settings\",\"actions\":[],\"permissions\":null},{\"title\":\"contact_support\",\"target\":\"PANEL\",\"component\":\"LiveChat\",\"iconClass\":\"bc-i-live-chat\",\"actions\":[],\"permissions\":null}]},\"recaptchaValidation\":{\"maxBet\":true},\"availableLanguages\":{\"eng\":{\"full\":\"English\",\"order\":1,\"rtl\":false,\"short\":\"EN\"},\"por\":{\"full\":\"Português\",\"order\":5,\"short\":\"PT\"}},\"availableCountriesList\":[\"AO\"],\"header\":{\"headerIcons\":[{\"target\":\"_self\",\"href\":\"?action=openLiveChat\",\"showTo\":0,\"className\":\"bc-i-call\"},{\"target\":\"_self\",\"href\":\"/promotions/all\",\"showTo\":0,\"className\":\"bc-i-promotions-3\"},{\"href\":\"?profile=open&account=balance&page=deposit\",\"className\":\"bc-i-wallet\",\"target\":\"_self\",\"showTo\":0}]},\"socialSharingPlatforms\":[\"facebook\",\"whatsapp\"],\"liveChat\":{\"enabled\":true,\"showRegularButton\":true,\"intercom\":{\"appId\":\"gdf0jpbz\"}},\"partnerHost\":\"https://eb-services.net\",\"jackpot\":{\"socketUrl\":\"wss://rgs-wss.betconstructapps.com/jackpot\",\"enabled\":true},\"showSeparatelyBonuses\":false,\"promotions\":{\"showTitle\":false},\"licences\":[[{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"}],[{\"config\":{\"default\":\"[depth-limit]\"},\"type\":\"text\"}],[{\"config\":{\"default\":\"[depth-limit]\"},\"type\":\"text\"}],[{\"type\":\"image\",\"config\":{\"src\":\"[depth-limit]\",\"href\":\"[depth-limit]\",\"fullWidth\":\"[depth-limit]\"}}],[{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"},{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"},{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"},{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"},{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"},{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"},{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"},{\"config\":{\"src\":\"[depth-limit]\"},\"type\":\"image\"}]],\"socialIcons\":[{\"network\":\"facebook\",\"url\":{\"default\":\"https://www.facebook.com/elephantbet\"}},{\"url\":{\"default\":\"https://www.instagram.com/elephantbet.ao?igsh=dzFmdGRrejEwaXJ3\"},\"network\":\"instagram\"}],\"tracking\":{\"googleTagManagerId\":\"GTM-NQ9R6GRJ\",\"internalDataspot\":{\"url\":\"https://dataspot-int-bucket.{domain}/configs/b309a9ee4e95e3cd5d6f1251f1626e8d.js\"},\"depositExternalPaymentTracking\":{\"enabled\":true},\"dataspot\":{\"url\":\"https://dataspot-bucket.{domain}/configs/c15d3172f399bded47f818b0e61877a9.js\"}},\"showHeaderNavigationIconsMobile\":true,\"getFormsConfigFromCms\":true,\"enableVerificationAutoGetCode\":true,\"enableDynamicDomains\":1,\"pageBuilderLayouts\":[\"homepage\",\"liveCasinoLandingPage\",\"casinoLandingPage\",\"casinoLobbyLandingPage\"]},\"statistics\":{\"enabled\":true,\"showTeamLogos\":true,\"krosstatsBaseUrl\":\"https://krosstats.vmemkhhgjigrjefb.com/api\"},\"sportsbook\":{\"betslip\":{\"contentTabs\":[{\"type\":3,\"title\":\"Booking\",\"loginRequired\":false},{\"type\":0,\"title\":\"Betslip\"},{\"type\":1,\"title\":\"Open Bets\",\"loginRequired\":true},{\"type\":4,\"title\":\"Bet Status\"}],\"favoriteStakesMultipliers\":[5,10,50]},\"specialO"
-  },
-  {
-    "status": 200,
-    "url": "https://www.elephantbet.co.ao/localConf.json",
-    "bodyKeys": [
-      "formElements",
-      "userAuthentication",
-      "profile",
-      "firebase",
-      "app",
-      "sportsbook"
-    ],
-    "bodyPreview": "{\"formElements\":{\"password\":\"[redacted]\"},\"userAuthentication\":{\"login\":{\"formConfig\":[[[\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\"]]]},\"registration\":{\"formConfig\":[[[\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\",\"[depth-limit]\"]]]},\"forgetPassword\":\"[redacted]\"},\"profile\":{\"profileDetailsConfig\":[[[{\"element\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"readOnly\":\"[depth-limit]\"}],[{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"className\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"props\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"}]]],\"profileVerifyAccountFormConfig\":[[[{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"rules\":\"[depth-limit]\"}]]],\"profileTimeOutConfig\":[[[{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\"}]]],\"profileSelfExclusionConfig\":[[[{\"type\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\",\"rules\":\"[depth-limit]\",\"options\":\"[depth-limit]\"},{\"element\":\"[depth-limit]\",\"name\":\"[depth-limit]\",\"label\":\"[depth-limit]\"}]]]},\"firebase\":{\"apiKey\":\"[redacted]\",\"authDomain\":\"elephantbet-ao.firebaseapp.com\",\"projectId\":\"elephantbet-ao\",\"storageBucket\":\"elephantbet-ao.firebasestorage.app\",\"messagingSenderId\":\"66783487343\",\"appId\":\"1:66783487343:web:6b551d3f5c82bdf8cfb49a\",\"measurementId\":\"G-3ED8KR4Z81\"},\"app\":{\"site_id\":18756188,\"tabNavigation\":{\"default\":[{\"id\":\"tab-pre-match\",\"to\":\"/sports/pre-match/event-view\",\"path\":\"/sports/:pageType?/:gamePageName?/:sportAlias?/:regionAlias?/:competitionId?/:gameId?\",\"displayName\":\"Sports\",\"className\":\"bc-i-sport\"},{\"id\":\"tab-live\",\"to\":\"/sports/live/event-view\",\"path\":\"/sports/:pageType?/:gamePageName?/:sportAlias?/:regionAlias?/:competitionId?/:gameId?\",\"displayName\":\"Live\",\"className\":\"bc-i-live\"},{\"id\":\"tab-betslip\",\"displayName\":\"Betslip\",\"className\":\"bc-i-betslip\",\"actions\":[\"[depth-limit]\"]},{\"id\":\"tab-my-bets\",\"to\":\"?profile=open&account=history&page=bets\",\"displayName\":\"MyBets\",\"className\":\"bc-i-results\"},{\"id\":\"casino-slots\",\"to\":\"/casino/slots\",\"path\":\"/casino/slots/:categoryId?/:gameExternalId?/:type?\",\"displayName\":\"Casino\",\"className\":\"bc-i-slots\"}],\"casino\":[{\"id\":\"tab-pre-match\",\"to\":\"/sports/pre-match/event-view\",\"path\":\"/sports/:pageType?/:gamePageName?/:sportAlias?/:regionAlias?/:competitionId?/:gameId?\",\"displayName\":\"Sports\",\"className\":\"bc-i-sport\"},{\"id\":\"tab-live-casino\",\"to\":\"/live-casino/home\",\"path\":\"/live-casino/home/:extraCategory?/:providers?/:gameExternalId?/:type?\",\"displayName\":\"Live Casino\",\"className\":\"bc-i-livecasino\"},{\"id\":\"tab-skill-games\",\"to\":\"/casino/slots/286\",\"path\":\"/casino/slots/:categoryId?/:gameExternalId?/:type?\",\"displayName\":\"Games\",\"className\":\"bc-i-games\"},{\"displayName\":\"Aviator\",\"className\":\"bc-i-aviator\",\"permissions\":null,\"actions\":[\"[depth-limit]\"]},{\"id\":\"casino-slots\",\"to\":\"/casino/slots\",\"path\":\"/casino/slots/:categoryId?/:gameExternalId?/:type?\",\"displayName\":\"Casino\",\"className\":\"bc-i-slots\"}],\"live-casino\":[{\"id\":\"tab-pre-match\",\"to\":\"/sports/pre-match/event-view\",\"path\":\"/sports/:pageType?/:gamePageName?/:sportAlias?/:regionAlias?/:competitionId?/:gameId?\",\"displayName\":\"Sports\",\"className\":\"bc-i-sport\"},{\"id\":\"tab-live-casino\",\"to\":\"/live-casino/home\",\"path\":\"/live-casino/home/:extraCategory?/:providers?/:gameExternalId?/:type?\",\"displayName\":\"Live Casino\",\"className\":\"bc-i-livecasino\"},{\"id\":\"tab-skill-games\",\"to\":\"/casino/slots/286\",\"path\":\"/casino/slots/:categoryId?/:gameExternalId?/:type?\",\"displayName\":\"Games\",\"className\":\"bc-i-games\"},{\"displayName\":\"Aviator\",\"className\":\"bc-i-aviator\",\"permissions\":null,\"actions\":[\"[depth-limit]\"]},{\"id\":\"casino-slots\",\"to\":\"/casino/slots\",\"path\":\"/casino/slots/:categoryId?/:gameExternalId?/:type?\",\"displayName\":\"Casino\",\"className\":\"bc-i-slots\"}],\"games\":[{\"id\":\"tab-pre-match\",\"to\":\"/sports/pre-match/event-view\",\"path\":\"/sports/:pageType?/:gamePageName?/:sportAlias?/:regionAlias?/:competitionId?/:gameId?\",\"displayName\":\"Sports\",\"className\":\"bc-i-sport\"},{\"id\":\"tab-live-casino\",\"to\":\"/live-casino/hom"
-  },
-  {
-    "status": 200,
-    "url": "https://www.elephantbet.co.ao/loader.gif"
-  },
-  {
-    "status": 200,
-    "url": "https://geoapi2.bcapps.org/",
-    "bodyKeys": [
-      "city",
-      "continentCode",
-      "continentName",
-      "countryCode",
-      "countryName",
-      "ipAddress",
-      "latitude",
-      "longitude",
-      "statusCode",
-      "subdivisions_iso_code",
-      "subdivisions_name",
-
-
-C:\Users\Atanásio Lutiki\Downloads\FK-FICHA-KAMBA>node -e "const fs=require('fs'); for(const n of ['bantubet','elephantbet']){const d=JSON.parse(fs.readFileSync('data/collections/'+n+'-diagnostics.json','utf8')); console.log('\n### '+n); console.log('URL:',d.finalUrl); console.log('TEXTO:',d.dom.bodyText); console.log('TITULOS:',JSON.stringify(d.dom.headings)); console.log('REDE:',JSON.stringify(d.network.map(x=>({status:x.status,url:x.url,bodyKeys:x.bodyKeys,bodyPreview:x.bodyPreview})),null,2).slice(0,14000));}"
+C:\Users\Atanásio Lutiki\Downloads\FK-FICHA-KAMBA>
