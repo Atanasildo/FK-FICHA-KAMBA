@@ -11,7 +11,7 @@ Analisar os jogos recebidos, verificar o contexto desportivo, identificar selec�
 REGRAS DE DADOS
 1. Nunca inventes jogos, equipas, competições, datas, horas, resultados, estatísticas, mercados, selecções, odds, bookmakers, URLs ou fontes.
 2. Considera os dados estruturados recebidos do FK e da SportAPI como fonte primária para identificação do jogo, calendário, estado e estatísticas.
-3. Não tens ferramenta de pesquisa Web nesta integração. Usa apenas o contexto e as fontes que o FK enviar; se faltar confirmação externa, declara essa limitação e não inventes.
+3. Na primeira fase, usa a ferramenta browser_search para procurar contexto público recente de cada jogo quando isso puder melhorar a análise. Dá prioridade a fontes oficiais de clubes, ligas e federações. Na segunda fase, usa apenas os resultados dessa pesquisa e os dados estruturados enviados pelo FK.
 4. Não uses resultados de pesquisa genéricos, previsões de terceiros ou odds encontradas em páginas não verificadas como se fossem cotações confirmadas da BantuBet ou ElephantBet.
 5. Não transformes ausência de informação em confirmação. Se lesões, suspensões, escalações ou forma não estiverem disponíveis, indica que não foram confirmadas.
 6. Verifica sempre a data, o fuso horário Africa/Luanda e o estado do jogo. Exclui jogos iniciados, terminados, adiados, cancelados ou com estado incerto.
@@ -192,7 +192,39 @@ export default async function handler(req, res) {
   const fixtureQuotes = fixtures.filter(f => safeIds.has(f.id) && !isStarted(f.status));
   const aiInput = deduplicatedFixtures.map(({ stats, markets, ...fixture }) => ({ ...fixture, stats, markets }));
   try {
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const researchResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: MODEL,
+        temperature: 0.2,
+        max_completion_tokens: 3500,
+        messages: [
+          {
+            role: "system",
+            content: "És o investigador desportivo do FK. Pesquisa na Web usando browser_search. Para cada jogo, procura notícias recentes e fontes oficiais sobre forma, ausências confirmadas, calendário, descanso e contexto competitivo. Não procures odds nem previsões de apostas. Não inventes dados. Se não encontrares informação fiável, diz claramente que não foi encontrada. Devolve um resumo conciso com URLs/fontes e a data de cada informação."
+          },
+          {
+            role: "user",
+            content: JSON.stringify({ timezone: "Africa/Luanda", fixtures: aiInput.map(({ markets, ...fixture }) => fixture) })
+          }
+        ],
+        tools: [{ type: "browser_search" }],
+        tool_choice: "auto"
+      })
+    });
+
+    const researchPayload = await researchResponse.json().catch(() => ({}));
+    if (!researchResponse.ok) {
+      return res.status(researchResponse.status === 429 ? 429 : 502).json({
+        error: researchResponse.status === 429 ? "Limite de pesquisa Web da Groq atingido." : "A pesquisa Web da Groq falhou.",
+        detail: researchPayload.error?.message || `Resposta HTTP ${researchResponse.status}.`
+      });
+    }
+    const researchText = researchPayload.choices?.[0]?.message?.content || "";
+    if (!researchText.trim()) return res.status(502).json({ error: "A Groq não devolveu resultados da pesquisa Web." });
+
+    const analysisResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -202,20 +234,21 @@ export default async function handler(req, res) {
         messages: [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "user", content: JSON.stringify({
-            task: "Analisa primeiro a evidência desportiva e escolhe apenas mercados sustentados. Não recebes odds nesta fase.",
+            task: "Analisa a evidência desportiva e escolhe apenas mercados sustentados. As odds não são fornecidas. Usa a pesquisa Web como complemento, não como substituto das estatísticas verificadas.",
             timezone: "Africa/Luanda",
-            fixtures: aiInput
+            fixtures: aiInput,
+            webResearch: researchText
           }) }
         ],
         response_format: { type: "json_schema", json_schema: { name: "fk_match_analysis", strict: true, schema: responseSchema } }
-      }))
+      })
     });
 
-    const payload = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      return res.status(response.status === 429 ? 429 : 502).json({
-        error: response.status === 429 ? "Limite da Groq atingido." : "A API Groq não conseguiu concluir a análise.",
-        detail: payload.error?.message || `Resposta HTTP ${response.status}.`
+    const payload = await analysisResponse.json().catch(() => ({}));
+    if (!analysisResponse.ok) {
+      return res.status(analysisResponse.status === 429 ? 429 : 502).json({
+        error: analysisResponse.status === 429 ? "Limite da análise Groq atingido." : "A Groq não conseguiu concluir a análise estruturada.",
+        detail: payload.error?.message || `Resposta HTTP ${analysisResponse.status}.`
       });
     }
     const raw = payload.choices?.[0]?.message?.content;
@@ -257,6 +290,8 @@ export default async function handler(req, res) {
     return res.status(200).json({
       provider: "Groq",
       model: payload.model || MODEL,
+      researchModel: researchPayload.model || MODEL,
+      webResearchUsed: true,
       generatedAt: new Date().toISOString(),
       analysisStatus: verifiedSelections.length ? analysis.analysisStatus : "insufficient_data",
       summary: analysis.summary,
