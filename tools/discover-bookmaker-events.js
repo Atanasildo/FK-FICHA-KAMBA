@@ -95,7 +95,22 @@ async function collectPageDiagnostics(page, bookmaker, network, failures, websoc
       tag: e.tagName.toLowerCase(), text: (e.innerText || "").trim().slice(0, 120),
       placeholder: e.getAttribute("placeholder"), ariaLabel: e.getAttribute("aria-label"),
       title: e.getAttribute("title")
-    }))
+    })),
+    // Regista a estrutura dos cartões interactivos mesmo quando não existe <a href>.
+    eventLikeNodes: [...document.querySelectorAll("a[href],button,[role=button],[onclick],[data-event-id],[data-match-id],[data-id]")].slice(0, 500).map(e => {
+      const attrs = {};
+      for (const attr of [...e.attributes]) {
+        if (/^(data-|href$|role$|aria-label$|onclick$)/i.test(attr.name)) {
+          attrs[attr.name] = attr.name === "href" ? attr.value.split("?")[0].split("#")[0] : attr.value.slice(0, 180);
+        }
+      }
+      return {
+        tag: e.tagName.toLowerCase(),
+        className: String(e.className || "").slice(0, 180),
+        text: (e.innerText || e.getAttribute("aria-label") || "").replace(/\\s+/g, " ").trim().slice(0, 320),
+        attrs
+      };
+    }).filter(x => x.text.length >= 12 || Object.keys(x.attrs).length > 0)
   }));
   return {
     bookmaker, pageTitle: await page.title(), finalUrl: safeUrl(page.url()), dom,
