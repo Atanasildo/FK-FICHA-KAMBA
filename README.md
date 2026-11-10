@@ -59,17 +59,17 @@ Para activar a consulta de jogos, adiciona `SPORTAPI_KEY` às variáveis de ambi
 
 ## Motor de análise com Groq
 
-O endpoint protegido `POST /api/ai-analyze` usa a API oficial da xAI (`https://api.groq.com/openai/v1/chat/completions`), modelo `openai/gpt-oss-20b` por defeito, saída JSON estruturada. As instruções do agente cobrem recolha e validação de contexto, análise sem odds, comparação posterior, regras dos boletins e a proibição absoluta de reservar ou gerar IDs de bilhete.
+O endpoint protegido `POST /api/ai-analyze` usa a API da Groq (`https://api.groq.com/openai/v1/chat/completions`), modelo `openai/gpt-oss-20b` por defeito, saída JSON estruturada. As instruções do agente cobrem recolha e validação de contexto, análise sem odds, comparação posterior, regras dos boletins e a proibição absoluta de reservar ou gerar IDs de bilhete.
 
 Variáveis necessárias na Vercel:
 
-- `GROQ_API_KEY`: chave criada na consola da xAI.
+- `GROQ_API_KEY`: chave criada na consola da Groq.
 - `GROQ_MODEL`: opcional; por defeito `openai/gpt-oss-20b`.
 - `CRON_SECRET`: segredo longo e aleatório; o endpoint exige `Authorization: Bearer <CRON_SECRET>`.
 
 O pedido deve conter jogos reais em `fixtures`, cada um com `id`, `home`, `away`, `stats` e `markets`. As odds são usadas apenas depois da selecção da IA: a Groq recebe estatísticas e uma lista sem odds, escolhe o mercado, e o servidor compara então as cotações BantuBet/ElephantBet. Só são devolvidas selecções com pelo menos duas cotações equivalentes e melhor odd mínima de 1.40. Jogos live/terminados e jogos sem estatísticas são excluídos.
 
-A Groq recebe pesquisa Web para confirmar contexto público, mas não controla o navegador nem garante acesso às páginas dinâmicas das casas. O endpoint ainda recebe os mercados e odds dos recolhedores; a recolha autónoma e verificável da BantuBet/ElephantBet continua a ser uma ferramenta separada a integrar. Para contexto desportivo, `GET /api/fixture-context?fixtureId=<id>` consulta detalhes, estatísticas, eventos, escalações, H2H, classificação e forma das equipas na SportAPI; cada secção indica se os dados estão disponíveis. Lesões/ausências não são inventadas porque a documentação consultada não apresenta esse endpoint. `POST /api/pipeline/save-analysis` guarda estatísticas, análises e odds verificadas no Supabase, protegido por `CRON_SECRET` e usando a chave secreta apenas no servidor. Esta rota não publica bilhetes nem cria referências de reserva. A execução diária continua desligada até a recolha das duas casas e a primeira execução completa serem validadas.
+A Groq não tem pesquisa Web activada nesta integração. O contexto externo deve ser recolhido por fontes e ferramentas do FK e enviado no pedido; a IA não controla o navegador nem acede directamente às casas. O endpoint ainda recebe os mercados e odds dos recolhedores; a recolha autónoma e verificável da BantuBet/ElephantBet continua a ser uma ferramenta separada a integrar. Para contexto desportivo, `GET /api/fixture-context?fixtureId=<id>` consulta detalhes, estatísticas, eventos, escalações, H2H, classificação e forma das equipas na SportAPI; cada secção indica se os dados estão disponíveis. Lesões/ausências não são inventadas porque a documentação consultada não apresenta esse endpoint. `POST /api/pipeline/save-analysis` guarda estatísticas, análises e odds verificadas no Supabase, protegido por `CRON_SECRET` e usando a chave secreta apenas no servidor. Esta rota não publica bilhetes nem cria referências de reserva. A execução diária continua desligada até a recolha das duas casas e a primeira execução completa serem validadas.
 
 ## Descoberta local de URLs nas casas
 
