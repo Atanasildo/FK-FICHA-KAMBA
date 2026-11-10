@@ -71,7 +71,7 @@ function redact(value, depth = 0) {
   if (value && typeof value === "object") {
     const out = {};
     for (const [key, item] of Object.entries(value).slice(0, 80)) {
-      out[key] = //token|secret|password|cookie|authorization|session|credential|api.?key|ip.?address|latitude|longitude|zip.?code/i/i.test(key)
+      out[key] = /token|secret|password|cookie|authorization|session|credential|api.?key|ip.?address|latitude|longitude|zip.?code/i.test(key)
         ? "[redacted]" : redact(item, depth + 1);
     }
     return out;
