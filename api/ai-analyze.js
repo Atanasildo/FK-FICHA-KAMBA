@@ -277,6 +277,6 @@ export default async function handler(req, res) {
       note: "A Grok analisou sem receber as odds; depois o servidor comparou cotações equivalentes das duas casas. Nenhum ID de reserva foi solicitado ou criado."
     });
   } catch {
-    return res.status(502).json({ error: "Falha ao contactar ou interpretar a resposta da Groq." });
+    return res.status(502).json({ error: "Falha ao contactar ou interpretar a resposta da Grok." });
   }
 }
