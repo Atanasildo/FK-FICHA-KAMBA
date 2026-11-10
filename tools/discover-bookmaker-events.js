@@ -190,7 +190,7 @@ async function openBantuPreMatch(page) {
     const anchor = [...document.querySelectorAll("a[href]")].find(a => {
       try {
         const url = new URL(a.href);
-        return url.hostname === location.hostname && /\\/sports\\/pre-match(?:\\/|$)/i.test(url.pathname);
+        return url.hostname === location.hostname && url.pathname.toLowerCase().includes("/sports/pre-match");
       } catch { return false; }
     });
     return anchor?.href || null;
@@ -216,7 +216,7 @@ async function openBantuPreMatch(page) {
     actions.push("Foi encontrado no DOM um link real para Desportos/pré-jogo.");
     await page.goto(route, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForTimeout(8000);
-    return { status: /\\/sports\\/pre-match/i.test(page.url()) ? "opened" : "route_redirected", route: page.url(), actions };
+    return { status: page.url().toLowerCase().includes("/sports/pre-match") ? "opened" : "route_redirected", route: page.url(), actions };
   }
 
   const sportClick = await clickVisibleLabel(["Desportos", "Desporto"]);
