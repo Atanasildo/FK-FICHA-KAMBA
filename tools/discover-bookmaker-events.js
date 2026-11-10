@@ -124,6 +124,18 @@ async function readEventLinks(page) {
   return page.evaluate(() => {
     const currentHost = location.hostname;
     const byUrl = new Map();
+
+    // Algumas casas abrem um evento directamente; o slug da rota é uma
+    // fonte observada e não depende de procurar um link dentro do cartão.
+    const pathParts = location.pathname.split("/").filter(Boolean);
+    const lastPart = pathParts.at(-1) || "";
+    if (/event-view/i.test(location.pathname) && /^\d{6,}-/.test(lastPart)) {
+      const slug = decodeURIComponent(lastPart).replace(/^\d+-/, "").replace(/-/g, " ");
+      byUrl.set(location.href, { url: location.href, text: slug });
+    }
+
+    // Não exigir "event" no href: em SPAs os cartões podem usar rotas curtas.
+    // A validação das duas equipas continua a ser feita por fixture.
     for (const anchor of document.querySelectorAll("a[href]")) {
       const url = anchor.href;
       if (!/^https?:/.test(url)) continue;
@@ -131,27 +143,21 @@ async function readEventLinks(page) {
       try { parsed = new URL(url); } catch { continue; }
       if (parsed.hostname !== currentHost) continue;
       let node = anchor;
-      let bestText = "";
       let cardText = "";
       for (let depth = 0; node && depth < 8; depth++, node = node.parentElement) {
         const value = (node.innerText || "").replace(/\s+/g, " ").trim();
-        if (value.length > bestText.length && value.length <= 1800) bestText = value;
-        // Prefer the nearest compact event card; larger ancestors often contain
-        // several matches and can create false associations between fixtures.
-        if (!cardText && value.length >= 25 && value.length <= 700) cardText = value;
+        // Preferir o cartão mais próximo a um contentor com vários jogos.
+        if (!cardText && value.length >= 12 && value.length <= 700) cardText = value;
       }
       const anchorText = (anchor.innerText || anchor.getAttribute("aria-label") || "").trim();
-      const text = cardText || bestText || anchorText;
-      const path = parsed.pathname.toLowerCase();
-      const looksLikeEvent = /event|match|fixture|game|evento|jogo|detail|\d{6,}/i.test(path);
-      if (!looksLikeEvent || text.length < 8) continue;
+      const text = cardText || anchorText;
+      if (text.length < 8) continue;
       const previous = byUrl.get(url);
       if (!previous || text.length > previous.text.length) byUrl.set(url, { url, text });
     }
     return [...byUrl.values()].slice(0, 2500);
   });
 }
-
 async function waitForEventLinks(page, timeoutMs = 60000) {
   const started = Date.now();
   let links = [];
