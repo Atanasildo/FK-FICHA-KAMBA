@@ -245,7 +245,7 @@ async function openBantuPreMatch(page) {
   }
 
   return {
-    status: /\\/sports\\/pre-match/i.test(page.url()) ? "opened" : "navigation_not_found",
+    status: page.url().toLowerCase().includes("/sports/pre-match") ? "opened" : "navigation_not_found",
     route: page.url(),
     actions
   };
