@@ -184,6 +184,72 @@ async function waitForEventLinks(page, timeoutMs = 60000) {
   return links;
 }
 
+async function openBantuPreMatch(page) {
+  const actions = [];
+  const findObservedRoute = async () => page.evaluate(() => {
+    const anchor = [...document.querySelectorAll("a[href]")].find(a => {
+      try {
+        const url = new URL(a.href);
+        return url.hostname === location.hostname && /\\/sports\\/pre-match(?:\\/|$)/i.test(url.pathname);
+      } catch { return false; }
+    });
+    return anchor?.href || null;
+  });
+  const clickVisibleLabel = async labels => page.evaluate(labels => {
+    const wanted = labels.map(x => x.toLocaleLowerCase());
+    const visible = el => {
+      const style = getComputedStyle(el);
+      const rect = el.getBoundingClientRect();
+      return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+    };
+    const candidates = [...document.querySelectorAll("a,button,[role=button],[role=menuitem],[role=tab],span,div")]
+      .filter(el => visible(el) && wanted.includes((el.innerText || el.getAttribute("aria-label") || "").trim().toLocaleLowerCase()))
+      .sort((a,b) => a.querySelectorAll("*").length - b.querySelectorAll("*").length);
+    if (!candidates.length) return null;
+    const el = candidates[0];
+    el.click();
+    return { tag: el.tagName.toLowerCase(), text: (el.innerText || "").trim().slice(0,80) };
+  }, labels);
+
+  let route = await findObservedRoute();
+  if (route) {
+    actions.push("Foi encontrado no DOM um link real para Desportos/pré-jogo.");
+    await page.goto(route, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(8000);
+    return { status: /\\/sports\\/pre-match/i.test(page.url()) ? "opened" : "route_redirected", route: page.url(), actions };
+  }
+
+  const sportClick = await clickVisibleLabel(["Desportos", "Desporto"]);
+  if (sportClick) {
+    actions.push("Clicou no item visível " + sportClick.text + ".");
+    await page.waitForTimeout(2500);
+  } else {
+    actions.push("Não encontrou um item visível Desportos na navegação inicial.");
+  }
+
+  route = await findObservedRoute();
+  if (!route) {
+    const preMatchClick = await clickVisibleLabel(["Pré-jogo", "Pre-jogo", "Pré jogo", "Pre-match", "Pré-match"]);
+    if (preMatchClick) {
+      actions.push("Clicou no item visível " + preMatchClick.text + ".");
+      await page.waitForTimeout(5000);
+    }
+    route = await findObservedRoute();
+  }
+
+  if (route) {
+    actions.push("Abriu a rota de pré-jogo observada nos links reais do site.");
+    await page.goto(route, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.waitForTimeout(10000);
+  }
+
+  return {
+    status: /\\/sports\\/pre-match/i.test(page.url()) ? "opened" : "navigation_not_found",
+    route: page.url(),
+    actions
+  };
+}
+
 async function main() {
   const fixtures = await fetchFixtures();
   if (!fixtures.length) throw new Error("A SportAPI não devolveu jogos futuros para hoje e amanhã.");
@@ -258,7 +324,14 @@ async function main() {
       try {
         console.log("A diagnosticar " + bookmaker.name + ": " + bookmaker.url);
         const response = await page.goto(bookmaker.url, { waitUntil: "domcontentloaded", timeout: 60000 });
-        await page.waitForTimeout(25000);
+        let navigation = null;
+        if (bookmaker.name === "BantuBet") {
+          await page.waitForTimeout(12000);
+          navigation = await openBantuPreMatch(page);
+          console.log("BantuBet navegação pré-jogo:", JSON.stringify(navigation));
+        } else {
+          await page.waitForTimeout(25000);
+        }
         if (response?.status() === 403 || /cloudflare|captcha|access denied|attention required/i.test(await page.title())) {
           report.push({ bookmaker:bookmaker.name, status:"blocked",
             detail:"A casa bloqueou ou pediu verificação; não foi contornado.",
@@ -274,6 +347,7 @@ async function main() {
           }
           report.push({ bookmaker:bookmaker.name, status:"scanned",
             pageTitle:await page.title(), finalUrl:safeUrl(page.url()),
+            ...(navigation ? { navigation } : {}),
             links:candidates.length, matches:found,
             sampleCandidates:candidates.slice(0,8).map(x=>({url:safeUrl(x.url),text:x.text.slice(0,220)})) });
         }
