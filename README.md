@@ -14,7 +14,7 @@ A interface não disponibiliza ao utilizador formulários para elaborar jogos ou
 
 ## Estado actual e integrações pendentes
 
-Esta versão já contém a interface, normalizadores das duas casas, comparador de odds, endpoint de análise Grok e persistência de contexto/analise no Supabase. **A publicação automática de bilhetes ainda não está activa**: a recolha autónoma das casas e a obtenção automática de estatísticas completas continuam dependentes de acesso autorizado e verificável às fontes.
+Esta versão já contém a interface, normalizadores das duas casas, comparador de odds, endpoint de análise Groq e persistência de contexto/analise no Supabase. **A publicação automática de bilhetes ainda não está activa**: a recolha autónoma das casas e a obtenção automática de estatísticas completas continuam dependentes de acesso autorizado e verificável às fontes.
 
 Ainda é necessário implementar e configurar:
 
@@ -57,19 +57,19 @@ Importa `Atanasildo/FK-FICHA-KAMBA` na Vercel. Configuração:
 
 Para activar a consulta de jogos, adiciona `SPORTAPI_KEY` às variáveis de ambiente do projecto na Vercel. Nunca coloques a chave no código do navegador.
 
-## Motor de análise com Grok (xAI)
+## Motor de análise com Groq
 
-O endpoint protegido `POST /api/ai-analyze` usa a API oficial da xAI (`https://api.x.ai/v1/responses`), modelo `grok-4.7` por defeito, pesquisa Web integrada e saída JSON estruturada. As instruções do agente cobrem recolha e validação de contexto, análise sem odds, comparação posterior, regras dos boletins e a proibição absoluta de reservar ou gerar IDs de bilhete.
+O endpoint protegido `POST /api/ai-analyze` usa a API oficial da xAI (`https://api.groq.com/openai/v1/chat/completions`), modelo `openai/gpt-oss-20b` por defeito, saída JSON estruturada. As instruções do agente cobrem recolha e validação de contexto, análise sem odds, comparação posterior, regras dos boletins e a proibição absoluta de reservar ou gerar IDs de bilhete.
 
 Variáveis necessárias na Vercel:
 
-- `XAI_API_KEY`: chave criada na consola da xAI.
-- `XAI_MODEL`: opcional; por defeito `grok-4.7`.
+- `GROQ_API_KEY`: chave criada na consola da xAI.
+- `GROQ_MODEL`: opcional; por defeito `openai/gpt-oss-20b`.
 - `CRON_SECRET`: segredo longo e aleatório; o endpoint exige `Authorization: Bearer <CRON_SECRET>`.
 
-O pedido deve conter jogos reais em `fixtures`, cada um com `id`, `home`, `away`, `stats` e `markets`. As odds são usadas apenas depois da selecção da IA: a Grok recebe estatísticas e uma lista sem odds, escolhe o mercado, e o servidor compara então as cotações BantuBet/ElephantBet. Só são devolvidas selecções com pelo menos duas cotações equivalentes e melhor odd mínima de 1.40. Jogos live/terminados e jogos sem estatísticas são excluídos.
+O pedido deve conter jogos reais em `fixtures`, cada um com `id`, `home`, `away`, `stats` e `markets`. As odds são usadas apenas depois da selecção da IA: a Groq recebe estatísticas e uma lista sem odds, escolhe o mercado, e o servidor compara então as cotações BantuBet/ElephantBet. Só são devolvidas selecções com pelo menos duas cotações equivalentes e melhor odd mínima de 1.40. Jogos live/terminados e jogos sem estatísticas são excluídos.
 
-A Grok recebe pesquisa Web para confirmar contexto público, mas não controla o navegador nem garante acesso às páginas dinâmicas das casas. O endpoint ainda recebe os mercados e odds dos recolhedores; a recolha autónoma e verificável da BantuBet/ElephantBet continua a ser uma ferramenta separada a integrar. Para contexto desportivo, `GET /api/fixture-context?fixtureId=<id>` consulta detalhes, estatísticas, eventos, escalações, H2H, classificação e forma das equipas na SportAPI; cada secção indica se os dados estão disponíveis. Lesões/ausências não são inventadas porque a documentação consultada não apresenta esse endpoint. `POST /api/pipeline/save-analysis` guarda estatísticas, análises e odds verificadas no Supabase, protegido por `CRON_SECRET` e usando a chave secreta apenas no servidor. Esta rota não publica bilhetes nem cria referências de reserva. A execução diária continua desligada até a recolha das duas casas e a primeira execução completa serem validadas.
+A Groq recebe pesquisa Web para confirmar contexto público, mas não controla o navegador nem garante acesso às páginas dinâmicas das casas. O endpoint ainda recebe os mercados e odds dos recolhedores; a recolha autónoma e verificável da BantuBet/ElephantBet continua a ser uma ferramenta separada a integrar. Para contexto desportivo, `GET /api/fixture-context?fixtureId=<id>` consulta detalhes, estatísticas, eventos, escalações, H2H, classificação e forma das equipas na SportAPI; cada secção indica se os dados estão disponíveis. Lesões/ausências não são inventadas porque a documentação consultada não apresenta esse endpoint. `POST /api/pipeline/save-analysis` guarda estatísticas, análises e odds verificadas no Supabase, protegido por `CRON_SECRET` e usando a chave secreta apenas no servidor. Esta rota não publica bilhetes nem cria referências de reserva. A execução diária continua desligada até a recolha das duas casas e a primeira execução completa serem validadas.
 
 ## Descoberta local de URLs nas casas
 
@@ -81,7 +81,7 @@ A descoberta usa o perfil local `.fk-browser-profile`; se a casa apresentar um b
 
 A rota protegida `POST /api/pipeline/discover-fixtures` consulta a SportAPI e guarda os jogos futuros na tabela `matches` do Supabase. Envia `Authorization: Bearer <CRON_SECRET>`; o corpo pode conter `{"days":2}` (entre 1 e 7 dias, no fuso `Africa/Luanda`). A chave da SportAPI e a chave de serviço do Supabase permanecem no servidor. A origem é guardada como `SportAPI`, igual à rota de persistência de análises, para impedir duplicação do mesmo jogo por diferenças de maiúsculas/minúsculas.
 
-Esta rota apenas descobre e guarda jogos. Não recolhe odds, não chama a Grok e não publica fichas. A recolha das casas continua a depender de URLs reais dos eventos e de acesso permitido às páginas; não são construídos URLs a partir do ID da SportAPI nem contornados bloqueios.
+Esta rota apenas descobre e guarda jogos. Não recolhe odds, não chama a Groq e não publica fichas. A recolha das casas continua a depender de URLs reais dos eventos e de acesso permitido às páginas; não são construídos URLs a partir do ID da SportAPI nem contornados bloqueios.
 
 ## Fonte de jogos: SportAPI
 
@@ -89,7 +89,7 @@ O endpoint `GET /api/football-data?date=YYYY-MM-DD` consulta os jogos do dia no 
 
 A resposta inclui equipas, competição, início e estado do jogo. A SportAPI não fornece as odds BantuBet/ElephantBet; estas têm de vir exclusivamente dos recolhedores das casas.
 
-Os dados estatísticos detalhados ainda precisam de ser ligados a um endpoint de estatísticas com cobertura comprovada. O motor Grok rejeita jogos sem estatísticas recebidas, em vez de inventar forma, H2H ou ausências.
+Os dados estatísticos detalhados ainda precisam de ser ligados a um endpoint de estatísticas com cobertura comprovada. O motor Groq rejeita jogos sem estatísticas recebidas, em vez de inventar forma, H2H ou ausências.
 
 A rota `POST /api/ai-analyze` é protegida por `CRON_SECRET`. Para guardar o resultado, executar `POST /api/pipeline/save-analysis` com o contexto original e a resposta validada da análise. A migração `supabase/migrations/20261108_match_context.sql` deve ser aplicada no SQL Editor do Supabase.
 
@@ -160,4 +160,4 @@ Enquanto não houver um método remoto autorizado com acesso estável a Angola, 
 4. Se o site apresentar uma verificação normal, resolve-a manualmente no Chrome aberto. Se continuar bloqueado, a recolha desse site é marcada como falhada.
 5. Consulta `data/collections`: ficam guardados o JSON bruto, o resultado normalizado e a comparação de cada jogo, além de `latest-run.json`.
 
-O perfil do navegador fica em `.fk-browser-profile`, para preservar cookies/sessão entre execuções. O ficheiro `events.local.json`, o perfil e os resultados locais estão no `.gitignore` e não são enviados para o GitHub. Esta é uma etapa assistida: ainda é necessário fornecer os URLs dos eventos. A recolha local ainda não alimenta automaticamente a análise Grok, não grava os bilhetes no Supabase e não agenda a execução diária; essas etapas só devem ser activadas depois de uma recolha real ser validada.
+O perfil do navegador fica em `.fk-browser-profile`, para preservar cookies/sessão entre execuções. O ficheiro `events.local.json`, o perfil e os resultados locais estão no `.gitignore` e não são enviados para o GitHub. Esta é uma etapa assistida: ainda é necessário fornecer os URLs dos eventos. A recolha local ainda não alimenta automaticamente a análise Groq, não grava os bilhetes no Supabase e não agenda a execução diária; essas etapas só devem ser activadas depois de uma recolha real ser validada.
