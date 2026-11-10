@@ -107,7 +107,7 @@ async function collectPageDiagnostics(page, bookmaker, network, failures, websoc
       return {
         tag: e.tagName.toLowerCase(),
         className: String(e.className || "").slice(0, 180),
-        text: (e.innerText || e.getAttribute("aria-label") || "").replace(/\\s+/g, " ").trim().slice(0, 320),
+        text: (e.innerText || e.getAttribute("aria-label") || "").replace(/\s+/g, " ").trim().slice(0, 320),
         attrs
       };
     }).filter(x => x.text.length >= 12 || Object.keys(x.attrs).length > 0)
