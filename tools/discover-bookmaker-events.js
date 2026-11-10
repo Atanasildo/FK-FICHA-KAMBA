@@ -187,6 +187,7 @@ async function waitForEventLinks(page, timeoutMs = 60000) {
 async function openBantuPreMatch(page) {
   const actions = [];
   const findObservedRoute = async () => page.evaluate(() => {
+    if (location.pathname.toLowerCase().includes("/sports/pre-match")) return location.href;
     const anchor = [...document.querySelectorAll("a[href]")].find(a => {
       try {
         const url = new URL(a.href);
