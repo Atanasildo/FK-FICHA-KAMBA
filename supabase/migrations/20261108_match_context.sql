@@ -15,7 +15,7 @@ create index if not exists match_statistics_match_time_idx
 create table if not exists public.match_analyses (
   id uuid primary key default gen_random_uuid(),
   match_id uuid not null references public.matches(id) on delete cascade,
-  provider text not null default 'Groq',
+  provider text not null default 'Grok',
   model text,
   status text not null check (status in ('ready','insufficient_data','rejected')),
   summary text,
