@@ -4,7 +4,7 @@ import { compareFixtures } from "../../lib/bookmakers/comparison.js";
 import { selectCommonSwarmGames } from "../../lib/bookmakers/daily-swarm.js";
 
 const slug = value => String(value || "")
-  .normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")
+  .normalize("NFD").replace(/\\p{Diacritic}/gu, "")
   .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 100);
 
 async function insertInBatches(client, rows) {
@@ -33,11 +33,11 @@ export default async function handler(req, res) {
 
   try {
     const [bantuList, elephantList] = await Promise.all([
-      discoverSwarmGames({ ...SWARM_BOOKMAKERS.bantu, sportId: 1, timeoutMs: 30000 }),
+      discoverSwarmGames({ ...SWARM_BOOKMAKERS.bantu, sportId: 1, timeoutMs: 25000 }),
       discoverSwarmGames({ ...SWARM_BOOKMAKERS.elephant, sportId: 1, timeoutMs: 30000 })
     ]);
 
-    const gameIds = selectCommonSwarmGames(bantuList.games, elephantList.games, { maxGames: 30 });
+    const gameIds = selectCommonSwarmGames(bantuList.games, elephantList.games, { maxGames: 20 });
     if (!gameIds.length) {
       return res.status(200).json({
         ok: true, collectedAt: new Date().toISOString(), discovered: {
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
     }
 
     const [bantu, elephant] = await Promise.all([
-      collectSwarm({ ...SWARM_BOOKMAKERS.bantu, gameIds, timeoutMs: 45000 }),
+      collectSwarm({ ...SWARM_BOOKMAKERS.bantu, gameIds, timeoutMs: 25000 }),
       collectSwarm({ ...SWARM_BOOKMAKERS.elephant, gameIds, timeoutMs: 45000 })
     ]);
 
