@@ -79,6 +79,40 @@ function buildPayload(site, selections, suppliedTotal) {
   };
 }
 
+export async function createBooking({ site, selections, totalOdd }) {
+  if (!configs[site] || !Array.isArray(selections) || selections.length < 1 || selections.length > 11) {
+    throw new Error("Indica casa válida e entre 1 e 11 selecções.");
+  }
+  if (selections.some(s => !s || !s.home || !s.away || !s.selectionName || !s.marketName || !s.startTime)) {
+    throw new Error("Cada selecção precisa de jogo, mercado, selecção e hora de início.");
+  }
+  const earliestKickoff = Date.now() + 6 * 60 * 60 * 1000;
+  if (selections.some(s => !Number.isFinite(kickoffMillis(s.startTime)) || kickoffMillis(s.startTime) < earliestKickoff)) {
+    throw new Error("Todas as partidas devem começar pelo menos 6 horas após a reserva.");
+  }
+  const payload = buildPayload(site, selections, totalOdd);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000);
+  let response;
+  try {
+    response = await fetch(configs[site].url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(payload), signal: controller.signal
+    });
+  } finally { clearTimeout(timeout); }
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(`A casa recusou a criação da reserva (HTTP ${response.status}).`);
+  const bookingId = data.share?.bookId || data.share?.bookingLink?.match(/bookingId=(\\d+)/)?.[1];
+  if (!bookingId) throw new Error("A casa não devolveu bookingId.");
+  return {
+    ok: true, site: configs[site].siteName, bookingId: String(bookingId),
+    bookingLink: data.share?.bookingLink || configs[site].bookingBase + bookingId,
+    shareTemplateLink: data.shareTemplateLink || null,
+    totalOdd: Number(payload.betslip.totalOdds || selections[0].odd)
+  };
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -88,36 +122,12 @@ export default async function handler(req, res) {
   if (!secret || req.headers.authorization !== `Bearer ${secret}`) {
     return res.status(401).json({ error: "Não autorizado." });
   }
-  const { site, selections, totalOdd } = req.body || {};
-  if (!configs[site] || !Array.isArray(selections) || selections.length < 1 || selections.length > 11) {
-    return res.status(400).json({ error: "Indica site válido e entre 1 e 11 selecções." });
-  }
-  if (selections.some(s => !s || !s.home || !s.away || !s.selectionName || !s.marketName)) {
-    return res.status(400).json({ error: "Cada selecção precisa de jogo, mercado e nome da selecção." });
-  }
   try {
-    const payload = buildPayload(site, selections, totalOdd);
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 20000);
-    let response;
-    try {
-      response = await fetch(configs[site].url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(payload), signal: controller.signal
-      });
-    } finally { clearTimeout(timeout); }
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) return res.status(502).json({ ok: false, site: configs[site].siteName, error: "A casa recusou a criação da reserva.", upstreamStatus: response.status });
-    const bookingId = data.share?.bookId || data.share?.bookingLink?.match(/bookingId=(\d+)/)?.[1];
-    if (!bookingId) return res.status(502).json({ ok: false, site: configs[site].siteName, error: "A casa não devolveu bookingId.", detail: data });
-    return res.status(200).json({
-      ok: true, site: configs[site].siteName, bookingId: String(bookingId),
-      bookingLink: data.share?.bookingLink || configs[site].bookingBase + bookingId,
-      shareTemplateLink: data.shareTemplateLink || null,
-      totalOdd: Number(payload.betslip.totalOdds || selections[0].odd)
-    });
+    const result = await createBooking(req.body || {});
+    return res.status(200).json(result);
   } catch (error) {
-    return res.status(400).json({ ok: false, error: error.name === "AbortError" ? "Tempo esgotado ao contactar a casa." : error.message });
+    return res.status(error.name === "AbortError" ? 504 : 400).json({
+      ok: false, error: error.name === "AbortError" ? "Tempo esgotado ao contactar a casa." : error.message
+    });
   }
 }
