@@ -218,3 +218,27 @@ test("a identidade semântica aceita metadados nativos diferentes entre casas, m
   assert.notEqual(bantuKey, otherLineKey);
 });
 
+
+test("não compara totais por equipa quando a casa não identifica a equipa", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{ market: "Total", marketType: "TeamTotalGoals", selection: "Mais de", odds: 1.8, line: "1.5" }]),
+    fixture("Elephant Bet", [{ market: "Total", marketType: "TeamTotalGoals", selection: "Mais de", odds: 1.9, line: "1.5" }])
+  ]);
+  assert.equal(result.comparisonCount, 0);
+});
+
+test("distingue totais por equipa quando a equipa está identificada", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [
+      { market: "Total", marketType: "TeamTotalGoals", team: "Club Brugge", selection: "Mais de", odds: 1.8, line: "1.5" },
+      { market: "Total", marketType: "TeamTotalGoals", team: "RSC Anderlecht", selection: "Mais de", odds: 2.1, line: "1.5" }
+    ]),
+    fixture("Elephant Bet", [
+      { market: "Total", marketType: "TeamTotalGoals", team: "Club Brugge", selection: "Mais de", odds: 1.9, line: "1.5" },
+      { market: "Total", marketType: "TeamTotalGoals", team: "RSC Anderlecht", selection: "Mais de", odds: 2.2, line: "1.5" }
+    ])
+  ]);
+  assert.equal(result.comparisonCount, 2);
+  assert.deepEqual(result.events[0].comparisons.map(item => item.quotes[0].team).sort(), ["club brugge", "rsc anderlecht"]);
+});
+
