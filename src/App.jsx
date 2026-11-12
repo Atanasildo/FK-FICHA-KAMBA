@@ -267,8 +267,8 @@ function OddsComparePage() {
       ...item,
       event: group.event,
       selectionLabel: formatSelection(item.selection),
-      displaySelection: /^(mais de|mais|over|menos de|menos|under)\\b/i.test(String(item.selection || '').trim()) &&
-        item.line && !/(?:mais de|mais|over|menos de|menos|under)\\s+[+-]?\\d+(?:[.,]\\d+)?/i.test(String(item.selection || ''))
+      displaySelection: /^(mais de|mais|over|menos de|menos|under)\b/i.test(String(item.selection || '').trim()) &&
+        item.line && !/(?:mais de|mais|over|menos de|menos|under)\s+[+-]?\d+(?:[.,]\d+)?/i.test(String(item.selection || ''))
         ? formatSelection(item.selection) + ' ' + item.line
         : formatSelection(item.selection),
       displayMarket: (() => {
@@ -280,8 +280,8 @@ function OddsComparePage() {
         if (/card|cartao/.test(type)) return 'Total de cartões';
         return name || 'Mercado';
       })(),
-      missingLine: /\\b(mais de|menos de)\\b/i.test(item.selection || '') &&
-        !/(?:mais de|menos de|over|under)\\s+[+-]?\\d+(?:[.,]\\d+)?/i.test(item.selection || '') &&
+      missingLine: /\b(mais de|menos de)\b/i.test(item.selection || '') &&
+        !/(?:mais de|menos de|over|under)\s+[+-]?\d+(?:[.,]\d+)?/i.test(item.selection || '') &&
         !item.line
     })));
     return { ...row, match, title, items };
