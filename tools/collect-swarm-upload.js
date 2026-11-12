@@ -5,7 +5,7 @@ import {
 } from "../lib/bookmakers/swarm.js";
 import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
 
-const endpoint = process.env.FK_INGEST_URL || "https://fk-ficha-kamba.vercel.app/api/bookmakers/ingest-swarm";
+const endpoint = process.env.FK_INGEST_URL || "https://fk-ficha-kamba.vercel.app/api/bookmakers/save-comparison";
 const secret = process.env.CRON_SECRET;
 
 if (!secret) {
