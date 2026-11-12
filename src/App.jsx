@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Activity, CalendarDays, ChevronDown, ChevronRight, Clock3, FileText, History, LayoutDashboard, Radio, RefreshCw, Settings, ShieldCheck, Ticket, Trophy, Download, Bell, Menu, X, BarChart3, FileJson, AlertTriangle, CheckCircle2, ArrowUpDown, ExternalLink } from 'lucide-react';
 import { prepareOddsComparison } from '../lib/bookmakers/prepare-comparison.js';
+import { compareSwarmCollections } from '../lib/bookmakers/swarm-comparison.js';
 import { isSupabaseConfigured, supabase } from './lib/supabase.js';
 
 const NAV = [['Bilhetes do dia', LayoutDashboard], ['Comparar Odds', BarChart3], ['Acompanhamento ao vivo', Activity], ['Histórico', History], ['Definições', Settings]];
@@ -295,13 +296,14 @@ function OddsComparePage() {
     try {
       if (file.size > 12 * 1024 * 1024) throw new Error('O ficheiro excede o limite de 12 MB.');
       const parsed = JSON.parse(await file.text());
-      const payload = parsed?.payload && typeof parsed.payload === 'object' ? { ...parsed, ...parsed.payload, payload: undefined } : parsed;
+      const isSwarm = Array.isArray(parsed?.games);
+      const payload = isSwarm ? parsed : parsed?.payload && typeof parsed.payload === 'object' ? { ...parsed, ...parsed.payload, payload: undefined } : parsed;
       const hasCategories = Array.isArray(payload) || Array.isArray(payload?.categorias) || Array.isArray(payload?.categories);
-      if (!hasCategories) throw new Error('Este JSON não contém categorias de mercados reconhecíveis.');
+      if (!isSwarm && !hasCategories) throw new Error('Este JSON não contém categorias nem uma recolha Swarm (games).');
       const declared = String(payload?.bookmaker || '').toLowerCase();
-      if (declared && provider === 'bantubet' && !declared.includes('bantu')) throw new Error('Este ficheiro não parece ser da BantuBet.');
-      if (declared && provider === 'elephantbet' && !declared.includes('elephant')) throw new Error('Este ficheiro não parece ser da ElephantBet.');
-      setFiles(current => ({ ...current, [provider]: { name: file.name, payload } }));
+      if (!isSwarm && declared && provider === 'bantubet' && !declared.includes('bantu')) throw new Error('Este ficheiro não parece ser da BantuBet.');
+      if (!isSwarm && declared && provider === 'elephantbet' && !declared.includes('elephant')) throw new Error('Este ficheiro não parece ser da ElephantBet.');
+      setFiles(current => ({ ...current, [provider]: { name: file.name, payload, format: isSwarm ? 'swarm' : 'legacy' } }));
     } catch (e) {
       setFiles(current => ({ ...current, [provider]: null }));
       setError(e.message || 'Não foi possível ler este ficheiro JSON.');
@@ -312,11 +314,26 @@ function OddsComparePage() {
     setBusy(true);
     setError('');
     try {
-      const output = prepareOddsComparison({
-        bantubet: files.bantubet?.payload,
-        elephantbet: files.elephantbet?.payload,
-        event
-      });
+      let output;
+      if (files.bantubet?.format === 'swarm' || files.elephantbet?.format === 'swarm') {
+        if (files.bantubet?.format !== 'swarm' || files.elephantbet?.format !== 'swarm') throw new Error('Usa duas recolhas do mesmo formato: Swarm com Swarm, ou JSON antigo com JSON antigo.');
+        const result = compareSwarmCollections({ bantu: files.bantubet.payload, elephant: files.elephantbet.payload });
+        const fixtures = result.fixtures || [];
+        const diagnostics = fixtures.map(fixture => ({
+          bookmaker: fixture.bookmaker,
+          categoriesRead: 0,
+          rawMarketCount: fixture.markets.length,
+          usableMarketCount: fixture.markets.length,
+          excludedMarketCount: 0,
+          selectionCount: fixture.markets.length,
+          excludedMarkets: []
+        }));
+        output = { result, fixtures, diagnostics, source: 'Swarm' };
+        const firstEvent = result.events?.[0]?.event;
+        if (firstEvent) setEvent(current => ({ ...current, home: firstEvent.home, away: firstEvent.away, competition: firstEvent.competition || '' }));
+      } else {
+        output = prepareOddsComparison({ bantubet: files.bantubet?.payload, elephantbet: files.elephantbet?.payload, event });
+      }
       setPrepared(output);
     } catch (e) {
       setPrepared(null);
@@ -329,6 +346,8 @@ function OddsComparePage() {
   const allComparisons = prepared?.result?.events?.flatMap(group =>
     group.comparisons.map(item => ({ ...item, event: group.event }))
   ) || [];
+  const canSaveComparison = prepared?.fixtures?.length === 2;
+  const displayEvent = prepared?.result?.events?.[0]?.event || event;
   const visibleComparisons = allComparisons.filter(item =>
     [item.market, item.selection, item.period, ...item.quotes.map(q => q.bookmaker)]
       .join(' ').toLowerCase().includes(filter.toLowerCase())
@@ -365,7 +384,7 @@ function OddsComparePage() {
   return <div className="odds-workspace">
     <div className="odds-intro panel">
       <div className="odds-intro-icon"><BarChart3 size={22}/></div>
-      <div><b>Comparador de odds FK</b><p>Importa as duas recolhas JSON do mesmo jogo. O FK associa apenas mercados e selecções equivalentes e apresenta a melhor odd observada.</p></div>
+      <div><b>Comparador de odds FK</b><p>Importa as recolhas JSON da BantuBet e da ElephantBet. Aceita o formato Swarm (colecções com games) e o formato antigo; compara apenas mercados e selecções equivalentes.</p></div>
       <span className="odds-local-tag"><ShieldCheck size={13}/> PROCESSAMENTO LOCAL</span>
     </div>
 
@@ -396,7 +415,7 @@ function OddsComparePage() {
         <label className="odds-upload-card">
           <input type="file" accept=".json,.txt,application/json,text/plain" onChange={e => loadFile('bantubet', e.target.files?.[0])}/>
           <div className="odds-upload-icon"><FileJson size={22}/></div>
-          <b>BantuBet</b><span>Seleccionar recolha.json</span>
+          <b>BantuBet</b><span>Seleccionar recolha Swarm ou JSON</span>
           {files.bantubet ? <small className="upload-success"><CheckCircle2 size={13}/>{files.bantubet.name}</small> : <small>Ficheiro JSON</small>}
         </label>
         <label className="odds-upload-card elephant">
@@ -407,7 +426,7 @@ function OddsComparePage() {
         </label>
       </div>
       <div className="odds-actions">
-        <button className="primary-btn" onClick={runComparison} disabled={!files.bantubet || !files.elephantbet || !event.home.trim() || !event.away.trim() || busy}><ArrowUpDown size={16}/>{busy ? 'A comparar...' : 'Comparar odds'}</button>
+        <button className="primary-btn" onClick={runComparison} disabled={!files.bantubet || !files.elephantbet || (files.bantubet.format !== 'swarm' && (!event.home.trim() || !event.away.trim())) || busy}><ArrowUpDown size={16}/>{busy ? 'A comparar...' : 'Comparar odds'}</button>
         <button className="secondary-btn" onClick={clearAll}><RefreshCw size={15}/> Limpar</button>
       </div>
       {error && <div className="odds-error"><AlertTriangle size={16}/>{error}</div>}
@@ -419,7 +438,7 @@ function OddsComparePage() {
         <div><small>BANTUBET</small><b>{prepared.diagnostics[0].selectionCount}</b><span>selecções válidas · {prepared.diagnostics[0].excludedMarketCount} mercados excluídos</span></div>
         <div><small>ELEPHANTBET</small><b>{prepared.diagnostics[1].selectionCount}</b><span>selecções válidas · {prepared.diagnostics[1].excludedMarketCount} mercados excluídos</span></div>
       </section>
-      <div className="odds-result-heading"><div><div className="eyebrow"><span className="status-dot"/> RESULTADO DA ANÁLISE</div><h2>{event.home} <span>vs</span> {event.away}</h2><p>{event.competition || 'Competição não indicada'} · {prepared.result.note}</p></div><div className="odds-actions"><button className="secondary-btn" onClick={exportCsv} disabled={!allComparisons.length}><Download size={15}/> Exportar CSV</button><button className="primary-btn" onClick={saveComparison} disabled={!session || saveBusy || !allComparisons.length}><ShieldCheck size={15}/>{saveBusy ? 'A guardar...' : 'Guardar na base de dados'}</button></div></div>
+      <div className="odds-result-heading"><div><div className="eyebrow"><span className="status-dot"/> RESULTADO DA ANÁLISE</div><h2>{displayEvent.home} <span>vs</span> {displayEvent.away}{prepared?.result?.eventCount > 1 ? ` + ${prepared.result.eventCount - 1} jogo(s)` : ''}</h2><p>{displayEvent.competition || 'Competição não indicada'} · {prepared.result.note}</p></div><div className="odds-actions"><button className="secondary-btn" onClick={exportCsv} disabled={!allComparisons.length}><Download size={15}/> Exportar CSV</button><button className="primary-btn" onClick={saveComparison} disabled={!session || saveBusy || !allComparisons.length || !canSaveComparison} title={!canSaveComparison ? 'A gravação actual suporta um único jogo por vez.' : ''}><ShieldCheck size={15}/>{saveBusy ? 'A guardar...' : 'Guardar na base de dados'}</button></div></div>
       {!allComparisons.length ? <div className="empty-state"><div className="empty-state-icon"><BarChart3 size={22}/></div><b>Não foram encontradas selecções comparáveis</b><span>Confirma se os dois ficheiros correspondem ao mesmo jogo e se têm mercados equivalentes. O sistema não compara mercados apenas parecidos.</span></div> : <>
         <div className="toolbar odds-filter"><div className="searchbox"><BarChart3 size={16}/><input value={filter} onChange={e => setFilter(e.target.value)} placeholder="Filtrar por mercado, selecção ou casa..."/></div><span>{visibleComparisons.length} de {allComparisons.length} resultados</span></div>
         <div className="odds-results-list">{visibleComparisons.map((item, index) => <article className="odds-result-card" key={item.market + item.selection + item.period + index}>
