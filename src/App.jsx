@@ -250,11 +250,11 @@ function OddsComparePage() {
   }, []);
 
   const formatSelection = value => String(value || '')
-    .replace(/\\bW1\\b/gi, 'Vitória da equipa da casa')
-    .replace(/\\bW2\\b/gi, 'Vitória da equipa visitante')
-    .replace(/\\bX\\b/gi, 'Empate')
-    .replace(/\\bmais de\\b/gi, 'Mais de')
-    .replace(/\\bmenos de\\b/gi, 'Menos de');
+    .replace(/\bW1\b/gi, 'Vitória da equipa da casa')
+    .replace(/\bW2\b/gi, 'Vitória da equipa visitante')
+    .replace(/\bX\b/gi, 'Empate')
+    .replace(/\bmais de\b/gi, 'Mais de')
+    .replace(/\bmenos de\b/gi, 'Menos de');
 
   const visibleRows = savedRows.map(row => {
     const comparison = row.comparison || {};
