@@ -38,6 +38,8 @@ export default function App() {
   const [notice, setNotice] = useState('');
   const [discoveryBusy, setDiscoveryBusy] = useState(false);
   const [discoveryResult, setDiscoveryResult] = useState(null);
+  const [validationBusy, setValidationBusy] = useState(false);
+  const [validationResult, setValidationResult] = useState(null);
 
   // Sincroniza as fichas publicadas no Supabase; mantém o histórico local como fallback.
   useEffect(() => {
@@ -114,6 +116,21 @@ export default function App() {
     }
   };
 
+  const runMatchValidation = async () => {
+    setValidationBusy(true);
+    setValidationResult(null);
+    try {
+      const response = await fetch('/api/test-match-validation');
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
+      setValidationResult(result);
+    } catch (error) {
+      setValidationResult({ error: error.message });
+    } finally {
+      setValidationBusy(false);
+    }
+  };
+
   const exportBackup = () => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'fk-ficha-kamba-historico.json'; a.click(); URL.revokeObjectURL(url);
@@ -135,7 +152,7 @@ export default function App() {
           <div className="toolbar"><div className="searchbox"><History size={16}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Pesquisar por ficha, ID ou casa..."/></div></div>
           {filteredHistory.length ? <div className="daily-ticket-list">{filteredHistory.map(t => <TicketPanel key={t.id} ticket={t} expanded={!!expanded[t.id]} onToggle={() => toggle(t.id)}/>)}</div> : <EmptyState icon={History} title="Ainda não há histórico" detail="As fichas concluídas serão arquivadas aqui para consulta."/>}
         </>}
-        {page === 'Definições' && <section className="panel settings-panel"><div className="panel-head"><div><h3>Dados e privacidade</h3><p>Informações guardadas neste navegador.</p></div><Settings size={18}/></div><div className="setting-row"><div><b>Exportar histórico local</b><small>Descarrega uma cópia dos registos existentes neste navegador.</small></div><button className="secondary-btn" onClick={exportBackup}><Download size={15}/> Exportar</button></div><div className="setting-row"><div><b>Notificações de jogos</b><small>As notificações automáticas serão activadas quando o serviço em directo estiver configurado.</small></div><span className="status-text">A aguardar integração</span></div><div className="setting-row"><div><b>Conta e sincronização</b><small>A sincronização entre dispositivos ainda não está disponível nesta versão.</small></div><span className="status-text">Não ligado</span></div><div className="setting-row"><div><b>Teste técnico — descoberta de jogos</b><small>Consulta os próximos 2 dias na SportAPI e grava os jogos encontrados. Disponível apenas neste Preview; não recolhe odds nem gera fichas.</small></div><button className="secondary-btn" onClick={runDiscoveryTest} disabled={discoveryBusy}>{discoveryBusy ? 'A consultar…' : 'Testar descoberta'}</button></div>{discoveryResult && <div className="notice"><ShieldCheck size={17}/><span>{discoveryResult.error ? 'Falha: ' + discoveryResult.error : 'Concluído — ' + discoveryResult.fixturesDiscovered + ' jogos encontrados e ' + discoveryResult.fixturesSaved + ' gravados. Datas: ' + (discoveryResult.dates || []).join(', ')}</span><button onClick={() => setDiscoveryResult(null)}><X size={15}/></button></div>}</section>}
+        {page === 'Definições' && <section className="panel settings-panel"><div className="panel-head"><div><h3>Dados e privacidade</h3><p>Informações guardadas neste navegador.</p></div><Settings size={18}/></div><div className="setting-row"><div><b>Exportar histórico local</b><small>Descarrega uma cópia dos registos existentes neste navegador.</small></div><button className="secondary-btn" onClick={exportBackup}><Download size={15}/> Exportar</button></div><div className="setting-row"><div><b>Notificações de jogos</b><small>As notificações automáticas serão activadas quando o serviço em directo estiver configurado.</small></div><span className="status-text">A aguardar integração</span></div><div className="setting-row"><div><b>Conta e sincronização</b><small>A sincronização entre dispositivos ainda não está disponível nesta versão.</small></div><span className="status-text">Não ligado</span></div><div className="setting-row"><div><b>Teste técnico — descoberta de jogos</b><small>Consulta os próximos 2 dias na SportAPI e grava os jogos encontrados. Disponível apenas neste Preview; não recolhe odds nem gera fichas.</small></div><button className="secondary-btn" onClick={runDiscoveryTest} disabled={discoveryBusy}>{discoveryBusy ? 'A consultar…' : 'Testar descoberta'}</button></div>{discoveryResult && <div className="notice"><ShieldCheck size={17}/><span>{discoveryResult.error ? 'Falha: ' + discoveryResult.error : 'Concluído — ' + discoveryResult.fixturesDiscovered + ' jogos encontrados e ' + discoveryResult.fixturesSaved + ' gravados. Datas: ' + (discoveryResult.dates || []).join(', ')}</span><button onClick={() => setDiscoveryResult(null)}><X size={15}/></button></div>}<div className="setting-row"><div><b>Validar jogos no Supabase</b><small>Confere a quantidade, campos essenciais, duplicados e registos de estatísticas/análises. Apenas leitura.</small></div><button className="secondary-btn" onClick={runMatchValidation} disabled={validationBusy}>{validationBusy ? 'A validar…' : 'Validar jogos'}</button></div>{validationResult && <div className="notice"><ShieldCheck size={17}/><span>{validationResult.error ? 'Falha: ' + validationResult.error : 'Supabase: ' + validationResult.matchesCount + ' jogos; ' + validationResult.completeMatches + ' completos; ' + validationResult.duplicateExternalIds + ' IDs duplicados; ' + validationResult.statisticsCount + ' registos estatísticos; ' + validationResult.analysesCount + ' análises.'}</span><button onClick={() => setValidationResult(null)}><X size={15}/></button></div>}</section>}
         <footer><span>FK — Ficha Kamba</span><span>Dados de jogos e resultados dependem de fontes desportivas autorizadas.</span></footer>
       </div>
     </main>
