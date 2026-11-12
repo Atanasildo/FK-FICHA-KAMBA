@@ -148,3 +148,21 @@ test("não mistura linhas nativas diferentes mesmo quando a selecção tem o mes
   ]);
   assert.equal(result.comparisonCount, 0);
 });
+
+
+test("não compara totais de cartões sem linha, mesmo quando o tipo nativo é genérico", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{ market: "Total de Cartões Amarelo", selection: "Mais de", odds: 1.8 }]),
+    fixture("Elephant Bet", [{ market: "Total de Cartões Amarelo", selection: "Mais de", odds: 1.9 }])
+  ]);
+  assert.equal(result.comparisonCount, 0);
+});
+
+test("usa a linha nativa do mercado quando a selecção vem apenas como Mais de", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{ market: "Total de golos no jogo", selection: "Mais de", odds: 1.8, marketBase: "2.5" }]),
+    fixture("Elephant Bet", [{ market: "Total de golos no jogo", selection: "Mais de", odds: 1.9, marketBase: "2.5" }])
+  ]);
+  assert.equal(result.comparisonCount, 1);
+  assert.equal(result.events[0].comparisons[0].line, "2.5");
+});
