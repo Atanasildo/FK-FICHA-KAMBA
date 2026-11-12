@@ -1,6 +1,22 @@
 {
   "rewrites": [
     {
+      "source": "/api/bookmakers/bantubet-normalize",
+      "destination": "/api/bookmakers/normalize?provider=bantu"
+    },
+    {
+      "source": "/api/bookmakers/elephantbet-normalize",
+      "destination": "/api/bookmakers/normalize?provider=elephant"
+    },
+    {
+      "source": "/api/bookmakers/compare",
+      "destination": "/api/bookmakers/compare-all?mode=fixtures"
+    },
+    {
+      "source": "/api/bookmakers/compare-swarm",
+      "destination": "/api/bookmakers/compare-all?mode=swarm"
+    },
+    {
       "source": "/api/pipeline/build-tickets",
       "destination": "/api/pipeline?action=build-tickets"
     },
