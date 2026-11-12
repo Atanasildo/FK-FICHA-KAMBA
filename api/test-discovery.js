@@ -154,10 +154,8 @@ export default async function handler(req, res) {
       res.setHeader("Allow", "POST");
       return res.status(405).json({ error: "Método não permitido." });
     }
-    const requestedOffset = Number(req.body?.offset);
-    const offset = Number.isInteger(requestedOffset) && requestedOffset >= 5 && requestedOffset <= 10000 ? requestedOffset : 5;
     req.headers.authorization = `Bearer ${process.env.CRON_SECRET || ""}`;
-    req.body = { limit: 5, offset };
+    req.body = { limit: 5 };
     return collectContext(req, res);
   }
 
