@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { handleSwarmIngest } from "../../lib/bookmakers/ingest-swarm-handler.js";
 
 const json = (res, status, body) => res.status(status).json(body);
 const slug = (value) => String(value || "")
@@ -7,6 +8,10 @@ const slug = (value) => String(value || "")
   .slice(0, 100);
 
 export default async function handler(req, res) {
+  if (process.env.CRON_SECRET && req.headers.authorization === "Bearer " + process.env.CRON_SECRET) {
+    if (req.method !== "POST") { res.setHeader("Allow", "POST"); return res.status(405).json({ error: "Método não permitido." }); }
+    return handleSwarmIngest(req, res);
+  }
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return json(res, 405, { error: "Método não permitido." });
