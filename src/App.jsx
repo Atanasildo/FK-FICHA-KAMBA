@@ -5,6 +5,13 @@ import { isSupabaseConfigured, supabase } from './lib/supabase.js';
 
 const NAV = [['Bilhetes do dia', LayoutDashboard], ['Comparar Odds', BarChart3], ['Acompanhamento ao vivo', Activity], ['Histórico', History], ['Definições', Settings]];
 const STORE = 'fk-ficha-kamba-v1';
+const CONTEXT_OFFSET_STORE = 'fk-context-next-offset';
+const readContextOffset = () => {
+  try {
+    const saved = localStorage.getItem(CONTEXT_OFFSET_STORE);
+    return saved === null ? 10 : saved === 'done' ? null : Math.max(5, Number(saved) || 10);
+  } catch { return 10; }
+};
 const money = n => Number(n || 0).toFixed(2);
 const readStore = () => {
   try { return JSON.parse(localStorage.getItem(STORE)) || { games: [], tickets: [], bookmaker: 'BantuBet Angola' }; }
@@ -42,7 +49,7 @@ export default function App() {
   const [validationResult, setValidationResult] = useState(null);
   const [contextBusy, setContextBusy] = useState(false);
   const [contextResult, setContextResult] = useState(null);
-  const [contextNextOffset, setContextNextOffset] = useState(5);
+  const [contextNextOffset, setContextNextOffset] = useState(readContextOffset);
   const [contextAuditBusy, setContextAuditBusy] = useState(false);
   const [contextAuditResult, setContextAuditResult] = useState(null);
 
@@ -148,7 +155,11 @@ export default function App() {
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || ('HTTP ' + response.status));
       setContextResult(result);
-      setContextNextOffset(Number.isInteger(result.nextOffset) ? result.nextOffset : null);
+      const nextOffset = Number.isInteger(result.nextOffset) ? result.nextOffset : null;
+      setContextNextOffset(nextOffset);
+      try {
+        localStorage.setItem(CONTEXT_OFFSET_STORE, nextOffset === null ? 'done' : String(nextOffset));
+      } catch { /* O progresso continua válido durante esta sessão. */ }
     } catch (error) {
       setContextResult({ error: error.message });
     } finally {
