@@ -235,12 +235,40 @@ function OddsComparePage() {
   const [authMessage, setAuthMessage] = useState('');
   const [saveBusy, setSaveBusy] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
+  const [savedRows, setSavedRows] = useState([]);
+  const [historyBusy, setHistoryBusy] = useState(false);
+  const [historyError, setHistoryError] = useState('');
+
+  const loadSavedComparisons = async () => {
+    if (!supabase) {
+      setHistoryError('A ligação à Supabase não está configurada.');
+      return;
+    }
+    setHistoryBusy(true);
+    setHistoryError('');
+    const { data, error } = await supabase
+      .from('odds_comparisons')
+      .select('id,comparison,created_at,matches(home_team,away_team,competition,kickoff_at)')
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (error) {
+      setHistoryError('Não foi possível carregar as comparações: ' + error.message);
+      setSavedRows([]);
+    } else {
+      setSavedRows(data || []);
+    }
+    setHistoryBusy(false);
+  };
 
   useEffect(() => {
     if (!supabase) return undefined;
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
     const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => setSession(nextSession));
     return () => data.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    loadSavedComparisons();
   }, []);
 
   const requestCode = async () => {
@@ -279,6 +307,7 @@ function OddsComparePage() {
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || 'Não foi possível guardar a comparação.');
       setSaveMessage(`Guardado na base de dados: ${payload.insertedMarkets} odds registadas.`);
+      await loadSavedComparisons();
     } catch (error) {
       setSaveMessage(error.message || 'Falha ao guardar na base de dados.');
     } finally { setSaveBusy(false); }
@@ -401,6 +430,28 @@ function OddsComparePage() {
       </div>}
       {authMessage && <p className="muted-copy">{authMessage}</p>}
       {saveMessage && <div className="notice"><ShieldCheck size={16}/>{saveMessage}</div>}
+    </section>
+
+    <section className="panel odds-step">
+      <div className="odds-section-title"><span>BD</span><div><h3>Comparações recebidas automaticamente</h3><p>Jogos e odds enviados pelo recolhedor do teu computador e guardados na nuvem.</p></div><button className="secondary-btn" onClick={loadSavedComparisons} disabled={historyBusy}><RefreshCw size={15}/>{historyBusy ? 'A actualizar...' : 'Actualizar'}</button></div>
+      {historyError && <div className="odds-error">{historyError}</div>}
+      {!historyError && !savedRows.length && !historyBusy && <div className="empty-state"><div className="empty-state-icon"><BarChart3 size={22}/></div><b>Ainda não há comparações guardadas</b><span>Quando o recolhedor enviar jogos, as comparações aparecerão automaticamente aqui.</span></div>}
+      {savedRows.map(row => {
+        const comparison = row.comparison || {};
+        const groups = Array.isArray(comparison.events) ? comparison.events : [];
+        const total = groups.reduce((sum, group) => sum + (group.comparisons || []).length, 0);
+        const match = row.matches || {};
+        const title = groups[0]?.event ? groups[0].event.home + ' vs ' + groups[0].event.away : (match.home_team || 'Jogo') + ' vs ' + (match.away_team || '—');
+        return <article className="panel odds-saved-card" key={row.id}>
+          <div className="panel-head"><div><h3>{title}</h3><p>{match.competition || groups[0]?.event?.competition || 'Competição não indicada'} · {row.created_at ? new Date(row.created_at).toLocaleString('pt-AO') : 'Data não indicada'}</p></div><span className="status-text">{total} comparações</span></div>
+          {groups.map((group, groupIndex) => <div className="odds-results-list" key={groupIndex}>
+            {(group.comparisons || []).map((item, index) => <article className="odds-result-card" key={item.market + item.selection + index}>
+              <div className="odds-result-top"><div><span className="odds-market-label">{item.market}</span><h3>{item.selection}</h3><small>{item.period === 'FT' ? 'Jogo completo' : item.period === '1H' ? '1.ª parte' : item.period === '2H' ? '2.ª parte' : item.period || 'Período não indicado'}{item.line ? ' · Linha ' + item.line : ''}</small></div><div className="best-odd"><small>MELHOR ODD</small><b>{Number(item.bestOdds).toFixed(2)}</b><span>{item.bestBookmaker}</span></div></div>
+              <div className="odds-quotes">{(item.quotes || []).map(quote => <div className={quote.bookmaker === item.bestBookmaker && quote.odds === item.bestOdds ? 'odds-quote best' : 'odds-quote'} key={quote.bookmaker}><span>{quote.bookmaker}</span><b>{Number(quote.odds).toFixed(2)}</b>{quote.bookmaker === item.bestBookmaker && quote.odds === item.bestOdds && <em>Melhor</em>}</div>)}</div>
+            </article>)}
+          </div>)}
+        </article>;
+      })}
     </section>
 
     <section className="panel odds-step">
