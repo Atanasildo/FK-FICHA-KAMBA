@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import {
   collectSwarm,
+  collectSwarmSports,
   discoverSwarmGames,
   SWARM_BOOKMAKERS
 } from "../lib/bookmakers/swarm.js";
@@ -21,7 +22,9 @@ if (discover && ids.length) {
 
 const result = discover
   ? await discoverSwarmGames({ ...config, sportId: 1, timeoutMs: 30000 })
-  : await collectSwarm({ ...config, gameIds: ids, timeoutMs: 30000 });
+  : ids.length
+    ? await collectSwarm({ ...config, gameIds: ids, timeoutMs: 30000 })
+    : await collectSwarmSports({ ...config, timeoutMs: 30000 });
 
 const filename = site === "elephant" ? "elephant" : "bantu";
 await mkdir("data/collections", { recursive: true });
