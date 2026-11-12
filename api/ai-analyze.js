@@ -271,13 +271,22 @@ export default async function handler(req, res) {
         canonicalMarketKey(c.market, c.selection) === wantedKey
       );
       if (!candidate || candidate.quotes.length < 2 || candidate.bestOdds < MIN_ODDS) continue;
+      const fairProbability = Number(item.fairProbability);
+      const expectedValue = fairProbability * candidate.bestOdds - 1;
+      if (!Number.isFinite(fairProbability) || fairProbability <= 0 || fairProbability > 1 || expectedValue < 0.03 || String(item.rationale || "").trim().length < 12) continue;
       verifiedSelections.push({
         fixtureId: item.fixtureId,
+        home: fixture.home,
+        away: fixture.away,
+        competition: fixture.competition,
+        kickoff: fixture.kickoff,
         market: item.market,
         selection: item.selection,
         period: candidate.period,
         line: candidate.line,
         rationale: item.rationale,
+        fairProbability,
+        ev: Number(expectedValue.toFixed(4)),
         confidence: item.confidence,
         bestOdds: candidate.bestOdds,
         bestBookmaker: candidate.bestBookmaker,
