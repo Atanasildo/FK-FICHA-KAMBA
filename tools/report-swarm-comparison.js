@@ -221,7 +221,10 @@ console.log(`BantuBet: ${bantu.collectedAt || bantu.recolhidoEm || "timestamp n�
 console.log(`ElephantBet: ${elephant.collectedAt || elephant.recolhidoEm || "timestamp não disponível neste JSON"}`);
 console.log(`Início BantuBet: ${bantu.collectionStartedAt || "não disponível"}`);
 console.log(`Início ElephantBet: ${elephant.collectionStartedAt || "não disponível"}`);
-if (bantu.collectedAt && elephant.collectedAt) {\n  const collectionDelta = Math.abs(Date.parse(bantu.collectedAt) - Date.parse(elephant.collectedAt)) / 1000;\n  console.log(`Diferença entre conclusão das recolhas: ${collectionDelta.toFixed(1)} segundos`);\n  if (collectionDelta > 120) console.log("ATENÇÃO: recolhas concluídas com mais de 120 segundos de diferença.");\n}
+if (bantu.collectedAt && elephant.collectedAt) {
+  const collectionDelta = Math.abs(Date.parse(bantu.collectedAt) - Date.parse(elephant.collectedAt)) / 1000;\n  console.log(`Diferença entre conclusão das recolhas: ${collectionDelta.toFixed(1)} segundos`);
+  if (collectionDelta > 120) console.log("ATENÇÃO: recolhas concluídas com mais de 120 segundos de diferença.");
+}
 console.log("\n=== RÓTULOS VISÍVEIS REPETIDOS COM TYPE/BASE DIFERENTES ===");
 console.log(`BantuBet: ${bantuRepeated.count}`);
 console.log(`ElephantBet: ${elephantRepeated.count}`);
