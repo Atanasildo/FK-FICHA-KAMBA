@@ -14,7 +14,8 @@
     "collect:bantu": "node tools/collect-swarm.js bantu",
     "discover:elephant": "node tools/collect-swarm.js elephant --discover",
     "discover:bantu": "node tools/collect-swarm.js bantu --discover",
-    "report:swarm": "node tools/report-swarm-comparison.js"
+    "report:swarm": "node tools/report-swarm-comparison.js",
+    "collect:upload": "node tools/collect-swarm-upload.js"
   },
   "dependencies": {
     "@browserbasehq/sdk": "^2.5.0",
