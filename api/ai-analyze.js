@@ -68,7 +68,8 @@ const responseSchema = {
           fixtureId: { type: "string" },
           market: { type: "string" },
           selection: { type: "string" },
-          rationale: { type: "string", minLength: 12 },\n          fairProbability: { type: "number", minimum: 0, maximum: 1 },
+          rationale: { type: "string", minLength: 12 },
+          fairProbability: { type: "number", minimum: 0, maximum: 1 },
           confidence: { type: "string", enum: ["low", "medium", "high"] }
         },
         required: ["fixtureId", "market", "selection", "rationale", "fairProbability", "confidence"],
