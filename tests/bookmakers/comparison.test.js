@@ -166,3 +166,22 @@ test("usa a linha nativa do mercado quando a selecção vem apenas como Mais de"
   assert.equal(result.comparisonCount, 1);
   assert.equal(result.events[0].comparisons[0].line, "2.5");
 });
+
+
+test("preserva a categoria original da casa na comparação", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{
+      market: "Total de golos", marketType: "TotalGoals",
+      category: "Golos", categoryId: "12", categoryOrder: 3,
+      selection: "Mais de 2.5", odds: 1.8, line: "2.5"
+    }]),
+    fixture("Elephant Bet", [{
+      market: "Total de golos", marketType: "TotalGoals",
+      category: "Golos", categoryId: "12", categoryOrder: 3,
+      selection: "Mais de 2.5", odds: 1.9, line: "2.5"
+    }])
+  ]);
+  assert.equal(result.comparisonCount, 1);
+  assert.equal(result.events[0].comparisons[0].category, "Golos");
+  assert.deepEqual(result.events[0].comparisons[0].categories, ["Golos"]);
+});
