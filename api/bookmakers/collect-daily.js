@@ -90,16 +90,16 @@ export default async function handler(req, res) {
           id: gameId, home: a.home, away: a.away, competition: a.competition || null,
           kickoff, bookmaker: "BantuBet",
           markets: (a.markets || []).flatMap(m => (m.selections || []).map(s => ({
-            market: m.name || m.type, marketType: m.type, marketBase: m.base,
-            selection: s.name, odds: s.odd, collectedAt: s.receivedAt || m.receivedAt || a.receivedAt
+            market: m.name || m.type, marketType: m.type, marketBase: m.base ?? null,
+            selection: s.name, line: s.base ?? m.base ?? null, odds: s.odd, collectedAt: s.receivedAt || m.receivedAt || a.receivedAt
           })))
         },
         {
           id: gameId, home: b.home, away: b.away, competition: b.competition || null,
           kickoff, bookmaker: "ElephantBet",
           markets: (b.markets || []).flatMap(m => (m.selections || []).map(s => ({
-            market: m.name || m.type, marketType: m.type, marketBase: m.base,
-            selection: s.name, odds: s.odd, collectedAt: s.receivedAt || m.receivedAt || b.receivedAt
+            market: m.name || m.type, marketType: m.type, marketBase: m.base ?? null,
+            selection: s.name, line: s.base ?? m.base ?? null, odds: s.odd, collectedAt: s.receivedAt || m.receivedAt || b.receivedAt
           })))
         }
       ]);
