@@ -223,3 +223,5 @@ footer{color:#7890a2}
 
 .odds-auth-row{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin:12px 0}.odds-auth-row .field{flex:1;min-width:220px}.odds-auth-row .primary-btn{min-height:44px}.odds-workspace .notice{margin-top:12px}.odds-result-heading .odds-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.odds-result-heading .primary-btn{white-space:nowrap}
 @media(max-width:700px){.odds-result-heading .odds-actions{width:100%;justify-content:flex-start}.odds-result-heading .odds-actions button{flex:1}.odds-auth-row{align-items:stretch;flex-direction:column}.odds-auth-row .field{min-width:0}}
+
+.odds-line-warning{display:block;margin-top:6px;color:#f0a44b;font-size:11px;font-weight:600}
