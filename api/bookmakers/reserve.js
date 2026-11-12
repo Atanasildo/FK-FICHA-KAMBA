@@ -16,6 +16,17 @@ const configs = {
   }
 };
 
+function kickoffMillis(value) {
+  if (!value) return NaN;
+  const iso = Date.parse(value);
+  if (Number.isFinite(iso)) return iso;
+  const match = String(value).match(/^(\\d{2})[.\\/](\\d{2})[.\\/](\\d{4}),?\\s+(\\d{2}):(\\d{2})$/);
+  if (!match) return NaN;
+  const [, day, month, year, hour, minute] = match;
+  // Africa/Luanda = UTC+1.
+  return Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour) - 1, Number(minute));
+}
+
 function buildPayload(site, selections, suppliedTotal) {
   const cfg = configs[site];
   const events = selections.map(s => {
