@@ -29,7 +29,7 @@ for (const name of providers) {
 const gameIds = selectCommonSwarmGames(
   discovered.bantu.games,
   discovered.elephant.games,
-  { maxGames: 5 }
+  { maxGames: 10 }
 );
 
 if (!gameIds.length) {
