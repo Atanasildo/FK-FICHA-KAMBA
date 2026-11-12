@@ -185,3 +185,20 @@ test("preserva a categoria original da casa na comparação", () => {
   assert.equal(result.events[0].comparisons[0].category, "Golos");
   assert.deepEqual(result.events[0].comparisons[0].categories, ["Golos"]);
 });
+
+
+test("distingue totais de cartões dos restantes mercados e conserva a linha", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{
+      market: "Total", marketType: "TotalYellowCards", category: "Cartões",
+      selection: "Mais de", odds: 1.8, line: "3.5"
+    }]),
+    fixture("Elephant Bet", [{
+      market: "Total", marketType: "TotalYellowCards", category: "Cartões",
+      selection: "Mais de", odds: 1.9, line: "3.5"
+    }])
+  ]);
+  assert.equal(result.comparisonCount, 1);
+  assert.equal(result.events[0].comparisons[0].category, "Cartões");
+  assert.equal(result.events[0].comparisons[0].line, "3.5");
+});
