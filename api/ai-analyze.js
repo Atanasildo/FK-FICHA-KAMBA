@@ -145,16 +145,16 @@ export default async function handler(req, res) {
       if (!m || typeof m.market !== "string" || typeof m.selection !== "string" ||
           !Number.isFinite(Number(m.odds)) || Number(m.odds) <= 1 ||
           typeof (m.bookmaker || fixture.bookmaker) !== "string") return false;
-      const isOverUnder = /^(mais de|mais|over|menos de|menos|under)\\b/i.test(m.selection.trim());
+      const isOverUnder = /^(mais de|mais|over|menos de|menos|under)\b/i.test(m.selection.trim());
       const line = canonicalLine(m.line ?? m.marketBase) || canonicalLine(
-        m.selection.match(/(?:mais de|mais|over|menos de|menos|under)\\s+([+-]?\\d+(?:[.,]\\d+)?)/i)?.[1]
+        m.selection.match(/(?:mais de|mais|over|menos de|menos|under)\s+([+-]?\d+(?:[.,]\d+)?)/i)?.[1]
       );
       return !isOverUnder || !!line;
     });
     const unique = new Map();
     for (const m of markets) {
       const line = canonicalLine(m.line ?? m.marketBase) || canonicalLine(
-        String(m.selection).match(/(?:mais de|mais|over|menos de|menos|under)\\s+([+-]?\\d+(?:[.,]\\d+)?)/i)?.[1]
+        String(m.selection).match(/(?:mais de|mais|over|menos de|menos|under)\s+([+-]?\d+(?:[.,]\d+)?)/i)?.[1]
       );
       const key = canonicalMarketKey(m.market, m.selection, { line, marketType: m.marketType, marketBase: m.marketBase });
       if (!unique.has(key)) unique.set(key, {
