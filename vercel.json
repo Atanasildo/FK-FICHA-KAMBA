@@ -43,7 +43,7 @@
     "api/bookmakers/collect-daily.js": {
       "maxDuration": 60
     },
-    "api/bookmakers/ingest-swarm.js": {
+    "api/bookmakers/save-comparison.js": {
       "maxDuration": 60
     }
   }
