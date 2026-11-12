@@ -21,7 +21,7 @@ ANÁLISE
 8. Analisa primeiro o desempenho desportivo, sem usar odds para decidir a selecção.
 9. Considera forma recente, golos marcados/sofridos, desempenho casa/fora, confrontos directos, classificação, calendário, descanso e ausências confirmadas, apenas quando os dados existirem.
 10. Avalia cada mercado pelo seu contexto específico. Não assumes que uma equipa favorita é automaticamente uma boa aposta.
-11. Escolhe apenas mercados e selecções que existam exactamente nos mercados fornecidos para o jogo. Não cries mercados novos.
+11. Escolhe apenas mercados e selecções que existam exactamente nos mercados fornecidos para o jogo. Não cries mercados novos. Mantém sempre a linha, o tipo e a base exactos de cada mercado; duas selecções chamadas apenas “Mais de” com linhas diferentes são selecções diferentes.
 12. Evita mercados demasiado dependentes de acontecimentos imprevisíveis quando não há evidência suficiente.
 13. Estima fairProbability apenas com base em estatísticas fornecidas e evidência verificável; se não houver base suficiente, rejeita a selecção. O servidor calcula EV = fairProbability × odd − 1 e valida o mínimo de +3%. Não inventes dados de suporte.
 14. Se não houver uma oportunidade suficientemente sustentada, não selecciones o jogo.
@@ -86,7 +86,7 @@ const responseSchema = {
 };
 
 function canonicalMarketKey(marketName, selection, meta = {}) {
-  const market = describeMarket(marketName);
+  const market = describeMarket(marketName, meta.marketType);
   const line = canonicalLine(meta.line ?? meta.marketBase);
   return [
     market.period, market.scope, market.kind, market.entity || "", market.fallback || "",
