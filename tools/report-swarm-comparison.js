@@ -171,6 +171,11 @@ for (const gameId of commonGameIds) {
         selection: selection.name,
         selectionIdBantu: selection.id,
         selectionIdElephant: other.id,
+        receivedAtBantu: bg.receivedAt || market.receivedAt || null,
+        receivedAtElephant: eg.receivedAt || otherMarket.receivedAt || null,
+        captureDeltaSeconds: bg.receivedAt && eg.receivedAt
+          ? Math.abs(Date.parse(bg.receivedAt) - Date.parse(eg.receivedAt)) / 1000
+          : null,
         bantuOdd: selection.odd,
         elephantOdd: other.odd,
         best: higherBookmaker,
@@ -213,7 +218,7 @@ console.log(`ElephantBet com odd maior: ${elephantHigher} (${pct(elephantHigher)
 console.log(`Só BantuBet: ${selectionsOnlyBantu}; só ElephantBet: ${selectionsOnlyElephant}`);
 console.log("\n=== METADADOS DA RECOLHA ===");
 console.log(`BantuBet: ${bantu.collectedAt || bantu.recolhidoEm || "timestamp não disponível neste JSON"}`);
-console.log(`ElephantBet: ${elephant.collectedAt || elephant.recolhidoEm || "timestamp não disponível neste JSON"}`);
+console.log(`ElephantBet: ${elephant.collectedAt || elephant.recolhidoEm || "timestamp não disponível neste JSON"}`);\nconsole.log(`Início BantuBet: ${bantu.collectionStartedAt || "não disponível"}`);\nconsole.log(`Início ElephantBet: ${elephant.collectionStartedAt || "não disponível"}`);\nif (bantu.collectedAt && elephant.collectedAt) {\n  const collectionDelta = Math.abs(Date.parse(bantu.collectedAt) - Date.parse(elephant.collectedAt)) / 1000;\n  console.log(`Diferença entre conclusão das recolhas: ${collectionDelta.toFixed(1)} segundos`);\n  if (collectionDelta > 120) console.log("ATENÇÃO: recolhas concluídas com mais de 120 segundos de diferença.");\n}
 console.log("\n=== RÓTULOS VISÍVEIS REPETIDOS COM TYPE/BASE DIFERENTES ===");
 console.log(`BantuBet: ${bantuRepeated.count}`);
 console.log(`ElephantBet: ${elephantRepeated.count}`);
@@ -239,7 +244,7 @@ console.table(top.map((r, i) => ({
   Bantu: fmt(r.bantuOdd),
   Elephant: fmt(r.elephantOdd),
   "Melhor odd": r.best,
-  "Dif. %": r.percentageDifference.toFixed(2) + "%"
+  "Dif. %": r.percentageDifference.toFixed(2) + "%",\n  "Recebido Bantu": r.receivedAtBantu || "n/d",\n  "Recebido Elephant": r.receivedAtElephant || "n/d",\n  "Dif. tempo (s)": r.captureDeltaSeconds === null ? "n/d" : r.captureDeltaSeconds.toFixed(1)
 })));
 
 const csvEscape = value => '"' + String(value ?? "").replace(/"/g, '""') + '"';
@@ -247,16 +252,14 @@ const headers = [
   "Game ID", "Jogo", "Mercado", "Market type", "Market base",
   "Market ID BantuBet", "Market ID ElephantBet", "Selecção",
   "Selection ID BantuBet", "Selection ID ElephantBet",
-  "Odd BantuBet", "Odd ElephantBet", "Melhor odd",
-  "Diferença absoluta", "Diferença percentual"
+  "Recebido BantuBet (cliente)", "Recebido ElephantBet (cliente)", "Diferença recepção (segundos)",\n  "Odd BantuBet", "Odd ElephantBet", "Melhor odd",\n  "Diferença absoluta", "Diferença percentual"
 ];
 const csv = [
   headers,
   ...top.map(r => [
     r.gameId, r.game, r.market, display(r.marketType), display(r.marketBase),
     display(r.marketIdBantu), display(r.marketIdElephant), r.selection,
-    display(r.selectionIdBantu), display(r.selectionIdElephant),
-    r.bantuOdd, r.elephantOdd, r.best,
+    display(r.selectionIdBantu), display(r.selectionIdElephant),\n    r.receivedAtBantu || "n/d", r.receivedAtElephant || "n/d",\n    r.captureDeltaSeconds === null ? "n/d" : r.captureDeltaSeconds.toFixed(1),\n    r.bantuOdd, r.elephantOdd, r.best,
     r.absoluteDifference.toFixed(4), r.percentageDifference.toFixed(2) + "%"
   ])
 ].map(line => line.map(csvEscape).join(";")).join("\n");
