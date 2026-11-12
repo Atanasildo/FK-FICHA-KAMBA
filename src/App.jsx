@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Activity, CalendarDays, ChevronDown, ChevronRight, Clock3, FileText, History, LayoutDashboard, Radio, RefreshCw, Settings, ShieldCheck, Ticket, Trophy, Download, Bell, Menu, X, BarChart3, FileJson, AlertTriangle, CheckCircle2, ArrowUpDown, ExternalLink } from 'lucide-react';
-import { prepareOddsComparison } from '../lib/bookmakers/prepare-comparison.js';
-import { compareSwarmCollections } from '../lib/bookmakers/swarm-comparison.js';
-import { isSupabaseConfigured, supabase } from './lib/supabase.js';
+import { Activity, CalendarDays, ChevronDown, ChevronRight, Clock3, FileText, History, LayoutDashboard, Radio, RefreshCw, Settings, ShieldCheck, Ticket, Trophy, Download, Bell, Menu, X, BarChart3, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { supabase } from './lib/supabase.js';
 
 const NAV = [['Bilhetes do dia', LayoutDashboard], ['Comparar Odds', BarChart3], ['Acompanhamento ao vivo', Activity], ['Histórico', History], ['Definições', Settings]];
 const STORE = 'fk-ficha-kamba-v1';
@@ -221,23 +219,10 @@ function EmptyState({ icon: Icon, title, detail }) { return <div className="empt
 
 
 function OddsComparePage() {
-  const [files, setFiles] = useState({ bantubet: null, elephantbet: null });
-  const [event, setEvent] = useState({ home: '', away: '', competition: '', kickoff: '' });
-  const [prepared, setPrepared] = useState(null);
-  const [error, setError] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [filter, setFilter] = useState('');
-  const [session, setSession] = useState(null);
-  const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
-  const [authBusy, setAuthBusy] = useState(false);
-  const [authMessage, setAuthMessage] = useState('');
-  const [saveBusy, setSaveBusy] = useState(false);
-  const [saveMessage, setSaveMessage] = useState('');
   const [savedRows, setSavedRows] = useState([]);
   const [historyBusy, setHistoryBusy] = useState(false);
   const [historyError, setHistoryError] = useState('');
+  const [filter, setFilter] = useState('');
 
   const loadSavedComparisons = async () => {
     if (!supabase) {
@@ -261,251 +246,63 @@ function OddsComparePage() {
   };
 
   useEffect(() => {
-    if (!supabase) return undefined;
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => setSession(nextSession));
-    return () => data.subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
     loadSavedComparisons();
   }, []);
 
-  const requestCode = async () => {
-    if (!supabase || !email.trim()) return;
-    setAuthBusy(true); setAuthMessage('');
-    const { error } = await supabase.auth.signInWithOtp({ email: email.trim(), options: { shouldCreateUser: true } });
-    setAuthBusy(false);
-    if (error) setAuthMessage(error.message);
-    else { setOtpSent(true); setAuthMessage('Enviámos um código/link de acesso para o teu email.'); }
-  };
+  const formatSelection = value => String(value || '')
+    .replace(/\\bW1\\b/gi, 'Vitória da equipa da casa')
+    .replace(/\\bW2\\b/gi, 'Vitória da equipa visitante')
+    .replace(/\\bX\\b/gi, 'Empate')
+    .replace(/\\bmais de\\b/gi, 'Mais de')
+    .replace(/\\bmenos de\\b/gi, 'Menos de');
 
-  const confirmCode = async () => {
-    if (!supabase || !email.trim() || !otp.trim()) return;
-    setAuthBusy(true); setAuthMessage('');
-    const { error } = await supabase.auth.verifyOtp({ email: email.trim(), token: otp.trim(), type: 'email' });
-    setAuthBusy(false);
-    setAuthMessage(error ? error.message : 'Sessão iniciada com sucesso.');
-  };
-
-  const signOut = async () => {
-    if (supabase) await supabase.auth.signOut();
-    setSession(null);
-    setSaveMessage('');
-  };
-
-  const saveComparison = async () => {
-    const accessToken = session?.access_token;
-    if (!accessToken || !prepared) return;
-    setSaveBusy(true); setSaveMessage('');
-    try {
-      const response = await fetch('/api/bookmakers/save-comparison', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
-        body: JSON.stringify({ fixtures: prepared.fixtures, comparison: prepared.result })
-      });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || 'Não foi possível guardar a comparação.');
-      setSaveMessage(`Guardado na base de dados: ${payload.insertedMarkets} odds registadas.`);
-      await loadSavedComparisons();
-    } catch (error) {
-      setSaveMessage(error.message || 'Falha ao guardar na base de dados.');
-    } finally { setSaveBusy(false); }
-  };
-
-  const updateEvent = (key, value) => {
-    setEvent(current => ({ ...current, [key]: value }));
-    setPrepared(null);
-  };
-
-  const loadFile = async (provider, file) => {
-    if (!file) return;
-    setError('');
-    setPrepared(null);
-    try {
-      if (file.size > 12 * 1024 * 1024) throw new Error('O ficheiro excede o limite de 12 MB.');
-      const parsed = JSON.parse(await file.text());
-      const isSwarm = Array.isArray(parsed?.games);
-      const payload = isSwarm ? parsed : parsed?.payload && typeof parsed.payload === 'object' ? { ...parsed, ...parsed.payload, payload: undefined } : parsed;
-      const hasCategories = Array.isArray(payload) || Array.isArray(payload?.categorias) || Array.isArray(payload?.categories);
-      if (!isSwarm && !hasCategories) throw new Error('Este JSON não contém categorias nem uma recolha Swarm (games).');
-      const declared = String(payload?.bookmaker || '').toLowerCase();
-      if (!isSwarm && declared && provider === 'bantubet' && !declared.includes('bantu')) throw new Error('Este ficheiro não parece ser da BantuBet.');
-      if (!isSwarm && declared && provider === 'elephantbet' && !declared.includes('elephant')) throw new Error('Este ficheiro não parece ser da ElephantBet.');
-      setFiles(current => ({ ...current, [provider]: { name: file.name, payload, format: isSwarm ? 'swarm' : 'legacy' } }));
-    } catch (e) {
-      setFiles(current => ({ ...current, [provider]: null }));
-      setError(e.message || 'Não foi possível ler este ficheiro JSON.');
-    }
-  };
-
-  const runComparison = () => {
-    setBusy(true);
-    setError('');
-    try {
-      let output;
-      if (files.bantubet?.format === 'swarm' || files.elephantbet?.format === 'swarm') {
-        if (files.bantubet?.format !== 'swarm' || files.elephantbet?.format !== 'swarm') throw new Error('Usa duas recolhas do mesmo formato: Swarm com Swarm, ou JSON antigo com JSON antigo.');
-        const result = compareSwarmCollections({ bantu: files.bantubet.payload, elephant: files.elephantbet.payload });
-        const fixtures = result.fixtures || [];
-        const diagnostics = ['BantuBet', 'ElephantBet'].map(bookmaker => {
-          const providerFixtures = fixtures.filter(fixture => fixture.bookmaker === bookmaker);
-          const selectionCount = providerFixtures.reduce((sum, fixture) => sum + fixture.markets.length, 0);
-          return {
-            bookmaker,
-            categoriesRead: 0,
-            rawMarketCount: selectionCount,
-            usableMarketCount: selectionCount,
-            excludedMarketCount: 0,
-            selectionCount,
-            excludedMarkets: []
-          };
-        });
-        output = { result, fixtures, diagnostics, source: 'Swarm' };
-        const firstEvent = result.events?.[0]?.event;
-        if (firstEvent) setEvent(current => ({ ...current, home: firstEvent.home, away: firstEvent.away, competition: firstEvent.competition || '' }));
-      } else {
-        output = prepareOddsComparison({ bantubet: files.bantubet?.payload, elephantbet: files.elephantbet?.payload, event });
-      }
-      setPrepared(output);
-    } catch (e) {
-      setPrepared(null);
-      setError(e.message || 'Não foi possível comparar as recolhas.');
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const allComparisons = prepared?.result?.events?.flatMap(group =>
-    group.comparisons.map(item => ({ ...item, event: group.event }))
-  ) || [];
-  const canSaveComparison = prepared?.fixtures?.length === 2;
-  const displayEvent = prepared?.result?.events?.[0]?.event || event;
-  const visibleComparisons = allComparisons.filter(item =>
-    [item.market, item.selection, item.period, ...item.quotes.map(q => q.bookmaker)]
-      .join(' ').toLowerCase().includes(filter.toLowerCase())
-  );
-
-  const exportCsv = () => {
-    if (!prepared) return;
-    const rows = [['Jogo', 'Competição', 'Mercado', 'Selecção', 'Período', 'Linha', 'Casa', 'Odd', 'Melhor casa', 'Melhor odd', 'Recolhido em', 'Fonte']];
-    for (const group of prepared.result.events || []) {
-      for (const item of group.comparisons) {
-        for (const quote of item.quotes) rows.push([
-          group.event.home + ' vs ' + group.event.away, group.event.competition || '',
-          item.market, item.selection, item.period, item.line || '', quote.bookmaker,
-          quote.odds, item.bestBookmaker, item.bestOdds, quote.collectedAt || '', quote.sourceUrl || ''
-        ]);
-      }
-    }
-    const csv = rows.map(row => row.map(value => { const cell = String(value ?? ''); const first = cell.charAt(0); const safe = ['=', '+', '-', '@'].includes(first) || first === String.fromCharCode(9) || first === String.fromCharCode(13) ? "'" + cell : cell; return '"' + safe.replace(/"/g, '""') + '"'; }).join(';')).join('\n');
-    const url = URL.createObjectURL(new Blob(['\\uFEFF' + csv], { type: 'text/csv;charset=utf-8' }));
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = 'fk-comparacao-odds.csv';
-    anchor.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const clearAll = () => {
-    setFiles({ bantubet: null, elephantbet: null });
-    setPrepared(null);
-    setError('');
-    setFilter('');
-  };
+  const visibleRows = savedRows.map(row => {
+    const comparison = row.comparison || {};
+    const groups = Array.isArray(comparison.events) ? comparison.events : [];
+    const match = row.matches || {};
+    const title = groups[0]?.event
+      ? groups[0].event.home + ' vs ' + groups[0].event.away
+      : (match.home_team || 'Jogo') + ' vs ' + (match.away_team || '—');
+    const items = groups.flatMap(group => (group.comparisons || []).map(item => ({
+      ...item,
+      event: group.event,
+      selectionLabel: formatSelection(item.selection),
+      missingLine: /\\b(mais de|menos de)\\b/i.test(item.selection || '') &&
+        !/(?:mais de|menos de|over|under)\\s+[+-]?\\d+(?:[.,]\\d+)?/i.test(item.selection || '') &&
+        !item.line
+    })));
+    return { ...row, match, title, items };
+  }).filter(row => {
+    const haystack = [row.title, row.match.competition, ...row.items.flatMap(item => [item.market, item.selectionLabel])]
+      .join(' ').toLowerCase();
+    return haystack.includes(filter.toLowerCase());
+  });
 
   return <div className="odds-workspace">
-    <div className="odds-intro panel">
-      <div className="odds-intro-icon"><BarChart3 size={22}/></div>
-      <div><b>Comparador de odds FK</b><p>Importa as recolhas JSON da BantuBet e da ElephantBet. Aceita o formato Swarm (colecções com games) e o formato antigo; compara apenas mercados e selecções equivalentes.</p></div>
-      <span className="odds-local-tag"><ShieldCheck size={13}/> PROCESSAMENTO LOCAL</span>
-    </div>
-
     <section className="panel odds-step">
-      <div className="odds-section-title"><span>BD</span><div><h3>Sincronização com a base de dados</h3><p>Entra com o teu email para guardar as recolhas e consultar o histórico em qualquer dispositivo.</p></div></div>
-      {!isSupabaseConfigured ? <div className="odds-error">A ligação ao Supabase ainda não está configurada nesta versão.</div> : session ? <div className="setting-row"><div><b>Sessão activa</b><small>{session.user?.email}</small></div><button className="secondary-btn" onClick={signOut}>Terminar sessão</button></div> : <div className="odds-auth-row">
-        <label className="field">Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="teuemail@exemplo.com"/></label>
-        {otpSent && <label className="field">Código recebido<input value={otp} onChange={e => setOtp(e.target.value)} placeholder="Código de 6 dígitos"/></label>}
-        {!otpSent ? <button className="primary-btn" onClick={requestCode} disabled={authBusy || !email.trim()}>{authBusy ? 'A enviar...' : 'Enviar código'}</button> : <button className="primary-btn" onClick={confirmCode} disabled={authBusy || !otp.trim()}>{authBusy ? 'A confirmar...' : 'Confirmar código'}</button>}
-      </div>}
-      {authMessage && <p className="muted-copy">{authMessage}</p>}
-      {saveMessage && <div className="notice"><ShieldCheck size={16}/>{saveMessage}</div>}
-    </section>
-
-    <section className="panel odds-step">
-      <div className="odds-section-title"><span>BD</span><div><h3>Comparações recebidas automaticamente</h3><p>Jogos e odds enviados pelo recolhedor do teu computador e guardados na nuvem.</p></div><button className="secondary-btn" onClick={loadSavedComparisons} disabled={historyBusy}><RefreshCw size={15}/>{historyBusy ? 'A actualizar...' : 'Actualizar'}</button></div>
+      <div className="odds-section-title">
+        <span><ShieldCheck size={16}/></span>
+        <div><h3>Comparações recebidas automaticamente</h3><p>Jogos e odds enviados pelo recolhedor do teu computador e guardados na nuvem.</p></div>
+        <button className="secondary-btn" onClick={loadSavedComparisons} disabled={historyBusy}><RefreshCw size={15}/>{historyBusy ? 'A actualizar...' : 'Actualizar'}</button>
+      </div>
       {historyError && <div className="odds-error">{historyError}</div>}
       {!historyError && !savedRows.length && !historyBusy && <div className="empty-state"><div className="empty-state-icon"><BarChart3 size={22}/></div><b>Ainda não há comparações guardadas</b><span>Quando o recolhedor enviar jogos, as comparações aparecerão automaticamente aqui.</span></div>}
-      {savedRows.map(row => {
-        const comparison = row.comparison || {};
-        const groups = Array.isArray(comparison.events) ? comparison.events : [];
-        const total = groups.reduce((sum, group) => sum + (group.comparisons || []).length, 0);
-        const match = row.matches || {};
-        const title = groups[0]?.event ? groups[0].event.home + ' vs ' + groups[0].event.away : (match.home_team || 'Jogo') + ' vs ' + (match.away_team || '—');
-        return <article className="panel odds-saved-card" key={row.id}>
-          <div className="panel-head"><div><h3>{title}</h3><p>{match.competition || groups[0]?.event?.competition || 'Competição não indicada'} · {row.created_at ? new Date(row.created_at).toLocaleString('pt-AO') : 'Data não indicada'}</p></div><span className="status-text">{total} comparações</span></div>
-          {groups.map((group, groupIndex) => <div className="odds-results-list" key={groupIndex}>
-            {(group.comparisons || []).map((item, index) => <article className="odds-result-card" key={item.market + item.selection + index}>
-              <div className="odds-result-top"><div><span className="odds-market-label">{item.market}</span><h3>{item.selection}</h3><small>{item.period === 'FT' ? 'Jogo completo' : item.period === '1H' ? '1.ª parte' : item.period === '2H' ? '2.ª parte' : item.period || 'Período não indicado'}{item.line ? ' · Linha ' + item.line : ''}</small></div><div className="best-odd"><small>MELHOR ODD</small><b>{Number(item.bestOdds).toFixed(2)}</b><span>{item.bestBookmaker}</span></div></div>
-              <div className="odds-quotes">{(item.quotes || []).map(quote => <div className={quote.bookmaker === item.bestBookmaker && quote.odds === item.bestOdds ? 'odds-quote best' : 'odds-quote'} key={quote.bookmaker}><span>{quote.bookmaker}</span><b>{Number(quote.odds).toFixed(2)}</b>{quote.bookmaker === item.bestBookmaker && quote.odds === item.bestOdds && <em>Melhor</em>}</div>)}</div>
-            </article>)}
-          </div>)}
-        </article>;
-      })}
+      {savedRows.length > 0 && <div className="toolbar odds-filter"><div className="searchbox"><BarChart3 size={16}/><input value={filter} onChange={e => setFilter(e.target.value)} placeholder="Pesquisar jogo, mercado ou selecção..."/></div><span>{visibleRows.length} de {savedRows.length} jogos</span></div>}
+      {visibleRows.map(row => (
+        <article className="panel odds-saved-card" key={row.id}>
+          <div className="panel-head"><div><h3>{row.title}</h3><p>{row.match.competition || row.items[0]?.event?.competition || 'Competição não indicada'} · {row.created_at ? new Date(row.created_at).toLocaleString('pt-AO') : 'Data não indicada'}</p></div><span className="status-text">{row.items.length} comparações</span></div>
+          <div className="odds-results-list">
+            {row.items.map((item, index) => (
+              <article className="odds-result-card" key={item.market + item.selection + index}>
+                <div className="odds-result-top"><div><span className="odds-market-label">{item.market}</span><h3>{item.selectionLabel}</h3><small>{item.period === 'FT' ? 'Jogo completo' : item.period === '1H' ? '1.ª parte' : item.period === '2H' ? '2.ª parte' : item.period || 'Período não indicado'}{item.line ? ' · Linha ' + item.line : ''}</small>{item.missingLine && <small className="odds-line-warning">Linha de golos não indicada pela casa de apostas</small>}</div><div className="best-odd"><small>MELHOR ODD</small><b>{Number(item.bestOdds).toFixed(2)}</b><span>{item.bestBookmaker}</span></div></div>
+                <div className="odds-quotes">{(item.quotes || []).map(quote => <div className={quote.bookmaker === item.bestBookmaker && quote.odds === item.bestOdds ? 'odds-quote best' : 'odds-quote'} key={quote.bookmaker}><span>{quote.bookmaker}</span><b>{Number(quote.odds).toFixed(2)}</b>{quote.bookmaker === item.bestBookmaker && quote.odds === item.bestOdds && <em>Melhor</em>}</div>)}</div>
+              </article>
+            ))}
+          </div>
+        </article>
+      ))}
+      {visibleRows.length === 0 && savedRows.length > 0 && <div className="empty-state"><b>Nenhum resultado encontrado</b><span>Experimenta outra pesquisa.</span></div>}
+      <p className="odds-safety-note"><ShieldCheck size={14}/> As cotações são as recebidas no momento da recolha. Mercados sem linha indicada ficam assinalados para revisão; confirma sempre a cotação na casa de apostas.</p>
     </section>
-
-    <section className="panel odds-step">
-      <div className="odds-section-title"><span>01</span><div><h3>Identificação do jogo</h3><p>Preenche os nomes como aparecem nas duas casas de apostas.</p></div></div>
-      <div className="odds-event-grid">
-        <label className="field">Equipa da casa *<input value={event.home} onChange={e => updateEvent('home', e.target.value)} placeholder="Ex.: Twente"/></label>
-        <label className="field">Equipa visitante *<input value={event.away} onChange={e => updateEvent('away', e.target.value)} placeholder="Ex.: Ajax Amsterdam"/></label>
-        <label className="field">Competição (opcional)<input value={event.competition} onChange={e => updateEvent('competition', e.target.value)} placeholder="Ex.: Eredivisie"/></label>
-        <label className="field">Data/hora do jogo (opcional)<input type="datetime-local" value={event.kickoff} onChange={e => updateEvent('kickoff', e.target.value)}/></label>
-      </div>
-    </section>
-
-    <section className="panel odds-step">
-      <div className="odds-section-title"><span>02</span><div><h3>Importar recolhas</h3><p>Selecciona os ficheiros JSON gerados pelos recolhedores. Máximo de 12 MB por ficheiro.</p></div></div>
-      <div className="odds-upload-grid">
-        <label className="odds-upload-card">
-          <input type="file" accept=".json,.txt,application/json,text/plain" onChange={e => loadFile('bantubet', e.target.files?.[0])}/>
-          <div className="odds-upload-icon"><FileJson size={22}/></div>
-          <b>BantuBet</b><span>Seleccionar recolha Swarm ou JSON</span>
-          {files.bantubet ? <small className="upload-success"><CheckCircle2 size={13}/>{files.bantubet.name}</small> : <small>Ficheiro JSON</small>}
-        </label>
-        <label className="odds-upload-card elephant">
-          <input type="file" accept=".json,.txt,application/json,text/plain" onChange={e => loadFile('elephantbet', e.target.files?.[0])}/>
-          <div className="odds-upload-icon"><FileJson size={22}/></div>
-          <b>ElephantBet</b><span>Seleccionar recolha.json</span>
-          {files.elephantbet ? <small className="upload-success"><CheckCircle2 size={13}/>{files.elephantbet.name}</small> : <small>Ficheiro JSON</small>}
-        </label>
-      </div>
-      <div className="odds-actions">
-        <button className="primary-btn" onClick={runComparison} disabled={!files.bantubet || !files.elephantbet || (files.bantubet.format !== 'swarm' && (!event.home.trim() || !event.away.trim())) || busy}><ArrowUpDown size={16}/>{busy ? 'A comparar...' : 'Comparar odds'}</button>
-        <button className="secondary-btn" onClick={clearAll}><RefreshCw size={15}/> Limpar</button>
-      </div>
-      {error && <div className="odds-error"><AlertTriangle size={16}/>{error}</div>}
-    </section>
-
-    {prepared && <>
-      <section className="odds-stats">
-        <div><small>COMPARAÇÕES</small><b>{prepared.result.comparisonCount}</b><span>selecções com odds nas duas casas</span></div>
-        <div><small>BANTUBET</small><b>{prepared.diagnostics[0].selectionCount}</b><span>selecções válidas · {prepared.diagnostics[0].excludedMarketCount} mercados excluídos</span></div>
-        <div><small>ELEPHANTBET</small><b>{prepared.diagnostics[1].selectionCount}</b><span>selecções válidas · {prepared.diagnostics[1].excludedMarketCount} mercados excluídos</span></div>
-      </section>
-      <div className="odds-result-heading"><div><div className="eyebrow"><span className="status-dot"/> RESULTADO DA ANÁLISE</div><h2>{displayEvent.home} <span>vs</span> {displayEvent.away}{prepared?.result?.eventCount > 1 ? ` + ${prepared.result.eventCount - 1} jogo(s)` : ''}</h2><p>{displayEvent.competition || 'Competição não indicada'} · {prepared.result.note}</p></div><div className="odds-actions"><button className="secondary-btn" onClick={exportCsv} disabled={!allComparisons.length}><Download size={15}/> Exportar CSV</button><button className="primary-btn" onClick={saveComparison} disabled={!session || saveBusy || !allComparisons.length || !canSaveComparison} title={!canSaveComparison ? 'A gravação actual suporta um único jogo por vez.' : ''}><ShieldCheck size={15}/>{saveBusy ? 'A guardar...' : 'Guardar na base de dados'}</button></div></div>
-      {!allComparisons.length ? <div className="empty-state"><div className="empty-state-icon"><BarChart3 size={22}/></div><b>Não foram encontradas selecções comparáveis</b><span>Confirma se os dois ficheiros correspondem ao mesmo jogo e se têm mercados equivalentes. O sistema não compara mercados apenas parecidos.</span></div> : <>
-        <div className="toolbar odds-filter"><div className="searchbox"><BarChart3 size={16}/><input value={filter} onChange={e => setFilter(e.target.value)} placeholder="Filtrar por mercado, selecção ou casa..."/></div><span>{visibleComparisons.length} de {allComparisons.length} resultados</span></div>
-        <div className="odds-results-list">{visibleComparisons.map((item, index) => <article className="odds-result-card" key={item.market + item.selection + item.period + index}>
-          <div className="odds-result-top"><div><span className="odds-market-label">{item.market}</span><h3>{item.selection}</h3><small>{item.period === 'FT' ? 'Jogo completo' : item.period === '1H' ? '1.ª parte' : '2.ª parte'}{item.line ? ' · Linha ' + item.line : ''}</small></div><div className="best-odd"><small>MELHOR ODD</small><b>{Number(item.bestOdds).toFixed(2)}</b><span>{item.bestBookmaker}</span></div></div>
-          <div className="odds-quotes">{item.quotes.map(quote => <div className={quote.bookmaker === item.bestBookmaker && quote.odds === item.bestOdds ? 'odds-quote best' : 'odds-quote'} key={quote.bookmaker}><span>{quote.bookmaker}</span><b>{Number(quote.odds).toFixed(2)}</b>{quote.bookmaker === item.bestBookmaker && quote.odds === item.bestOdds && <em>Melhor</em>}{quote.sourceUrl && <a href={quote.sourceUrl} target="_blank" rel="noreferrer" title="Abrir fonte"><ExternalLink size={12}/></a>}</div>)}</div>
-        </article>)}</div>
-      </>}
-      <section className="panel odds-diagnostics">
-        <div className="panel-head"><div><h3>Qualidade das recolhas</h3><p>Mercados que não entraram na comparação por falta de associação segura.</p></div><AlertTriangle size={18}/></div>
-        {prepared.diagnostics.map(d => <div className="diagnostic-provider" key={d.bookmaker}><b>{d.bookmaker}</b><span>{d.categoriesRead} categorias · {d.rawMarketCount} mercados detectados · {d.usableMarketCount} utilizáveis · {d.excludedMarketCount} excluídos</span>{d.excludedMarkets.length > 0 && <ul>{d.excludedMarkets.map((m, i) => <li key={m.market + i}>{m.market}: {m.warning}</li>)}</ul>}</div>)}
-        <p className="odds-safety-note"><ShieldCheck size={14}/> A melhor odd é apenas a maior cotação encontrada nos ficheiros importados. Não é arbitragem, não garante disponibilidade actual e não constitui recomendação de aposta.</p>
-      </section>
-    </>}
   </div>;
 }
