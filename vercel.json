@@ -11,6 +11,10 @@
     {
       "source": "/api/pipeline/save-analysis",
       "destination": "/api/pipeline?action=save-analysis"
+    },
+    {
+      "source": "/api/test-match-validation",
+      "destination": "/api/test-discovery?action=validate"
     }
   ]
 }
