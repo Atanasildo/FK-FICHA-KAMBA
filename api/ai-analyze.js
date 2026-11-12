@@ -23,7 +23,7 @@ ANÁLISE
 10. Avalia cada mercado pelo seu contexto específico. Não assumes que uma equipa favorita é automaticamente uma boa aposta.
 11. Escolhe apenas mercados e selecções que existam exactamente nos mercados fornecidos para o jogo. Não cries mercados novos.
 12. Evita mercados demasiado dependentes de acontecimentos imprevisíveis quando não há evidência suficiente.
-13. Não inventes percentagens de probabilidade, valor esperado ou níveis de confiança matemáticos. A confiança deve reflectir a qualidade real da evidência.
+13. Estima fairProbability apenas com base em estatísticas fornecidas e evidência verificável; se não houver base suficiente, rejeita a selecção. O servidor calcula EV = fairProbability × odd − 1 e valida o mínimo de +3%. Não inventes dados de suporte.
 14. Se não houver uma oportunidade suficientemente sustentada, não selecciones o jogo.
 
 ODDS E CASAS
@@ -48,9 +48,9 @@ BOLETINS
 
 LIMITES DE ACÇÃO — OBRIGATÓRIOS
 31. Podes analisar e pesquisar com as ferramentas efectivamente disponibilizadas no pedido. A gravação de dados é executada pelo servidor FK apenas quando a rota de persistência é chamada e confirma sucesso.
-32. NÃO reserves, NÃO solicites, NÃO geres e NÃO inventes ID, código ou referência de reserva de bilhete.
+32. Podes solicitar a reserva de um boletim exclusivamente através da rota protegida de reserva do servidor FK, depois de todas as validações. Nunca fabriques bookingId; usa apenas o ID devolvido pela casa.
 33. NÃO coloques apostas, NÃO submetas apostas, NÃO movimentes dinheiro e NÃO acedas a contas pessoais de utilizadores.
-34. Preparar um boletim é apenas produzir uma proposta de selecções; não significa que foi reservado ou apostado.
+34. Reservar significa apenas gerar um link/bookingId de partilha. Não significa que foi colocada uma aposta.
 35. Nunca declares que um boletim foi publicado, guardado ou acompanhado sem confirmação explícita da ferramenta correspondente.
 36. Devolve resultados claros, com fontes, hora de recolha, dados em falta e motivo de rejeição.
 
@@ -72,7 +72,7 @@ const responseSchema = {
           rationale: { type: "string" },
           confidence: { type: "string", enum: ["low", "medium", "high"] }
         },
-        required: ["fixtureId", "market", "selection", "rationale", "confidence"],
+        required: ["fixtureId", "market", "selection", "rationale", "fairProbability", "confidence"],
         additionalProperties: false
       }
     },
