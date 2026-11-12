@@ -3,6 +3,14 @@ import { discoverSwarmGames, collectSwarm, SWARM_BOOKMAKERS } from "../../lib/bo
 import { compareFixtures } from "../../lib/bookmakers/comparison.js";
 import { selectCommonSwarmGames } from "../../lib/bookmakers/daily-swarm.js";
 
+async function runForProvider(label, task) {
+  try {
+    return await task;
+  } catch (error) {
+    throw new Error(`${label}: ${error?.message || String(error)}`);
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
@@ -22,8 +30,8 @@ export default async function handler(req, res) {
 
   try {
     const [bantuList, elephantList] = await Promise.all([
-      discoverSwarmGames({ ...SWARM_BOOKMAKERS.bantu, sportId: 1, timeoutMs: 20000 }),
-      discoverSwarmGames({ ...SWARM_BOOKMAKERS.elephant, sportId: 1, timeoutMs: 20000 })
+      runForProvider("BantuBet — descoberta de jogos", discoverSwarmGames({ ...SWARM_BOOKMAKERS.bantu, sportId: 1, timeoutMs: 20000 })),
+      runForProvider("ElephantBet — descoberta de jogos", discoverSwarmGames({ ...SWARM_BOOKMAKERS.elephant, sportId: 1, timeoutMs: 20000 }))
     ]);
 
     const gameIds = selectCommonSwarmGames(bantuList.games, elephantList.games, { maxGames: 5 });
@@ -40,8 +48,8 @@ export default async function handler(req, res) {
     }
 
     const [bantu, elephant] = await Promise.all([
-      collectSwarm({ ...SWARM_BOOKMAKERS.bantu, gameIds, timeoutMs: 30000 }),
-      collectSwarm({ ...SWARM_BOOKMAKERS.elephant, gameIds, timeoutMs: 30000 })
+      runForProvider("BantuBet — recolha de odds", collectSwarm({ ...SWARM_BOOKMAKERS.bantu, gameIds, timeoutMs: 30000 })),
+      runForProvider("ElephantBet — recolha de odds", collectSwarm({ ...SWARM_BOOKMAKERS.elephant, gameIds, timeoutMs: 30000 }))
     ]);
 
     const bantuById = new Map(bantu.games.map(game => [String(game.id), game]));
