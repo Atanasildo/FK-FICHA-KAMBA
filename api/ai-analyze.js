@@ -1,4 +1,4 @@
-import { compareFixtures, describeMarket, describeSelection } from "../lib/bookmakers/comparison.js";
+import { compareFixtures, describeMarket, describeSelection, canonicalLine } from "../lib/bookmakers/comparison.js";
 
 const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-20b";
 const MIN_ODDS = 1.4;
@@ -68,11 +68,14 @@ const responseSchema = {
           fixtureId: { type: "string" },
           market: { type: "string" },
           selection: { type: "string" },
+          line: { type: ["string", "null"] },
+          marketType: { type: ["string", "null"] },
+          marketBase: { type: ["string", "null"] },
           rationale: { type: "string", minLength: 12 },
           fairProbability: { type: "number", minimum: 0, maximum: 1 },
           confidence: { type: "string", enum: ["low", "medium", "high"] }
         },
-        required: ["fixtureId", "market", "selection", "rationale", "fairProbability", "confidence"],
+        required: ["fixtureId", "market", "selection", "line", "marketType", "marketBase", "rationale", "fairProbability", "confidence"],
         additionalProperties: false
       }
     },
@@ -82,11 +85,13 @@ const responseSchema = {
   additionalProperties: false
 };
 
-function canonicalMarketKey(marketName, selection) {
+function canonicalMarketKey(marketName, selection, meta = {}) {
   const market = describeMarket(marketName);
+  const line = canonicalLine(meta.line ?? meta.marketBase);
   return [
-    market.period, market.kind, market.entity || "", market.fallback || "",
-    describeSelection(marketName, { selection })
+    market.period, market.scope, market.kind, market.entity || "", market.fallback || "",
+    String(meta.marketType || ""), String(meta.marketBase ?? ""),
+    describeSelection(marketName, { selection, line, marketBase: meta.marketBase, marketType: meta.marketType })
   ].join("|");
 }
 
@@ -136,15 +141,27 @@ export default async function handler(req, res) {
       excluded.push({ fixtureId: fixture.id, reason: "Estatísticas ausentes ou demasiado extensas; sem análise não há selecção." });
       continue;
     }
-    const markets = fixture.markets.filter(m =>
-      m && typeof m.market === "string" && typeof m.selection === "string" &&
-      Number.isFinite(Number(m.odds)) && Number(m.odds) > 1 &&
-      typeof (m.bookmaker || fixture.bookmaker) === "string"
-    );
+    const markets = fixture.markets.filter(m => {
+      if (!m || typeof m.market !== "string" || typeof m.selection !== "string" ||
+          !Number.isFinite(Number(m.odds)) || Number(m.odds) <= 1 ||
+          typeof (m.bookmaker || fixture.bookmaker) !== "string") return false;
+      const isOverUnder = /^(mais de|mais|over|menos de|menos|under)\\b/i.test(m.selection.trim());
+      const line = canonicalLine(m.line ?? m.marketBase) || canonicalLine(
+        m.selection.match(/(?:mais de|mais|over|menos de|menos|under)\\s+([+-]?\\d+(?:[.,]\\d+)?)/i)?.[1]
+      );
+      return !isOverUnder || !!line;
+    });
     const unique = new Map();
     for (const m of markets) {
-      const key = canonicalMarketKey(m.market, m.selection);
-      if (!unique.has(key)) unique.set(key, { market: m.market, selection: m.selection });
+      const line = canonicalLine(m.line ?? m.marketBase) || canonicalLine(
+        String(m.selection).match(/(?:mais de|mais|over|menos de|menos|under)\\s+([+-]?\\d+(?:[.,]\\d+)?)/i)?.[1]
+      );
+      const key = canonicalMarketKey(m.market, m.selection, { line, marketType: m.marketType, marketBase: m.marketBase });
+      if (!unique.has(key)) unique.set(key, {
+        market: m.market, selection: m.selection,
+        line, marketType: m.marketType || null,
+        marketBase: m.marketBase == null ? null : String(m.marketBase)
+      });
     }
     validFixtures.push({
       id: fixture.id,
@@ -175,8 +192,8 @@ export default async function handler(req, res) {
       conflictedIds.add(fixture.id);
       continue;
     }
-    const merged = new Map(existing.markets.map(m => [canonicalMarketKey(m.market, m.selection), m]));
-    for (const market of fixture.markets) merged.set(canonicalMarketKey(market.market, market.selection), market);
+    const merged = new Map(existing.markets.map(m => [canonicalMarketKey(m.market, m.selection, m), m]));
+    for (const market of fixture.markets) merged.set(canonicalMarketKey(market.market, market.selection, market), market);
     existing.markets = [...merged.values()];
   }
   const safeIds = new Set(groupedFixtures.keys());
@@ -267,9 +284,9 @@ export default async function handler(req, res) {
       const fixture = deduplicatedFixtures.find(f => f.id === item.fixtureId);
       if (!fixture || !fixture.markets.some(m => m.market === item.market && m.selection === item.selection)) continue;
       const eventKey = [fixture.home.toLowerCase(), fixture.away.toLowerCase(), (fixture.competition || "").toLowerCase()].join("|");
-      const wantedKey = canonicalMarketKey(item.market, item.selection);
+      const wantedKey = canonicalMarketKey(item.market, item.selection, item);
       const candidate = (comparisonByEvent.get(eventKey) || []).find(c =>
-        canonicalMarketKey(c.market, c.selection) === wantedKey
+        canonicalMarketKey(c.market, c.selection, c) === wantedKey
       );
       if (!candidate || candidate.quotes.length < 2 || candidate.bestOdds < MIN_ODDS) continue;
       const fairProbability = Number(item.fairProbability);
@@ -285,6 +302,8 @@ export default async function handler(req, res) {
         selection: item.selection,
         period: candidate.period,
         line: candidate.line,
+        marketType: candidate.marketType,
+        marketBase: candidate.marketBase,
         rationale: item.rationale,
         fairProbability,
         ev: Number(expectedValue.toFixed(4)),
