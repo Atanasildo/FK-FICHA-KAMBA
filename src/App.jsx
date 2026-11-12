@@ -319,15 +319,19 @@ function OddsComparePage() {
         if (files.bantubet?.format !== 'swarm' || files.elephantbet?.format !== 'swarm') throw new Error('Usa duas recolhas do mesmo formato: Swarm com Swarm, ou JSON antigo com JSON antigo.');
         const result = compareSwarmCollections({ bantu: files.bantubet.payload, elephant: files.elephantbet.payload });
         const fixtures = result.fixtures || [];
-        const diagnostics = fixtures.map(fixture => ({
-          bookmaker: fixture.bookmaker,
-          categoriesRead: 0,
-          rawMarketCount: fixture.markets.length,
-          usableMarketCount: fixture.markets.length,
-          excludedMarketCount: 0,
-          selectionCount: fixture.markets.length,
-          excludedMarkets: []
-        }));
+        const diagnostics = ['BantuBet', 'ElephantBet'].map(bookmaker => {
+          const providerFixtures = fixtures.filter(fixture => fixture.bookmaker === bookmaker);
+          const selectionCount = providerFixtures.reduce((sum, fixture) => sum + fixture.markets.length, 0);
+          return {
+            bookmaker,
+            categoriesRead: 0,
+            rawMarketCount: selectionCount,
+            usableMarketCount: selectionCount,
+            excludedMarketCount: 0,
+            selectionCount,
+            excludedMarkets: []
+          };
+        });
         output = { result, fixtures, diagnostics, source: 'Swarm' };
         const firstEvent = result.events?.[0]?.event;
         if (firstEvent) setEvent(current => ({ ...current, home: firstEvent.home, away: firstEvent.away, competition: firstEvent.competition || '' }));
