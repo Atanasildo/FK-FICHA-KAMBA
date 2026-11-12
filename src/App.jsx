@@ -31,11 +31,62 @@ const resultClass = leg => {
 
 export default function App() {
   const [page, setPage] = useState('Bilhetes do dia');
-  const [data] = useState(readStore);
+  const [data, setData] = useState(readStore);
   const [expanded, setExpanded] = useState({});
   const [mobile, setMobile] = useState(false);
   const [query, setQuery] = useState('');
   const [notice, setNotice] = useState('');
+
+  // Sincroniza as fichas publicadas no Supabase; mantém o histórico local como fallback.
+  useEffect(() => {
+    let active = true;
+    async function loadPublishedTickets() {
+      if (!supabase) return;
+      const { data: rows, error } = await supabase
+        .from('tickets')
+        .select('id,title,status,total_odds,booking_reference,published_at,created_at,ticket_legs(id,market_name,selection,odd,result,matches(home_team,away_team,competition,kickoff_at,status))')
+        .eq('status', 'published')
+        .order('published_at', { ascending: false });
+      if (!active) return;
+      if (error) {
+        setNotice('Não foi possível sincronizar as fichas publicadas: ' + error.message);
+        return;
+      }
+      const remoteTickets = (rows || []).map(ticket => ({
+        id: ticket.id,
+        name: ticket.title,
+        origin: 'ai',
+        status: 'Publicada',
+        totalOdds: ticket.total_odds,
+        bookingId: ticket.booking_reference,
+        createdAt: ticket.published_at || ticket.created_at,
+        legs: (ticket.ticket_legs || []).map(leg => {
+          const match = leg.matches || {};
+          return {
+            id: leg.id,
+            home: match.home_team,
+            away: match.away_team,
+            league: match.competition,
+            date: match.kickoff_at,
+            matchStatus: match.status,
+            market: leg.market_name,
+            selection: leg.selection,
+            odd: leg.odd,
+            marketStatus: leg.result
+          };
+        })
+      }));
+      setData(current => ({
+        ...current,
+        tickets: [
+          ...remoteTickets,
+          ...(current.tickets || []).filter(local => !remoteTickets.some(remote => remote.id === local.id))
+        ]
+      }));
+    }
+    loadPublishedTickets();
+    return () => { active = false; };
+  }, []);
   const todayTickets = useMemo(() => data.tickets.filter(t => t.origin === 'ai' && isToday(t.createdAt)), [data.tickets]);
   const liveTickets = useMemo(() => todayTickets.filter(t => t.legs?.some(isLive) || ['Em directo', 'Em acompanhamento'].includes(t.status)), [todayTickets]);
   const history = useMemo(() => data.tickets.filter(t => t.origin !== 'ai' || !isToday(t.createdAt)), [data.tickets]);
