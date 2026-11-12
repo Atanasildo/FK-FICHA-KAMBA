@@ -87,3 +87,37 @@ test("continua a comparar aliases legítimos do mesmo total de golos", () => {
   ]);
   assert.equal(result.comparisonCount, 1);
 });
+
+
+test("mantém linhas distintas quando a casa envia apenas Mais de e a linha separada", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [
+      { market: "Total de golos no jogo", selection: "Mais de", odds: 1.55, line: "1.5", side: "over" },
+      { market: "Total de golos no jogo", selection: "Mais de", odds: 2.10, line: "2.5", side: "over" }
+    ]),
+    fixture("Elephant Bet", [
+      { market: "Total de golos no jogo", selection: "Mais de", odds: 1.60, line: "1.5", side: "over" },
+      { market: "Total de golos no jogo", selection: "Mais de", odds: 2.20, line: "2.5", side: "over" }
+    ])
+  ]);
+  assert.equal(result.comparisonCount, 2);
+  assert.deepEqual(result.events[0].comparisons.map(x => x.line).sort(), ["1.5", "2.5"]);
+});
+
+test("identifica total de cantos pelo tipo nativo e mantém a linha", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{ market: "Total", marketType: "TotalCorners", selection: "Mais de", odds: 1.8, line: "8.5", side: "over" }]),
+    fixture("Elephant Bet", [{ market: "Total", marketType: "TotalCorners", selection: "Mais de", odds: 1.9, line: "8.5", side: "over" }])
+  ]);
+  assert.equal(result.comparisonCount, 1);
+  assert.equal(result.events[0].comparisons[0].marketType, "TotalCorners");
+  assert.equal(result.events[0].comparisons[0].line, "8.5");
+});
+
+test("não compara totais Mais de sem linha identificável", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{ market: "Total de golos no jogo", selection: "Mais de", odds: 1.8 }]),
+    fixture("Elephant Bet", [{ market: "Total de golos no jogo", selection: "Mais de", odds: 1.9 }])
+  ]);
+  assert.equal(result.comparisonCount, 0);
+});
