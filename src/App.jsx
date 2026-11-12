@@ -36,6 +36,8 @@ export default function App() {
   const [mobile, setMobile] = useState(false);
   const [query, setQuery] = useState('');
   const [notice, setNotice] = useState('');
+  const [discoveryBusy, setDiscoveryBusy] = useState(false);
+  const [discoveryResult, setDiscoveryResult] = useState(null);
 
   // Sincroniza as fichas publicadas no Supabase; mantém o histórico local como fallback.
   useEffect(() => {
@@ -93,6 +95,25 @@ export default function App() {
   const filteredHistory = history.filter(t => [t.id, t.name, t.bookmaker, t.bookingId].join(' ').toLowerCase().includes(query.toLowerCase()));
   const toggle = id => setExpanded(p => ({ ...p, [id]: !p[id] }));
   const side = <><div className="brand"><div className="brand-mark">FK<span>.</span></div><div><b>FICHA KAMBA</b><small>FUTEBOL • INTELIGÊNCIA</small></div></div><div className="side-label">MENU PRINCIPAL</div><nav>{NAV.map(([label, Icon]) => <button key={label} className={page === label ? 'nav-item active' : 'nav-item'} onClick={() => { setPage(label); setMobile(false); }}><Icon size={18}/><span>{label}</span>{label === 'Acompanhamento ao vivo' && liveTickets.length > 0 && <i className="live-dot"/>}</button>)}</nav><div className="side-bottom"><div className="side-status"><span className="status-dot"/> Consulta de fichas <small>As fichas publicadas aparecem neste painel</small></div><div className="profile"><div className="avatar">FK</div><div><b>Utilizador</b><small>Ficha Kamba</small></div></div></div></>;
+  const runDiscoveryTest = async () => {
+    setDiscoveryBusy(true);
+    setDiscoveryResult(null);
+    try {
+      const response = await fetch('/api/test-discovery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ days: 2 })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || `HTTP ${response.status}`);
+      setDiscoveryResult(result);
+    } catch (error) {
+      setDiscoveryResult({ error: error.message });
+    } finally {
+      setDiscoveryBusy(false);
+    }
+  };
+
   const exportBackup = () => {
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'fk-ficha-kamba-historico.json'; a.click(); URL.revokeObjectURL(url);
@@ -114,7 +135,7 @@ export default function App() {
           <div className="toolbar"><div className="searchbox"><History size={16}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Pesquisar por ficha, ID ou casa..."/></div></div>
           {filteredHistory.length ? <div className="daily-ticket-list">{filteredHistory.map(t => <TicketPanel key={t.id} ticket={t} expanded={!!expanded[t.id]} onToggle={() => toggle(t.id)}/>)}</div> : <EmptyState icon={History} title="Ainda não há histórico" detail="As fichas concluídas serão arquivadas aqui para consulta."/>}
         </>}
-        {page === 'Definições' && <section className="panel settings-panel"><div className="panel-head"><div><h3>Dados e privacidade</h3><p>Informações guardadas neste navegador.</p></div><Settings size={18}/></div><div className="setting-row"><div><b>Exportar histórico local</b><small>Descarrega uma cópia dos registos existentes neste navegador.</small></div><button className="secondary-btn" onClick={exportBackup}><Download size={15}/> Exportar</button></div><div className="setting-row"><div><b>Notificações de jogos</b><small>As notificações automáticas serão activadas quando o serviço em directo estiver configurado.</small></div><span className="status-text">A aguardar integração</span></div><div className="setting-row"><div><b>Conta e sincronização</b><small>A sincronização entre dispositivos ainda não está disponível nesta versão.</small></div><span className="status-text">Não ligado</span></div></section>}
+        {page === 'Definições' && <section className="panel settings-panel"><div className="panel-head"><div><h3>Dados e privacidade</h3><p>Informações guardadas neste navegador.</p></div><Settings size={18}/></div><div className="setting-row"><div><b>Exportar histórico local</b><small>Descarrega uma cópia dos registos existentes neste navegador.</small></div><button className="secondary-btn" onClick={exportBackup}><Download size={15}/> Exportar</button></div><div className="setting-row"><div><b>Notificações de jogos</b><small>As notificações automáticas serão activadas quando o serviço em directo estiver configurado.</small></div><span className="status-text">A aguardar integração</span></div><div className="setting-row"><div><b>Conta e sincronização</b><small>A sincronização entre dispositivos ainda não está disponível nesta versão.</small></div><span className="status-text">Não ligado</span></div><div className="setting-row"><div><b>Teste técnico — descoberta de jogos</b><small>Consulta os próximos 2 dias na SportAPI e grava os jogos encontrados. Disponível apenas neste Preview; não recolhe odds nem gera fichas.</small></div><button className="secondary-btn" onClick={runDiscoveryTest} disabled={discoveryBusy}>{discoveryBusy ? 'A consultar…' : 'Testar descoberta'}</button></div>{discoveryResult && <div className="notice"><ShieldCheck size={17}/><span>{discoveryResult.error ? 'Falha: ' + discoveryResult.error : 'Concluído — ' + discoveryResult.fixturesDiscovered + ' jogos encontrados e ' + discoveryResult.fixturesSaved + ' gravados. Datas: ' + (discoveryResult.dates || []).join(', ')}</span><button onClick={() => setDiscoveryResult(null)}><X size={15}/></button></div>}</section>}
         <footer><span>FK — Ficha Kamba</span><span>Dados de jogos e resultados dependem de fontes desportivas autorizadas.</span></footer>
       </div>
     </main>
