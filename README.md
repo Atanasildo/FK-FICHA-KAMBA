@@ -14,7 +14,7 @@ A interface não disponibiliza ao utilizador formulários para elaborar jogos ou
 
 ## Estado actual e integrações pendentes
 
-Esta versão já contém a interface, normalizadores das duas casas, comparador de odds, endpoint de análise Groq e persistência de contexto/analise no Supabase. **A publicação automática de bilhetes ainda não está activa**: a recolha autónoma das casas e a obtenção automática de estatísticas completas continuam dependentes de acesso autorizado e verificável às fontes.
+Esta versão já contém a interface, normalizadores das duas casas, comparador de odds, endpoint de análise Groq e persistência no Supabase. Foi acrescentada uma rota de recolha diária Swarm para BantuBet e ElephantBet, ainda por validar em execução e activar numa publicação Production. **A publicação automática de bilhetes não está activa** e a obtenção automática de estatísticas completas continua dependente de fontes autorizadas e verificáveis.
 
 Ainda é necessário implementar e configurar:
 
@@ -179,3 +179,12 @@ Enquanto não houver um método remoto autorizado com acesso estável a Angola, 
 5. Consulta `data/collections`: ficam guardados o JSON bruto, o resultado normalizado e a comparação de cada jogo, além de `latest-run.json`.
 
 O perfil do navegador fica em `.fk-browser-profile`, para preservar cookies/sessão entre execuções. O ficheiro `events.local.json`, o perfil e os resultados locais estão no `.gitignore` e não são enviados para o GitHub. Esta é uma etapa assistida: ainda é necessário fornecer os URLs dos eventos. A recolha local ainda não alimenta automaticamente a análise Groq, não grava os bilhetes no Supabase e não agenda a execução diária; essas etapas só devem ser activadas depois de uma recolha real ser validada.
+
+
+## Recolha automática diária Swarm (Vercel Hobby)
+
+A rota protegida `GET /api/bookmakers/collect-daily` descobre jogos de futebol nas duas casas através do Swarm, selecciona até 5 jogos com ID comum (em directo ou dentro da janela das próximas 72 horas), recolhe as odds e guarda no Supabase apenas as comparações de selecções equivalentes, incluindo as duas cotações e as horas de recepção, na tabela `odds_comparisons`. Não grava todas as odds brutas na tabela `markets`.
+
+O `vercel.json` agenda a rota com `0 2 * * *` (02:00–02:59 UTC, ou 03:00–03:59 em Angola). No plano Hobby, os Cron Jobs só podem executar uma vez por dia e a execução pode ocorrer em qualquer minuto da hora agendada. O cron só fica activo depois de uma publicação no ambiente Production; esta branch ainda não foi publicada.
+
+Variáveis de servidor necessárias: `CRON_SECRET`, `SUPABASE_URL` e `SUPABASE_SECRET_KEY` (ou `SUPABASE_SERVICE_ROLE_KEY`). Nunca coloques estas chaves em variáveis `VITE_` nem no código do navegador. A execução diária ainda precisa de ser validada após a publicação. A interface ainda não apresenta automaticamente os snapshots guardados; essa ligação será uma etapa posterior.
