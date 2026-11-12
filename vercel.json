@@ -16,5 +16,11 @@
       "source": "/api/test-match-validation",
       "destination": "/api/test-discovery?action=validate"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/bookmakers/collect-daily",
+      "schedule": "0 2 * * *"
+    }
   ]
 }
