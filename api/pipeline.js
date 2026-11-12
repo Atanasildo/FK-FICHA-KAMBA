@@ -1,11 +1,13 @@
 import buildTickets from "../lib/pipeline/build-tickets.js";
 import discoverFixtures from "../lib/pipeline/discover-fixtures.js";
 import saveAnalysis from "../lib/pipeline/save-analysis.js";
+import collectContext from "../lib/pipeline/collect-context.js";
 
 const handlers = {
   "build-tickets": buildTickets,
   "discover-fixtures": discoverFixtures,
-  "save-analysis": saveAnalysis
+  "save-analysis": saveAnalysis,
+  "collect-context": collectContext
 };
 
 export default async function handler(req, res) {
