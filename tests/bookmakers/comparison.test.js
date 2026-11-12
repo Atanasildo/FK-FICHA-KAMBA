@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { compareFixtures, canonicalLine } from "../../lib/bookmakers/comparison.js";
+import { compareFixtures, canonicalLine, canonicalMarketKey } from "../../lib/bookmakers/comparison.js";
 
 const fixture = (bookmaker, markets, extra = {}) => ({
   id: bookmaker + "-1",
@@ -202,3 +202,19 @@ test("distingue totais de cartões dos restantes mercados e conserva a linha", (
   assert.equal(result.events[0].comparisons[0].category, "Cartões");
   assert.equal(result.events[0].comparisons[0].line, "3.5");
 });
+
+test("a identidade semântica aceita metadados nativos diferentes entre casas, mas preserva a linha", () => {
+  const bantuKey = canonicalMarketKey("Total de golos no jogo", "Mais de", {
+    marketType: "TotalGoals", marketBase: "2,50"
+  });
+  const elephantKey = canonicalMarketKey("Total de Golos", "Mais de", {
+    marketType: "GoalTotal", marketBase: "2.5"
+  });
+  const otherLineKey = canonicalMarketKey("Total de Golos", "Mais de", {
+    marketType: "GoalTotal", marketBase: "3.5"
+  });
+
+  assert.equal(bantuKey, elephantKey);
+  assert.notEqual(bantuKey, otherLineKey);
+});
+

@@ -1,4 +1,4 @@
-import { compareFixtures, describeMarket, describeSelection, canonicalLine } from "../lib/bookmakers/comparison.js";
+import { compareFixtures, canonicalMarketKey, canonicalLine } from "../lib/bookmakers/comparison.js";
 
 const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-20b";
 const MIN_ODDS = 1.4;
@@ -84,16 +84,6 @@ const responseSchema = {
   required: ["analysisStatus", "summary", "selections", "rejectedFixtureIds"],
   additionalProperties: false
 };
-
-function canonicalMarketKey(marketName, selection, meta = {}) {
-  const market = describeMarket(marketName, meta.marketType);
-  const line = canonicalLine(meta.line ?? meta.marketBase);
-  return [
-    market.period, market.scope, market.kind, market.entity || "", market.fallback || "",
-    String(meta.marketType || ""), String(meta.marketBase ?? ""),
-    describeSelection(marketName, { selection, line, marketBase: meta.marketBase, marketType: meta.marketType })
-  ].join("|");
-}
 
 function isStarted(status) {
   return /live|in.?play|half|finished|ended|full.?time|cancel|postpon|abandon/i.test(String(status || ""));
