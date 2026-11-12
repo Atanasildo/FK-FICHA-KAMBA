@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "test": "node --test",
     "collect:local": "node tools/local-bookmaker-collector.js",
-    "discover:local": "node tools/discover-bookmaker-events.js"
+    "discover:local": "node tools/discover-bookmaker-events.js",
+    "collect:elephant": "node tools/collect-swarm.js elephant",
+    "collect:bantu": "node tools/collect-swarm.js bantu"
   },
   "dependencies": {
     "@browserbasehq/sdk": "^2.5.0",
@@ -18,7 +20,8 @@
     "playwright-core": "^1.56.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "playwright": "^1.56.1"
+    "playwright": "^1.56.1",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
