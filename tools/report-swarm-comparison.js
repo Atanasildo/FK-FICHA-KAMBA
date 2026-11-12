@@ -15,6 +15,10 @@ function normalize(value) {
     .toLocaleLowerCase("pt");
 }
 
+function display(value) {
+  return value === null || value === undefined || value === "" ? "(vazio)" : String(value);
+}
+
 async function load(file) {
   let parsed;
   try {
@@ -39,17 +43,21 @@ function indexGames(collection, label) {
   return map;
 }
 
+function marketIdentity(market) {
+  return JSON.stringify([
+    normalize(market.type),
+    normalize(market.base),
+    normalize(market.name)
+  ]);
+}
+
 function buildIndex(game, label, gameId) {
   const map = new Map();
   for (const market of game.markets ?? []) {
-    const marketKey = JSON.stringify([
-      normalize(market.type),
-      normalize(market.base),
-      normalize(market.name)
-    ]);
+    const marketKey = marketIdentity(market);
     if (map.has(marketKey)) {
       throw new Error(
-        `${label}: mercado duplicado no jogo ${gameId}: ${market.name} [${market.type}]`
+        `${label}: mercado duplicado no jogo ${gameId}: ${market.name} [type=${display(market.type)}, base=${display(market.base)}]`
       );
     }
 
@@ -75,6 +83,25 @@ function buildIndex(game, label, gameId) {
     map.set(marketKey, { ...market, selections });
   }
   return map;
+}
+
+// Detecta rótulos iguais que representam identidades técnicas diferentes.
+// Não elimina estas ocorrências: apenas as assinala para revisão.
+function findRepeatedVisibleLabels(collection, label) {
+  const groups = new Map();
+  for (const game of collection.games) {
+    for (const market of game.markets ?? []) {
+      const visibleKey = JSON.stringify([
+        String(game.id),
+        normalize(market.name)
+      ]);
+      const identity = `type=${display(market.type)} | base=${display(market.base)} | id=${display(market.id)}`;
+      if (!groups.has(visibleKey)) groups.set(visibleKey, { game, marketName: market.name, identities: new Set() });
+      groups.get(visibleKey).identities.add(identity);
+    }
+  }
+  const repeated = [...groups.values()].filter(group => group.identities.size > 1);
+  return { label, count: repeated.length, examples: repeated.slice(0, 12) };
 }
 
 const [bantu, elephant] = await Promise.all([
@@ -134,9 +161,16 @@ for (const gameId of commonGameIds) {
       else elephantHigher++;
 
       rows.push({
+        gameId,
         game: `${bg.home || eg.home} vs ${bg.away || eg.away}`,
         market: market.name,
+        marketType: market.type,
+        marketBase: market.base,
+        marketIdBantu: market.id,
+        marketIdElephant: otherMarket.id,
         selection: selection.name,
+        selectionIdBantu: selection.id,
+        selectionIdElephant: other.id,
         bantuOdd: selection.odd,
         elephantOdd: other.odd,
         best: higherBookmaker,
@@ -163,8 +197,10 @@ const top = rows.slice(0, LIMIT);
 const totalOdds = selectionsCompared || 1;
 const pct = value => (value / totalOdds * 100).toFixed(2) + "%";
 const fmt = value => Number(value).toFixed(2);
+const bantuRepeated = findRepeatedVisibleLabels(bantu, "BantuBet");
+const elephantRepeated = findRepeatedVisibleLabels(elephant, "ElephantBet");
 
-console.log("\n=== FK | TOP 30 DIFERENÇAS DE ODDS ===");
+console.log("\\n=== FK | TOP 30 DIFERENÇAS DE ODDS (AUDITORIA) ===");
 console.log("Ordenação: diferença percentual da odd maior sobre a menor.");
 console.log(`Jogos comuns: ${commonGameIds.length}`);
 console.log(`Mercados comuns: ${commonMarkets}`);
@@ -175,30 +211,58 @@ console.log(`Odds iguais: ${oddsEqual} (${pct(oddsEqual)})`);
 console.log(`BantuBet com odd maior: ${bantuHigher} (${pct(bantuHigher)})`);
 console.log(`ElephantBet com odd maior: ${elephantHigher} (${pct(elephantHigher)})`);
 console.log(`Só BantuBet: ${selectionsOnlyBantu}; só ElephantBet: ${selectionsOnlyElephant}`);
-console.log("\nTOP 30:");
+console.log("\\n=== METADADOS DA RECOLHA ===");
+console.log(`BantuBet: ${bantu.collectedAt || bantu.recolhidoEm || "timestamp não disponível neste JSON"}`);
+console.log(`ElephantBet: ${elephant.collectedAt || elephant.recolhidoEm || "timestamp não disponível neste JSON"}`);
+console.log("\\n=== RÓTULOS VISÍVEIS REPETIDOS COM TYPE/BASE DIFERENTES ===");
+console.log(`BantuBet: ${bantuRepeated.count}`);
+console.log(`ElephantBet: ${elephantRepeated.count}`);
+for (const audit of [bantuRepeated, elephantRepeated]) {
+  for (const item of audit.examples) {
+    console.log(`- ${audit.label} | ${item.game.home} vs ${item.game.away} | ${item.marketName}`);
+    for (const identity of item.identities) console.log(`    ${identity}`);
+  }
+}
+console.log("\\nTOP 30 (com identidade técnica):");
 console.table(top.map((r, i) => ({
   "#": i + 1,
   Jogo: r.game,
+  GameID: r.gameId,
   Mercado: r.market,
+  Type: display(r.marketType),
+  Base: display(r.marketBase),
+  "ID mercado B": display(r.marketIdBantu),
+  "ID mercado E": display(r.marketIdElephant),
   Selecção: r.selection,
+  "ID sel. B": display(r.selectionIdBantu),
+  "ID sel. E": display(r.selectionIdElephant),
   Bantu: fmt(r.bantuOdd),
   Elephant: fmt(r.elephantOdd),
   "Melhor odd": r.best,
-  "Dif. odd": fmt(r.absoluteDifference),
   "Dif. %": r.percentageDifference.toFixed(2) + "%"
 })));
 
 const csvEscape = value => '"' + String(value ?? "").replace(/"/g, '""') + '"';
+const headers = [
+  "Game ID", "Jogo", "Mercado", "Market type", "Market base",
+  "Market ID BantuBet", "Market ID ElephantBet", "Selecção",
+  "Selection ID BantuBet", "Selection ID ElephantBet",
+  "Odd BantuBet", "Odd ElephantBet", "Melhor odd",
+  "Diferença absoluta", "Diferença percentual"
+];
 const csv = [
-  ["Jogo", "Mercado", "Selecção", "Odd BantuBet", "Odd ElephantBet", "Melhor odd", "Diferença absoluta", "Diferença percentual"],
+  headers,
   ...top.map(r => [
-    r.game, r.market, r.selection, r.bantuOdd, r.elephantOdd,
-    r.best, r.absoluteDifference.toFixed(4), r.percentageDifference.toFixed(2) + "%"
+    r.gameId, r.game, r.market, display(r.marketType), display(r.marketBase),
+    display(r.marketIdBantu), display(r.marketIdElephant), r.selection,
+    display(r.selectionIdBantu), display(r.selectionIdElephant),
+    r.bantuOdd, r.elephantOdd, r.best,
+    r.absoluteDifference.toFixed(4), r.percentageDifference.toFixed(2) + "%"
   ])
-].map(line => line.map(csvEscape).join(";")).join("\n");
+].map(line => line.map(csvEscape).join(";")).join("\\n");
 
 await mkdir("data/collections", { recursive: true });
 const output = "data/collections/swarm-comparison-top30.csv";
-await writeFile(output, "\uFEFF" + csv, "utf8");
-console.log(`\nCSV guardado em: ${output}`);
+await writeFile(output, "\\uFEFF" + csv, "utf8");
+console.log(`\\nCSV guardado em: ${output}`);
 console.log("Nota: odd mais alta não significa, por si só, aposta de valor ou arbitragem.");
