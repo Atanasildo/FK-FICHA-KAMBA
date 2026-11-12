@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/pipeline/build-tickets",
+      "destination": "/api/pipeline?action=build-tickets"
+    },
+    {
+      "source": "/api/pipeline/discover-fixtures",
+      "destination": "/api/pipeline?action=discover-fixtures"
+    },
+    {
+      "source": "/api/pipeline/save-analysis",
+      "destination": "/api/pipeline?action=save-analysis"
+    }
+  ]
+}
