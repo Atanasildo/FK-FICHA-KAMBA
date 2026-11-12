@@ -1,4 +1,5 @@
 import discoverFixtures from "../lib/pipeline/discover-fixtures.js";
+import collectContext from "../lib/pipeline/collect-context.js";
 import { createClient } from "@supabase/supabase-js";
 
 async function validateMatches(req, res) {
@@ -59,6 +60,15 @@ export default async function handler(req, res) {
 
   const action = typeof req.query?.action === "string" ? req.query.action : "";
   if (action === "validate") return validateMatches(req, res);
+  if (action === "context") {
+    if (req.method !== "POST") {
+      res.setHeader("Allow", "POST");
+      return res.status(405).json({ error: "Método não permitido." });
+    }
+    req.headers.authorization = `Bearer ${process.env.CRON_SECRET || ""}`;
+    req.body = { limit: 5, offset: 0 };
+    return collectContext(req, res);
+  }
 
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
