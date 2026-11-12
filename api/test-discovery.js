@@ -65,7 +65,7 @@ async function auditContext(req, res) {
     const { data: records, error: statsError } = await admin.from("match_statistics")
       .select("match_id,payload,collected_at")
       .eq("source", "SportAPI")
-      .order("collected_at", { ascending: true })
+      .order("collected_at", { ascending: false })
       .limit(5);
     if (statsError) throw statsError;
     const rows = records || [];
@@ -96,7 +96,8 @@ async function auditContext(req, res) {
       const sections = {
         matchStats: { present: hasContent(stats), items: countRows(stats) },
         standings: {
-          present: hasContent(p.standings),
+          present: Boolean(homeStanding || awayStanding),
+          status: p.standings?.status || (homeStanding || awayStanding ? "available" : "unknown"),
           homeFound: Boolean(homeStanding),
           awayFound: Boolean(awayStanding),
           homeFormCount: Array.isArray(homeStanding?.form) ? homeStanding.form.length : 0,
@@ -153,8 +154,10 @@ export default async function handler(req, res) {
       res.setHeader("Allow", "POST");
       return res.status(405).json({ error: "Método não permitido." });
     }
+    const requestedOffset = Number(req.body?.offset);
+    const offset = Number.isInteger(requestedOffset) && requestedOffset >= 5 && requestedOffset <= 10000 ? requestedOffset : 5;
     req.headers.authorization = `Bearer ${process.env.CRON_SECRET || ""}`;
-    req.body = { limit: 5, offset: 0 };
+    req.body = { limit: 5, offset };
     return collectContext(req, res);
   }
 
