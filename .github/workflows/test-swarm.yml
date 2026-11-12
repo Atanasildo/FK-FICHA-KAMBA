@@ -2,6 +2,9 @@ name: Testar recolha Swarm
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feat/analysis-before-odds
 
 permissions:
   contents: read
