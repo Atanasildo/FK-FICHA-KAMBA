@@ -4,7 +4,7 @@ import { compareFixtures } from "../../lib/bookmakers/comparison.js";
 import { selectCommonSwarmGames } from "../../lib/bookmakers/daily-swarm.js";
 
 const slug = value => String(value || "")
-  .normalize("NFD").replace(/\\p{Diacritic}/gu, "")
+  .normalize("NFD").replace(/\p{Diacritic}/gu, "")
   .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 100);
 
 async function insertInBatches(client, rows) {
