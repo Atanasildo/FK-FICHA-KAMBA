@@ -130,6 +130,24 @@ A comparação exige correspondência de equipas e competição, e separa perío
 
 A rota não calcula arbitragem garantida nem recomenda apostas; apenas compara os preços recebidos. Os dados têm de ser recolhidos e normalizados antes da comparação. O motor não inventa odds nem preenche casas sem dados.
 
+
+### Comparação directa das recolhas Swarm
+
+A rota protegida `POST /api/bookmakers/compare-swarm` aceita os dois ficheiros JSON produzidos por `tools/collect-swarm.js`, sem passar pelos normalizadores antigos de recolha do navegador.
+
+Cabeçalho obrigatório: `Authorization: Bearer <CRON_SECRET>`.
+
+Corpo esperado:
+
+```json
+{
+  "bantu": { "collectionStartedAt": "...", "collectedAt": "...", "games": [] },
+  "elephant": { "collectionStartedAt": "...", "collectedAt": "...", "games": [] }
+}
+```
+
+O adaptador associa jogos pelo ID comum, preserva o tipo e a base do mercado na chave de comparação e conserva a hora de recepção de cada cotação. A resposta inclui os IDs dos jogos comuns, contagem de mercados/selecções comparáveis e a melhor odd observada. Jogos sem correspondência nos dois ficheiros são excluídos. Esta rota não recolhe dados por si: recebe os JSON produzidos pelos recolhedores Swarm.
+
 ### Área «Comparar Odds» no painel
 
 A aplicação inclui uma área visual para comparar directamente duas recolhas JSON, sem chamar as rotas protegidas e sem expor `CRON_SECRET` ao navegador:
