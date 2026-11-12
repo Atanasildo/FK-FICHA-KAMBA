@@ -121,3 +121,13 @@ test("não compara totais Mais de sem linha identificável", () => {
   ]);
   assert.equal(result.comparisonCount, 0);
 });
+
+
+test("identifica total de golos quando o nome do mercado é genérico", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{ market: "Total", marketType: "TotalGoals", selection: "Mais de", odds: 1.7, line: "2.5" }]),
+    fixture("Elephant Bet", [{ market: "Total", marketType: "TotalGoals", selection: "Mais de", odds: 1.8, line: "2.5" }])
+  ]);
+  assert.equal(result.comparisonCount, 1);
+  assert.equal(result.events[0].comparisons[0].line, "2.5");
+});
