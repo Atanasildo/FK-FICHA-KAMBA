@@ -41,11 +41,11 @@ test("não compara jogos que não existem nas duas recolhas", () => {
 test("preserva type e base para não misturar mercados com o mesmo nome", () => {
   const bantu = collection([game("123", [
     market("m1", "TotalGoals", "Total", [selection("s1", "7 ou Mais", 12)], null),
-    market("m2", "TeamTotalGoals", "Total", [selection("s1", "7 ou Mais", 12)], 1)
+    market("m2", "TeamTotalGoals", "Total de Golos da equipa da casa", [selection("s1", "7 ou Mais", 12)], 1)
   ])]);
   const elephant = collection([game("123", [
     market("m1", "TotalGoals", "Total", [selection("s1", "7 ou Mais", 51)], null),
-    market("m2", "TeamTotalGoals", "Total", [selection("s1", "7 ou Mais", 51)], 1)
+    market("m2", "TeamTotalGoals", "Total de Golos da equipa da casa", [selection("s1", "7 ou Mais", 51)], 1)
   ])]);
   const result = compareSwarmCollections({ bantu, elephant });
   assert.equal(result.comparisonCount, 2);
