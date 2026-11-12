@@ -200,7 +200,7 @@ const fmt = value => Number(value).toFixed(2);
 const bantuRepeated = findRepeatedVisibleLabels(bantu, "BantuBet");
 const elephantRepeated = findRepeatedVisibleLabels(elephant, "ElephantBet");
 
-console.log("\\n=== FK | TOP 30 DIFERENÇAS DE ODDS (AUDITORIA) ===");
+console.log("\n=== FK | TOP 30 DIFERENÇAS DE ODDS (AUDITORIA) ===");
 console.log("Ordenação: diferença percentual da odd maior sobre a menor.");
 console.log(`Jogos comuns: ${commonGameIds.length}`);
 console.log(`Mercados comuns: ${commonMarkets}`);
@@ -211,10 +211,10 @@ console.log(`Odds iguais: ${oddsEqual} (${pct(oddsEqual)})`);
 console.log(`BantuBet com odd maior: ${bantuHigher} (${pct(bantuHigher)})`);
 console.log(`ElephantBet com odd maior: ${elephantHigher} (${pct(elephantHigher)})`);
 console.log(`Só BantuBet: ${selectionsOnlyBantu}; só ElephantBet: ${selectionsOnlyElephant}`);
-console.log("\\n=== METADADOS DA RECOLHA ===");
+console.log("\n=== METADADOS DA RECOLHA ===");
 console.log(`BantuBet: ${bantu.collectedAt || bantu.recolhidoEm || "timestamp não disponível neste JSON"}`);
 console.log(`ElephantBet: ${elephant.collectedAt || elephant.recolhidoEm || "timestamp não disponível neste JSON"}`);
-console.log("\\n=== RÓTULOS VISÍVEIS REPETIDOS COM TYPE/BASE DIFERENTES ===");
+console.log("\n=== RÓTULOS VISÍVEIS REPETIDOS COM TYPE/BASE DIFERENTES ===");
 console.log(`BantuBet: ${bantuRepeated.count}`);
 console.log(`ElephantBet: ${elephantRepeated.count}`);
 for (const audit of [bantuRepeated, elephantRepeated]) {
@@ -223,7 +223,7 @@ for (const audit of [bantuRepeated, elephantRepeated]) {
     for (const identity of item.identities) console.log(`    ${identity}`);
   }
 }
-console.log("\\nTOP 30 (com identidade técnica):");
+console.log("\nTOP 30 (com identidade técnica):");
 console.table(top.map((r, i) => ({
   "#": i + 1,
   Jogo: r.game,
@@ -259,10 +259,10 @@ const csv = [
     r.bantuOdd, r.elephantOdd, r.best,
     r.absoluteDifference.toFixed(4), r.percentageDifference.toFixed(2) + "%"
   ])
-].map(line => line.map(csvEscape).join(";")).join("\\n");
+].map(line => line.map(csvEscape).join(";")).join("\n");
 
 await mkdir("data/collections", { recursive: true });
 const output = "data/collections/swarm-comparison-top30.csv";
-await writeFile(output, "\\uFEFF" + csv, "utf8");
-console.log(`\\nCSV guardado em: ${output}`);
+await writeFile(output, "\uFEFF" + csv, "utf8");
+console.log(`\nCSV guardado em: ${output}`);
 console.log("Nota: odd mais alta não significa, por si só, aposta de valor ou arbitragem.");
