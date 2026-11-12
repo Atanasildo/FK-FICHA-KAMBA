@@ -131,3 +131,20 @@ test("identifica total de golos quando o nome do mercado é genérico", () => {
   assert.equal(result.comparisonCount, 1);
   assert.equal(result.events[0].comparisons[0].line, "2.5");
 });
+
+
+test("compara o mesmo mercado quando o código nativo difere entre casas", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{ market: "Total", marketType: "TotalGoals", selection: "Mais de", odds: 1.8, line: "2.5", marketBase: "2.5" }]),
+    fixture("Elephant Bet", [{ market: "Total de golos no jogo", marketType: "G_TOTAL", selection: "Mais de", odds: 1.9, line: "2.5", marketBase: "2.5" }])
+  ]);
+  assert.equal(result.comparisonCount, 1);
+});
+
+test("não mistura linhas nativas diferentes mesmo quando a selecção tem o mesmo texto", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{ market: "Total de golos no jogo", selection: "Mais de", odds: 1.8, line: "1.5" }]),
+    fixture("Elephant Bet", [{ market: "Total de golos no jogo", selection: "Mais de", odds: 1.9, line: "2.5" }])
+  ]);
+  assert.equal(result.comparisonCount, 0);
+});
