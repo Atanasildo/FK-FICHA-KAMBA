@@ -267,6 +267,19 @@ function OddsComparePage() {
       ...item,
       event: group.event,
       selectionLabel: formatSelection(item.selection),
+      displaySelection: /^(mais de|mais|over|menos de|menos|under)\\b/i.test(String(item.selection || '').trim()) &&
+        item.line && !/(?:mais de|mais|over|menos de|menos|under)\\s+[+-]?\\d+(?:[.,]\\d+)?/i.test(String(item.selection || ''))
+        ? formatSelection(item.selection) + ' ' + item.line
+        : formatSelection(item.selection),
+      displayMarket: (() => {
+        const name = String(item.market || '').trim();
+        const type = String(item.marketType || '').toLowerCase();
+        if (name && !/^total$/i.test(name)) return name;
+        if (/corner|canto/.test(type)) return 'Total de cantos';
+        if (/goal|golo/.test(type)) return /team/.test(type) ? 'Total de golos da equipa' : 'Total de golos';
+        if (/card|cartao/.test(type)) return 'Total de cartões';
+        return name || 'Mercado';
+      })(),
       missingLine: /\\b(mais de|menos de)\\b/i.test(item.selection || '') &&
         !/(?:mais de|menos de|over|under)\\s+[+-]?\\d+(?:[.,]\\d+)?/i.test(item.selection || '') &&
         !item.line
@@ -294,7 +307,7 @@ function OddsComparePage() {
           <div className="odds-results-list">
             {row.items.map((item, index) => (
               <article className="odds-result-card" key={item.market + item.selection + index}>
-                <div className="odds-result-top"><div><span className="odds-market-label">{item.market}</span><h3>{item.selectionLabel}</h3><small>{item.period === 'FT' ? 'Jogo completo' : item.period === '1H' ? '1.ª parte' : item.period === '2H' ? '2.ª parte' : item.period || 'Período não indicado'}{item.line ? ' · Linha ' + item.line : ''}</small>{item.missingLine && <small className="odds-line-warning">Linha de golos não indicada pela casa de apostas</small>}</div><div className="best-odd"><small>MELHOR ODD</small><b>{Number(item.bestOdds).toFixed(2)}</b><span>{item.bestBookmaker}</span></div></div>
+                <div className="odds-result-top"><div><span className="odds-market-label">{item.displayMarket}</span><h3>{item.displaySelection}</h3><small>{item.period === 'FT' ? 'Jogo completo' : item.period === '1H' ? '1.ª parte' : item.period === '2H' ? '2.ª parte' : item.period || 'Período não indicado'}{item.line ? ' · Linha ' + item.line : ''}</small>{item.missingLine && <small className="odds-line-warning">Linha de golos não indicada pela casa de apostas</small>}</div><div className="best-odd"><small>MELHOR ODD</small><b>{Number(item.bestOdds).toFixed(2)}</b><span>{item.bestBookmaker}</span></div></div>
                 <div className="odds-quotes">{(item.quotes || []).map(quote => <div className={quote.bookmaker === item.bestBookmaker && quote.odds === item.bestOdds ? 'odds-quote best' : 'odds-quote'} key={quote.bookmaker}><span>{quote.bookmaker}</span><b>{Number(quote.odds).toFixed(2)}</b>{quote.bookmaker === item.bestBookmaker && quote.odds === item.bestOdds && <em>Melhor</em>}</div>)}</div>
               </article>
             ))}
