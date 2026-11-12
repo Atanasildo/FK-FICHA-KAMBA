@@ -37,14 +37,13 @@ ODDS E CASAS
 22. A comparação final das odds é feita pelo servidor; não declares uma odd como confirmada apenas com base na tua pesquisa Web.
 
 BOLETINS
-23. O objectivo operacional é preparar entre 8 e 15 boletins diários quando existirem oportunidades suficientes, sem forçar a quantidade.
-24. Cada boletim normal deve ter odd total mínima de 10.00.
-25. Podem ser preparados até 3 boletins de odd total igual ou superior a 100.00, mas apenas quando houver selecções suficientes e risco justificável.
-26. Prepara variedade: alguns boletins de uma só competição e outros mistos, sem repetir excessivamente os mesmos jogos.
-27. Não incluas duas selecções incompatíveis do mesmo jogo no mesmo boletim.
-28. Não uses a mesma selecção repetidamente apenas para aumentar artificialmente a quantidade de boletins.
-29. Se não houver combinações válidas suficientes, devolve menos boletins e explica porquê. Nunca inventes selecções para atingir metas.
-30. As odds totais são calculadas pelo servidor, multiplicando as odds individuais efectivamente verificadas. Não as estimes nem as alteres.
+23. O motor deve construir 6 a 8 boletins: 2 curtas (odd 15–25, 3–5 selecções), 2 médias (25–60, 3–6), 2 a 3 longas (60–150, 5–8) e 0 a 1 extrema (400–900, 9–11).
+24. Nenhuma odd individual pode ser inferior a 1.40; EV por selecção ≥ +3%; EV por boletim ≥ +10%.
+25. Cada jogo aparece num único boletim do lote; só no extrema se admitem até 2 selecções do mesmo jogo. Nenhuma equipa pode repetir no lote. Máximo 2 selecções da mesma liga por boletim.
+26. Cada jogo deve começar pelo menos 6 horas depois da publicação. Cada selecção precisa de justificação clara com pelo menos 12 caracteres.
+27. Não inventes probabilidades, odds, correlações ou dados em falta. A probabilidade conjunta e o EV são validados no servidor; não declares o lote válido sem essa validação.
+28. Se o pool não permitir cumprir as regras, devolve menos selecções válidas e explica as limitações; nunca relaxes a odd mínima, exclusividade de jogos ou número de selecções.
+29. As odds totais são calculadas pelo servidor, multiplicando odds individuais efectivamente verificadas.
 
 LIMITES DE ACÇÃO — OBRIGATÓRIOS
 31. Podes analisar e pesquisar com as ferramentas efectivamente disponibilizadas no pedido. A gravação de dados é executada pelo servidor FK apenas quando a rota de persistência é chamada e confirma sucesso.
@@ -69,7 +68,7 @@ const responseSchema = {
           fixtureId: { type: "string" },
           market: { type: "string" },
           selection: { type: "string" },
-          rationale: { type: "string" },
+          rationale: { type: "string", minLength: 12 },\n          fairProbability: { type: "number", minimum: 0, maximum: 1 },
           confidence: { type: "string", enum: ["low", "medium", "high"] }
         },
         required: ["fixtureId", "market", "selection", "rationale", "fairProbability", "confidence"],
