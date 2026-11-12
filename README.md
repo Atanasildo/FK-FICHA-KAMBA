@@ -185,6 +185,6 @@ O perfil do navegador fica em `.fk-browser-profile`, para preservar cookies/sess
 
 A rota protegida `GET /api/bookmakers/collect-daily` descobre jogos de futebol nas duas casas através do Swarm, selecciona até 5 jogos com ID comum (em directo ou dentro da janela das próximas 72 horas), recolhe as odds e guarda no Supabase apenas as comparações de selecções equivalentes, incluindo as duas cotações e as horas de recepção, na tabela `odds_comparisons`. Não grava todas as odds brutas na tabela `markets`.
 
-O `vercel.json` agenda a rota com `0 2 * * *` (02:00–02:59 UTC, ou 03:00–03:59 em Angola). No plano Hobby, os Cron Jobs só podem executar uma vez por dia e a execução pode ocorrer em qualquer minuto da hora agendada. O cron só fica activo depois de uma publicação no ambiente Production; esta branch ainda não foi publicada.
+O `vercel.json` agenda a rota com `0 5 * * *` (05:00–05:59 UTC, ou 06:00–06:59 em Angola). No plano Hobby, os Cron Jobs só podem executar uma vez por dia e a execução pode ocorrer em qualquer minuto da hora agendada. O cron só fica activo depois de uma publicação no ambiente Production; esta branch ainda não foi publicada.
 
 Variáveis de servidor necessárias: `CRON_SECRET`, `SUPABASE_URL` e `SUPABASE_SECRET_KEY` (ou `SUPABASE_SERVICE_ROLE_KEY`). Nunca coloques estas chaves em variáveis `VITE_` nem no código do navegador. A execução diária ainda precisa de ser validada após a publicação. A interface ainda não apresenta automaticamente os snapshots guardados; essa ligação será uma etapa posterior.
