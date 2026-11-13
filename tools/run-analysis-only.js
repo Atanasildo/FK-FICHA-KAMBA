@@ -53,7 +53,7 @@ try {
 
   if ((result?.stage === "analysis-batch-saved" && Number(result.pendingMatches || 0) > 0) ||
       (result?.stage === "linking-batch-saved" && Number(result.pendingLinks || 0) > 0)) {
-    throw new Error("Ainda existem jogos por analisar após 10 lotes. Nenhum bilhete foi publicado.");
+    throw new Error("Ainda existem jogos por analisar após 40 tentativas. Nenhum bilhete foi publicado.");
   }
 
   console.log("\nRESULTADO DA ANÁLISE:", result?.stage || "sem etapa");
