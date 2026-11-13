@@ -5,6 +5,7 @@ import {
   SWARM_BOOKMAKERS
 } from "../lib/bookmakers/swarm.js";
 import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
+import { selectCanonicalMatch } from "../lib/pipeline/match-linking.js";
 
 const baseUrl = (process.env.FK_API_URL || "https://fk-ficha-kamba.vercel.app").replace(/\/$/, "");
 const ingestUrl = process.env.FK_INGEST_URL || baseUrl + "/api/bookmakers/save-comparison";
@@ -60,29 +61,50 @@ for (const name of providers) {
   console.log(name + ": " + discovered[name].gamesFound + " jogos encontrados.");
 }
 
-const gameIds = selectCommonSwarmGames(
-  discovered.bantu.games,
-  discovered.elephant.games,
-  { maxGames: 50 }
-);
-
-if (!gameIds.length) {
-  console.error("Não foram encontrados jogos comuns dentro da janela de recolha.");
-  process.exit(1);
-}
-
-// Regista primeiro o calendário SportAPI para permitir associar os IDs Swarm
-// aos jogos canónicos antes de analisar as odds.
+// Actualiza primeiro o calendário SportAPI e recolhe apenas jogos que
+// tenham correspondência canónica inequívoca nas duas casas e na SportAPI.
 let sportApiDiscovered = 0;
 let sportApiDiscoveryOk = false;
+let sportApiFixtures = [];
 try {
   const discovery = await post("/api/pipeline/discover-fixtures", { days: 4 });
   sportApiDiscovered = Number(discovery.fixturesDiscovered || 0);
+  sportApiFixtures = Array.isArray(discovery.fixtures) ? discovery.fixtures : [];
   sportApiDiscoveryOk = true;
   console.log("Calendário SportAPI:", sportApiDiscovered, "jogos encontrados.");
 } catch (error) {
-  console.warn("Aviso: não foi possível actualizar o calendário SportAPI:", error.message);
-  console.warn("As odds serão guardadas; a análise só poderá usar jogos que já estejam associados.");
+  console.error("Não foi possível actualizar o calendário SportAPI:", error.message);
+  process.exit(1);
+}
+
+const commonGames = selectCommonSwarmGames(
+  discovered.bantu.games,
+  discovered.elephant.games,
+  { maxGames: 500 }
+);
+const claimedCanonicalIds = new Set();
+const bantuById = new Map(discovered.bantu.games.map(game => [String(game.id), game]));
+const eligibleGames = commonGames.flatMap(gameId => {
+  const game = bantuById.get(String(gameId));
+  if (!game || !Number.isFinite(Number(game.start_ts))) return [];
+  const canonical = selectCanonicalMatch({
+    home_team: game.home,
+    away_team: game.away,
+    kickoff_at: new Date(Number(game.start_ts) * 1000).toISOString()
+  }, sportApiFixtures, claimedCanonicalIds);
+  if (!canonical) return [];
+  claimedCanonicalIds.add(canonical.id);
+  return [{ swarmId: String(game.id), canonical }];
+});
+const gameIds = eligibleGames.slice(0, 50).map(game => game.swarmId);
+
+console.log("Jogos comuns BantuBet/ElephantBet:", commonGames.length);
+console.log("Jogos com correspondência SportAPI inequívoca:", eligibleGames.length);
+console.log("A recolher:", gameIds.length, "jogos elegíveis.");
+
+if (!gameIds.length) {
+  console.error("Nenhum jogo comum tem correspondência inequívoca na SportAPI. Não serão guardadas odds sem ligação segura.");
+  process.exit(1);
 }
 
 const batchSize = 10;
