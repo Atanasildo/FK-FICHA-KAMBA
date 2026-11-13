@@ -140,7 +140,7 @@ function TicketPanel({ ticket: t, expanded, onToggle, liveView = false }) {
   return <section className="panel daily-ticket">
     <button className="ticket-expand" onClick={onToggle} aria-expanded={expanded}>
       <div className="ticket-expand-main"><div className="ticket-title-row"><span className={Number(t.totalOdds) >= 100 ? 'tag tag-gold' : 'tag'}>{t.type || 'FICHA DO DIA'}</span><span className={'ticket-status ' + (liveCount ? 'state-live' : 'state-pending')}>{liveCount ? liveCount + ' jogo(s) em directo' : t.status || 'Publicada'}</span></div><h3>{t.name || 'Ficha Kamba'}</h3><div className="ticket-subline"><span>{t.id}</span><span>{t.bookmaker || 'Casa de apostas não indicada'}</span><span>{legs.length} jogos</span></div></div>
-      <div className="ticket-quick"><small>ODD TOTAL</small><b>{money(t.totalOdds)}</b><span className="reserve-id">Reserva: {t.bookingId || 'A aguardar ID'}</span></div><span className="expand-icon">{expanded ? <ChevronDown/> : <ChevronRight/>}</span>
+      <div className="ticket-quick"><small>ODD TOTAL</small><b>{money(t.totalOdds)}</b><span className="reserve-id">Reserva: {t.bookingId || 'A aguardar ID'}</span>{t.bookingUrl && <a className="reserve-link" href={t.bookingUrl} target="_blank" rel="noreferrer">Abrir boletim reservado</a>}</div><span className="expand-icon">{expanded ? <ChevronDown/> : <ChevronRight/>}</span>
     </button>
     {expanded && <div className="ticket-details"><div className="details-heading"><b>Jogos e mercados desta ficha</b><span>{liveView ? 'Estado em directo quando disponível' : 'Todas as selecções'}</span></div>
       {legs.length ? legs.map((leg, i) => <article className="match-detail" key={leg.id || i}><div className="match-detail-top"><span className="match-number">JOGO {String(i + 1).padStart(2, '0')}</span><span className={resultClass(leg)}>{resultLabel(leg)}</span></div><div className="match-teams"><b>{leg.home || leg.homeTeam || 'Equipa da casa'} <span>vs</span> {leg.away || leg.awayTeam || 'Equipa visitante'}</b><small>{leg.league || leg.competition || 'Campeonato não indicado'}{leg.date ? ' · ' + new Date(leg.date).toLocaleString('pt-AO') : ''}</small></div>
@@ -156,7 +156,7 @@ function TicketPanel({ ticket: t, expanded, onToggle, liveView = false }) {
         </div>}
         {leg.marketUpdate && <p className="market-update">{leg.marketUpdate}</p>}
       </article>) : <p className="muted-copy">Os jogos desta ficha serão apresentados aqui quando forem publicados.</p>}
-      <div className="ticket-detail-footer"><span>IDENTIFICADOR DE RESERVA</span><b>{t.bookingId || 'Ainda não disponibilizado'}</b></div>
+      <div className="ticket-detail-footer"><span>IDENTIFICADOR DE RESERVA</span><b>{t.bookingId || 'Ainda não disponibilizado'}</b>{t.bookingUrl && <a className="reserve-link" href={t.bookingUrl} target="_blank" rel="noreferrer">Abrir boletim reservado</a>}</div>
     </div>}
   </section>;
 }

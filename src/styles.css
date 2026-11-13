@@ -257,3 +257,14 @@ footer{color:#7890a2}
   color: var(--muted);
   font-size: 10px;
 }
+
+
+.reserve-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent, #f0a52b);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.reserve-link:hover { text-decoration: underline; }
