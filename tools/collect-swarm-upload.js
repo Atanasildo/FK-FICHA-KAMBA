@@ -34,7 +34,11 @@ async function post(path, body, timeout = 90000) {
   });
   const result = await response.json().catch(() => ({}));
   if (!response.ok || result.ok === false) {
-    throw new Error(result.error || result.detail || `HTTP ${response.status}`);
+    const summary = result.error || result.message || `HTTP ${response.status}`;
+    const detail = result.detail ? ` | Detalhe: ${result.detail}` : "";
+    const code = result.code ? ` | Código: ${result.code}` : "";
+    const retry = result.retry_after || result.retryAfter ? ` | Tentar novamente em: ${result.retry_after || result.retryAfter}` : "";
+    throw new Error(`${summary} (HTTP ${response.status})${detail}${code}${retry}`);
   }
   return result;
 }
@@ -112,7 +116,10 @@ for (let offset = 0; offset < gameIds.length; offset += batchSize) {
     });
     const result = await response.json().catch(() => ({}));
     if (!response.ok || !result.ok) {
-      throw new Error(result.error || result.detail || "A nuvem não confirmou a gravação.");
+      const summary = result.error || result.message || "A nuvem não confirmou a gravação.";
+      const detail = result.detail ? ` | Detalhe: ${result.detail}` : "";
+      const code = result.code ? ` | Código: ${result.code}` : "";
+      throw new Error(`${summary} (HTTP ${response.status})${detail}${code}`);
     }
 
     totalSavedGames += Number(result.savedGames || 0);
