@@ -9,14 +9,6 @@
       "destination": "/api/bookmakers/normalize?provider=elephant"
     },
     {
-      "source": "/api/bookmakers/compare",
-      "destination": "/api/bookmakers/compare-all?mode=fixtures"
-    },
-    {
-      "source": "/api/bookmakers/compare-swarm",
-      "destination": "/api/bookmakers/compare-all?mode=swarm"
-    },
-    {
       "source": "/api/pipeline/build-tickets",
       "destination": "/api/pipeline?action=build-tickets"
     },
@@ -29,10 +21,6 @@
       "destination": "/api/pipeline?action=save-analysis"
     },
     {
-      "source": "/api/test-match-validation",
-      "destination": "/api/test-discovery?action=validate"
-    },
-    {
       "source": "/api/pipeline/run-daily",
       "destination": "/api/pipeline?action=run-daily"
     },
@@ -42,9 +30,6 @@
     }
   ],
   "functions": {
-    "api/bookmakers/collect-daily.js": {
-      "maxDuration": 60
-    },
     "api/bookmakers/save-comparison.js": {
       "maxDuration": 60
     },

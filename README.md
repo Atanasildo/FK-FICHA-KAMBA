@@ -55,7 +55,7 @@ Cada bilhete publicado fica guardado no Supabase com as respectivas selecções,
 
 ## Acompanhamento ao vivo por jogo e mercado
 
-A página de acompanhamento actualiza o marcador e o minuto a cada três minutos. Estatísticas específicas e eventos são actualizados em lotes rotativos, com intervalo de até 15 minutos, para respeitar a quota da fonte.
+A página de acompanhamento actualiza o marcador e o minuto a cada três minutos. Estatísticas específicas e eventos são actualizados em lotes rotativos; a frequência por jogo depende do número de partidas activas e da quota disponível na fonte.
 
 O FK avalia apenas mercados para os quais a fonte fornece dados suficientes:
 - Resultado do jogo e totais de golos: pelo marcador.
