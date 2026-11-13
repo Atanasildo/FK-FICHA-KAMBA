@@ -145,12 +145,33 @@ export default function App() {
   </div>;
 }
 
+function ticketStatus(ticket) {
+  const legs = ticket.legs || [];
+  const outcomes = legs.map(leg => String(leg.marketStatus || leg.result || '').toLowerCase());
+  if (outcomes.some(value => value.includes('perdida') || value === 'lost')) return 'Perdida';
+  const allSettled = outcomes.length > 0 && outcomes.every(value =>
+    value.includes('ganha') || value.includes('linha devolvida') || value === 'won' || value === 'push'
+  );
+  if (allSettled) return 'Ganha';
+  if (legs.some(isLive)) return legs.filter(isLive).length + ' jogo(s) em directo';
+  if (legs.length && legs.every(isFinished)) return 'A aguardar liquidação';
+  return ticket.status || 'Publicada';
+}
+
+function ticketStatusClass(status) {
+  if (status === 'Ganha') return 'state-good';
+  if (status === 'Perdida') return 'state-bad';
+  if (String(status).includes('directo')) return 'state-live';
+  return 'state-pending';
+}
+
 function TicketPanel({ ticket: t, expanded, onToggle, liveView = false }) {
   const legs = t.legs || [];
   const liveCount = legs.filter(isLive).length;
+  const status = ticketStatus(t);
   return <section className="panel daily-ticket">
     <button className="ticket-expand" onClick={onToggle} aria-expanded={expanded}>
-      <div className="ticket-expand-main"><div className="ticket-title-row"><span className={Number(t.totalOdds) >= 100 ? 'tag tag-gold' : 'tag'}>{t.type || 'FICHA DO DIA'}</span><span className={'ticket-status ' + (liveCount ? 'state-live' : 'state-pending')}>{liveCount ? liveCount + ' jogo(s) em directo' : t.status || 'Publicada'}</span></div><h3>{t.name || 'Ficha Kamba'}</h3><div className="ticket-subline"><span>{t.id}</span><span>{t.bookmaker || 'Casa de apostas não indicada'}</span><span>{legs.length} jogos</span></div></div>
+      <div className="ticket-expand-main"><div className="ticket-title-row"><span className={Number(t.totalOdds) >= 100 ? 'tag tag-gold' : 'tag'}>{t.type || 'FICHA DO DIA'}</span><span className={'ticket-status ' + ticketStatusClass(status)}>{status}</span></div><h3>{t.name || 'Ficha Kamba'}</h3><div className="ticket-subline"><span>{t.id}</span><span>{t.bookmaker || 'Casa de apostas não indicada'}</span><span>{legs.length} jogos</span></div></div>
       <div className="ticket-quick"><small>ODD TOTAL</small><b>{money(t.totalOdds)}</b><span className="reserve-id">Reserva: {t.bookingId || 'A aguardar ID'}</span></div><span className="expand-icon">{expanded ? <ChevronDown/> : <ChevronRight/>}</span>
     </button>
     {expanded && <div className="ticket-details"><div className="details-heading"><b>Jogos e mercados desta ficha</b><span>{liveView ? 'Estado em directo quando disponível' : 'Todas as selecções'}</span></div>
