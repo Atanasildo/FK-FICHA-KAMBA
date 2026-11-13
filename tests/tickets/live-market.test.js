@@ -107,6 +107,31 @@ test("acompanha cartões amarelos da equipa da casa separadamente", () => {
   assert.match(result.marketUpdate, /equipa da casa: 1/);
 });
 
+test("identifica totais de golos e cartões pelo nome da equipa", () => {
+  const goals = evaluateLiveMarket({
+    market: "Total de Golos do Club Brugge",
+    selection: "Mais de 1.5",
+    home: "Club Brugge",
+    away: "RSC Anderlecht",
+    homeScore: 2,
+    awayScore: 0,
+    status: "LIVE"
+  });
+  assert.match(goals.marketUpdate, /Golos da equipa da casa: 2/);
+
+  const cards = evaluateLiveMarket({
+    market: "Total de Cartões Amarelos do RSC Anderlecht",
+    selection: "Mais de 1.5",
+    home: "Club Brugge",
+    away: "RSC Anderlecht",
+    homeScore: 0,
+    awayScore: 0,
+    status: "LIVE",
+    stats: { home: { yellow_cards: 3 }, away: { yellow_cards: 1 } }
+  });
+  assert.match(cards.marketUpdate, /equipa visitante: 1/);
+});
+
 test("acompanha remates à baliza e faltas através das estatísticas disponíveis", () => {
   const shots = evaluateLiveMarket({
     market: "Total de Remates à Baliza",
