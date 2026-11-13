@@ -10,7 +10,7 @@ test("não transforma marcador nulo em 0-0", () => {
     awayScore: null,
     status: "LIVE"
   });
-  assert.equal(result.marketStatus, "Acompanhar");
+  assert.equal(result.marketStatus, "A acompanhar");
   assert.equal(result.supported, false);
 });
 
