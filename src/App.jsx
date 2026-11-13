@@ -7,7 +7,7 @@ const money = n => Number(n || 0).toFixed(2);
 const isToday = value => value && new Date(value).toDateString() === new Date().toDateString();
 const matchState = leg => String(leg.matchStatus || leg.status || '').toUpperCase();
 const isLive = leg => ['IN_PLAY', 'LIVE', 'PAUSED', '1H', '2H', 'HT', 'FIRST_HALF', 'SECOND_HALF', 'HALF_TIME'].includes(matchState(leg)) || Boolean(leg.live);
-const isFinished = leg => ['FINISHED', 'FT', 'FULL_TIME', 'AFTER_EXTRA_TIME', 'PENALTY_SHOOTOUT', 'AET'].includes(matchState(leg));
+const isFinished = leg => ['FINISHED', 'FT', 'FULL_TIME', 'AFTER_EXTRA_TIME', 'PENALTY_SHOOTOUT', 'AET', 'PENS'].includes(matchState(leg));
 const matchScore = leg => {
   const score = leg.score || {};
   const home = leg.homeScore ?? score.home ?? score.fullTime?.home ?? score.regularTime?.home ?? score.current?.home;
