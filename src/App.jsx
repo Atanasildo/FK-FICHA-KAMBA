@@ -100,7 +100,7 @@ export default function App() {
     let active = true;
     const refreshLive = async () => {
       try {
-        const response = await fetch('/api/live-tickets');
+        const response = await fetch('/api/pipeline/live-tickets');
         const result = await response.json().catch(() => ({}));
         if (!response.ok || !result.ok || !active) return;
         setLiveUpdates(result.legs || {});

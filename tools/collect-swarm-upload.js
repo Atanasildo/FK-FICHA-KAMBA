@@ -5,8 +5,8 @@ import {
 } from "../lib/bookmakers/swarm.js";
 import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
 
-const baseUrl = process.env.FK_INGEST_URL || "https://fk-ficha-kamba.vercel.app";
-const ingestUrl = baseUrl.replace(/\/$/, "") + "/api/bookmakers/save-comparison";
+const baseUrl = (process.env.FK_API_URL || "https://fk-ficha-kamba.vercel.app").replace(/\/$/, "");
+const ingestUrl = process.env.FK_INGEST_URL || baseUrl + "/api/bookmakers/save-comparison";
 const secret = process.env.CRON_SECRET;
 
 if (!secret) {
@@ -44,7 +44,7 @@ for (const name of providers) {
 const gameIds = selectCommonSwarmGames(
   discovered.bantu.games,
   discovered.elephant.games,
-  { maxGames: 10000 }
+  { maxGames: 10 }
 );
 
 if (!gameIds.length) {
