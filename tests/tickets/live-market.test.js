@@ -51,6 +51,19 @@ test("acompanha cartões amarelos quando a fonte fornece estatísticas", () => {
   assert.equal(result.marketStatus, "A favor neste momento");
 });
 
+test("acompanha cartões amarelos da equipa da casa separadamente", () => {
+  const result = evaluateLiveMarket({
+    market: "Total de Cartões Amarelos da equipa da casa",
+    selection: "Mais de 1.5",
+    homeScore: 0,
+    awayScore: 0,
+    status: "LIVE",
+    stats: { home: { yellow_cards: 1 }, away: { yellow_cards: 4 } }
+  });
+  assert.equal(result.marketStatus, "Em risco neste momento");
+  assert.match(result.marketUpdate, /equipa da casa: 1/);
+});
+
 test("não inventa contagem de cantos quando a fonte não a fornece", () => {
   const result = evaluateLiveMarket({
     market: "Total de Cantos",
