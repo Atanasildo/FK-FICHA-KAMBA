@@ -232,12 +232,12 @@ footer{color:#7890a2}
 .leg-analysis {
   margin-top: 9px;
   padding: 10px 12px;
-  border: 1px solid var(--line);
+  border: 1px solid #26362b;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.025);
 }
 .leg-analysis-title {
-  color: var(--muted);
+  color: #91a096;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: .08em;
@@ -245,7 +245,7 @@ footer{color:#7890a2}
 }
 .leg-analysis p {
   margin: 5px 0 0;
-  color: var(--text);
+  color: #e8eee9;
   font-size: 12px;
   line-height: 1.5;
 }
@@ -254,7 +254,7 @@ footer{color:#7890a2}
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 7px;
-  color: var(--muted);
+  color: #91a096;
   font-size: 10px;
 }
 
