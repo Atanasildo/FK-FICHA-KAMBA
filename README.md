@@ -38,6 +38,8 @@ Na Vercel:
 
 - `SUPABASE_URL`
 - `SUPABASE_SECRET_KEY` (ou a variável de service role já usada pelo projecto)
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY` (ou `VITE_SUPABASE_ANON_KEY`, para a leitura pública do site)
 - `SPORTAPI_KEY`
 - `GROQ_API_KEY`
 - `GROQ_MODEL` (opcional; por defeito `openai/gpt-oss-20b`)
@@ -49,7 +51,7 @@ A recolha Swarm não é executada na Vercel: o cron antigo foi retirado porque a
 
 ## Bilhetes e reservas
 
-O pipeline usa as regras do construtor de bilhetes. As reservas geram referências/IDs de partilha quando a casa permite; **não submetem apostas e não movimentam dinheiro**. Se a reserva falhar, o resultado é registado como parcial e não é inventado um ID.
+O pipeline usa as regras do construtor de bilhetes. A criação do boletim gera referências/IDs e links de partilha quando a casa permite; **não submete apostas e não movimenta dinheiro**. Se a reserva falhar, o resultado é registado como parcial e não é inventado um ID.
 
 Cada bilhete publicado fica guardado no Supabase com as respectivas selecções, odds, jogos, mercado e referência de reserva. O site lê os bilhetes publicados e apresenta-os em Bilhetes do Dia.
 
@@ -59,7 +61,8 @@ A página de acompanhamento actualiza o marcador e o minuto a cada três minutos
 
 O FK avalia apenas mercados para os quais a fonte fornece dados suficientes:
 - Resultado do jogo e totais de golos: pelo marcador.
-- Totais de cartões amarelos, remates, remates à baliza, remates fora, faltas, desarmes e defesas: quando a estatística está disponível.
+- Totais de cartões amarelos, remates, remates à baliza, remates fora, faltas, desarmes, defesas, passes e precisão de passe: quando a estatística está disponível.
+- Ambas as equipas marcam: pelo marcador do jogo.
 - Cartões vermelhos: através dos eventos registados.
 - Cantos e outros mercados sem estatística correspondente: aparecem como indisponíveis/por confirmar. Nunca são calculados por aproximação.
 

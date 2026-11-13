@@ -128,7 +128,7 @@ try {
   const maxAnalysisBatches = 10;
   for (let attempt = 1; attempt <= maxAnalysisBatches; attempt++) {
     pipeline = await post("/api/pipeline/run-daily", {}, 240000);
-    console.log("\\nETAPA DE ANÁLISE " + attempt);
+    console.log("\nETAPA DE ANÁLISE " + attempt);
     console.log(JSON.stringify(pipeline, null, 2));
     if (pipeline.stage !== "analysis-batch-saved" || Number(pipeline.pendingMatches || 0) <= 0) break;
   }
