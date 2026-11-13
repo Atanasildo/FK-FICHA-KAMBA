@@ -80,7 +80,7 @@ try {
 const commonGames = selectCommonSwarmGames(
   discovered.bantu.games,
   discovered.elephant.games,
-  { maxGames: 500 }
+  { maxGames: 1500 }
 );
 const claimedCanonicalIds = new Set();
 const bantuById = new Map(discovered.bantu.games.map(game => [String(game.id), game]));
@@ -107,14 +107,14 @@ if (!gameIds.length) {
   process.exit(1);
 }
 
-const batchSize = 10;
+const batchSize = 1;
 let totalSavedGames = 0;
 let totalSavedComparisons = 0;
 let totalSavedSelections = 0;
 let totalSavedRawMarkets = 0;
 let failedBatches = 0;
 
-console.log("A recolher " + gameIds.length + " jogos comuns em lotes de " + batchSize + "...");
+console.log("A recolher " + gameIds.length + " jogos comuns em lotes de " + batchSize + " para evitar HTTP 413...");
 
 for (let offset = 0; offset < gameIds.length; offset += batchSize) {
   const batchIds = gameIds.slice(offset, offset + batchSize);
