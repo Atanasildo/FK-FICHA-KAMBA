@@ -39,6 +39,9 @@ async function post(path, body, timeout = 90000) {
   return result;
 }
 
+const dryRun = process.argv.includes("--dry-run");
+if (dryRun) console.log("MODO DE TESTE: as odds serão actualizadas, mas nenhum bilhete será publicado.");
+
 const providers = ["bantu", "elephant"];
 const discovered = {};
 
@@ -147,7 +150,8 @@ try {
   for (let attempt = 1; attempt <= maxAnalysisBatches; attempt++) {
     pipeline = await post("/api/pipeline/run-daily", {
       skipDiscovery: true,
-      discovered: sportApiDiscovered
+      discovered: sportApiDiscovered,
+      dryRun
     }, 240000);
     console.log("\nETAPA DE ANÁLISE " + attempt);
     console.log(JSON.stringify(pipeline, null, 2));
