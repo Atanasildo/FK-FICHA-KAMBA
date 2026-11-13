@@ -1,190 +1,83 @@
 # FK — Ficha Kamba
 
-Plataforma web de consulta de fichas de futebol. O utilizador entra para ver as fichas publicadas para o dia, consultar o identificador de reserva e expandir cada ficha para acompanhar os jogos, mercados, selecções e resultados.
+Plataforma de consulta de bilhetes de futebol preparados automaticamente. A experiência pública tem três áreas: **Bilhetes do Dia**, **Acompanhamento ao Vivo** e **Histórico**. O utilizador consulta as fichas publicadas; não existe um gerador manual de boletins na interface.
 
-## Interface
+## Arquitectura
 
-- Painel principal dedicado às fichas publicadas no dia.
-- Cartões expansíveis com todos os jogos e mercados de cada ficha.
-- Área de acompanhamento para jogos em curso, com espaço para marcador, minuto, eventos e estado do mercado quando a fonte disponibilizar esses dados.
-- Histórico de fichas e página de definições.
-- Interface responsiva em português (Angola).
+- **PC do utilizador:** executa exclusivamente o recolhedor local, porque as casas de apostas bloqueiam a recolha iniciada a partir dos IPs da cloud.
+- **Vercel:** recebe os dados, associa os jogos, recolhe contexto desportivo, executa a análise Groq, prepara as fichas e serve o site/API.
+- **Supabase:** guarda jogos, mercados brutos, snapshots de odds, estatísticas, análises, bilhetes e respectivas selecções.
+- **Groq:** analisa o contexto desportivo sem receber as odds antes da escolha do mercado; depois o servidor valida as cotações equivalentes das duas casas.
 
-A interface não disponibiliza ao utilizador formulários para elaborar jogos ou construir fichas. A preparação das fichas é uma função interna do serviço de análise.
+O PC não é usado para alojar o site nem para guardar os dados da plataforma. O recolhedor envia directamente os resultados para a API na Vercel; não grava ficheiros JSON locais.
 
-## Estado actual e integrações pendentes
+## Recolha e pipeline diário
 
-Esta versão já contém a interface, normalizadores das duas casas, comparador de odds, endpoint de análise Groq e persistência no Supabase. Foi acrescentada uma rota de recolha diária Swarm para BantuBet e ElephantBet, ainda por validar em execução e activar numa publicação Production. **A publicação automática de bilhetes não está activa** e a obtenção automática de estatísticas completas continua dependente de fontes autorizadas e verificáveis.
+Executa no PC, na pasta do projecto:
 
-Ainda é necessário implementar e configurar:
+```bash
+npm run collect:upload
+```
 
-1. Backend central e base de dados para publicar as fichas diárias e sincronizar o histórico entre dispositivos.
-2. Serviço de IA open-source/gratuito, executado num ambiente controlado, para análise e preparação automática.
-3. Fontes desportivas autorizadas para calendário, estatísticas, odds e eventos em directo, com origem e hora de actualização.
-4. Integrações permitidas com BantuBet Angola e Elephant Bet Angola para obter IDs de reserva genuínos. Se não existir integração autorizada, o ID terá de ser registado por um operador.
-5. Serviço de notificações e relatórios.
+O comando:
 
-O endpoint `GET /api/football-data?date=YYYY-MM-DD` consulta os jogos da SportAPI através de `SPORTAPI_KEY`. A SportAPI é a fonte de descoberta de jogos; não é fonte de odds das casas.
+1. Descobre os jogos disponíveis na BantuBet e na ElephantBet.
+2. Selecciona até 50 jogos comuns às duas casas, dentro da janela de recolha.
+3. Recolhe os mercados e odds das duas casas em lotes de 10 jogos.
+4. Envia cada lote directamente para `/api/bookmakers/save-comparison`.
+5. Guarda no Supabase os mercados brutos e as comparações equivalentes.
+6. Actualiza o calendário SportAPI e associa os IDs Swarm aos jogos SportAPI por equipas e hora de início.
+7. Executa a análise Groq em lotes de 10 jogos. Jogos sem estatísticas reais ou sem odds recentes das duas casas ficam excluídos e registados como dados insuficientes.
+8. Só depois de todos os lotes serem analisados, reúne as selecções e tenta criar o conjunto diário de bilhetes.
 
-Não contornar autenticação, CAPTCHA, controlos anti-bot ou restrições dos fornecedores. O FK não coloca apostas nem recebe ou movimenta dinheiro.
+O endpoint de pipeline impede duplicar a publicação no mesmo dia. Se o conjunto não cumprir todas as regras de validação, não publica bilhetes. A recolha e a análise podem terminar sem publicação quando não existirem oportunidades suficientes; o sistema não reduz os critérios para preencher a página.
 
-## Executar no computador
+### Variáveis necessárias
+
+Na Vercel:
+
+- `SUPABASE_URL`
+- `SUPABASE_SECRET_KEY` (ou a variável de service role já usada pelo projecto)
+- `SPORTAPI_KEY`
+- `GROQ_API_KEY`
+- `GROQ_MODEL` (opcional; por defeito `openai/gpt-oss-20b`)
+- `CRON_SECRET`
+
+No PC, define temporariamente `CRON_SECRET` no terminal antes de executar o comando. Não coloques a chave no código nem a partilhes no chat.
+
+A recolha Swarm não é executada na Vercel: o cron antigo foi retirado porque as casas bloqueiam os pedidos feitos a partir da cloud. O PC faz apenas a recolha e o envio; o restante processamento continua na cloud.
+
+## Bilhetes e reservas
+
+O pipeline usa as regras do construtor de bilhetes. As reservas geram referências/IDs de partilha quando a casa permite; **não submetem apostas e não movimentam dinheiro**. Se a reserva falhar, o resultado é registado como parcial e não é inventado um ID.
+
+Cada bilhete publicado fica guardado no Supabase com as respectivas selecções, odds, jogos, mercado e referência de reserva. O site lê os bilhetes publicados e apresenta-os em Bilhetes do Dia.
+
+## Acompanhamento ao vivo por jogo e mercado
+
+A página de acompanhamento actualiza o estado a cada três minutos. O marcador e minuto vêm da SportAPI; eventos são apresentados quando a resposta de detalhe os disponibiliza. A estatística de cartões amarelos é actualizada em lotes rotativos para respeitar a quota da fonte.
+
+O FK avalia apenas mercados para os quais a fonte fornece dados suficientes:
+- Resultado do jogo e totais de golos: pelo marcador.
+- Totais de cartões amarelos: quando a estatística está disponível.
+- Cantos e outros mercados sem estatística correspondente: aparecem como indisponíveis/por confirmar. Nunca são calculados por aproximação.
+
+Durante o jogo, o estado é informativo (por exemplo, “A favor neste momento” ou “Em risco neste momento”), não uma liquidação definitiva. A confirmação final depende do resultado e das regras da casa.
+
+## Desenvolvimento e validação
 
 Requer Node.js 20 ou superior.
 
 ```bash
 npm install
+npm test
+npm run build
 npm run dev
 ```
 
-Abre o endereço local indicado pelo Vite (normalmente `http://localhost:5173`). Não abras `index.html` directamente com duplo clique: o projecto usa Vite/React.
+## Segurança
 
-Para testar a versão de produção:
-
-```bash
-npm run build
-npm run preview
-```
-
-## Publicar na Vercel
-
-Importa `Atanasildo/FK-FICHA-KAMBA` na Vercel. Configuração:
-
-- Framework Preset: Vite
-- Install Command: `npm install`
-- Build Command: `npm run build`
-- Output Directory: `dist`
-
-Para activar a consulta de jogos, adiciona `SPORTAPI_KEY` às variáveis de ambiente do projecto na Vercel. Nunca coloques a chave no código do navegador.
-
-## Motor de análise com Groq
-
-O endpoint protegido `POST /api/ai-analyze` usa a API da Groq (`https://api.groq.com/openai/v1/chat/completions`), modelo `openai/gpt-oss-20b` por defeito, saída JSON estruturada. As instruções do agente cobrem recolha e validação de contexto, análise sem odds, comparação posterior, regras dos boletins e a proibição absoluta de reservar ou gerar IDs de bilhete.
-
-Variáveis necessárias na Vercel:
-
-- `GROQ_API_KEY`: chave criada na consola da Groq.
-- `GROQ_MODEL`: opcional; por defeito `openai/gpt-oss-20b`.
-- `CRON_SECRET`: segredo longo e aleatório; o endpoint exige `Authorization: Bearer <CRON_SECRET>`.
-
-O pedido deve conter jogos reais em `fixtures`, cada um com `id`, `home`, `away`, `stats` e `markets`. As odds são usadas apenas depois da selecção da IA: a Groq recebe estatísticas e uma lista sem odds, escolhe o mercado, e o servidor compara então as cotações BantuBet/ElephantBet. Só são devolvidas selecções com pelo menos duas cotações equivalentes e melhor odd mínima de 1.40. Jogos live/terminados e jogos sem estatísticas são excluídos.
-
-A integração faz duas chamadas: primeiro activa `browser_search` no modelo `openai/gpt-oss-20b` para pesquisar contexto público; depois envia os resultados para uma segunda chamada com JSON estruturado, porque a pesquisa Web não é compatível com `response_format` na mesma chamada. Esta pesquisa não controla um navegador com sessão iniciada e não recolhe automaticamente odds de casas de apostas. O endpoint ainda recebe os mercados e odds dos recolhedores; a recolha autónoma e verificável da BantuBet/ElephantBet continua a ser uma ferramenta separada a integrar. Para contexto desportivo, `GET /api/fixture-context?fixtureId=<id>` consulta detalhes, estatísticas, eventos, escalações, H2H, classificação e forma das equipas na SportAPI; cada secção indica se os dados estão disponíveis. Lesões/ausências não são inventadas porque a documentação consultada não apresenta esse endpoint. `POST /api/pipeline/save-analysis` guarda estatísticas, análises e odds verificadas no Supabase, protegido por `CRON_SECRET` e usando a chave secreta apenas no servidor. Esta rota não publica bilhetes nem cria referências de reserva. A execução diária continua desligada até a recolha das duas casas e a primeira execução completa serem validadas.
-
-## Descoberta local de URLs nas casas
-
-Depois de actualizar o projecto, executa `npm run discover:local`. O comando consulta a rota pública SportAPI do FK para hoje e amanhã, abre as páginas de futebol da BantuBet e ElephantBet no Chrome/Edge local e procura os eventos pelos nomes das duas equipas. Só grava em `tools/events.local.json` os jogos encontrados sem ambiguidade nas duas casas. Em seguida, executa `npm run collect:local` para recolher os mercados e odds com os colectores já existentes.
-
-A descoberta usa o perfil local `.fk-browser-profile`; se a casa apresentar um bloqueio ou CAPTCHA, não tenta contorná-lo. URLs das páginas de futebol e endpoint de fixtures podem ser substituídos pelas variáveis `FK_BANTUBET_SPORTS_URL`, `FK_ELEPHANTBET_SPORTS_URL` e `FK_FIXTURES_API_URL`. Os jogos não encontrados ou ambíguos ficam fora da recolha automática e são registados em `data/collections/event-discovery-latest.json`.
-
-## Descoberta automática e pipeline
-
-A rota protegida `POST /api/pipeline/discover-fixtures` consulta a SportAPI e guarda os jogos futuros na tabela `matches` do Supabase. Envia `Authorization: Bearer <CRON_SECRET>`; o corpo pode conter `{"days":2}` (entre 1 e 7 dias, no fuso `Africa/Luanda`). A chave da SportAPI e a chave de serviço do Supabase permanecem no servidor. A origem é guardada como `SportAPI`, igual à rota de persistência de análises, para impedir duplicação do mesmo jogo por diferenças de maiúsculas/minúsculas.
-
-Esta rota apenas descobre e guarda jogos. Não recolhe odds, não chama a Groq e não publica fichas. A recolha das casas continua a depender de URLs reais dos eventos e de acesso permitido às páginas; não são construídos URLs a partir do ID da SportAPI nem contornados bloqueios.
-
-## Fonte de jogos: SportAPI
-
-O endpoint `GET /api/football-data?date=YYYY-MM-DD` consulta os jogos do dia no fuso `Africa/Luanda`, usando `SPORTAPI_KEY` no servidor.
-
-A resposta inclui equipas, competição, início e estado do jogo. A SportAPI não fornece as odds BantuBet/ElephantBet; estas têm de vir exclusivamente dos recolhedores das casas.
-
-Os dados estatísticos detalhados ainda precisam de ser ligados a um endpoint de estatísticas com cobertura comprovada. O motor Groq rejeita jogos sem estatísticas recebidas, em vez de inventar forma, H2H ou ausências.
-
-A rota `POST /api/ai-analyze` é protegida por `CRON_SECRET`. Para guardar o resultado, executar `POST /api/pipeline/save-analysis` com o contexto original e a resposta validada da análise. A migração `supabase/migrations/20261108_match_context.sql` deve ser aplicada no SQL Editor do Supabase.
-
-
-## Comparação de odds entre casas
-
-A rota protegida `POST /api/bookmakers/compare` compara recolhas já normalizadas de duas ou mais casas. Envia `Authorization: Bearer <CRON_SECRET>` e um corpo JSON com `fixtures`, usando o objecto `fixture` devolvido por cada recolha normalizada.
-
-Exemplo de estrutura:
-
-```json
-{
-  "fixtures": [
-    {
-      "id": "evento-123",
-      "home": "Club Brugge",
-      "away": "RSC Anderlecht",
-      "competition": "Belgium Pro League",
-      "kickoff": "2026-11-10T19:00:00Z",
-      "bookmaker": "BantuBet",
-      "sourceUrl": "https://...",
-      "collectedAt": "2026-11-08T10:00:00Z",
-      "markets": [
-        {
-          "market": "Total de golos no jogo",
-          "selection": "Mais de 2.5",
-          "odds": 1.80,
-          "line": "2.5",
-          "side": "over"
-        }
-      ]
-    }
-  ]
-}
-```
-
-A comparação exige correspondência de equipas e competição, e separa período, tipo de mercado, equipa e linha. Variações como `Menos 1.5` e `Menos de 1.5` são normalizadas para a mesma selecção. Linhas diferentes (por exemplo, 2.25 e 2.5), primeira parte e jogo completo, handicaps de equipas diferentes e mercados de categorias distintas não são misturados. A resposta conserva bookmaker, odd, origem e hora de recolha e apresenta a melhor odd observada por selecção equivalente.
-
-A rota não calcula arbitragem garantida nem recomenda apostas; apenas compara os preços recebidos. Os dados têm de ser recolhidos e normalizados antes da comparação. O motor não inventa odds nem preenche casas sem dados.
-
-
-### Comparação directa das recolhas Swarm
-
-A rota protegida `POST /api/bookmakers/compare-swarm` aceita os dois ficheiros JSON produzidos por `tools/collect-swarm.js`, sem passar pelos normalizadores antigos de recolha do navegador.
-
-Cabeçalho obrigatório: `Authorization: Bearer <CRON_SECRET>`.
-
-Corpo esperado:
-
-```json
-{
-  "bantu": { "collectionStartedAt": "...", "collectedAt": "...", "games": [] },
-  "elephant": { "collectionStartedAt": "...", "collectedAt": "...", "games": [] }
-}
-```
-
-O adaptador associa jogos pelo ID comum, preserva o tipo e a base do mercado na chave de comparação e conserva a hora de recepção de cada cotação. A resposta inclui os IDs dos jogos comuns, contagem de mercados/selecções comparáveis e a melhor odd observada. Jogos sem correspondência nos dois ficheiros são excluídos. Esta rota não recolhe dados por si: recebe os JSON produzidos pelos recolhedores Swarm.
-
-### Área «Comparar Odds» no painel
-
-A aplicação inclui uma área visual para comparar directamente duas recolhas JSON, sem chamar as rotas protegidas e sem expor `CRON_SECRET` ao navegador:
-
-1. Abre **Comparar Odds** no menu.
-2. Indica as equipas da casa e visitante exactamente como aparecem nas casas. A competição e a data/hora são opcionais, mas ajudam a evitar comparações entre jogos diferentes.
-3. Importa o JSON da BantuBet no primeiro cartão e o JSON da ElephantBet no segundo.
-4. Clica em **Comparar odds**. O painel mostra as selecções encontradas nas duas casas, as cotações de cada uma e destaca a melhor odd.
-5. Usa o filtro para procurar mercados e exporta os resultados em CSV, se necessário.
-
-Os ficheiros são lidos e processados no próprio navegador; não é necessário introduzir segredos ou tokens. O limite da interface é 12 MB por ficheiro. Também aceita ficheiros `.txt` quando o conteúdo é JSON válido. A categoria agregadora «Tudo» é ignorada para evitar duplicações. Mercados marcados com associação incompleta (incluindo o handicap de três opções ainda não resolvido) são excluídos e listados no diagnóstico. A comparação só é possível quando ambas as casas têm a mesma selecção e linha; sem equivalência segura, o sistema não inventa correspondências.
-
-Para executar os testes dos normalizadores e comparador:
-
-```bash
-npm test
-```
-
-O comando de build também executa os testes antes de gerar a aplicação.
-
-## Recolha local assistida das odds (Windows)
-
-Enquanto não houver um método remoto autorizado com acesso estável a Angola, o projecto inclui um recolhedor local que usa o Chrome/Edge já instalado, mantém um perfil de navegador e reutiliza os extractores de BantuBet e ElephantBet. Não instala browsers, não faz apostas e não contorna CAPTCHA, autenticação ou bloqueios.
-
-1. Copia `tools/events.local.example.json` para `tools/events.local.json`.
-2. Para cada jogo, preenche o ID real da SportAPI, nomes, competição, hora e os URLs públicos do mesmo evento nas duas casas.
-3. Executa `npm run collect:local` no terminal, na pasta do projecto.
-4. Se o site apresentar uma verificação normal, resolve-a manualmente no Chrome aberto. Se continuar bloqueado, a recolha desse site é marcada como falhada.
-5. Consulta `data/collections`: ficam guardados o JSON bruto, o resultado normalizado e a comparação de cada jogo, além de `latest-run.json`.
-
-O perfil do navegador fica em `.fk-browser-profile`, para preservar cookies/sessão entre execuções. O ficheiro `events.local.json`, o perfil e os resultados locais estão no `.gitignore` e não são enviados para o GitHub. Esta é uma etapa assistida: ainda é necessário fornecer os URLs dos eventos. A recolha local ainda não alimenta automaticamente a análise Groq, não grava os bilhetes no Supabase e não agenda a execução diária; essas etapas só devem ser activadas depois de uma recolha real ser validada.
-
-
-## Recolha automática diária Swarm (Vercel Hobby)
-
-A rota protegida `GET /api/bookmakers/collect-daily` descobre jogos de futebol nas duas casas através do Swarm, selecciona até 5 jogos com ID comum (em directo ou dentro da janela das próximas 72 horas), recolhe as odds e guarda no Supabase apenas as comparações de selecções equivalentes, incluindo as duas cotações e as horas de recepção, na tabela `odds_comparisons`. Não grava todas as odds brutas na tabela `markets`.
-
-O `vercel.json` agenda a rota com `0 5 * * *` (05:00–05:59 UTC, ou 06:00–06:59 em Angola). No plano Hobby, os Cron Jobs só podem executar uma vez por dia e a execução pode ocorrer em qualquer minuto da hora agendada. O cron só fica activo depois de uma publicação no ambiente Production; esta branch ainda não foi publicada.
-
-Variáveis de servidor necessárias: `CRON_SECRET`, `SUPABASE_URL` e `SUPABASE_SECRET_KEY` (ou `SUPABASE_SERVICE_ROLE_KEY`). Nunca coloques estas chaves em variáveis `VITE_` nem no código do navegador. A execução diária ainda precisa de ser validada após a publicação. A interface ainda não apresenta automaticamente os snapshots guardados; essa ligação será uma etapa posterior.
+- As chaves da SportAPI, Groq e Supabase ficam no servidor.
+- As rotas de recolha, análise, reserva e publicação exigem `CRON_SECRET`.
+- Não contornar autenticação, CAPTCHA, controlos anti-bot ou restrições dos fornecedores.
+- O FK não coloca apostas, não recebe depósitos e não movimenta dinheiro.
