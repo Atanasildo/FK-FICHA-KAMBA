@@ -122,6 +122,12 @@ console.log(JSON.stringify({
   failedBatches
 }, null, 2));
 
+if (failedBatches > 0 || totalSavedComparisons < 35) {
+  console.error("\nANÁLISE NÃO INICIADA");
+  console.error("A recolha ficou incompleta ou guardou menos de 35 comparações entre as duas casas.");
+  console.error("Não serão criados bilhetes com uma amostra insuficiente. Corrige a ligação e executa novamente.");
+  process.exitCode = 1;
+} else {
 console.log("\nA iniciar análise e elaboração dos bilhetes...");
 try {
   let pipeline = null;
@@ -141,4 +147,5 @@ try {
 } catch (error) {
   console.error("Os dados foram enviados; a análise/publicação não terminou:", error.message);
   process.exitCode = 1;
+}
 }
