@@ -31,12 +31,10 @@
     {
       "source": "/api/test-match-validation",
       "destination": "/api/test-discovery?action=validate"
-    }
-  ],
-  "crons": [
+    },
     {
-      "path": "/api/bookmakers/collect-daily",
-      "schedule": "0 5 * * *"
+      "source": "/api/pipeline/run-daily",
+      "destination": "/api/pipeline?action=run-daily"
     }
   ],
   "functions": {

@@ -5,12 +5,27 @@ import {
 } from "../lib/bookmakers/swarm.js";
 import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
 
-const endpoint = process.env.FK_INGEST_URL || "https://fk-ficha-kamba.vercel.app/api/bookmakers/save-comparison";
+const baseUrl = process.env.FK_INGEST_URL || "https://fk-ficha-kamba.vercel.app";
+const ingestUrl = baseUrl.replace(/\/$/, "") + "/api/bookmakers/save-comparison";
 const secret = process.env.CRON_SECRET;
 
 if (!secret) {
   console.error("Falta definir a variável CRON_SECRET no ambiente deste computador.");
   process.exit(1);
+}
+
+async function post(path, body, timeout = 90000) {
+  const response = await fetch(baseUrl.replace(/\/$/, "") + path, {
+    method: "POST",
+    headers: { "content-type": "application/json", authorization: "Bearer " + secret },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(timeout)
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || result.ok === false) {
+    throw new Error(result.error || result.detail || `HTTP ${response.status}`);
+  }
+  return result;
 }
 
 const providers = ["bantu", "elephant"];
@@ -29,7 +44,7 @@ for (const name of providers) {
 const gameIds = selectCommonSwarmGames(
   discovered.bantu.games,
   discovered.elephant.games,
-  { maxGames: 10 }
+  { maxGames: 10000 }
 );
 
 if (!gameIds.length) {
@@ -37,33 +52,82 @@ if (!gameIds.length) {
   process.exit(1);
 }
 
-console.log("A recolher odds de " + gameIds.length + " jogos nas duas casas...");
-const [bantu, elephant] = await Promise.all([
-  collectSwarm({ ...SWARM_BOOKMAKERS.bantu, gameIds, timeoutMs: 60000 }),
-  collectSwarm({ ...SWARM_BOOKMAKERS.elephant, gameIds, timeoutMs: 60000 })
-]);
-
-if (!bantu.received || !elephant.received) {
-  console.error("Uma das casas não devolveu odds. Nada foi enviado.");
-  process.exit(1);
+// Regista primeiro o calendário SportAPI para permitir associar os IDs Swarm
+// aos jogos canónicos antes de analisar as odds.
+try {
+  const discovery = await post("/api/pipeline/discover-fixtures", { days: 4 });
+  console.log("Calendário SportAPI:", discovery.fixturesDiscovered, "jogos encontrados.");
+} catch (error) {
+  console.warn("Aviso: não foi possível actualizar o calendário SportAPI:", error.message);
+  console.warn("As odds serão guardadas; a análise só poderá usar jogos que já estejam associados.");
 }
 
-console.log("A enviar os dados diretamente para a nuvem...");
-const response = await fetch(endpoint, {
-  method: "POST",
-  headers: {
-    "content-type": "application/json",
-    authorization: "Bearer " + secret
-  },
-  body: JSON.stringify({ bantu, elephant }),
-  signal: AbortSignal.timeout(90000)
-});
-const result = await response.json().catch(() => ({}));
+const batchSize = 10;
+let totalSavedGames = 0;
+let totalSavedComparisons = 0;
+let totalSavedSelections = 0;
+let totalSavedRawMarkets = 0;
+let failedBatches = 0;
 
-if (!response.ok || !result.ok) {
-  console.error("A nuvem recusou ou não conseguiu guardar os dados:", JSON.stringify(result, null, 2));
-  process.exit(1);
+console.log("A recolher " + gameIds.length + " jogos comuns em lotes de " + batchSize + "...");
+
+for (let offset = 0; offset < gameIds.length; offset += batchSize) {
+  const batchIds = gameIds.slice(offset, offset + batchSize);
+  const batchNumber = Math.floor(offset / batchSize) + 1;
+  console.log("\nLote " + batchNumber + " — " + batchIds.length + " jogos...");
+
+  try {
+    const [bantu, elephant] = await Promise.all([
+      collectSwarm({ ...SWARM_BOOKMAKERS.bantu, gameIds: batchIds, timeoutMs: 60000 }),
+      collectSwarm({ ...SWARM_BOOKMAKERS.elephant, gameIds: batchIds, timeoutMs: 60000 })
+    ]);
+
+    if (!bantu.received || !elephant.received) {
+      throw new Error("Uma das casas não devolveu a recolha completa deste lote.");
+    }
+
+    const response = await fetch(ingestUrl, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: "Bearer " + secret
+      },
+      body: JSON.stringify({ bantu, elephant }),
+      signal: AbortSignal.timeout(90000)
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok) {
+      throw new Error(result.error || result.detail || "A nuvem não confirmou a gravação.");
+    }
+
+    totalSavedGames += Number(result.savedGames || 0);
+    totalSavedComparisons += Number(result.savedComparisons || 0);
+    totalSavedSelections += Number(result.savedSelections || 0);
+    totalSavedRawMarkets += Number(result.savedRawMarkets || 0);
+    console.log("Guardado:", result.savedGames, "jogos;", result.savedRawMarkets, "mercados brutos;", result.savedSelections, "selecções comparáveis.");
+  } catch (error) {
+    failedBatches++;
+    console.error("Falha no lote " + batchNumber + ":", error.message);
+  }
 }
 
-console.log("\nRECOLHA CONCLUÍDA");
-console.log(JSON.stringify(result, null, 2));
+console.log("\nRECOLHA TERMINADA");
+console.log(JSON.stringify({
+  discovered: { bantu: discovered.bantu.gamesFound, elephant: discovered.elephant.gamesFound },
+  commonGames: gameIds.length,
+  savedGames: totalSavedGames,
+  savedComparisons: totalSavedComparisons,
+  savedSelections: totalSavedSelections,
+  savedRawMarkets: totalSavedRawMarkets,
+  failedBatches
+}, null, 2));
+
+console.log("\nA iniciar análise e elaboração dos bilhetes...");
+try {
+  const pipeline = await post("/api/pipeline/run-daily", {}, 240000);
+  console.log("PIPELINE DIÁRIO");
+  console.log(JSON.stringify(pipeline, null, 2));
+} catch (error) {
+  console.error("Os dados foram enviados; a análise/publicação não terminou:", error.message);
+  process.exitCode = 1;
+}
