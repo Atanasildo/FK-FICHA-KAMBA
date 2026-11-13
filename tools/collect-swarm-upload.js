@@ -44,7 +44,7 @@ for (const name of providers) {
 const gameIds = selectCommonSwarmGames(
   discovered.bantu.games,
   discovered.elephant.games,
-  { maxGames: 10 }
+  { maxGames: 50 }
 );
 
 if (!gameIds.length) {
@@ -124,9 +124,17 @@ console.log(JSON.stringify({
 
 console.log("\nA iniciar análise e elaboração dos bilhetes...");
 try {
-  const pipeline = await post("/api/pipeline/run-daily", {}, 240000);
-  console.log("PIPELINE DIÁRIO");
-  console.log(JSON.stringify(pipeline, null, 2));
+  let pipeline = null;
+  const maxAnalysisBatches = 10;
+  for (let attempt = 1; attempt <= maxAnalysisBatches; attempt++) {
+    pipeline = await post("/api/pipeline/run-daily", {}, 240000);
+    console.log("\\nETAPA DE ANÁLISE " + attempt);
+    console.log(JSON.stringify(pipeline, null, 2));
+    if (pipeline.stage !== "analysis-batch-saved" || Number(pipeline.pendingMatches || 0) <= 0) break;
+  }
+  if (pipeline?.stage === "analysis-batch-saved" && Number(pipeline.pendingMatches || 0) > 0) {
+    throw new Error("O limite de lotes foi atingido; ainda existem jogos por analisar.");
+  }
 } catch (error) {
   console.error("Os dados foram enviados; a análise/publicação não terminou:", error.message);
   process.exitCode = 1;
