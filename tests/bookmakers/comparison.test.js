@@ -242,3 +242,20 @@ test("distingue totais por equipa quando a equipa está identificada", () => {
   assert.deepEqual(result.events[0].comparisons.map(item => item.quotes[0].team).sort(), ["club brugge", "rsc anderlecht"]);
 });
 
+
+test("ignora a categoria genérica Tudo para permitir agrupamento semântico", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [{
+      market: "Total de golos", marketType: "TotalGoals",
+      category: "Tudo", selection: "Mais de 2.5", odds: 1.8, line: "2.5"
+    }]),
+    fixture("Elephant Bet", [{
+      market: "Total de golos", marketType: "TotalGoals",
+      category: "Tudo", selection: "Mais de 2.5", odds: 1.9, line: "2.5"
+    }])
+  ]);
+  assert.equal(result.comparisonCount, 1);
+  assert.equal(result.events[0].comparisons[0].category, null);
+  assert.deepEqual(result.events[0].comparisons[0].categories, []);
+});
+
