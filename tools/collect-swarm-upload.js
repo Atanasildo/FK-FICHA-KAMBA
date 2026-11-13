@@ -54,9 +54,13 @@ if (!gameIds.length) {
 
 // Regista primeiro o calendário SportAPI para permitir associar os IDs Swarm
 // aos jogos canónicos antes de analisar as odds.
+let sportApiDiscovered = 0;
+let sportApiDiscoveryOk = false;
 try {
   const discovery = await post("/api/pipeline/discover-fixtures", { days: 4 });
-  console.log("Calendário SportAPI:", discovery.fixturesDiscovered, "jogos encontrados.");
+  sportApiDiscovered = Number(discovery.fixturesDiscovered || 0);
+  sportApiDiscoveryOk = true;
+  console.log("Calendário SportAPI:", sportApiDiscovered, "jogos encontrados.");
 } catch (error) {
   console.warn("Aviso: não foi possível actualizar o calendário SportAPI:", error.message);
   console.warn("As odds serão guardadas; a análise só poderá usar jogos que já estejam associados.");
@@ -122,9 +126,9 @@ console.log(JSON.stringify({
   failedBatches
 }, null, 2));
 
-if (failedBatches > 0 || totalSavedComparisons < 35) {
+if (!sportApiDiscoveryOk || failedBatches > 0 || totalSavedComparisons < 35) {
   console.error("\nANÁLISE NÃO INICIADA");
-  console.error("A recolha ficou incompleta ou guardou menos de 35 comparações entre as duas casas.");
+  console.error("A descoberta SportAPI falhou, a recolha ficou incompleta ou foram guardadas menos de 35 comparações entre as duas casas.");
   console.error("Não serão criados bilhetes com uma amostra insuficiente. Corrige a ligação e executa novamente.");
   process.exitCode = 1;
 } else {
@@ -135,7 +139,7 @@ try {
   for (let attempt = 1; attempt <= maxAnalysisBatches; attempt++) {
     pipeline = await post("/api/pipeline/run-daily", {
       skipDiscovery: true,
-      discovered: discovered.fixturesDiscovered || 0
+      discovered: sportApiDiscovered
     }, 240000);
     console.log("\nETAPA DE ANÁLISE " + attempt);
     console.log(JSON.stringify(pipeline, null, 2));
