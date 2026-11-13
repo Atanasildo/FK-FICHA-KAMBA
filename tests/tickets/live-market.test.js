@@ -22,6 +22,30 @@ test("acompanha ambas marcam sem declarar vitória antes do fim", () => {
   assert.equal(won.marketStatus, "Ganha");
 });
 
+test("não avalia selecções antes do início do jogo", () => {
+  const result = evaluateLiveMarket({
+    market: "Resultado do Jogo",
+    selection: "Vitória da equipa da casa",
+    homeScore: 0,
+    awayScore: 0,
+    status: "NS"
+  });
+  assert.equal(result.marketStatus, "Por iniciar");
+  assert.equal(result.supported, false);
+});
+
+test("assinala jogos adiados sem tentar liquidar o mercado", () => {
+  const result = evaluateLiveMarket({
+    market: "Total de Golos",
+    selection: "Mais de 2.5",
+    homeScore: null,
+    awayScore: null,
+    status: "POSTPONED"
+  });
+  assert.equal(result.marketStatus, "Jogo adiado");
+  assert.equal(result.supported, false);
+});
+
 test("não transforma marcador nulo em 0-0", () => {
   const result = evaluateLiveMarket({
     market: "Resultado do Jogo",
