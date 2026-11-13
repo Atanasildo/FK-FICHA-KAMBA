@@ -274,10 +274,12 @@ function OddsComparePage() {
       displayMarket: (() => {
         const name = String(item.market || '').trim();
         const type = String(item.marketType || '').toLowerCase();
-        if (name && !/^total$/i.test(name)) return name;
-        if (/corner|canto/.test(type)) return 'Total de cantos';
-        if (/goal|golo/.test(type)) return /team/.test(type) ? 'Total de golos da equipa' : 'Total de golos';
-        if (/card|cartao/.test(type)) return 'Total de cartões';
+        const codeName = /^(teamtotalgoals|totalgoals|teamtotalcorners|totalcorners|teamtotalyellowcards|totalyellowcards|teamtotalcards|totalcards|totalcardpoints|teamtotalcardpoints)$/i.test(name);
+        if (name && !/^total$/i.test(name) && !codeName) return name;
+        const team = (item.quotes || []).find(quote => quote.team)?.team;
+        if (/corner|canto/.test(type + ' ' + name)) return /team/.test(type) && team ? 'Total de cantos — ' + team : 'Total de cantos';
+        if (/goal|golo/.test(type + ' ' + name)) return /team/.test(type) ? 'Total de golos' + (team ? ' — ' + team : ' da equipa') : 'Total de golos';
+        if (/card|cartao/.test(type + ' ' + name)) return /team/.test(type) && team ? 'Total de cartões — ' + team : 'Total de cartões';
         return name || 'Mercado';
       })(),
       missingLine: /\b(mais de|menos de)\b/i.test(item.selection || '') &&
