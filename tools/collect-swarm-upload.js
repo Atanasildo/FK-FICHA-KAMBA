@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import {
   collectSwarm,
   discoverSwarmGames,
@@ -108,19 +109,44 @@ for (let offset = 0; offset < gameIds.length; offset += batchSize) {
       throw new Error("Uma das casas não devolveu a recolha completa deste lote.");
     }
 
-    const response = await fetch(ingestUrl, {
-      method: "POST",
-      headers: requestHeaders,
-      body: JSON.stringify({ bantu, elephant }),
-      signal: AbortSignal.timeout(90000)
-    });
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok || !result.ok) {
-      const summary = result.error || result.message || "A nuvem não confirmou a gravação.";
-      const detail = result.detail ? ` | Detalhe: ${result.detail}` : "";
-      const code = result.code ? ` | Código: ${result.code}` : "";
-      throw new Error(`${summary} (HTTP ${response.status})${detail}${code}`);
+    // Keep the same ID and payload if the HTTP request must be replayed.
+    const batchId = randomUUID();
+    const payload = JSON.stringify({ batchId, bantu, elephant });
+    let result = null;
+    let lastIngestError = null;
+
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const response = await fetch(ingestUrl, {
+          method: "POST",
+          headers: requestHeaders,
+          body: payload,
+          signal: AbortSignal.timeout(90000)
+        });
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok || !body.ok) {
+          const summary = body.error || body.message || "A nuvem não confirmou a gravação.";
+          const detail = body.detail ? ` | Detalhe: ${body.detail}` : "";
+          const code = body.code ? ` | Código: ${body.code}` : "";
+          const error = new Error(`${summary} (HTTP ${response.status})${detail}${code}`);
+          error.status = response.status;
+          if (response.status < 500 || attempt === 2) throw error;
+          lastIngestError = error;
+        } else {
+          result = body;
+          break;
+        }
+      } catch (error) {
+        if (error.status && error.status < 500) throw error;
+        lastIngestError = error;
+        if (attempt === 2) throw error;
+      }
+
+      console.warn("A ingestão falhou; repetição segura do mesmo lote (" + (attempt + 1) + "/2):", lastIngestError?.message || "erro de rede");
+      await new Promise(resolve => setTimeout(resolve, 1500));
     }
+
+    if (!result) throw lastIngestError || new Error("A nuvem não confirmou a gravação após a repetição.");
 
     totalSavedGames += Number(result.savedGames || 0);
     totalSavedComparisons += Number(result.savedComparisons || 0);
