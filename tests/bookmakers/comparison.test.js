@@ -259,3 +259,34 @@ test("ignora a categoria genérica Tudo para permitir agrupamento semântico", (
   assert.deepEqual(result.events[0].comparisons[0].categories, []);
 });
 
+
+
+test("identifica totais de cantos por equipa através do nome da equipa da partida", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [
+      { market: "Total de Cantos do Club Brugge", marketType: "TeamTotalCorners", selection: "Mais de", odds: 1.8, line: "4.5" },
+      { market: "Total de Cantos do RSC Anderlecht", marketType: "TeamTotalCorners", selection: "Mais de", odds: 2.0, line: "4.5" }
+    ]),
+    fixture("Elephant Bet", [
+      { market: "Total de Cantos do Club Brugge", marketType: "TeamTotalCorners", selection: "Mais de", odds: 1.9, line: "4.5" },
+      { market: "Total de Cantos do RSC Anderlecht", marketType: "TeamTotalCorners", selection: "Mais de", odds: 2.1, line: "4.5" }
+    ])
+  ]);
+  assert.equal(result.comparisonCount, 2);
+  assert.deepEqual(result.events[0].comparisons.map(item => item.quotes[0].team).sort(), ["club brugge", "rsc anderlecht"]);
+});
+
+test("identifica totais de cartões da equipa da casa e visitante sem os misturar", () => {
+  const result = compareFixtures([
+    fixture("BantuBet", [
+      { market: "Total de Cartões da equipa da casa", marketType: "TeamTotalYellowCards", selection: "Mais de", odds: 1.8, line: "1.5" },
+      { market: "Total de Cartões da equipa visitante", marketType: "TeamTotalYellowCards", selection: "Mais de", odds: 2.0, line: "1.5" }
+    ]),
+    fixture("Elephant Bet", [
+      { market: "Total de Cartões da equipa da casa", marketType: "TeamTotalYellowCards", selection: "Mais de", odds: 1.9, line: "1.5" },
+      { market: "Total de Cartões da equipa visitante", marketType: "TeamTotalYellowCards", selection: "Mais de", odds: 2.1, line: "1.5" }
+    ])
+  ]);
+  assert.equal(result.comparisonCount, 2);
+  assert.deepEqual(result.events[0].comparisons.map(item => item.quotes[0].team).sort(), ["away", "home"]);
+});
