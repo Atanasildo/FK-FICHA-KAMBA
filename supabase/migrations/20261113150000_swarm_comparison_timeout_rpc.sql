@@ -8,7 +8,7 @@ create or replace function public.save_swarm_comparison(
 )
 returns void
 language plpgsql
-set statement_timeout = '60s'
+set statement_timeout = '50s'
 as $$
 begin
   insert into public.odds_comparisons (
