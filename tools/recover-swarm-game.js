@@ -27,8 +27,11 @@ if (!baseUrl || !ingestUrl) {
   console.error("Define FK_API_URL e FK_INGEST_URL para a Preview antes de executar.");
   process.exit(1);
 }
+const preview = new URL(baseUrl);
 const target = new URL(ingestUrl);
-if (target.hostname === "fk-ficha-kamba.vercel.app" || target.hostname === "www.fk-ficha-kamba.vercel.app") {
+if (preview.hostname !== target.hostname ||
+    preview.hostname === "fk-ficha-kamba.vercel.app" ||
+    preview.hostname === "www.fk-ficha-kamba.vercel.app") {
   console.error("Bloqueado: este script de recuperação não pode enviar dados para Produção.");
   process.exit(1);
 }
@@ -81,6 +84,9 @@ for (let attempt = 1; attempt <= 2; attempt++) {
     if (!response.ok || !result.ok) {
       const detail = result.detail ? " | " + result.detail : "";
       throw new Error((result.error || `HTTP ${response.status}`) + detail);
+    }
+    if (Number(result.savedComparisons || 0) !== 1) {
+      throw new Error("O servidor respondeu sem confirmar a comparação deste jogo.");
     }
     console.log("RECUPERAÇÃO CONCLUÍDA");
     console.log(JSON.stringify(result, null, 2));
