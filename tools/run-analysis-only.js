@@ -1,6 +1,7 @@
 const baseUrl = (process.env.FK_API_URL || "https://fk-ficha-kamba-fqkuhujr9-atanasildos-projects.vercel.app").replace(/\/$/, "");
 const cronSecret = process.env.CRON_SECRET;
 const vercelBypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+const publishRequested = process.argv.includes("--publish");
 
 if (!cronSecret || !vercelBypass) {
   console.error("Faltam variáveis de ambiente. Confirma CRON_SECRET e VERCEL_AUTOMATION_BYPASS_SECRET no CMD; não partilhes os seus valores.");
@@ -37,7 +38,9 @@ async function runBatch(attempt) {
 
 console.log("FK — ANÁLISE DOS JOGOS JÁ RECOLHIDOS");
 console.log("Preview:", baseUrl);
-console.log("Modo de teste activo: não publica bilhetes.");
+console.log(publishRequested
+  ? "Modo: analisar primeiro; publicar apenas se os controlos automáticos aprovarem."
+  : "Modo de teste activo: não publica bilhetes.");
 console.log("Não será feita nova recolha de odds.");
 
 try {
@@ -53,8 +56,33 @@ try {
     throw new Error("Ainda existem jogos por analisar após 10 lotes. Nenhum bilhete foi publicado.");
   }
 
-  console.log("\nRESULTADO FINAL:", result?.stage || "sem etapa");
-  console.log("Este procedimento não publica bilhetes. Revê os resultados antes de avançar.");
+  console.log("\nRESULTADO DA ANÁLISE:", result?.stage || "sem etapa");
+
+  if (publishRequested) {
+    if (result?.stage !== "analysis-dry-run-complete" || Number(result.candidateSelections || 0) <= 0) {
+      console.log("Publicação bloqueada: a análise não terminou com selecções candidatas. Nenhum bilhete foi publicado.");
+      process.exitCode = 2;
+    } else {
+      console.log("\nA solicitar publicação. O servidor voltará a validar existência de bilhetes, casas e actualidade das odds.");
+      const response = await fetch(baseUrl + "/api/pipeline/run-daily", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ skipDiscovery: true, discovered: 433, dryRun: false }),
+        signal: AbortSignal.timeout(240000)
+      });
+      const publication = await response.json().catch(() => ({}));
+      console.log("\nRESULTADO DA PUBLICAÇÃO:");
+      console.log(JSON.stringify(publication, null, 2));
+      if (!response.ok || publication.ok === false) {
+        throw new Error(publication.error || publication.message || `HTTP ${response.status}`);
+      }
+      if (!["published", "already-published-today", "no-valid-selections", "batch-not-published"].includes(publication.stage)) {
+        throw new Error(`Estado de publicação inesperado: ${publication.stage || "desconhecido"}`);
+      }
+    }
+  } else {
+    console.log("Este procedimento não publica bilhetes. Revê os resultados antes de avançar.");
+  }
 } catch (error) {
   console.error("\nA análise não terminou:", error.message);
   process.exitCode = 1;
