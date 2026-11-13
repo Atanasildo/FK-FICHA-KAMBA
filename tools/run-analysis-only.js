@@ -47,12 +47,12 @@ try {
   let result;
   for (let attempt = 1; attempt <= 40; attempt++) {
     result = await runBatch(attempt);
-    if (result.stage === "linking-batch-saved" && Number(result.pendingLinks || 0) > 0) continue;
+    if (result.stage === "linking-batch-saved") continue;
     if (result.stage !== "analysis-batch-saved" || Number(result.pendingMatches || 0) <= 0) break;
   }
 
   if ((result?.stage === "analysis-batch-saved" && Number(result.pendingMatches || 0) > 0) ||
-      (result?.stage === "linking-batch-saved" && Number(result.pendingLinks || 0) > 0)) {
+      (result?.stage === "linking-batch-saved")) {
     throw new Error("Ainda existem jogos por analisar após 40 tentativas. Nenhum bilhete foi publicado.");
   }
 
