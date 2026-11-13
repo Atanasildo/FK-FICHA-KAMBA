@@ -171,7 +171,7 @@ console.log(JSON.stringify({
 }, null, 2));
 
 if (dryRun) {
-  console.log("\\nANÁLISE NÃO INICIADA: modo --dry-run activo.");
+  console.log("\nANÁLISE NÃO INICIADA: modo --dry-run activo.");
 } else if (!sportApiDiscoveryOk || failedBatches > 0 || totalSavedComparisons < 35) {
   console.error("\nANÁLISE NÃO INICIADA");
   console.error("A descoberta SportAPI falhou, a recolha ficou incompleta ou foram guardadas menos de 35 comparações entre as duas casas.");
