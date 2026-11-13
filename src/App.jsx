@@ -1,14 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Activity, CalendarDays, ChevronDown, ChevronRight, Clock3, FileText, History, LayoutDashboard, Radio, RefreshCw, Settings, ShieldCheck, Ticket, Trophy, Download, Bell, Menu, X, BarChart3, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Activity, CalendarDays, ChevronDown, ChevronRight, FileText, History, LayoutDashboard, Radio, ShieldCheck, Ticket, Menu, X } from 'lucide-react';
 import { supabase } from './lib/supabase.js';
 
 const NAV = [['Bilhetes do dia', LayoutDashboard], ['Acompanhamento ao vivo', Activity], ['Histórico', History]];
-const STORE = 'fk-ficha-kamba-v1';
 const money = n => Number(n || 0).toFixed(2);
-const readStore = () => {
-  try { return JSON.parse(localStorage.getItem(STORE)) || { games: [], tickets: [], bookmaker: 'BantuBet Angola' }; }
-  catch { return { games: [], tickets: [], bookmaker: 'BantuBet Angola' }; }
-};
 const isToday = value => value && new Date(value).toDateString() === new Date().toDateString();
 const matchState = leg => String(leg.matchStatus || leg.status || '').toUpperCase();
 const isLive = leg => ['IN_PLAY', 'LIVE', 'PAUSED', '1H', '2H', 'HT', 'FIRST_HALF', 'SECOND_HALF', 'HALF_TIME'].includes(matchState(leg)) || Boolean(leg.live);
@@ -30,7 +25,7 @@ const resultClass = leg => {
 
 export default function App() {
   const [page, setPage] = useState('Bilhetes do dia');
-  const [data, setData] = useState(readStore);
+  const [data, setData] = useState({ tickets: [] });
   const [liveUpdates, setLiveUpdates] = useState({});
   const [liveUpdatedAt, setLiveUpdatedAt] = useState(null);
   const [expanded, setExpanded] = useState({});
@@ -42,7 +37,10 @@ export default function App() {
   useEffect(() => {
     let active = true;
     async function loadPublishedTickets() {
-      if (!supabase) return;
+      if (!supabase) {
+        setNotice('A ligação ao Supabase não está configurada. As fichas não serão simuladas nem carregadas de dados locais.');
+        return;
+      }
       const { data: rows, error } = await supabase
         .from('tickets')
         .select('id,title,status,total_odds,booking_reference,published_at,created_at,ticket_legs(id,market_name,selection,odd,result,matches(home_team,away_team,competition,kickoff_at,status))')
@@ -79,16 +77,11 @@ export default function App() {
           };
         })
       }));
-      setData(current => ({
-        ...current,
-        tickets: [
-          ...remoteTickets,
-          ...(current.tickets || []).filter(local => !remoteTickets.some(remote => remote.id === local.id))
-        ]
-      }));
+      setData({ tickets: remoteTickets });
     }
     loadPublishedTickets();
-    return () => { active = false; };
+    const timer = window.setInterval(loadPublishedTickets, 300000);
+    return () => { active = false; window.clearInterval(timer); };
   }, []);
   useEffect(() => {
     let active = true;
