@@ -184,6 +184,7 @@ function TicketPanel({ ticket: t, expanded, onToggle, liveView = false }) {
           <div className="leg-analysis-meta">
             {leg.fairProbability != null && <span>Probabilidade estimada: {(Number(leg.fairProbability) * 100).toFixed(1)}%</span>}
             {leg.confidence && <span>Confiança: {({ low: 'baixa', medium: 'média', high: 'alta' })[leg.confidence] || leg.confidence}</span>}
+            {leg.expectedValue != null && <span>EV estimado: {Number(leg.expectedValue) >= 0 ? '+' : ''}{(Number(leg.expectedValue) * 100).toFixed(1)}%</span>}
           </div>
         </div>}
         {leg.marketUpdate && <p className="market-update">{leg.marketUpdate}</p>}
