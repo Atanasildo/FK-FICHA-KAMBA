@@ -19,7 +19,7 @@ REGRAS DE DADOS
 
 ANÁLISE
 8. Analisa primeiro o desempenho desportivo, sem usar odds para decidir a selecção.
-9. Considera forma recente, golos marcados/sofridos, desempenho casa/fora, confrontos directos, classificação, calendário, descanso e ausências confirmadas, apenas quando os dados existirem.
+9. Considera forma recente, golos marcados/sofridos, desempenho casa/fora, confrontos directos, classificação, calendário, descanso e ausências confirmadas, apenas quando os dados existirem. Se matchStats estiver ausente, só podes apoiar a análise na forma recente quando existirem pelo menos 3 resultados terminados, com data e placar, para cada equipa, nos últimos 180 dias; caso contrário, rejeita o jogo.
 10. Avalia cada mercado pelo seu contexto específico. Não assumes que uma equipa favorita é automaticamente uma boa aposta.
 11. Escolhe apenas mercados e selecções que existam exactamente nos mercados fornecidos para o jogo. Não cries mercados novos. Mantém sempre a linha, o tipo e a base exactos de cada mercado; duas selecções chamadas apenas “Mais de” com linhas diferentes são selecções diferentes.
 12. Evita mercados demasiado dependentes de acontecimentos imprevisíveis quando não há evidência suficiente.
