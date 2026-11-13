@@ -63,7 +63,7 @@ O FK avalia apenas mercados para os quais a fonte fornece dados suficientes:
 - Cartões vermelhos: através dos eventos registados.
 - Cantos e outros mercados sem estatística correspondente: aparecem como indisponíveis/por confirmar. Nunca são calculados por aproximação.
 
-Durante o jogo, o estado é informativo (por exemplo, “A favor neste momento” ou “Em risco neste momento”), não uma liquidação definitiva. A confirmação final depende do resultado e das regras da casa.
+Durante o jogo, o estado é informativo (por exemplo, “A favor neste momento” ou “Em risco neste momento”), não uma liquidação definitiva. Quando o jogo termina, o FK só grava “Ganha”, “Perdida” ou “Linha devolvida” para mercados suportados e depois de receber estatísticas/eventos finais suficientes. A confirmação final oficial continua a depender das regras da casa.
 
 ## Desenvolvimento e validação
 
