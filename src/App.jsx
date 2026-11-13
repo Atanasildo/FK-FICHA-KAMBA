@@ -59,7 +59,18 @@ export default function App() {
         origin: 'ai',
         status: 'Publicada',
         totalOdds: ticket.total_odds,
-        bookingId: ticket.booking_reference,
+        bookingId: (() => {
+          try {
+            const parsed = JSON.parse(ticket.booking_reference || "null");
+            return parsed && typeof parsed === 'object' ? parsed.id || null : ticket.booking_reference || null;
+          } catch { return ticket.booking_reference || null; }
+        })(),
+        bookingUrl: (() => {
+          try {
+            const parsed = JSON.parse(ticket.booking_reference || "null");
+            return parsed && typeof parsed === 'object' ? parsed.url || null : null;
+          } catch { return null; }
+        })(),
         createdAt: ticket.published_at || ticket.created_at,
         legs: (ticket.ticket_legs || []).map(leg => {
           const match = leg.matches || {};
