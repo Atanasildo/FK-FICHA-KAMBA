@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Activity, CalendarDays, ChevronDown, ChevronRight, Clock3, FileText, History, LayoutDashboard, Radio, RefreshCw, Settings, ShieldCheck, Ticket, Trophy, Download, Bell, Menu, X, BarChart3, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { supabase } from './lib/supabase.js';
 
-const NAV = [['Bilhetes do dia', LayoutDashboard], ['Comparar Odds', BarChart3], ['Acompanhamento ao vivo', Activity], ['Histórico', History], ['Definições', Settings]];
+const NAV = [['Bilhetes do dia', LayoutDashboard], ['Acompanhamento ao vivo', Activity], ['Histórico', History]];
 const STORE = 'fk-ficha-kamba-v1';
 const money = n => Number(n || 0).toFixed(2);
 const readStore = () => {
@@ -31,6 +31,8 @@ const resultClass = leg => {
 export default function App() {
   const [page, setPage] = useState('Bilhetes do dia');
   const [data, setData] = useState(readStore);
+  const [liveUpdates, setLiveUpdates] = useState({});
+  const [liveUpdatedAt, setLiveUpdatedAt] = useState(null);
   const [expanded, setExpanded] = useState({});
   const [mobile, setMobile] = useState(false);
   const [query, setQuery] = useState('');
@@ -94,9 +96,31 @@ export default function App() {
     loadPublishedTickets();
     return () => { active = false; };
   }, []);
-  const todayTickets = useMemo(() => data.tickets.filter(t => t.origin === 'ai' && isToday(t.createdAt)), [data.tickets]);
-  const liveTickets = useMemo(() => todayTickets.filter(t => t.legs?.some(isLive) || ['Em directo', 'Em acompanhamento'].includes(t.status)), [todayTickets]);
-  const history = useMemo(() => data.tickets.filter(t => t.origin !== 'ai' || !isToday(t.createdAt)), [data.tickets]);
+  useEffect(() => {
+    let active = true;
+    const refreshLive = async () => {
+      try {
+        const response = await fetch('/api/live-tickets');
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result.ok || !active) return;
+        setLiveUpdates(result.legs || {});
+        setLiveUpdatedAt(result.updatedAt || new Date().toISOString());
+      } catch {
+        // Mantém a última actualização válida quando a fonte está temporariamente indisponível.
+      }
+    };
+    refreshLive();
+    const timer = window.setInterval(refreshLive, 180000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, []);
+
+  const ticketsWithLive = useMemo(() => data.tickets.map(ticket => ({
+    ...ticket,
+    legs: (ticket.legs || []).map(leg => ({ ...leg, ...(liveUpdates[leg.id] || {}) }))
+  })), [data.tickets, liveUpdates]);
+  const todayTickets = useMemo(() => ticketsWithLive.filter(t => t.origin === 'ai' && isToday(t.createdAt)), [ticketsWithLive]);
+  const liveTickets = useMemo(() => todayTickets.filter(t => t.legs?.some(isLive)), [todayTickets]);
+  const history = useMemo(() => ticketsWithLive.filter(t => t.origin !== 'ai' || !isToday(t.createdAt)), [ticketsWithLive]);
   const filteredHistory = history.filter(t => [t.id, t.name, t.bookmaker, t.bookingId].join(' ').toLowerCase().includes(query.toLowerCase()));
   const toggle = id => setExpanded(p => ({ ...p, [id]: !p[id] }));
   const side = <><div className="brand"><div className="brand-mark">FK<span>.</span></div><div><b>FICHA KAMBA</b><small>FUTEBOL • INTELIGÊNCIA</small></div></div><div className="side-label">MENU PRINCIPAL</div><nav>{NAV.map(([label, Icon]) => <button key={label} className={page === label ? 'nav-item active' : 'nav-item'} onClick={() => { setPage(label); setMobile(false); }}><Icon size={18}/><span>{label}</span>{label === 'Acompanhamento ao vivo' && liveTickets.length > 0 && <i className="live-dot"/>}</button>)}</nav><div className="side-bottom"><div className="side-status"><span className="status-dot"/> Consulta de fichas <small>As fichas publicadas aparecem neste painel</small></div><div className="profile"><div className="avatar">FK</div><div><b>Utilizador</b><small>Ficha Kamba</small></div></div></div></>;
@@ -183,7 +207,8 @@ export default function App() {
         </>}
         {page === 'Comparar Odds' && <OddsComparePage />}
         {page === 'Acompanhamento ao vivo' && <>
-          {liveTickets.length ? <div className="daily-ticket-list">{liveTickets.map(t => <TicketPanel key={t.id} ticket={t} expanded={expanded[t.id] !== false} onToggle={() => toggle(t.id)} liveView/>)}</div> : <EmptyState icon={Radio} title="Não há jogos em directo nas fichas de hoje" detail="Quando uma partida começar e o fornecedor de resultados em directo estiver ligado, o marcador, minuto e estado de cada mercado serão mostrados aqui."/>}
+          {liveUpdatedAt && <div className="quiet-note"><Radio size={15}/><span>Actualização automática a cada 3 minutos · última consulta {new Date(liveUpdatedAt).toLocaleTimeString('pt-AO')}</span></div>}
+          {liveTickets.length ? <div className="daily-ticket-list">{liveTickets.map(t => <TicketPanel key={t.id} ticket={t} expanded={expanded[t.id] !== false} onToggle={() => toggle(t.id)} liveView/>)}</div> : <EmptyState icon={Radio} title="Não há jogos em directo nos bilhetes de hoje" detail="Quando uma partida começar, o marcador, minuto e estado do mercado serão apresentados dentro do respectivo bilhete, sempre que a fonte disponibilizar os dados necessários."/>}
         </>}
         {page === 'Histórico' && <>
           <div className="toolbar"><div className="searchbox"><History size={16}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Pesquisar por ficha, ID ou casa..."/></div></div>

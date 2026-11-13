@@ -35,6 +35,10 @@
     {
       "source": "/api/pipeline/run-daily",
       "destination": "/api/pipeline?action=run-daily"
+    },
+    {
+      "source": "/api/live-tickets",
+      "destination": "/api/live-tickets"
     }
   ],
   "functions": {
@@ -42,6 +46,12 @@
       "maxDuration": 60
     },
     "api/bookmakers/save-comparison.js": {
+      "maxDuration": 60
+    },
+    "api/live-tickets.js": {
+      "maxDuration": 60
+    },
+    "api/pipeline.js": {
       "maxDuration": 60
     }
   }
