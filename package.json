@@ -5,16 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "node --test && vite build",
+    "build": "node --check tools/collect-swarm-upload.js && node --test && vite build",
     "preview": "vite preview",
-    "test": "node --test",
-    "collect:local": "node tools/local-bookmaker-collector.js",
-    "discover:local": "node tools/discover-bookmaker-events.js",
-    "collect:elephant": "node tools/collect-swarm.js elephant",
-    "collect:bantu": "node tools/collect-swarm.js bantu",
-    "discover:elephant": "node tools/collect-swarm.js elephant --discover",
-    "discover:bantu": "node tools/collect-swarm.js bantu --discover",
-    "report:swarm": "node tools/report-swarm-comparison.js",
+    "test": "node --check tools/collect-swarm-upload.js && node --test",
     "collect:upload": "node tools/collect-swarm-upload.js"
   },
   "dependencies": {
