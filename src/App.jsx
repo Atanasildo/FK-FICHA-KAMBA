@@ -108,7 +108,7 @@ export default function App() {
       }
     };
     refreshLive();
-    const timer = window.setInterval(refreshLive, 180000);
+    const timer = window.setInterval(refreshLive, 300000);
     return () => { active = false; window.clearInterval(timer); };
   }, []);
 
