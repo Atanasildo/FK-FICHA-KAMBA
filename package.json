@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "npm test && vite build",
     "preview": "vite preview",
-    "test": "node --check tools/collect-swarm-upload.js && node --check api/pipeline.js && node --check api/ai-analyze.js && node --check lib/pipeline/run-daily.js && node --check lib/pipeline/live-tickets.js && node --check lib/pipeline/collect-context.js && node --check lib/pipeline/build-tickets.js && node --check lib/pipeline/save-analysis.js && node --test",
+    "test": "node --check tools/collect-swarm-upload.js && node --check tools/recover-swarm-game.js && node --check api/pipeline.js && node --check api/ai-analyze.js && node --check lib/pipeline/run-daily.js && node --check lib/pipeline/live-tickets.js && node --check lib/pipeline/collect-context.js && node --check lib/pipeline/build-tickets.js && node --check lib/pipeline/save-analysis.js && node --test",
     "collect:upload": "node tools/collect-swarm-upload.js"
   },
   "dependencies": {
