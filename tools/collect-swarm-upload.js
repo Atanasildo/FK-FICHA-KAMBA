@@ -83,7 +83,10 @@ const commonGames = selectCommonSwarmGames(
   { maxGames: 500 }
 );
 const claimedCanonicalIds = new Set();
-const eligibleGames = commonGames.flatMap(game => {
+const bantuById = new Map(discovered.bantu.games.map(game => [String(game.id), game]));
+const eligibleGames = commonGames.flatMap(gameId => {
+  const game = bantuById.get(String(gameId));
+  if (!game || !Number.isFinite(Number(game.start_ts))) return [];
   const canonical = selectCanonicalMatch({
     home_team: game.home,
     away_team: game.away,
