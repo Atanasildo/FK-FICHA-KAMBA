@@ -146,6 +146,14 @@ function TicketPanel({ ticket: t, expanded, onToggle, liveView = false }) {
       {legs.length ? legs.map((leg, i) => <article className="match-detail" key={leg.id || i}><div className="match-detail-top"><span className="match-number">JOGO {String(i + 1).padStart(2, '0')}</span><span className={resultClass(leg)}>{resultLabel(leg)}</span></div><div className="match-teams"><b>{leg.home || leg.homeTeam || 'Equipa da casa'} <span>vs</span> {leg.away || leg.awayTeam || 'Equipa visitante'}</b><small>{leg.league || leg.competition || 'Campeonato não indicado'}{leg.date ? ' · ' + new Date(leg.date).toLocaleString('pt-AO') : ''}</small></div>
         <div className="market-detail-grid"><div><small>MERCADO</small><b>{leg.market || 'Mercado'}</b></div><div><small>SELECÇÃO</small><b>{leg.selection || '—'}</b></div><div><small>ODD</small><b>{money(leg.odd)}</b></div></div>
         {(isLive(leg) || isFinished(leg) || matchScore(leg)) && <div className={isLive(leg) ? 'live-score-strip' : 'final-score-strip'}><Radio size={15}/><b>{matchScore(leg) || '— : —'}</b><span>{isLive(leg) ? (leg.minute ? leg.minute + "'" : leg.matchStatus || 'Em directo') : isFinished(leg) ? 'RESULTADO FINAL' : (leg.matchStatus || 'Resultado disponível')}</span>{leg.lastEvent && isLive(leg) && <small>{leg.lastEvent}</small>}</div>}
+        {leg.rationale && <div className="leg-analysis">
+          <div className="leg-analysis-title">Fundamento da análise</div>
+          <p>{leg.rationale}</p>
+          <div className="leg-analysis-meta">
+            {leg.fairProbability != null && <span>Probabilidade estimada: {(Number(leg.fairProbability) * 100).toFixed(1)}%</span>}
+            {leg.confidence && <span>Confiança: {({ low: 'baixa', medium: 'média', high: 'alta' })[leg.confidence] || leg.confidence}</span>}
+          </div>
+        </div>}
         {leg.marketUpdate && <p className="market-update">{leg.marketUpdate}</p>}
       </article>) : <p className="muted-copy">Os jogos desta ficha serão apresentados aqui quando forem publicados.</p>}
       <div className="ticket-detail-footer"><span>IDENTIFICADOR DE RESERVA</span><b>{t.bookingId || 'Ainda não disponibilizado'}</b></div>

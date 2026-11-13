@@ -226,3 +226,34 @@ footer{color:#7890a2}
 @media(max-width:700px){.odds-result-heading .odds-actions{width:100%;justify-content:flex-start}.odds-result-heading .odds-actions button{flex:1}.odds-auth-row{align-items:stretch;flex-direction:column}.odds-auth-row .field{min-width:0}}
 
 .odds-line-warning{display:block;margin-top:6px;color:#f0a44b;font-size:11px;font-weight:600}
+
+
+/* Fundamento estatístico de cada selecção publicada */
+.leg-analysis {
+  margin-top: 9px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+.leg-analysis-title {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.leg-analysis p {
+  margin: 5px 0 0;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.leg-analysis-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 10px;
+}
