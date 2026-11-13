@@ -64,6 +64,44 @@ test("acompanha cartões amarelos da equipa da casa separadamente", () => {
   assert.match(result.marketUpdate, /equipa da casa: 1/);
 });
 
+test("acompanha remates à baliza e faltas através das estatísticas disponíveis", () => {
+  const shots = evaluateLiveMarket({
+    market: "Total de Remates à Baliza",
+    selection: "Mais de 8.5",
+    homeScore: 0,
+    awayScore: 0,
+    status: "LIVE",
+    stats: { home: { shots_on_target: 5 }, away: { shots_on_target: 4 } }
+  });
+  assert.equal(shots.marketStatus, "A favor neste momento");
+  assert.match(shots.marketUpdate, /Remates à baliza: 9/);
+
+  const fouls = evaluateLiveMarket({
+    market: "Total de Faltas",
+    selection: "Mais de 20.5",
+    homeScore: 0,
+    awayScore: 0,
+    status: "LIVE",
+    stats: { home: { fouls: 12 }, away: { fouls: 10 } }
+  });
+  assert.equal(fouls.marketStatus, "A favor neste momento");
+});
+
+test("acompanha remates da equipa visitante sem somar os da casa", () => {
+  const result = evaluateLiveMarket({
+    market: "Total de Remates da equipa visitante",
+    selection: "Mais de 5.5",
+    homeScore: 0,
+    awayScore: 0,
+    status: "LIVE",
+    home: "Clube A",
+    away: "Clube B",
+    stats: { home: { shots: 8 }, away: { shots: 4 } }
+  });
+  assert.equal(result.marketStatus, "Em risco neste momento");
+  assert.match(result.marketUpdate, /equipa visitante: 4/);
+});
+
 test("não inventa contagem de cantos quando a fonte não a fornece", () => {
   const result = evaluateLiveMarket({
     market: "Total de Cantos",

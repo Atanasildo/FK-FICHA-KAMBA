@@ -59,7 +59,8 @@ A página de acompanhamento actualiza o estado a cada três minutos. O marcador 
 
 O FK avalia apenas mercados para os quais a fonte fornece dados suficientes:
 - Resultado do jogo e totais de golos: pelo marcador.
-- Totais de cartões amarelos: quando a estatística está disponível.
+- Totais de cartões amarelos, remates, remates à baliza, remates fora, faltas, desarmes e defesas: quando a estatística está disponível.
+- Cartões vermelhos: através dos eventos registados.
 - Cantos e outros mercados sem estatística correspondente: aparecem como indisponíveis/por confirmar. Nunca são calculados por aproximação.
 
 Durante o jogo, o estado é informativo (por exemplo, “A favor neste momento” ou “Em risco neste momento”), não uma liquidação definitiva. A confirmação final depende do resultado e das regras da casa.
