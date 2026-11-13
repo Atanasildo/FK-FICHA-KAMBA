@@ -2,6 +2,29 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { evaluateLiveMarket } from "../../lib/tickets/live-market.js";
 
+test("não transforma marcador nulo em 0-0", () => {
+  const result = evaluateLiveMarket({
+    market: "Resultado do Jogo",
+    selection: "Empate",
+    homeScore: null,
+    awayScore: null,
+    status: "LIVE"
+  });
+  assert.equal(result.marketStatus, "Acompanhar");
+  assert.equal(result.supported, false);
+});
+
+test("não liquida linhas asiáticas de quarto de golo por aproximação", () => {
+  const result = evaluateLiveMarket({
+    market: "Total de Golos",
+    selection: "Mais de 2.25",
+    homeScore: 2,
+    awayScore: 0,
+    status: "FT"
+  });
+  assert.equal(result.marketStatus, "Aguardando confirmação");
+});
+
 test("acompanha mercado de mais de golos pelo marcador actual", () => {
   const result = evaluateLiveMarket({
     market: "Total de Golos no jogo",
