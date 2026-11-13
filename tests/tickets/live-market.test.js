@@ -2,6 +2,26 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { evaluateLiveMarket } from "../../lib/tickets/live-market.js";
 
+test("acompanha ambas marcam sem declarar vitória antes do fim", () => {
+  const waiting = evaluateLiveMarket({
+    market: "Ambas as Equipas Marcam",
+    selection: "Sim",
+    homeScore: 1,
+    awayScore: 0,
+    status: "LIVE"
+  });
+  assert.equal(waiting.marketStatus, "Em aberto");
+
+  const won = evaluateLiveMarket({
+    market: "Ambas as Equipas Marcam",
+    selection: "Sim",
+    homeScore: 1,
+    awayScore: 1,
+    status: "FT"
+  });
+  assert.equal(won.marketStatus, "Ganha");
+});
+
 test("não transforma marcador nulo em 0-0", () => {
   const result = evaluateLiveMarket({
     market: "Resultado do Jogo",
