@@ -42,12 +42,14 @@ console.log("Não será feita nova recolha de odds.");
 
 try {
   let result;
-  for (let attempt = 1; attempt <= 10; attempt++) {
+  for (let attempt = 1; attempt <= 40; attempt++) {
     result = await runBatch(attempt);
+    if (result.stage === "linking-batch-saved" && Number(result.pendingLinks || 0) > 0) continue;
     if (result.stage !== "analysis-batch-saved" || Number(result.pendingMatches || 0) <= 0) break;
   }
 
-  if (result?.stage === "analysis-batch-saved" && Number(result.pendingMatches || 0) > 0) {
+  if ((result?.stage === "analysis-batch-saved" && Number(result.pendingMatches || 0) > 0) ||
+      (result?.stage === "linking-batch-saved" && Number(result.pendingLinks || 0) > 0)) {
     throw new Error("Ainda existem jogos por analisar após 10 lotes. Nenhum bilhete foi publicado.");
   }
 
