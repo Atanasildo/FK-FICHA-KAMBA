@@ -8,16 +8,27 @@ import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
 const baseUrl = (process.env.FK_API_URL || "https://fk-ficha-kamba.vercel.app").replace(/\/$/, "");
 const ingestUrl = process.env.FK_INGEST_URL || baseUrl + "/api/bookmakers/save-comparison";
 const secret = process.env.CRON_SECRET;
+const vercelBypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 
 if (!secret) {
   console.error("Falta definir a variável CRON_SECRET no ambiente deste computador.");
   process.exit(1);
 }
+if (!vercelBypass) {
+  console.error("Falta definir VERCEL_AUTOMATION_BYPASS_SECRET para aceder à Preview protegida da Vercel.");
+  process.exit(1);
+}
+
+const requestHeaders = {
+  "content-type": "application/json",
+  authorization: "Bearer " + secret,
+  "x-vercel-protection-bypass": vercelBypass
+};
 
 async function post(path, body, timeout = 90000) {
   const response = await fetch(baseUrl.replace(/\/$/, "") + path, {
     method: "POST",
-    headers: { "content-type": "application/json", authorization: "Bearer " + secret },
+    headers: requestHeaders,
     body: JSON.stringify(body),
     signal: AbortSignal.timeout(timeout)
   });
@@ -92,10 +103,7 @@ for (let offset = 0; offset < gameIds.length; offset += batchSize) {
 
     const response = await fetch(ingestUrl, {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: "Bearer " + secret
-      },
+      headers: requestHeaders,
       body: JSON.stringify({ bantu, elephant }),
       signal: AbortSignal.timeout(90000)
     });
