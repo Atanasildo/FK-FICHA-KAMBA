@@ -121,7 +121,7 @@ export default function App() {
           <div className="quiet-note"><ShieldCheck size={16}/><span>Esta área é apenas de consulta. A elaboração das fichas é uma tarefa interna do sistema.</span></div>
         </>}
         {page === 'Acompanhamento ao vivo' && <>
-          {liveUpdatedAt && <div className="quiet-note"><Radio size={15}/><span>Actualização automática a cada 3 minutos · última consulta {new Date(liveUpdatedAt).toLocaleTimeString('pt-AO')}</span></div>}
+          {liveUpdatedAt && <div className="quiet-note"><Radio size={15}/><span>Marcador a cada 3 minutos · estatísticas específicas até 15 minutos · última consulta {new Date(liveUpdatedAt).toLocaleTimeString('pt-AO')}</span></div>}
           {liveTickets.length ? <div className="daily-ticket-list">{liveTickets.map(t => <TicketPanel key={t.id} ticket={t} expanded={expanded[t.id] !== false} onToggle={() => toggle(t.id)} liveView/>)}</div> : <EmptyState icon={Radio} title="Não há jogos em directo nos bilhetes de hoje" detail="Quando uma partida começar, o marcador, minuto e estado do mercado serão apresentados dentro do respectivo bilhete, sempre que a fonte disponibilizar os dados necessários."/>}
         </>}
         {page === 'Histórico' && <>

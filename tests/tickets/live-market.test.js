@@ -102,6 +102,24 @@ test("acompanha remates da equipa visitante sem somar os da casa", () => {
   assert.match(result.marketUpdate, /equipa visitante: 4/);
 });
 
+test("acompanha cartões vermelhos apenas quando os eventos foram recebidos", () => {
+  const waiting = evaluateLiveMarket({
+    market: "Total de Cartões Vermelhos",
+    selection: "Mais de 0.5",
+    status: "LIVE",
+    stats: { events: [], eventsAvailable: false }
+  });
+  assert.equal(waiting.marketStatus, "Aguardando eventos");
+
+  const counted = evaluateLiveMarket({
+    market: "Total de Cartões Vermelhos",
+    selection: "Mais de 0.5",
+    status: "LIVE",
+    stats: { events: [{ event_type: "red_card" }], eventsAvailable: true }
+  });
+  assert.equal(counted.marketStatus, "A favor neste momento");
+});
+
 test("não inventa contagem de cantos quando a fonte não a fornece", () => {
   const result = evaluateLiveMarket({
     market: "Total de Cantos",
