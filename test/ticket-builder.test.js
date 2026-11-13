@@ -36,7 +36,8 @@ test("aceita jogos que começam com pelo menos três horas de antecedência", ()
   assert.equal(result.pool_size, 5);
   assert.ok(result.slips.length > 0);
 });
-\ntest("não inventa boletins quando não há candidatos suficientes", () => {
+
+test("não inventa boletins quando não há candidatos suficientes", () => {
   const result = buildTicketBatch([base], { publishedAt });
   assert.equal(result.slips.length, 0);
   assert.equal(result.validation.valid, false);
