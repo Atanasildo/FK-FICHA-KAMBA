@@ -1,0 +1,40 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/bookmakers/bantubet-normalize",
+      "destination": "/api/bookmakers/normalize?provider=bantu"
+    },
+    {
+      "source": "/api/bookmakers/elephantbet-normalize",
+      "destination": "/api/bookmakers/normalize?provider=elephant"
+    },
+    {
+      "source": "/api/pipeline/build-tickets",
+      "destination": "/api/pipeline?action=build-tickets"
+    },
+    {
+      "source": "/api/pipeline/discover-fixtures",
+      "destination": "/api/pipeline?action=discover-fixtures"
+    },
+    {
+      "source": "/api/pipeline/save-analysis",
+      "destination": "/api/pipeline?action=save-analysis"
+    },
+    {
+      "source": "/api/pipeline/run-daily",
+      "destination": "/api/pipeline?action=run-daily"
+    },
+    {
+      "source": "/api/pipeline/live-tickets",
+      "destination": "/api/pipeline?action=live-tickets"
+    }
+  ],
+  "functions": {
+    "api/bookmakers/save-comparison.js": {
+      "maxDuration": 60
+    },
+    "api/pipeline.js": {
+      "maxDuration": 60
+    }
+  }
+}
