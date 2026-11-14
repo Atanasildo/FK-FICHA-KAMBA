@@ -45,6 +45,7 @@ create index if not exists markets_collected_at_idx on public.markets(collected_
 
 create table if not exists public.tickets (
   id uuid primary key default gen_random_uuid(),
+  shared_ticket_id uuid,
   title text not null,
   status text not null default 'draft' check (status in ('draft','published','settled','cancelled')),
   total_odds numeric(14,4),
@@ -53,6 +54,9 @@ create table if not exists public.tickets (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+create index if not exists tickets_shared_ticket_id_idx
+  on public.tickets (shared_ticket_id);
 
 create table if not exists public.ticket_legs (
   id uuid primary key default gen_random_uuid(),
@@ -81,7 +85,6 @@ alter table public.tickets enable row level security;
 alter table public.ticket_legs enable row level security;
 alter table public.odds_comparisons enable row level security;
 
--- Public users can only read active bookmaker references and published match/ticket data.
 drop policy if exists "Public reads active bookmakers" on public.bookmakers;
 create policy "Public reads active bookmakers" on public.bookmakers
   for select using (active = true);

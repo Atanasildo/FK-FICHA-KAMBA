@@ -280,5 +280,6 @@
     console.warn("A função copy() não está disponível. Copia o JSON apresentado acima.");
   }
 
+  window.__FK_COLLECTOR_RESULT__ = pacote;
   return pacote;
 })();

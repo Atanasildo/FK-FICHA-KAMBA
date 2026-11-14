@@ -182,6 +182,7 @@ footer{color:#7890a2}
 .odds-result-heading .secondary-btn{margin:0}
 .odds-filter{align-items:center}
 .odds-filter>span{font-size:9px;color:#8da3b5;white-space:nowrap}
+.odds-category-list{display:grid;gap:16px}.odds-market-category{display:grid;gap:9px}.odds-category-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;border:1px solid #25475a;border-left:3px solid #20d69a;border-radius:8px;background:#0b1c2a}.odds-category-heading h4{margin:0;color:#dceaf1;font-size:11px;font-weight:800;letter-spacing:.35px}.odds-category-heading span{color:#8fa8b8;font-size:9px;white-space:nowrap}
 .odds-results-list{display:grid;gap:10px}
 .odds-result-card{padding:15px;border:1px solid #203c50;border-radius:10px;background:linear-gradient(145deg,#102235,#0b1a29)}
 .odds-result-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
@@ -223,3 +224,47 @@ footer{color:#7890a2}
 
 .odds-auth-row{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin:12px 0}.odds-auth-row .field{flex:1;min-width:220px}.odds-auth-row .primary-btn{min-height:44px}.odds-workspace .notice{margin-top:12px}.odds-result-heading .odds-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.odds-result-heading .primary-btn{white-space:nowrap}
 @media(max-width:700px){.odds-result-heading .odds-actions{width:100%;justify-content:flex-start}.odds-result-heading .odds-actions button{flex:1}.odds-auth-row{align-items:stretch;flex-direction:column}.odds-auth-row .field{min-width:0}}
+
+.odds-line-warning{display:block;margin-top:6px;color:#f0a44b;font-size:11px;font-weight:600}
+
+
+/* Fundamento estatístico de cada selecção publicada */
+.leg-analysis {
+  margin-top: 9px;
+  padding: 10px 12px;
+  border: 1px solid #26362b;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+}
+.leg-analysis-title {
+  color: #91a096;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.leg-analysis p {
+  margin: 5px 0 0;
+  color: #e8eee9;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.leg-analysis-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 7px;
+  color: #91a096;
+  font-size: 10px;
+}
+
+
+.reserve-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent, #f0a52b);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.reserve-link:hover { text-decoration: underline; }

@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { handleSwarmIngest } from "../../lib/bookmakers/ingest-swarm-handler.js";
 
 const json = (res, status, body) => res.status(status).json(body);
 const slug = (value) => String(value || "")
@@ -7,6 +8,10 @@ const slug = (value) => String(value || "")
   .slice(0, 100);
 
 export default async function handler(req, res) {
+  if (process.env.CRON_SECRET && req.headers.authorization === "Bearer " + process.env.CRON_SECRET) {
+    if (req.method !== "POST") { res.setHeader("Allow", "POST"); return res.status(405).json({ error: "Método não permitido." }); }
+    return handleSwarmIngest(req, res);
+  }
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return json(res, 405, { error: "Método não permitido." });
@@ -70,7 +75,7 @@ export default async function handler(req, res) {
       match_id: match.id,
       bookmaker_id: bookmaker.id,
       market_name: String(m.market || "Mercado").slice(0, 250),
-      market_key: [slug(m.market), slug(m.period || "full-time"), slug(m.line || "")].filter(Boolean).join(":"),
+      market_key: [slug(m.market), slug(m.period || "full-time"), slug(m.line || ""), slug(m.marketType || ""), m.marketBase == null ? "" : String(m.marketBase)].filter(Boolean).join(":"),
       period: String(m.period || "full_time").slice(0, 40),
       line: m.line == null ? null : String(m.line).slice(0, 80),
       selection: String(m.selection || "").slice(0, 250),

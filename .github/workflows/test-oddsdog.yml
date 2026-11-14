@@ -1,0 +1,57 @@
+name: Testar fonte pública Odds.dog
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feat/analysis-before-odds
+    paths:
+      - ".github/workflows/test-oddsdog.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test-oddsdog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verificar acesso público e dados de odds
+        run: |
+          node --input-type=module <<'NODE'
+          const url = "https://odds.dog/pt-ao/comparador-de-odds/";
+          const response = await fetch(url, {
+            headers: {
+              "user-agent": "Mozilla/5.0 (compatible; FKDataCheck/1.0)",
+              "accept": "text/html,application/xhtml+xml"
+            },
+            signal: AbortSignal.timeout(30000)
+          });
+          const html = await response.text();
+
+          console.log("HTTP:", response.status);
+          console.log("Content-Type:", response.headers.get("content-type"));
+          console.log("Bytes HTML:", Buffer.byteLength(html));
+          console.log("Contém ElephantBet:", /elephant\s*bet/i.test(html));
+          console.log("Contém BantuBet:", /bantu\s*bet/i.test(html));
+          console.log("Contém odds decimais:", /odds|decimal|1\.\d{2}/i.test(html));
+
+          const scripts = [...html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)]
+            .map(match => match[1])
+            .slice(0, 30);
+          console.log("Scripts encontrados:", JSON.stringify(scripts, null, 2));
+
+          const endpoints = [...new Set(
+            [...html.matchAll(/(?:https?:)?\/\/[^"'\s<>]+|["']([^"']*(?:api|odds|event|fixture)[^"']*)["']/gi)]
+              .map(match => match[1] || match[0])
+              .filter(value => /api|odds|event|fixture/i.test(value))
+          )].slice(0, 40);
+          console.log("Possíveis endpoints/dados:", JSON.stringify(endpoints, null, 2));
+
+          if (!response.ok) {
+            throw new Error("A página pública não respondeu com sucesso: HTTP " + response.status);
+          }
+          if (html.length < 1000) {
+            throw new Error("A página devolveu conteúdo demasiado pequeno para análise.");
+          }
+          NODE

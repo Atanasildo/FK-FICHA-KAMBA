@@ -16,8 +16,9 @@ publishable/anon key. The Vite-prefixed Production variables were added separate
 1. Open the existing Supabase project **Ficha-Kamba**.
 2. Open SQL Editor and create a new query.
 3. Paste and run `supabase/schema.sql`.
-The migration uses CREATE IF NOT EXISTS and does not drop existing tables/data. It creates
-bookmakers, matches, markets, tickets, ticket_legs and odds_comparisons with RLS enabled.
+4. Paste and run `supabase/migrations/20261108_match_context.sql`.
+Both scripts are additive and do not drop existing tables/data. The extension adds
+`match_statistics` and `match_analyses`; RLS is enabled and no public policies are added.
 Only published tickets and their legs are publicly readable. No public write policies exist.
 
 ## App client
@@ -31,5 +32,9 @@ are added.
 
 ## Current scope
 Manual comparison imports remain local until the user explicitly chooses **Guardar na base de dados**.
-The user must sign in with the email OTP flow. Automated bookmaker collection, AI ticket
-publishing, live scores and ticket settlement are separate later integrations.
+The user must sign in with the email OTP flow. Automatic bookmaker collection, ticket generation/publication, live scores and ticket settlement
+are still pending. `api/ai-analyze.js` now requires supplied match statistics and makes the AI
+select markets without seeing odds; only afterwards does it compare the two bookmakers and
+keep selections with at least two quotes and a best odd of 1.40 or more. The protected
+`api/pipeline/save-analysis.js` stores sourced statistics, AI analyses and verified odds.
+It does not publish tickets or create bookmaker reservation references.
