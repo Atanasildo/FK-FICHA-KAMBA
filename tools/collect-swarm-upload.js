@@ -5,7 +5,7 @@ import {
   SWARM_BOOKMAKERS
 } from "../lib/bookmakers/swarm.js";
 import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
-import { normalizeTeamName, selectCanonicalMatch } from "../lib/pipeline/match-linking.js";
+import { selectCanonicalMatch } from "../lib/pipeline/match-linking.js";
 
 const baseUrl = (process.env.FK_API_URL || "https://fk-ficha-kamba.vercel.app").replace(/\/$/, "");
 const ingestUrl = process.env.FK_INGEST_URL || baseUrl + "/api/bookmakers/save-comparison";
