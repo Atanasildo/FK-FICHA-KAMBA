@@ -273,7 +273,7 @@ export default async function handler(req, res) {
       : [researchPayload.choices?.[0]?.message?.content || "", groqSourceText].filter(Boolean).join("\n\n");
     if (!researchText.trim()) return res.status(502).json({ error: `${AI_PROVIDER} não devolveu resultados da pesquisa Web.` });
     const uniqueGroqSourceHosts = new Set(groqSearchResults.map(result => {
-      try { return new URL(result.url).hostname.replace(/^www\\./i, "").toLowerCase(); }
+      try { return new URL(result.url).hostname.replace(/^www\./i, "").toLowerCase(); }
       catch { return null; }
     }).filter(Boolean));
     if (AI_PROVIDER === "groq" && uniqueGroqSourceHosts.size < 2) {
