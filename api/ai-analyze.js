@@ -277,11 +277,19 @@ export default async function handler(req, res) {
     const groqUrls = AI_PROVIDER === "gemini" ? [] :
       [...new Set([
         ...groqToolUrls,
-        ...groqContent.split(/\\s+/).filter(token => token.startsWith("https://") || token.startsWith("http://")).map(url => url.replace(/[),.;]+$/, "")),
-        ...groqAnnotations.map(annotation => annotation.url || annotation.url_citation?.url || annotation.source?.url).filter(url => typeof url === "string" && /^https?:\\/\\//i.test(url))
-      ].filter(url => typeof url === "string" && /^https?:\\/\\//i.test(url)))];
+        ...groqContent.split(/\s+/).filter(token => token.startsWith("https://") || token.startsWith("http://")).map(url => url.replace(/[),.;]+$/, "")),
+        ...groqAnnotations.map(annotation => annotation.url || annotation.url_citation?.url || annotation.source?.url).filter(url => {
+          if (typeof url !== "string") return false;
+          try { return ["http:", "https:"].includes(new URL(url).protocol); }
+          catch { return false; }
+        })
+      ].filter(url => {
+        if (typeof url !== "string") return false;
+        try { return ["http:", "https:"].includes(new URL(url).protocol); }
+        catch { return false; }
+      }))];
     const groqSearchResults = groqUrls.map(url => ({ url }));
-    const groqSourceText = groqUrls.map((url, index) => `URL da fonte ${index + 1}: ${url}`).join("\\n");
+    const groqSourceText = groqUrls.map((url, index) => `URL da fonte ${index + 1}: ${url}`).join("\n");
     const researchText = AI_PROVIDER === "gemini"
       ? [
           researchPayload.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("\n") || "",
