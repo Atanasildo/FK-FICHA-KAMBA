@@ -79,6 +79,12 @@ function buildPayload(site, selections, suppliedTotal) {
   };
 }
 
+export function extractBookingId(data) {
+  const direct = data?.share?.bookId;
+  if (direct != null && String(direct).trim()) return String(direct);
+  return data?.share?.bookingLink?.match(/bookingId=(\\d+)/)?.[1] || null;
+}
+
 export async function createBooking({ site, selections, totalOdd }) {
   if (!configs[site] || !Array.isArray(selections) || selections.length < 1 || selections.length > 11) {
     throw new Error("Indica casa válida e entre 1 e 11 selecções.");
