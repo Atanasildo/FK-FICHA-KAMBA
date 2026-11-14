@@ -268,7 +268,7 @@ export default async function handler(req, res) {
       .flatMap(part => Array.isArray(part.annotations) ? part.annotations : []);
     const groqUrls = AI_PROVIDER === "gemini" ? [] :
       [...new Set([
-        ...[...groqContent.matchAll(/https?:\\/\\/[^\\s)\\]}>"']+/g)].map(match => match[0].replace(/[),.;]+$/, "")),
+        ...groqContent.split(/\s+/).filter(token => token.startsWith("https://") || token.startsWith("http://")).map(url => url.replace(/[),.;]+$/, "")),
         ...groqAnnotations.map(annotation => annotation.url || annotation.url_citation?.url || annotation.source?.url).filter(url => typeof url === "string" && /^https?:\\/\\//i.test(url))
       ])];
     const groqSearchResults = groqUrls.map(url => ({ url }));
