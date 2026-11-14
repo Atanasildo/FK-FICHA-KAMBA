@@ -223,19 +223,15 @@ export default async function handler(req, res) {
           }),
           signal: AbortSignal.timeout(RESEARCH_TIMEOUT_MS)
         })
-      : await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      : await fetch("https://api.groq.com/openai/v1/responses", {
           method: "POST",
           headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
           body: JSON.stringify({
             model: RESEARCH_MODEL,
-            max_completion_tokens: 3500,
-            reasoning_effort: "low",
+            reasoning: { effort: "low" },
             tool_choice: "required",
             tools: [{ type: "browser_search" }],
-            messages: [
-              { role: "system", content: researchPrompt + "\\n\\nIMPORTANTE: devolve no fim uma secção FONTES com o título e URL completo (https://...) de cada página consultada. Não inventes URLs." },
-              { role: "user", content: JSON.stringify({ timezone: "Africa/Luanda", fixtures: aiInput.map(({ markets, ...fixture }) => fixture) }) }
-            ]
+            input: researchPrompt + "\\n\\nPesquisa activamente na Web agora. Abre e consulta páginas para cada equipa e jogo. Devolve factos, datas, resultados, nomes das fontes e URLs completos. Não respondas apenas com conhecimento interno.\\n\\nJOGOS: " + JSON.stringify({ timezone: "Africa/Luanda", fixtures: aiInput.map(({ markets, ...fixture }) => fixture) })
           }),
           signal: AbortSignal.timeout(RESEARCH_TIMEOUT_MS)
         });
@@ -260,12 +256,21 @@ export default async function handler(req, res) {
         detail: researchPayload.error?.message || `Resposta HTTP ${researchResponse.status}.`
       });
     }
-    const groqMessage = researchPayload.choices?.[0]?.message || {};
-    const groqContent = typeof groqMessage.content === "string" ? groqMessage.content : "";
+    const groqOutput = Array.isArray(researchPayload.output) ? researchPayload.output : [];
+    const groqContent = AI_PROVIDER === "gemini" ? "" :
+      (typeof researchPayload.output_text === "string" ? researchPayload.output_text :
+        groqOutput.filter(item => item.type === "message")
+          .flatMap(item => Array.isArray(item.content) ? item.content : [])
+          .filter(part => part.type === "output_text" && typeof part.text === "string")
+          .map(part => part.text).join("\\n"));
+    const groqAnnotations = groqOutput.filter(item => item.type === "message")
+      .flatMap(item => Array.isArray(item.content) ? item.content : [])
+      .flatMap(part => Array.isArray(part.annotations) ? part.annotations : []);
     const groqUrls = AI_PROVIDER === "gemini" ? [] :
-      [...new Set(groqContent.split(/\\s+/)
-        .filter(token => token.startsWith("https://") || token.startsWith("http://"))
-        .map(url => url.replace(/[),.;]+$/, "")))];
+      [...new Set([
+        ...[...groqContent.matchAll(/https?:\\/\\/[^\\s)\\]}>"']+/g)].map(match => match[0].replace(/[),.;]+$/, "")),
+        ...groqAnnotations.map(annotation => annotation.url || annotation.url_citation?.url || annotation.source?.url).filter(url => typeof url === "string" && /^https?:\\/\\//i.test(url))
+      ])];
     const groqSearchResults = groqUrls.map(url => ({ url }));
     const groqSourceText = groqUrls.map((url, index) => `URL da fonte ${index + 1}: ${url}`).join("\\n");
     const researchText = AI_PROVIDER === "gemini"
