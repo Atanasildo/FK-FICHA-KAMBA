@@ -9,7 +9,7 @@ const fixture = (id, start_ts, home, away, extra = {}) => ({
 test("encontra o mesmo jogo mesmo quando os IDs das casas são diferentes", () => {
   const bantu = [fixture("bantu-100", 2000, "Sporting CP", "Benfica")];
   const elephant = [fixture("elephant-900", 2050, "Sporting CP", "Benfica")];
-  const pairs = selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, horizonSeconds: 5000 });
+  const pairs = selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, minKickoffLeadSeconds: 0, horizonSeconds: 5000 });
   assert.equal(pairs.length, 1);
   assert.equal(pairs[0].bantuId, "bantu-100");
   assert.equal(pairs[0].elephantId, "elephant-900");
@@ -24,7 +24,7 @@ test("exclui jogos marcados como live por qualquer uma das casas", () => {
     fixture("x", 2000, "Sporting", "Benfica", { is_live: true }),
     fixture("y", 2100, "Porto", "Braga")
   ];
-  assert.deepEqual(selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, horizonSeconds: 5000 }), []);
+  assert.deepEqual(selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, minKickoffLeadSeconds: 0, horizonSeconds: 5000 }), []);
 });
 
 test("exclui equipas diferentes, ordem invertida e horários incompatíveis", () => {
@@ -38,13 +38,13 @@ test("exclui equipas diferentes, ordem invertida e horários incompatíveis", ()
     fixture("elephant-reversed", 2200, "Braga", "Porto"),
     fixture("elephant-wrong-time", 2300 + 4 * 60 * 60, "Boavista", "Farense")
   ];
-  assert.deepEqual(selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, horizonSeconds: 20000 }), []);
+  assert.deepEqual(selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, minKickoffLeadSeconds: 0, horizonSeconds: 20000 }), []);
 });
 
 test("normaliza acentos e aceita diferença de início até 90 minutos", () => {
   const bantu = [fixture("b", 2000, "Futebol Clube do Porto", "Braga")];
   const elephant = [fixture("e", 2000 + 80 * 60, "Futebol Clube do Pôrto", "Braga")];
-  const pairs = selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, horizonSeconds: 20000 });
+  const pairs = selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, minKickoffLeadSeconds: 0, horizonSeconds: 20000 });
   assert.equal(pairs.length, 1);
   assert.equal(pairs[0].bantuId, "b");
   assert.equal(pairs[0].elephantId, "e");
@@ -56,7 +56,7 @@ test("não escolhe automaticamente quando há dois candidatos temporais ambíguo
     fixture("e1", 1900, "Sporting", "Benfica"),
     fixture("e2", 2100, "Sporting", "Benfica")
   ];
-  assert.deepEqual(selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, horizonSeconds: 5000 }), []);
+  assert.deepEqual(selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, minKickoffLeadSeconds: 0, horizonSeconds: 5000 }), []);
 });
 
 test("ordena por hora de início e limita a quantidade", () => {
@@ -70,7 +70,7 @@ test("ordena por hora de início e limita a quantidade", () => {
     fixture("e-earlier", 1100, "Sporting", "Benfica"),
     fixture("e-middle", 1200, "Boavista", "Farense")
   ];
-  const pairs = selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, maxGames: 2, horizonSeconds: 5000 });
+  const pairs = selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, minKickoffLeadSeconds: 0, maxGames: 2, horizonSeconds: 5000 });
   assert.deepEqual(pairs.map(pair => pair.bantuId), ["b-earlier", "b-middle"]);
 });
 
@@ -79,15 +79,15 @@ test("não selecciona jogos em directo sem hora de início", () => {
   assert.deepEqual(selectCommonSwarmGames(games, games), []);
 });
 
-test("ignora jogos com menos de seis horas de antecedência por padrão", () => {
+test("ignora jogos com menos de uma hora de antecedência por padrão", () => {
   const now = 1000;
   const bantu = [
-    fixture("too-soon", now + 2 * 60 * 60, "Sporting", "Benfica"),
-    fixture("eligible", now + 7 * 60 * 60, "Porto", "Braga")
+    fixture("too-soon", now + 30 * 60, "Sporting", "Benfica"),
+    fixture("eligible", now + 2 * 60 * 60, "Porto", "Braga")
   ];
   const elephant = [
-    fixture("ele-too-soon", now + 2 * 60 * 60, "Sporting", "Benfica"),
-    fixture("ele-eligible", now + 7 * 60 * 60 + 60, "Porto", "Braga")
+    fixture("ele-too-soon", now + 30 * 60, "Sporting", "Benfica"),
+    fixture("ele-eligible", now + 2 * 60 * 60 + 60, "Porto", "Braga")
   ];
   const pairs = selectCommonSwarmGames(bantu, elephant, { nowSeconds: now });
   assert.deepEqual(pairs.map(pair => pair.bantuId), ["eligible"]);
@@ -99,7 +99,7 @@ test("permite configurar explicitamente a antecedência mínima", () => {
   const elephant = [fixture("e", now + 4 * 60 * 60, "Sporting", "Benfica")];
   const pairs = selectCommonSwarmGames(bantu, elephant, {
     nowSeconds: now,
-    minKickoffLeadSeconds: 3 * 60 * 60
+    minKickoffLeadSeconds: 30 * 60
   });
   assert.equal(pairs.length, 1);
 });
