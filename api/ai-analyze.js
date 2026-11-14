@@ -336,7 +336,7 @@ export default async function handler(req, res) {
       ...deepseekSources.map(source => source.url),
       ...deepseekAnnotations.map(annotation => annotation.url_citation?.url || annotation.url),
       ...(typeof deepseekMessage.content === "string"
-        ? (deepseekMessage.content.match(/https?:\\/\\/[^\\s)\\]}>,]+/g) || []).map(url => url.replace(/[),.;]+$/, ""))
+        ? (deepseekMessage.content.match(/https?:\/\/[^\s)\]}>,]+/g) || []).map(url => url.replace(/[),.;]+$/, ""))
         : [])
     ].filter(url => {
       if (typeof url !== "string") return false;
