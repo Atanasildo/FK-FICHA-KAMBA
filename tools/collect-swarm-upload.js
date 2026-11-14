@@ -5,7 +5,7 @@ import {
   SWARM_BOOKMAKERS
 } from "../lib/bookmakers/swarm.js";
 import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
-import { selectCanonicalMatch } from "../lib/pipeline/match-linking.js";
+import { normalizeTeamName, selectCanonicalMatch } from "../lib/pipeline/match-linking.js";
 
 const baseUrl = (process.env.FK_API_URL || "https://fk-ficha-kamba.vercel.app").replace(/\/$/, "");
 const ingestUrl = process.env.FK_INGEST_URL || baseUrl + "/api/bookmakers/save-comparison";
@@ -104,6 +104,40 @@ console.log("A recolher:", gameIds.length, "jogos elegíveis.");
 
 if (!gameIds.length) {
   console.error("Nenhum jogo comum tem correspondência inequívoca na SportAPI. Não serão guardadas odds sem ligação segura.");
+
+  // Diagnóstico seguro: mostra se o bloqueio é nome das equipas ou horário,
+  // sem relaxar os critérios de correspondência nem guardar odds.
+  const diagnostics = commonGames.slice(0, 12).flatMap(gameId => {
+    const game = bantuById.get(String(gameId));
+    if (!game || !Number.isFinite(Number(game.start_ts))) return [];
+    const kickoff = Number(game.start_ts) * 1000;
+    const home = normalizeTeamName(game.home);
+    const away = normalizeTeamName(game.away);
+    const nearest = sportApiFixtures
+      .filter(match => Number.isFinite(Date.parse(match.kickoff_at || "")))
+      .map(match => {
+        const deltaMinutes = Math.round(Math.abs(Date.parse(match.kickoff_at) - kickoff) / 60000);
+        const exactTeams = normalizeTeamName(match.home_team) === home &&
+          normalizeTeamName(match.away_team) === away;
+        const reversedTeams = normalizeTeamName(match.home_team) === away &&
+          normalizeTeamName(match.away_team) === home;
+        return {
+          home: match.home_team,
+          away: match.away_team,
+          deltaMinutes,
+          exactTeams,
+          reversedTeams
+        };
+      })
+      .sort((a, b) => a.deltaMinutes - b.deltaMinutes)[0];
+    return [{
+      swarm: game.home + " x " + game.away,
+      kickoff: new Date(kickoff).toISOString(),
+      nearestSportApi: nearest || null
+    }];
+  });
+  console.error("DIAGNÓSTICO DE CORRESPONDÊNCIA (amostra de até 12 jogos):");
+  console.error(JSON.stringify(diagnostics, null, 2));
   process.exit(1);
 }
 
