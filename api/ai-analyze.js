@@ -4,6 +4,11 @@ const AI_PROVIDER = String(process.env.AI_PROVIDER || (process.env.GEMINI_API_KE
 const MODEL = AI_PROVIDER === "gemini"
   ? (process.env.GEMINI_MODEL || "gemini-3.8-flash")
   : (process.env.GROQ_MODEL || "openai/gpt-oss-20b");
+const RESEARCH_MODEL = AI_PROVIDER === "gemini"
+  ? MODEL
+  : (process.env.GROQ_RESEARCH_MODEL || "groq/compound-mini");
+const RESEARCH_TIMEOUT_MS = 25000;
+const ANALYSIS_TIMEOUT_MS = 20000;
 const MIN_ODDS = 1.4;
 
 const SYSTEM_PROMPT = `És o agente autónomo de análise desportiva do FK — Ficha Kamba, focado em futebol e no mercado angolano.
@@ -201,9 +206,10 @@ export default async function handler(req, res) {
 
   const fixtureQuotes = fixtures.filter(f => safeIds.has(f.id) && !isStarted(f.status));
   const aiInput = deduplicatedFixtures.map(({ stats, markets, ...fixture }) => ({ ...fixture, stats, markets }));
+  let activeStage = "research";
   try {
     const researchStartedAt = Date.now();
-    console.info("[FK AI] research:start", { provider: AI_PROVIDER, fixtures: aiInput.length, model: MODEL });
+    console.info("[FK AI] research:start", { provider: AI_PROVIDER, fixtures: aiInput.length, model: RESEARCH_MODEL, timeoutMs: RESEARCH_TIMEOUT_MS });
     const researchPrompt = "És o investigador desportivo do FK. Pesquisa na Web cada jogo. Dá prioridade a sites oficiais de ligas, federações e clubes e a bases de resultados desportivos reconhecidas. Para CADA equipa, tenta confirmar os 3 jogos oficiais mais recentes dos últimos 180 dias, com data, adversário e resultado; procura também classificação, desempenho casa/fora, confrontos directos e notícias de ausências confirmadas. Para cada facto, indica URL, nome da fonte e data. Exige pelo menos 2 fontes independentes para confirmar os resultados recentes. Distingue factos confirmados de informação não encontrada ou contraditória. Se o contexto do jogo indicar source=InternetSearch, não assumes que existem estatísticas estruturadas: a pesquisa tem de fornecer a evidência acima, caso contrário recomenda rejeitar o jogo. Não procures odds nem prognósticos de apostas. Nunca inventes resultados, estatísticas, fontes ou URLs.";
     const researchResponse = AI_PROVIDER === "gemini"
       ? await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
@@ -214,19 +220,20 @@ export default async function handler(req, res) {
             contents: [{ role: "user", parts: [{ text: JSON.stringify({ timezone: "Africa/Luanda", fixtures: aiInput.map(({ markets, ...fixture }) => fixture) }) }] }],
             tools: [{ google_search: {} }],
             generationConfig: { temperature: 0.2, maxOutputTokens: 3500 }
-          })
+          }),
+          signal: AbortSignal.timeout(RESEARCH_TIMEOUT_MS)
         })
       : await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
           headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: MODEL, temperature: 0.2, max_completion_tokens: 3500,
+            model: RESEARCH_MODEL, max_completion_tokens: 3500,
             messages: [
               { role: "system", content: researchPrompt },
               { role: "user", content: JSON.stringify({ timezone: "Africa/Luanda", fixtures: aiInput.map(({ markets, ...fixture }) => fixture) }) }
-            ],
-            tools: [{ type: "browser_search" }], tool_choice: "auto"
-          })
+            ]
+          }),
+          signal: AbortSignal.timeout(RESEARCH_TIMEOUT_MS)
         });
 
     const researchPayload = await researchResponse.json().catch(() => ({}));
@@ -249,6 +256,13 @@ export default async function handler(req, res) {
         detail: researchPayload.error?.message || `Resposta HTTP ${researchResponse.status}.`
       });
     }
+    const groqSearchResults = AI_PROVIDER === "gemini" ? [] :
+      (researchPayload.choices?.[0]?.message?.executed_tools || [])
+        .flatMap(tool => tool.search_results?.results || [])
+        .filter(result => typeof result.url === "string" && /^https?:\/\//i.test(result.url));
+    const groqSourceText = groqSearchResults.map((result, index) =>
+      `Fonte ${index + 1}: ${result.title || "Página Web"}\\nURL: ${result.url}\\nConteúdo: ${result.content || "Sem excerto disponível"}`
+    ).join("\\n\\n");
     const researchText = AI_PROVIDER === "gemini"
       ? [
           researchPayload.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("\n") || "",
@@ -256,11 +270,16 @@ export default async function handler(req, res) {
             .filter(chunk => chunk.web?.uri)
             .map(chunk => `Fonte: ${chunk.web.title || "Página Web"} — ${chunk.web.uri}`)
         ].filter(Boolean).join("\n")
-      : (researchPayload.choices?.[0]?.message?.content || "");
+      : [researchPayload.choices?.[0]?.message?.content || "", groqSourceText].filter(Boolean).join("\n\n");
     if (!researchText.trim()) return res.status(502).json({ error: `${AI_PROVIDER} não devolveu resultados da pesquisa Web.` });
+    if (AI_PROVIDER === "groq" && groqSearchResults.length < 2) {
+      console.warn("[FK AI] research:sources-insufficient", { sources: groqSearchResults.length });
+      return res.status(502).json({ error: "A pesquisa Web da Groq não devolveu pelo menos duas fontes com URL verificável.", sourcesFound: groqSearchResults.length });
+    }
 
+    activeStage = "analysis";
     const analysisStartedAt = Date.now();
-    console.info("[FK AI] analysis:start", { provider: AI_PROVIDER, fixtures: aiInput.length, model: MODEL });
+    console.info("[FK AI] analysis:start", { provider: AI_PROVIDER, fixtures: aiInput.length, model: MODEL, timeoutMs: ANALYSIS_TIMEOUT_MS });
     const analysisInput = {
       task: "Analisa a evidência desportiva e escolhe apenas mercados sustentados. As odds não são fornecidas. Para jogos com stats.source=InternetSearch, só aceita se a pesquisa apresentar 3 resultados recentes por equipa, com datas e placares, confirmados por pelo menos 2 fontes independentes; caso contrário rejeita o jogo. Nunca inventes estatísticas.",
       timezone: "Africa/Luanda", fixtures: aiInput, webResearch: researchText
@@ -276,7 +295,8 @@ export default async function handler(req, res) {
               temperature: 0.1, maxOutputTokens: 5000,
               responseMimeType: "application/json", responseSchema
             }
-          })
+          }),
+          signal: AbortSignal.timeout(ANALYSIS_TIMEOUT_MS)
         })
       : await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
@@ -288,7 +308,8 @@ export default async function handler(req, res) {
               { role: "user", content: JSON.stringify(analysisInput) }
             ],
             response_format: { type: "json_schema", json_schema: { name: "fk_match_analysis", strict: true, schema: responseSchema } }
-          })
+          }),
+          signal: AbortSignal.timeout(ANALYSIS_TIMEOUT_MS)
         });
 
     const payload = await analysisResponse.json().catch(() => ({}));
@@ -363,7 +384,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       provider: AI_PROVIDER === "gemini" ? "Gemini" : "Groq",
       model: payload.modelVersion || payload.model || MODEL,
-      researchModel: researchPayload.modelVersion || researchPayload.model || MODEL,
+      researchModel: researchPayload.modelVersion || researchPayload.model || RESEARCH_MODEL,
       webResearchUsed: true,
       webResearchCollectedAt: new Date().toISOString(),
       webResearchEvidence: researchText.slice(0, 12000),
@@ -377,7 +398,17 @@ export default async function handler(req, res) {
       rules: { minimumIndividualOdds: MIN_ODDS, bookmakerCountRequired: 2 },
       note: "A Groq analisou sem receber as odds; depois o servidor comparou cotações equivalentes das duas casas. Nenhum ID de reserva foi solicitado ou criado."
     });
-  } catch {
-    return res.status(502).json({ error: "Falha ao contactar ou interpretar a resposta da Groq." });
+  } catch (error) {
+    const timedOut = error?.name === "TimeoutError" || error?.name === "AbortError";
+    console.error("[FK AI] request:failed", {
+      stage: activeStage,
+      name: error?.name || "Error",
+      message: String(error?.message || "Erro desconhecido").slice(0, 300)
+    });
+    return res.status(timedOut ? 504 : 502).json({
+      error: timedOut ? `Tempo limite excedido na etapa ${activeStage} da IA.` : `Falha ao contactar ou interpretar a resposta da ${AI_PROVIDER}.`,
+      stage: activeStage,
+      timeoutMs: activeStage === "research" ? RESEARCH_TIMEOUT_MS : ANALYSIS_TIMEOUT_MS
+    });
   }
 }
