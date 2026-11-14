@@ -1,6 +1,9 @@
 import { compareFixtures, canonicalMarketKey, canonicalLine } from "../lib/bookmakers/comparison.js";
 
-const MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-20b";
+const AI_PROVIDER = String(process.env.AI_PROVIDER || (process.env.GEMINI_API_KEY ? "gemini" : "groq")).toLowerCase();
+const MODEL = AI_PROVIDER === "gemini"
+  ? (process.env.GEMINI_MODEL || "gemini-2.5-flash")
+  : (process.env.GROQ_MODEL || "openai/gpt-oss-20b");
 const MIN_ODDS = 1.4;
 
 const SYSTEM_PROMPT = `És o agente autónomo de análise desportiva do FK — Ficha Kamba, focado em futebol e no mercado angolano.
@@ -11,7 +14,7 @@ Analisar os jogos recebidos, verificar o contexto desportivo, identificar selec�
 REGRAS DE DADOS
 1. Nunca inventes jogos, equipas, competições, datas, horas, resultados, estatísticas, mercados, selecções, odds, bookmakers, URLs ou fontes.
 2. Considera os dados estruturados recebidos do FK e da SportAPI como fonte primária para identificação do jogo, calendário, estado e estatísticas.
-3. Na primeira fase, usa a ferramenta browser_search para procurar contexto público recente de cada jogo quando isso puder melhorar a análise. Dá prioridade a fontes oficiais de clubes, ligas e federações. Na segunda fase, usa apenas os resultados dessa pesquisa e os dados estruturados enviados pelo FK.
+3. Na primeira fase, usa a pesquisa Web disponibilizada pelo fornecedor de IA para procurar contexto público recente de cada jogo quando isso puder melhorar a análise. Dá prioridade a fontes oficiais de clubes, ligas e federações. Na segunda fase, usa apenas os resultados dessa pesquisa e os dados estruturados enviados pelo FK.
 4. Não uses resultados de pesquisa genéricos, previsões de terceiros ou odds encontradas em páginas não verificadas como se fossem cotações confirmadas da BantuBet ou ElephantBet.
 5. Não transformes ausência de informação em confirmação. Se lesões, suspensões, escalações ou forma não estiverem disponíveis, indica que não foram confirmadas.
 6. Verifica sempre a data, o fuso horário Africa/Luanda e o estado do jogo. Exclui jogos iniciados, terminados, adiados, cancelados ou com estado incerto.
@@ -200,31 +203,34 @@ export default async function handler(req, res) {
   const aiInput = deduplicatedFixtures.map(({ stats, markets, ...fixture }) => ({ ...fixture, stats, markets }));
   try {
     const researchStartedAt = Date.now();
-    console.info("[FK Groq] research:start", { fixtures: aiInput.length, model: MODEL });
-    const researchResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: MODEL,
-        temperature: 0.2,
-        max_completion_tokens: 3500,
-        messages: [
-          {
-            role: "system",
-            content: "És o investigador desportivo do FK. Pesquisa na Web usando browser_search. Para cada jogo, procura notícias recentes e fontes oficiais sobre forma, ausências confirmadas, calendário, descanso e contexto competitivo. Não procures odds nem previsões de apostas. Não inventes dados. Se não encontrares informação fiável, diz claramente que não foi encontrada. Devolve um resumo conciso com URLs/fontes e a data de cada informação."
-          },
-          {
-            role: "user",
-            content: JSON.stringify({ timezone: "Africa/Luanda", fixtures: aiInput.map(({ markets, ...fixture }) => fixture) })
-          }
-        ],
-        tools: [{ type: "browser_search" }],
-        tool_choice: "auto"
-      })
-    });
+    console.info("[FK AI] research:start", { provider: AI_PROVIDER, fixtures: aiInput.length, model: MODEL });
+    const researchPrompt = "És o investigador desportivo do FK. Pesquisa na Web para cada jogo, dando prioridade a fontes oficiais de clubes, ligas e federações. Procura notícias recentes sobre forma, ausências confirmadas, calendário, descanso e contexto competitivo. Não procures odds nem previsões de apostas. Não inventes dados. Se não encontrares informação fiável, diz claramente que não foi encontrada. Indica URLs/fontes e a data de cada informação.";
+    const researchResponse = AI_PROVIDER === "gemini"
+      ? await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
+          method: "POST",
+          headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: researchPrompt }] },
+            contents: [{ role: "user", parts: [{ text: JSON.stringify({ timezone: "Africa/Luanda", fixtures: aiInput.map(({ markets, ...fixture }) => fixture) }) }] }],
+            tools: [{ google_search: {} }],
+            generationConfig: { temperature: 0.2, maxOutputTokens: 3500 }
+          })
+        })
+      : await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: MODEL, temperature: 0.2, max_completion_tokens: 3500,
+            messages: [
+              { role: "system", content: researchPrompt },
+              { role: "user", content: JSON.stringify({ timezone: "Africa/Luanda", fixtures: aiInput.map(({ markets, ...fixture }) => fixture) }) }
+            ],
+            tools: [{ type: "browser_search" }], tool_choice: "auto"
+          })
+        });
 
     const researchPayload = await researchResponse.json().catch(() => ({}));
-    console.info("[FK Groq] research:response", {
+    console.info("[FK AI] research:response", { provider: AI_PROVIDER,
       status: researchResponse.status,
       elapsedMs: Date.now() - researchStartedAt,
       retryAfter: researchResponse.headers.get("retry-after"),
@@ -232,14 +238,14 @@ export default async function handler(req, res) {
       rateLimitReset: researchResponse.headers.get("x-ratelimit-reset-requests")
     });
     if (!researchResponse.ok) {
-      console.warn("[FK Groq] research:failed", {
+      console.warn("[FK AI] research:failed", { provider: AI_PROVIDER,
         status: researchResponse.status,
         type: researchPayload.error?.type || null,
         code: researchPayload.error?.code || null,
         detail: researchPayload.error?.message || null
       });
       return res.status(researchResponse.status === 429 ? 429 : 502).json({
-        error: researchResponse.status === 429 ? "Limite de pesquisa Web da Groq atingido." : "A pesquisa Web da Groq falhou.",
+        error: researchResponse.status === 429 ? `Limite de pesquisa Web de ${AI_PROVIDER} atingido.` : `A pesquisa Web de ${AI_PROVIDER} falhou.`,
         detail: researchPayload.error?.message || `Resposta HTTP ${researchResponse.status}.`
       });
     }
@@ -247,29 +253,39 @@ export default async function handler(req, res) {
     if (!researchText.trim()) return res.status(502).json({ error: "A Groq não devolveu resultados da pesquisa Web." });
 
     const analysisStartedAt = Date.now();
-    console.info("[FK Groq] analysis:start", { fixtures: aiInput.length, model: MODEL });
-    const analysisResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: MODEL,
-        temperature: 0.1,
-        max_completion_tokens: 5000,
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: JSON.stringify({
-            task: "Analisa a evidência desportiva e escolhe apenas mercados sustentados. As odds não são fornecidas. Usa a pesquisa Web como complemento, não como substituto das estatísticas verificadas.",
-            timezone: "Africa/Luanda",
-            fixtures: aiInput,
-            webResearch: researchText
-          }) }
-        ],
-        response_format: { type: "json_schema", json_schema: { name: "fk_match_analysis", strict: true, schema: responseSchema } }
-      })
-    });
+    console.info("[FK AI] analysis:start", { provider: AI_PROVIDER, fixtures: aiInput.length, model: MODEL });
+    const analysisInput = {
+      task: "Analisa a evidência desportiva e escolhe apenas mercados sustentados. As odds não são fornecidas. Usa a pesquisa Web como complemento, não como substituto das estatísticas verificadas.",
+      timezone: "Africa/Luanda", fixtures: aiInput, webResearch: researchText
+    };
+    const analysisResponse = AI_PROVIDER === "gemini"
+      ? await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
+          method: "POST",
+          headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+            contents: [{ role: "user", parts: [{ text: JSON.stringify(analysisInput) }] }],
+            generationConfig: {
+              temperature: 0.1, maxOutputTokens: 5000,
+              responseMimeType: "application/json", responseSchema
+            }
+          })
+        })
+      : await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: MODEL, temperature: 0.1, max_completion_tokens: 5000,
+            messages: [
+              { role: "system", content: SYSTEM_PROMPT },
+              { role: "user", content: JSON.stringify(analysisInput) }
+            ],
+            response_format: { type: "json_schema", json_schema: { name: "fk_match_analysis", strict: true, schema: responseSchema } }
+          })
+        });
 
     const payload = await analysisResponse.json().catch(() => ({}));
-    console.info("[FK Groq] analysis:response", {
+    console.info("[FK AI] analysis:response", { provider: AI_PROVIDER,
       status: analysisResponse.status,
       elapsedMs: Date.now() - analysisStartedAt,
       retryAfter: analysisResponse.headers.get("retry-after"),
@@ -277,14 +293,14 @@ export default async function handler(req, res) {
       rateLimitReset: analysisResponse.headers.get("x-ratelimit-reset-requests")
     });
     if (!analysisResponse.ok) {
-      console.warn("[FK Groq] analysis:failed", {
+      console.warn("[FK AI] analysis:failed", { provider: AI_PROVIDER,
         status: analysisResponse.status,
         type: payload.error?.type || null,
         code: payload.error?.code || null,
         detail: payload.error?.message || null
       });
       return res.status(analysisResponse.status === 429 ? 429 : 502).json({
-        error: analysisResponse.status === 429 ? "Limite da análise Groq atingido." : "A Groq não conseguiu concluir a análise estruturada.",
+        error: analysisResponse.status === 429 ? `Limite da análise ${AI_PROVIDER} atingido.` : `${AI_PROVIDER} não conseguiu concluir a análise estruturada.`,
         detail: payload.error?.message || `Resposta HTTP ${analysisResponse.status}.`
       });
     }
