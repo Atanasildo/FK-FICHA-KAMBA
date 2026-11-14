@@ -34,9 +34,9 @@ test("exclui equipas diferentes, ordem invertida e horários incompatíveis", ()
     fixture("wrong-time", 2300, "Boavista", "Farense")
   ];
   const elephant = [
-    fixture("missing", 2000, "Porto", "Braga"),
-    fixture("wrong-order", 2200, "Braga", "Porto"),
-    fixture("wrong-time", 2300 + 4 * 60 * 60, "Boavista", "Farense")
+    fixture("elephant-different-teams", 2000, "Porto", "Braga"),
+    fixture("elephant-reversed", 2200, "Braga", "Porto"),
+    fixture("elephant-wrong-time", 2300 + 4 * 60 * 60, "Boavista", "Farense")
   ];
   assert.deepEqual(selectCommonSwarmGames(bantu, elephant, { nowSeconds: 1000, horizonSeconds: 20000 }), []);
 });
