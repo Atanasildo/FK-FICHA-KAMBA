@@ -261,8 +261,8 @@ export default async function handler(req, res) {
         .flatMap(tool => tool.search_results?.results || [])
         .filter(result => typeof result.url === "string" && /^https?:\/\//i.test(result.url));
     const groqSourceText = groqSearchResults.map((result, index) =>
-      `Fonte ${index + 1}: ${result.title || "Página Web"}\\nURL: ${result.url}\\nConteúdo: ${result.content || "Sem excerto disponível"}`
-    ).join("\\n\\n");
+      `Fonte ${index + 1}: ${result.title || "Página Web"}\nURL: ${result.url}\nConteúdo: ${result.content || "Sem excerto disponível"}`
+    ).join("\n\n");
     const researchText = AI_PROVIDER === "gemini"
       ? [
           researchPayload.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("\n") || "",
@@ -272,9 +272,13 @@ export default async function handler(req, res) {
         ].filter(Boolean).join("\n")
       : [researchPayload.choices?.[0]?.message?.content || "", groqSourceText].filter(Boolean).join("\n\n");
     if (!researchText.trim()) return res.status(502).json({ error: `${AI_PROVIDER} não devolveu resultados da pesquisa Web.` });
-    if (AI_PROVIDER === "groq" && groqSearchResults.length < 2) {
-      console.warn("[FK AI] research:sources-insufficient", { sources: groqSearchResults.length });
-      return res.status(502).json({ error: "A pesquisa Web da Groq não devolveu pelo menos duas fontes com URL verificável.", sourcesFound: groqSearchResults.length });
+    const uniqueGroqSourceHosts = new Set(groqSearchResults.map(result => {
+      try { return new URL(result.url).hostname.replace(/^www\\./i, "").toLowerCase(); }
+      catch { return null; }
+    }).filter(Boolean));
+    if (AI_PROVIDER === "groq" && uniqueGroqSourceHosts.size < 2) {
+      console.warn("[FK AI] research:sources-insufficient", { sources: groqSearchResults.length, independentHosts: uniqueGroqSourceHosts.size });
+      return res.status(502).json({ error: "A pesquisa Web da Groq não devolveu pelo menos duas fontes independentes com URL verificável.", sourcesFound: groqSearchResults.length, independentHosts: uniqueGroqSourceHosts.size });
     }
 
     activeStage = "analysis";
