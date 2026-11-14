@@ -263,8 +263,9 @@ export default async function handler(req, res) {
     const groqMessage = researchPayload.choices?.[0]?.message || {};
     const groqContent = typeof groqMessage.content === "string" ? groqMessage.content : "";
     const groqUrls = AI_PROVIDER === "gemini" ? [] :
-      [...new Set((groqContent.match(/https?:\\/\\/[^\\s)\\]}>"]+/gi) || [])
-        .map(url => url.replace(/[.,;]+$/, ""))];
+      [...new Set(groqContent.split(/\\s+/)
+        .filter(token => token.startsWith("https://") || token.startsWith("http://"))
+        .map(url => url.replace(/[),.;]+$/, "")))];
     const groqSearchResults = groqUrls.map(url => ({ url }));
     const groqSourceText = groqUrls.map((url, index) => `URL da fonte ${index + 1}: ${url}`).join("\\n");
     const researchText = AI_PROVIDER === "gemini"
