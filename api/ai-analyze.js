@@ -1,12 +1,16 @@
 import { compareFixtures, canonicalMarketKey, canonicalLine } from "../lib/bookmakers/comparison.js";
 
-const AI_PROVIDER = String(process.env.AI_PROVIDER || (process.env.GEMINI_API_KEY ? "gemini" : "groq")).toLowerCase();
-const MODEL = AI_PROVIDER === "gemini"
-  ? (process.env.GEMINI_MODEL || "gemini-3.8-flash")
-  : (process.env.GROQ_MODEL || "openai/gpt-oss-20b");
-const RESEARCH_MODEL = AI_PROVIDER === "gemini"
+const AI_PROVIDER = String(process.env.AI_PROVIDER || (process.env.DEEPSEEK_API_KEY ? "deepseek" : process.env.GEMINI_API_KEY ? "gemini" : "groq")).toLowerCase();
+const MODEL = AI_PROVIDER === "deepseek"
+  ? (process.env.DEEPSEEK_MODEL || "deepseek-flash")
+  : AI_PROVIDER === "gemini"
+    ? (process.env.GEMINI_MODEL || "gemini-3.8-flash")
+    : (process.env.GROQ_MODEL || "openai/gpt-oss-20b");
+const RESEARCH_MODEL = AI_PROVIDER === "deepseek"
   ? MODEL
-  : (process.env.GROQ_RESEARCH_MODEL || "openai/gpt-oss-20b");
+  : AI_PROVIDER === "gemini"
+    ? MODEL
+    : (process.env.GROQ_RESEARCH_MODEL || "openai/gpt-oss-20b");
 const RESEARCH_TIMEOUT_MS = 30000;
 const ANALYSIS_TIMEOUT_MS = 18000;
 const MIN_ODDS = 1.4;
@@ -115,8 +119,13 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: "Não autorizado." });
   }
 
-  const apiKey = AI_PROVIDER === "gemini" ? process.env.GEMINI_API_KEY : process.env.GROQ_API_KEY;
-  if (!apiKey) return res.status(503).json({ error: AI_PROVIDER === "gemini" ? "GEMINI_API_KEY ainda não foi configurada no servidor." : "GROQ_API_KEY ainda não foi configurada no servidor." });
+  const apiKey = AI_PROVIDER === "deepseek"
+    ? process.env.DEEPSEEK_API_KEY
+    : AI_PROVIDER === "gemini" ? process.env.GEMINI_API_KEY : process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    const requiredKey = AI_PROVIDER === "deepseek" ? "DEEPSEEK_API_KEY" : AI_PROVIDER === "gemini" ? "GEMINI_API_KEY" : "GROQ_API_KEY";
+    return res.status(503).json({ error: `${requiredKey} ainda não foi configurada no servidor.` });
+  }
 
   const fixtures = req.body?.fixtures;
   if (!Array.isArray(fixtures) || fixtures.length === 0 || fixtures.length > 50) {
@@ -211,7 +220,24 @@ export default async function handler(req, res) {
     const researchStartedAt = Date.now();
     console.info("[FK AI] research:start", { provider: AI_PROVIDER, fixtures: aiInput.length, model: RESEARCH_MODEL, timeoutMs: RESEARCH_TIMEOUT_MS });
     const researchPrompt = "És o investigador desportivo do FK. Pesquisa na Web cada jogo. Dá prioridade a sites oficiais de ligas, federações e clubes e a bases de resultados desportivos reconhecidas. Para CADA equipa, tenta confirmar os 3 jogos oficiais mais recentes dos últimos 180 dias, com data, adversário e resultado; procura também classificação, desempenho casa/fora, confrontos directos e notícias de ausências confirmadas. Para cada facto, indica URL, nome da fonte e data. Exige pelo menos 2 fontes independentes para confirmar os resultados recentes. Distingue factos confirmados de informação não encontrada ou contraditória. Se o contexto do jogo indicar source=InternetSearch, não assumes que existem estatísticas estruturadas: a pesquisa tem de fornecer a evidência acima, caso contrário recomenda rejeitar o jogo. Não procures odds nem prognósticos de apostas. Nunca inventes resultados, estatísticas, fontes ou URLs.";
-    const researchResponse = AI_PROVIDER === "gemini"
+    const researchResponse = AI_PROVIDER === "deepseek"
+      ? await fetch("https://api.deepseek.com/chat/completions", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: RESEARCH_MODEL,
+            thinking: { type: "disabled" },
+            temperature: 0.2,
+            max_tokens: 3500,
+            tools: [{ type: "deepseek_web_search" }, { type: "deepseek_read_url" }],
+            messages: [
+              { role: "system", content: researchPrompt },
+              { role: "user", content: "Pesquisa activamente cada jogo. Para cada equipa, procura pelo menos 3 resultados oficiais recentes nos últimos 180 dias, com datas, adversários e placares. Consulta fontes independentes e devolve evidência com URLs completos. Não procures odds nem prognósticos. Fuso horário: Africa/Luanda. Jogos: " + JSON.stringify({ timezone: "Africa/Luanda", fixtures: aiInput.map(({ markets, ...fixture }) => fixture) }) }
+            ]
+          }),
+          signal: AbortSignal.timeout(RESEARCH_TIMEOUT_MS)
+        })
+      : AI_PROVIDER === "gemini"
       ? await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
           method: "POST",
           headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
@@ -292,14 +318,36 @@ export default async function handler(req, res) {
     const groqSourceText = groqUrls.map((url, index) => `URL da fonte ${index + 1}: ${url}`).join("\n");
     const geminiChunks = researchPayload.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
     const geminiUrls = geminiChunks.map(chunk => chunk.web?.uri).filter(url => typeof url === "string");
-    const sourceUrls = AI_PROVIDER === "gemini" ? [...new Set(geminiUrls)] : groqUrls;
-    const researchText = AI_PROVIDER === "gemini"
-      ? [
-          researchPayload.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("\n") || "",
-          ...geminiChunks.filter(chunk => chunk.web?.uri)
-            .map(chunk => `Fonte: ${chunk.web.title || "Página Web"} — ${chunk.web.uri}`)
-        ].filter(Boolean).join("\n")
-      : [groqContent || researchPayload.choices?.[0]?.message?.content || "", groqSourceText].filter(Boolean).join("\n\n");
+    const deepseekMessage = researchPayload.choices?.[0]?.message || {};
+    const deepseekCalls = Array.isArray(deepseekMessage.server_tool_calls) ? deepseekMessage.server_tool_calls : [];
+    const deepseekSources = deepseekCalls.flatMap(step => Array.isArray(step.calls)
+      ? step.calls.flatMap(call => Array.isArray(call.sources) ? call.sources : (call.page?.url ? [{ url: call.page.url, title: call.page.title }] : []))
+      : []);
+    const deepseekAnnotations = Array.isArray(deepseekMessage.annotations) ? deepseekMessage.annotations : [];
+    const deepseekUrls = [...new Set([
+      ...deepseekSources.map(source => source.url),
+      ...deepseekAnnotations.map(annotation => annotation.url_citation?.url || annotation.url)
+    ].filter(url => {
+      if (typeof url !== "string") return false;
+      try { return ["http:", "https:"].includes(new URL(url).protocol); }
+      catch { return false; }
+    }))];
+    const deepseekSourceText = deepseekSources
+      .filter(source => typeof source.url === "string")
+      .map(source => `Fonte: ${source.title || source.site_name || "Página Web"} — ${source.url}${source.snippet ? "\nResumo: " + source.snippet : ""}`)
+      .join("\n");
+    const sourceUrls = AI_PROVIDER === "deepseek"
+      ? deepseekUrls
+      : AI_PROVIDER === "gemini" ? [...new Set(geminiUrls)] : groqUrls;
+    const researchText = AI_PROVIDER === "deepseek"
+      ? [deepseekMessage.content || "", deepseekSourceText].filter(Boolean).join("\n\n")
+      : AI_PROVIDER === "gemini"
+        ? [
+            researchPayload.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("\n") || "",
+            ...geminiChunks.filter(chunk => chunk.web?.uri)
+              .map(chunk => `Fonte: ${chunk.web.title || "Página Web"} — ${chunk.web.uri}`)
+          ].filter(Boolean).join("\n")
+        : [groqContent || researchPayload.choices?.[0]?.message?.content || "", groqSourceText].filter(Boolean).join("\n\n");
     if (!researchText.trim()) return res.status(502).json({ error: `${AI_PROVIDER} não devolveu resultados da pesquisa Web.` });
     const uniqueSourceHosts = new Set(sourceUrls.map(url => {
       try { return new URL(url).hostname.replace(/^www\\./i, "").toLowerCase(); }
@@ -317,7 +365,24 @@ export default async function handler(req, res) {
       task: "Analisa a evidência desportiva e escolhe apenas mercados sustentados. As odds não são fornecidas. Para jogos com stats.source=InternetSearch, só aceita se a pesquisa apresentar 3 resultados recentes por equipa, com datas e placares, confirmados por pelo menos 2 fontes independentes; caso contrário rejeita o jogo. Nunca inventes estatísticas.",
       timezone: "Africa/Luanda", fixtures: aiInput, webResearch: researchText
     };
-    const analysisResponse = AI_PROVIDER === "gemini"
+    const analysisResponse = AI_PROVIDER === "deepseek"
+      ? await fetch("https://api.deepseek.com/chat/completions", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: MODEL,
+            thinking: { type: "disabled" },
+            temperature: 0.1,
+            max_tokens: 5000,
+            response_format: { type: "json_object" },
+            messages: [
+              { role: "system", content: SYSTEM_PROMPT + "\\n\\nDevolve exclusivamente um objecto JSON válido que respeite a estrutura pedida. Não uses Markdown nem texto fora do JSON." },
+              { role: "user", content: JSON.stringify(analysisInput) }
+            ]
+          }),
+          signal: AbortSignal.timeout(ANALYSIS_TIMEOUT_MS)
+        })
+      : AI_PROVIDER === "gemini"
       ? await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
           method: "POST",
           headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
@@ -415,7 +480,7 @@ export default async function handler(req, res) {
 
     res.setHeader("Cache-Control", "no-store");
     return res.status(200).json({
-      provider: AI_PROVIDER === "gemini" ? "Gemini" : "Groq",
+      provider: AI_PROVIDER === "deepseek" ? "DeepSeek" : AI_PROVIDER === "gemini" ? "Gemini" : "Groq",
       model: payload.modelVersion || payload.model || MODEL,
       researchModel: researchPayload.modelVersion || researchPayload.model || RESEARCH_MODEL,
       webResearchUsed: true,
