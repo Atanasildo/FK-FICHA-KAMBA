@@ -74,7 +74,7 @@ const responseSchema = {
           line: { type: ["string", "null"] },
           marketType: { type: ["string", "null"] },
           marketBase: { type: ["string", "null"] },
-          rationale: { type: "string", minLength: 12 },
+          rationale: { type: "string" },
           fairProbability: { type: "number", minimum: 0, maximum: 1 },
           confidence: { type: "string", enum: ["low", "medium", "high"] }
         },
