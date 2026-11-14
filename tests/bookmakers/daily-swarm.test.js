@@ -78,3 +78,28 @@ test("não selecciona jogos em directo sem hora de início", () => {
   const games = [fixture("live", 2000, "Sporting", "Benfica", { is_live: true })];
   assert.deepEqual(selectCommonSwarmGames(games, games), []);
 });
+
+test("ignora jogos com menos de seis horas de antecedência por padrão", () => {
+  const now = 1000;
+  const bantu = [
+    fixture("too-soon", now + 2 * 60 * 60, "Sporting", "Benfica"),
+    fixture("eligible", now + 7 * 60 * 60, "Porto", "Braga")
+  ];
+  const elephant = [
+    fixture("ele-too-soon", now + 2 * 60 * 60, "Sporting", "Benfica"),
+    fixture("ele-eligible", now + 7 * 60 * 60 + 60, "Porto", "Braga")
+  ];
+  const pairs = selectCommonSwarmGames(bantu, elephant, { nowSeconds: now });
+  assert.deepEqual(pairs.map(pair => pair.bantuId), ["eligible"]);
+});
+
+test("permite configurar explicitamente a antecedência mínima", () => {
+  const now = 1000;
+  const bantu = [fixture("b", now + 4 * 60 * 60, "Sporting", "Benfica")];
+  const elephant = [fixture("e", now + 4 * 60 * 60, "Sporting", "Benfica")];
+  const pairs = selectCommonSwarmGames(bantu, elephant, {
+    nowSeconds: now,
+    minKickoffLeadSeconds: 3 * 60 * 60
+  });
+  assert.equal(pairs.length, 1);
+});
