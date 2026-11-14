@@ -2,7 +2,7 @@ import { compareFixtures, canonicalMarketKey, canonicalLine } from "../lib/bookm
 
 const AI_PROVIDER = String(process.env.AI_PROVIDER || (process.env.GEMINI_API_KEY ? "gemini" : "groq")).toLowerCase();
 const MODEL = AI_PROVIDER === "gemini"
-  ? (process.env.GEMINI_MODEL || "gemini-2.5-flash")
+  ? (process.env.GEMINI_MODEL || "gemini-3.8-flash")
   : (process.env.GROQ_MODEL || "openai/gpt-oss-20b");
 const MIN_ODDS = 1.4;
 
