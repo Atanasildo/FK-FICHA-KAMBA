@@ -264,15 +264,22 @@ export default async function handler(req, res) {
     const groqMessage = researchPayload.choices?.[0]?.message || {};
     const groqContent = AI_PROVIDER === "gemini" ? "" :
       (typeof groqMessage.content === "string" ? groqMessage.content : "");
+    // Browser Search expõe resultados estruturados em executed_tools.
+    const groqExecutedTools = Array.isArray(groqMessage.executed_tools) ? groqMessage.executed_tools : [];
+    const groqToolUrls = groqExecutedTools.flatMap(tool => [
+      ...(Array.isArray(tool.browser_results) ? tool.browser_results.map(result => result.url) : []),
+      ...(Array.isArray(tool.search_results?.results) ? tool.search_results.results.map(result => result.url) : [])
+    ]);
     const groqAnnotations = [
       ...(Array.isArray(groqMessage.annotations) ? groqMessage.annotations : []),
       ...(Array.isArray(groqMessage.citations) ? groqMessage.citations : [])
     ];
     const groqUrls = AI_PROVIDER === "gemini" ? [] :
       [...new Set([
-        ...groqContent.split(/\s+/).filter(token => token.startsWith("https://") || token.startsWith("http://")).map(url => url.replace(/[),.;]+$/, "")),
-        ...groqAnnotations.map(annotation => annotation.url || annotation.url_citation?.url || annotation.source?.url).filter(url => typeof url === "string" && (url.toLowerCase().startsWith("https://") || url.toLowerCase().startsWith("http://")))
-      ])];
+        ...groqToolUrls,
+        ...groqContent.split(/\\s+/).filter(token => token.startsWith("https://") || token.startsWith("http://")).map(url => url.replace(/[),.;]+$/, "")),
+        ...groqAnnotations.map(annotation => annotation.url || annotation.url_citation?.url || annotation.source?.url).filter(url => typeof url === "string" && /^https?:\\/\\//i.test(url))
+      ].filter(url => typeof url === "string" && /^https?:\\/\\//i.test(url)))];
     const groqSearchResults = groqUrls.map(url => ({ url }));
     const groqSourceText = groqUrls.map((url, index) => `URL da fonte ${index + 1}: ${url}`).join("\\n");
     const researchText = AI_PROVIDER === "gemini"
