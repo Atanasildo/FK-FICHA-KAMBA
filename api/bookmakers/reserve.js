@@ -16,7 +16,7 @@ const configs = {
   }
 };
 
-function kickoffMillis(value) {
+export function kickoffMillis(value) {
   if (!value) return NaN;
   const iso = Date.parse(value);
   if (Number.isFinite(iso)) return iso;
