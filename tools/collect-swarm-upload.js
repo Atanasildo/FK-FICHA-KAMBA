@@ -77,67 +77,41 @@ try {
   process.exit(1);
 }
 
-const commonGames = selectCommonSwarmGames(
+const commonPairs = selectCommonSwarmGames(
   discovered.bantu.games,
   discovered.elephant.games,
-  { maxGames: 1500 }
+  { maxGames: 1500, maxKickoffDifferenceSeconds: 90 * 60 }
 );
+const sportApiMatches = [];
 const claimedCanonicalIds = new Set();
 const bantuById = new Map(discovered.bantu.games.map(game => [String(game.id), game]));
-const eligibleGames = commonGames.flatMap(gameId => {
-  const game = bantuById.get(String(gameId));
-  if (!game || !Number.isFinite(Number(game.start_ts))) return [];
+const elephantById = new Map(discovered.elephant.games.map(game => [String(game.id), game]));
+
+// A correspondência entre casas é independente da SportAPI. A SportAPI
+// apenas enriquece os eventos que também tenham correspondência canónica.
+const eligiblePairs = commonPairs.map(pair => {
+  const bantu = bantuById.get(pair.bantuId);
+  const elephant = elephantById.get(pair.elephantId);
+  if (!bantu || !elephant) return null;
   const canonical = selectCanonicalMatch({
-    home_team: game.home,
-    away_team: game.away,
-    kickoff_at: new Date(Number(game.start_ts) * 1000).toISOString()
+    home_team: bantu.home,
+    away_team: bantu.away,
+    kickoff_at: new Date(Number(bantu.start_ts) * 1000).toISOString()
   }, sportApiFixtures, claimedCanonicalIds);
-  if (!canonical) return [];
-  claimedCanonicalIds.add(canonical.id);
-  return [{ swarmId: String(game.id), canonical }];
-});
-const gameIds = eligibleGames.slice(0, 50).map(game => game.swarmId);
+  if (canonical) {
+    claimedCanonicalIds.add(canonical.id);
+    sportApiMatches.push(canonical.id);
+  }
+  return { pair, bantu, elephant, canonical };
+}).filter(Boolean);
 
-console.log("Jogos comuns BantuBet/ElephantBet:", commonGames.length);
-console.log("Jogos com correspondência SportAPI inequívoca:", eligibleGames.length);
-console.log("A recolher:", gameIds.length, "jogos elegíveis.");
+const pairsToCollect = eligiblePairs.slice(0, 50);
+console.log("Jogos comuns BantuBet/ElephantBet:", commonPairs.length);
+console.log("Jogos comuns com correspondência SportAPI:", sportApiMatches.length);
+console.log("A recolher:", pairsToCollect.length, "pares de jogos comuns.");
 
-if (!gameIds.length) {
-  console.error("Nenhum jogo comum tem correspondência inequívoca na SportAPI. Não serão guardadas odds sem ligação segura.");
-
-  // Diagnóstico seguro: mostra se o bloqueio é nome das equipas ou horário,
-  // sem relaxar os critérios de correspondência nem guardar odds.
-  const diagnostics = commonGames.slice(0, 12).flatMap(gameId => {
-    const game = bantuById.get(String(gameId));
-    if (!game || !Number.isFinite(Number(game.start_ts))) return [];
-    const kickoff = Number(game.start_ts) * 1000;
-    const home = normalizeTeamName(game.home);
-    const away = normalizeTeamName(game.away);
-    const nearest = sportApiFixtures
-      .filter(match => Number.isFinite(Date.parse(match.kickoff_at || "")))
-      .map(match => {
-        const deltaMinutes = Math.round(Math.abs(Date.parse(match.kickoff_at) - kickoff) / 60000);
-        const exactTeams = normalizeTeamName(match.home_team) === home &&
-          normalizeTeamName(match.away_team) === away;
-        const reversedTeams = normalizeTeamName(match.home_team) === away &&
-          normalizeTeamName(match.away_team) === home;
-        return {
-          home: match.home_team,
-          away: match.away_team,
-          deltaMinutes,
-          exactTeams,
-          reversedTeams
-        };
-      })
-      .sort((a, b) => a.deltaMinutes - b.deltaMinutes)[0];
-    return [{
-      swarm: game.home + " x " + game.away,
-      kickoff: new Date(kickoff).toISOString(),
-      nearestSportApi: nearest || null
-    }];
-  });
-  console.error("DIAGNÓSTICO DE CORRESPONDÊNCIA (amostra de até 12 jogos):");
-  console.error(JSON.stringify(diagnostics, null, 2));
+if (!pairsToCollect.length) {
+  console.error("Não foram encontrados jogos comuns inequívocos entre as duas casas. Nenhuma odd será guardada.");
   process.exit(1);
 }
 
@@ -148,24 +122,24 @@ let totalSavedSelections = 0;
 let totalSavedRawMarkets = 0;
 let failedBatches = 0;
 
-console.log("A recolher " + gameIds.length + " jogos comuns em lotes de " + batchSize + " para evitar HTTP 413...");
+console.log("A recolher os dois IDs independentes em lotes de " + batchSize + "...");
 
-for (let offset = 0; offset < gameIds.length; offset += batchSize) {
-  const batchIds = gameIds.slice(offset, offset + batchSize);
+for (let offset = 0; offset < pairsToCollect.length; offset += batchSize) {
+  const batch = pairsToCollect.slice(offset, offset + batchSize);
   const batchNumber = Math.floor(offset / batchSize) + 1;
-  console.log("\nLote " + batchNumber + " — " + batchIds.length + " jogos...");
+  const item = batch[0];
+  console.log("\nLote " + batchNumber + " — " + item.bantu.home + " x " + item.bantu.away + "...");
 
   try {
     const [bantu, elephant] = await Promise.all([
-      collectSwarm({ ...SWARM_BOOKMAKERS.bantu, gameIds: batchIds, timeoutMs: 60000 }),
-      collectSwarm({ ...SWARM_BOOKMAKERS.elephant, gameIds: batchIds, timeoutMs: 60000 })
+      collectSwarm({ ...SWARM_BOOKMAKERS.bantu, gameIds: [String(item.bantu.id)], timeoutMs: 60000 }),
+      collectSwarm({ ...SWARM_BOOKMAKERS.elephant, gameIds: [String(item.elephant.id)], timeoutMs: 60000 })
     ]);
 
     if (!bantu.received || !elephant.received) {
-      throw new Error("Uma das casas não devolveu a recolha completa deste lote.");
+      throw new Error("Uma das casas não devolveu a recolha completa deste jogo.");
     }
 
-    // Keep the same ID and payload if the HTTP request must be replayed.
     const batchId = randomUUID();
     const payload = JSON.stringify({ batchId, bantu, elephant });
     let result = null;
@@ -182,9 +156,8 @@ for (let offset = 0; offset < gameIds.length; offset += batchSize) {
         const body = await response.json().catch(() => ({}));
         if (!response.ok || !body.ok) {
           const summary = body.error || body.message || "A nuvem não confirmou a gravação.";
-          const detail = body.detail ? ` | Detalhe: ${body.detail}` : "";
-          const code = body.code ? ` | Código: ${body.code}` : "";
-          const error = new Error(`${summary} (HTTP ${response.status})${detail}${code}`);
+          const detail = body.detail ? " | Detalhe: " + body.detail : "";
+          const error = new Error(summary + " (HTTP " + response.status + ")" + detail);
           error.status = response.status;
           if (response.status < 500 || attempt === 2) throw error;
           lastIngestError = error;
@@ -208,7 +181,7 @@ for (let offset = 0; offset < gameIds.length; offset += batchSize) {
     totalSavedComparisons += Number(result.savedComparisons || 0);
     totalSavedSelections += Number(result.savedSelections || 0);
     totalSavedRawMarkets += Number(result.savedRawMarkets || 0);
-    console.log("Guardado:", result.savedGames, "jogos;", result.savedRawMarkets, "mercados brutos;", result.savedSelections, "selecções comparáveis.");
+    console.log("Guardado:", result.savedGames, "jogo comum;", result.savedRawMarkets, "mercados brutos;", result.savedSelections, "selecções equivalentes.");
   } catch (error) {
     failedBatches++;
     console.error("Falha no lote " + batchNumber + ":", error.message);
@@ -218,7 +191,7 @@ for (let offset = 0; offset < gameIds.length; offset += batchSize) {
 console.log("\nRECOLHA TERMINADA");
 console.log(JSON.stringify({
   discovered: { bantu: discovered.bantu.gamesFound, elephant: discovered.elephant.gamesFound },
-  commonGames: gameIds.length,
+  commonGames: pairsToCollect.length,
   savedGames: totalSavedGames,
   savedComparisons: totalSavedComparisons,
   savedSelections: totalSavedSelections,
