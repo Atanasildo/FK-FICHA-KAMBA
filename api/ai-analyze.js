@@ -115,8 +115,8 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: "Não autorizado." });
   }
 
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) return res.status(503).json({ error: "GROQ_API_KEY ainda não foi configurada no servidor." });
+  const apiKey = AI_PROVIDER === "gemini" ? process.env.GEMINI_API_KEY : process.env.GROQ_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: AI_PROVIDER === "gemini" ? "GEMINI_API_KEY ainda não foi configurada no servidor." : "GROQ_API_KEY ainda não foi configurada no servidor." });
 
   const fixtures = req.body?.fixtures;
   if (!Array.isArray(fixtures) || fixtures.length === 0 || fixtures.length > 50) {
@@ -290,22 +290,24 @@ export default async function handler(req, res) {
       }))];
     const groqSearchResults = groqUrls.map(url => ({ url }));
     const groqSourceText = groqUrls.map((url, index) => `URL da fonte ${index + 1}: ${url}`).join("\n");
+    const geminiChunks = researchPayload.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+    const geminiUrls = geminiChunks.map(chunk => chunk.web?.uri).filter(url => typeof url === "string");
+    const sourceUrls = AI_PROVIDER === "gemini" ? [...new Set(geminiUrls)] : groqUrls;
     const researchText = AI_PROVIDER === "gemini"
       ? [
           researchPayload.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("\n") || "",
-          ...(researchPayload.candidates?.[0]?.groundingMetadata?.groundingChunks || [])
-            .filter(chunk => chunk.web?.uri)
+          ...geminiChunks.filter(chunk => chunk.web?.uri)
             .map(chunk => `Fonte: ${chunk.web.title || "Página Web"} — ${chunk.web.uri}`)
         ].filter(Boolean).join("\n")
       : [groqContent || researchPayload.choices?.[0]?.message?.content || "", groqSourceText].filter(Boolean).join("\n\n");
     if (!researchText.trim()) return res.status(502).json({ error: `${AI_PROVIDER} não devolveu resultados da pesquisa Web.` });
-    const uniqueGroqSourceHosts = new Set(groqSearchResults.map(result => {
-      try { return new URL(result.url).hostname.replace(/^www\./i, "").toLowerCase(); }
+    const uniqueSourceHosts = new Set(sourceUrls.map(url => {
+      try { return new URL(url).hostname.replace(/^www\\./i, "").toLowerCase(); }
       catch { return null; }
     }).filter(Boolean));
-    if (AI_PROVIDER === "groq" && uniqueGroqSourceHosts.size < 2) {
-      console.warn("[FK AI] research:sources-insufficient", { sources: groqSearchResults.length, independentHosts: uniqueGroqSourceHosts.size });
-      return res.status(502).json({ error: "A pesquisa Web da Groq não devolveu pelo menos duas fontes independentes com URL verificável.", sourcesFound: groqSearchResults.length, independentHosts: uniqueGroqSourceHosts.size });
+    if (uniqueSourceHosts.size < 2) {
+      console.warn("[FK AI] research:sources-insufficient", { provider: AI_PROVIDER, sources: sourceUrls.length, independentHosts: uniqueSourceHosts.size });
+      return res.status(502).json({ error: `A pesquisa Web de ${AI_PROVIDER} não devolveu pelo menos duas fontes independentes com URL verificável.`, sourcesFound: sourceUrls.length, independentHosts: uniqueSourceHosts.size });
     }
 
     activeStage = "analysis";
@@ -427,7 +429,7 @@ export default async function handler(req, res) {
       excluded,
       comparisonCount: comparison.comparisonCount,
       rules: { minimumIndividualOdds: MIN_ODDS, bookmakerCountRequired: 2 },
-      note: "A Groq analisou sem receber as odds; depois o servidor comparou cotações equivalentes das duas casas. Nenhum ID de reserva foi solicitado ou criado."
+      note: `${AI_PROVIDER} analisou sem receber as odds; depois o servidor comparou cotações equivalentes das duas casas. Nenhum ID de reserva foi solicitado ou criado.`
     });
   } catch (error) {
     const timedOut = error?.name === "TimeoutError" || error?.name === "AbortError";
