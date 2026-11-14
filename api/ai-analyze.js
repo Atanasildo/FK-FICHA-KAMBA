@@ -280,7 +280,7 @@ export default async function handler(req, res) {
             .filter(chunk => chunk.web?.uri)
             .map(chunk => `Fonte: ${chunk.web.title || "Página Web"} — ${chunk.web.uri}`)
         ].filter(Boolean).join("\n")
-      : [researchPayload.choices?.[0]?.message?.content || "", groqSourceText].filter(Boolean).join("\n\n");
+      : [groqContent || researchPayload.choices?.[0]?.message?.content || "", groqSourceText].filter(Boolean).join("\n\n");
     if (!researchText.trim()) return res.status(502).json({ error: `${AI_PROVIDER} não devolveu resultados da pesquisa Web.` });
     const uniqueGroqSourceHosts = new Set(groqSearchResults.map(result => {
       try { return new URL(result.url).hostname.replace(/^www\./i, "").toLowerCase(); }
