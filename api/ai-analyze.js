@@ -365,6 +365,8 @@ export default async function handler(req, res) {
       model: payload.modelVersion || payload.model || MODEL,
       researchModel: researchPayload.modelVersion || researchPayload.model || MODEL,
       webResearchUsed: true,
+      webResearchCollectedAt: new Date().toISOString(),
+      webResearchEvidence: researchText.slice(0, 12000),
       generatedAt: new Date().toISOString(),
       analysisStatus: verifiedSelections.length ? analysis.analysisStatus : "insufficient_data",
       summary: analysis.summary,
