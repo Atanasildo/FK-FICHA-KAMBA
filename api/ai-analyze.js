@@ -7,8 +7,8 @@ const MODEL = AI_PROVIDER === "gemini"
 const RESEARCH_MODEL = AI_PROVIDER === "gemini"
   ? MODEL
   : (process.env.GROQ_RESEARCH_MODEL || "openai/gpt-oss-20b");
-const RESEARCH_TIMEOUT_MS = 25000;
-const ANALYSIS_TIMEOUT_MS = 20000;
+const RESEARCH_TIMEOUT_MS = 30000;
+const ANALYSIS_TIMEOUT_MS = 18000;
 const MIN_ODDS = 1.4;
 
 const SYSTEM_PROMPT = `És o agente autónomo de análise desportiva do FK — Ficha Kamba, focado em futebol e no mercado angolano.
