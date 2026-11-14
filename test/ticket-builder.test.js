@@ -29,10 +29,10 @@ test("exclui selecções abaixo da odd mínima ou sem cotação de uma das casas
   }, Date.parse(publishedAt)), null);
 });
 
-test("aceita apenas jogos com pelo menos seis horas de antecedência", () => {
+test("aceita apenas jogos do mesmo dia com pelo menos uma hora de antecedência", () => {
   const now = Date.parse(publishedAt);
   assert.ok(normalizeCandidate({ ...base, kickoff: "2026-11-12T14:00:00.000Z" }, now));
-  assert.equal(normalizeCandidate({ ...base, kickoff: "2026-11-12T12:00:00.000Z" }, now), null);
+  assert.equal(normalizeCandidate({ ...base, kickoff: "2026-11-12T08:30:00.000Z" }, now), null);
 });
 
 test("exige EV mínimo individual nas duas casas", () => {
@@ -69,7 +69,7 @@ test("cria duas versões com selecções idênticas e odds próprias por casa", 
     home: `Home ${fixtureId}`,
     away: `Away ${fixtureId}`,
     competition: `League ${fixtureId}`,
-    kickoff: "2026-11-15T18:00:00.000Z",
+    kickoff: "2026-11-12T18:00:00.000Z",
     market: `Market ${index}`,
     selection: `Selection ${index}`,
     rationale: "A evidência estatística sustenta esta selecção.",
