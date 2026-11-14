@@ -22,7 +22,7 @@ REGRAS DE DADOS
 
 ANÁLISE
 8. Analisa primeiro o desempenho desportivo, sem usar odds para decidir a selecção.
-9. Considera forma recente, golos marcados/sofridos, desempenho casa/fora, confrontos directos, classificação, calendário, descanso e ausências confirmadas, apenas quando os dados existirem. Se matchStats estiver ausente, só podes apoiar a análise na forma recente quando existirem pelo menos 3 resultados terminados, com data e placar, para cada equipa, nos últimos 180 dias; caso contrário, rejeita o jogo.
+9. Considera forma recente, golos marcados/sofridos, desempenho casa/fora, confrontos directos, classificação, calendário, descanso e ausências confirmadas, apenas quando os dados existirem. Se stats.source for "InternetSearch" ou matchStats estiver ausente, a pesquisa Web tem de encontrar pelo menos 3 resultados terminados, com data e placar, para cada equipa, nos últimos 180 dias, confirmados por pelo menos 2 fontes independentes e identificáveis. Se não conseguir confirmar estes dados, rejeita o jogo. Nunca uses páginas de prognósticos como prova estatística.
 10. Avalia cada mercado pelo seu contexto específico. Não assumes que uma equipa favorita é automaticamente uma boa aposta.
 11. Escolhe apenas mercados e selecções que existam exactamente nos mercados fornecidos para o jogo. Não cries mercados novos. Mantém sempre a linha, o tipo e a base exactos de cada mercado; duas selecções chamadas apenas “Mais de” com linhas diferentes são selecções diferentes.
 12. Evita mercados demasiado dependentes de acontecimentos imprevisíveis quando não há evidência suficiente.
@@ -204,7 +204,7 @@ export default async function handler(req, res) {
   try {
     const researchStartedAt = Date.now();
     console.info("[FK AI] research:start", { provider: AI_PROVIDER, fixtures: aiInput.length, model: MODEL });
-    const researchPrompt = "És o investigador desportivo do FK. Pesquisa na Web para cada jogo, dando prioridade a fontes oficiais de clubes, ligas e federações. Procura notícias recentes sobre forma, ausências confirmadas, calendário, descanso e contexto competitivo. Não procures odds nem previsões de apostas. Não inventes dados. Se não encontrares informação fiável, diz claramente que não foi encontrada. Indica URLs/fontes e a data de cada informação.";
+    const researchPrompt = "És o investigador desportivo do FK. Pesquisa na Web cada jogo. Dá prioridade a sites oficiais de ligas, federações e clubes e a bases de resultados desportivos reconhecidas. Para CADA equipa, tenta confirmar os 3 jogos oficiais mais recentes dos últimos 180 dias, com data, adversário e resultado; procura também classificação, desempenho casa/fora, confrontos directos e notícias de ausências confirmadas. Para cada facto, indica URL, nome da fonte e data. Exige pelo menos 2 fontes independentes para confirmar os resultados recentes. Distingue factos confirmados de informação não encontrada ou contraditória. Se o contexto do jogo indicar source=InternetSearch, não assumes que existem estatísticas estruturadas: a pesquisa tem de fornecer a evidência acima, caso contrário recomenda rejeitar o jogo. Não procures odds nem prognósticos de apostas. Nunca inventes resultados, estatísticas, fontes ou URLs.";
     const researchResponse = AI_PROVIDER === "gemini"
       ? await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
           method: "POST",
@@ -262,7 +262,7 @@ export default async function handler(req, res) {
     const analysisStartedAt = Date.now();
     console.info("[FK AI] analysis:start", { provider: AI_PROVIDER, fixtures: aiInput.length, model: MODEL });
     const analysisInput = {
-      task: "Analisa a evidência desportiva e escolhe apenas mercados sustentados. As odds não são fornecidas. Usa a pesquisa Web como complemento, não como substituto das estatísticas verificadas.",
+      task: "Analisa a evidência desportiva e escolhe apenas mercados sustentados. As odds não são fornecidas. Para jogos com stats.source=InternetSearch, só aceita se a pesquisa apresentar 3 resultados recentes por equipa, com datas e placares, confirmados por pelo menos 2 fontes independentes; caso contrário rejeita o jogo. Nunca inventes estatísticas.",
       timezone: "Africa/Luanda", fixtures: aiInput, webResearch: researchText
     };
     const analysisResponse = AI_PROVIDER === "gemini"
