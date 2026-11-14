@@ -11,7 +11,7 @@ test("só aceita uma selecção com odds verificadas nas duas casas", () => {
   const now = Date.parse("2026-11-14T10:00:00.000Z");
   const candidate = {
     fixtureId: "sport-1", home: "Porto", away: "Braga", competition: "Liga",
-    kickoff: "2026-11-15T18:00:00.000Z",
+    kickoff: "2026-11-14T12:00:00.000Z",
     market: "Total de golos", selection: "Mais de 1.5",
     rationale: "A forma recente sustenta esta selecção.",
     fairProbability: 0.7,
@@ -33,7 +33,7 @@ test("rejeita odds abaixo do mínimo ou EV insuficiente em qualquer uma das casa
   const now = Date.parse("2026-11-14T10:00:00.000Z");
   const candidate = {
     fixtureId: "sport-2", home: "Benfica", away: "Sporting", competition: "Liga",
-    kickoff: "2026-11-15T18:00:00.000Z",
+    kickoff: "2026-11-14T12:00:00.000Z",
     market: "Resultado", selection: "Benfica",
     rationale: "A forma recente sustenta esta selecção.",
     fairProbability: 0.5,
@@ -43,4 +43,36 @@ test("rejeita odds abaixo do mínimo ou EV insuficiente em qualquer uma das casa
     ]
   };
   assert.equal(normalizeCandidate(candidate, now), null);
+});
+
+test("rejeita jogos de outro dia de Luanda mesmo com antecedência suficiente", () => {
+  const now = Date.parse("2026-11-14T10:00:00.000Z");
+  const candidate = {
+    fixtureId: "tomorrow", home: "Porto", away: "Braga", competition: "Liga",
+    kickoff: "2026-11-14T23:30:00.000Z",
+    market: "Total de golos", selection: "Mais de 1.5",
+    rationale: "A forma recente sustenta esta selecção.",
+    fairProbability: 0.7,
+    quotes: [
+      { bookmaker: "BantuBet", odds: 1.8, collectedAt: "2026-11-14T09:50:00.000Z" },
+      { bookmaker: "ElephantBet", odds: 1.9, collectedAt: "2026-11-14T09:51:00.000Z" }
+    ]
+  };
+  assert.equal(normalizeCandidate(candidate, now), null);
+});
+
+test("aceita jogos de hoje com pelo menos uma hora de antecedência", () => {
+  const now = Date.parse("2026-11-14T10:00:00.000Z");
+  const candidate = {
+    fixtureId: "today", home: "Porto", away: "Braga", competition: "Liga",
+    kickoff: "2026-11-14T11:30:00.000Z",
+    market: "Total de golos", selection: "Mais de 1.5",
+    rationale: "A forma recente sustenta esta selecção.",
+    fairProbability: 0.7,
+    quotes: [
+      { bookmaker: "BantuBet", odds: 1.8, collectedAt: "2026-11-14T09:50:00.000Z" },
+      { bookmaker: "ElephantBet", odds: 1.9, collectedAt: "2026-11-14T09:51:00.000Z" }
+    ]
+  };
+  assert.ok(normalizeCandidate(candidate, now));
 });
