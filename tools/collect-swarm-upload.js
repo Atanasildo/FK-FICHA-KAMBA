@@ -74,7 +74,7 @@ try {
   console.log("Calendário SportAPI:", sportApiDiscovered, "jogos encontrados.");
 } catch (error) {
   console.error("Não foi possível actualizar o calendário SportAPI:", error.message);
-  process.exit(1);
+  console.error("A recolha e o cruzamento entre as duas casas continuarão; a análise ficará suspensa.");
 }
 
 const commonPairs = selectCommonSwarmGames(
