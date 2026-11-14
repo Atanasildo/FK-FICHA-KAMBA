@@ -376,7 +376,7 @@ export default async function handler(req, res) {
             max_tokens: 5000,
             response_format: { type: "json_object" },
             messages: [
-              { role: "system", content: SYSTEM_PROMPT + "\\n\\nDevolve exclusivamente um objecto JSON válido que respeite a estrutura pedida. Não uses Markdown nem texto fora do JSON." },
+              { role: "system", content: SYSTEM_PROMPT + "\\n\\nEsquema JSON obrigatório: " + JSON.stringify(responseSchema) + "\\nDevolve exclusivamente um objecto JSON válido que respeite este esquema. Não uses Markdown nem texto fora do JSON." },
               { role: "user", content: JSON.stringify(analysisInput) }
             ]
           }),
