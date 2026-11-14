@@ -249,8 +249,15 @@ export default async function handler(req, res) {
         detail: researchPayload.error?.message || `Resposta HTTP ${researchResponse.status}.`
       });
     }
-    const researchText = researchPayload.choices?.[0]?.message?.content || "";
-    if (!researchText.trim()) return res.status(502).json({ error: "A Groq não devolveu resultados da pesquisa Web." });
+    const researchText = AI_PROVIDER === "gemini"
+      ? [
+          researchPayload.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("\n") || "",
+          ...(researchPayload.candidates?.[0]?.groundingMetadata?.groundingChunks || [])
+            .filter(chunk => chunk.web?.uri)
+            .map(chunk => `Fonte: ${chunk.web.title || "Página Web"} — ${chunk.web.uri}`)
+        ].filter(Boolean).join("\n")
+      : (researchPayload.choices?.[0]?.message?.content || "");
+    if (!researchText.trim()) return res.status(502).json({ error: `${AI_PROVIDER} não devolveu resultados da pesquisa Web.` });
 
     const analysisStartedAt = Date.now();
     console.info("[FK AI] analysis:start", { provider: AI_PROVIDER, fixtures: aiInput.length, model: MODEL });
@@ -304,8 +311,10 @@ export default async function handler(req, res) {
         detail: payload.error?.message || `Resposta HTTP ${analysisResponse.status}.`
       });
     }
-    const raw = payload.choices?.[0]?.message?.content;
-    if (!raw) return res.status(502).json({ error: "A Groq devolveu uma resposta vazia ou sem JSON estruturado." });
+    const raw = AI_PROVIDER === "gemini"
+      ? payload.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("\n")
+      : payload.choices?.[0]?.message?.content;
+    if (!raw) return res.status(502).json({ error: `${AI_PROVIDER} devolveu uma resposta vazia ou sem JSON estruturado.` });
     const analysis = JSON.parse(raw);
 
     // Só depois de a IA escolher o mercado é que consultamos as cotações das casas.
@@ -352,9 +361,9 @@ export default async function handler(req, res) {
 
     res.setHeader("Cache-Control", "no-store");
     return res.status(200).json({
-      provider: "Groq",
-      model: payload.model || MODEL,
-      researchModel: researchPayload.model || MODEL,
+      provider: AI_PROVIDER === "gemini" ? "Gemini" : "Groq",
+      model: payload.modelVersion || payload.model || MODEL,
+      researchModel: researchPayload.modelVersion || researchPayload.model || MODEL,
       webResearchUsed: true,
       generatedAt: new Date().toISOString(),
       analysisStatus: verifiedSelections.length ? analysis.analysisStatus : "insufficient_data",
