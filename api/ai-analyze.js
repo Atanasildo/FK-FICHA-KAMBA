@@ -6,7 +6,7 @@ const MODEL = AI_PROVIDER === "gemini"
   : (process.env.GROQ_MODEL || "openai/gpt-oss-20b");
 const RESEARCH_MODEL = AI_PROVIDER === "gemini"
   ? MODEL
-  : (process.env.GROQ_RESEARCH_MODEL || "groq/compound-mini");
+  : (process.env.GROQ_RESEARCH_MODEL || "openai/gpt-oss-20b");
 const RESEARCH_TIMEOUT_MS = 25000;
 const ANALYSIS_TIMEOUT_MS = 20000;
 const MIN_ODDS = 1.4;
@@ -227,9 +227,13 @@ export default async function handler(req, res) {
           method: "POST",
           headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: RESEARCH_MODEL, max_completion_tokens: 3500,
+            model: RESEARCH_MODEL,
+            max_completion_tokens: 3500,
+            reasoning_effort: "low",
+            tool_choice: "required",
+            tools: [{ type: "browser_search" }],
             messages: [
-              { role: "system", content: researchPrompt },
+              { role: "system", content: researchPrompt + "\\n\\nIMPORTANTE: devolve no fim uma secção FONTES com o título e URL completo (https://...) de cada página consultada. Não inventes URLs." },
               { role: "user", content: JSON.stringify({ timezone: "Africa/Luanda", fixtures: aiInput.map(({ markets, ...fixture }) => fixture) }) }
             ]
           }),
@@ -256,13 +260,13 @@ export default async function handler(req, res) {
         detail: researchPayload.error?.message || `Resposta HTTP ${researchResponse.status}.`
       });
     }
-    const groqSearchResults = AI_PROVIDER === "gemini" ? [] :
-      (researchPayload.choices?.[0]?.message?.executed_tools || [])
-        .flatMap(tool => tool.search_results?.results || [])
-        .filter(result => typeof result.url === "string" && /^https?:\/\//i.test(result.url));
-    const groqSourceText = groqSearchResults.map((result, index) =>
-      `Fonte ${index + 1}: ${result.title || "Página Web"}\nURL: ${result.url}\nConteúdo: ${result.content || "Sem excerto disponível"}`
-    ).join("\n\n");
+    const groqMessage = researchPayload.choices?.[0]?.message || {};
+    const groqContent = typeof groqMessage.content === "string" ? groqMessage.content : "";
+    const groqUrls = AI_PROVIDER === "gemini" ? [] :
+      [...new Set((groqContent.match(/https?:\\/\\/[^\\s)\\]}>"]+/gi) || [])
+        .map(url => url.replace(/[.,;]+$/, ""))];
+    const groqSearchResults = groqUrls.map(url => ({ url }));
+    const groqSourceText = groqUrls.map((url, index) => `URL da fonte ${index + 1}: ${url}`).join("\\n");
     const researchText = AI_PROVIDER === "gemini"
       ? [
           researchPayload.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("\n") || "",
