@@ -321,12 +321,23 @@ export default async function handler(req, res) {
     const deepseekMessage = researchPayload.choices?.[0]?.message || {};
     const deepseekCalls = Array.isArray(deepseekMessage.server_tool_calls) ? deepseekMessage.server_tool_calls : [];
     const deepseekSources = deepseekCalls.flatMap(step => Array.isArray(step.calls)
-      ? step.calls.flatMap(call => Array.isArray(call.sources) ? call.sources : (call.page?.url ? [{ url: call.page.url, title: call.page.title }] : []))
+      ? step.calls.flatMap(call => {
+          const actionSources = Array.isArray(call.action?.sources) ? call.action.sources : [];
+          const directSources = Array.isArray(call.sources) ? call.sources : [];
+          const pageSource = call.page?.url ? [{ url: call.page.url, title: call.page.title }] : [];
+          return [...actionSources, ...directSources, ...pageSource];
+        })
       : []);
-    const deepseekAnnotations = Array.isArray(deepseekMessage.annotations) ? deepseekMessage.annotations : [];
+    const deepseekAnnotations = [
+      ...(Array.isArray(deepseekMessage.annotations) ? deepseekMessage.annotations : []),
+      ...(Array.isArray(deepseekMessage.citations) ? deepseekMessage.citations : [])
+    ];
     const deepseekUrls = [...new Set([
       ...deepseekSources.map(source => source.url),
-      ...deepseekAnnotations.map(annotation => annotation.url_citation?.url || annotation.url)
+      ...deepseekAnnotations.map(annotation => annotation.url_citation?.url || annotation.url),
+      ...(typeof deepseekMessage.content === "string"
+        ? (deepseekMessage.content.match(/https?:\\/\\/[^\\s)\\]}>,]+/g) || []).map(url => url.replace(/[),.;]+$/, ""))
+        : [])
     ].filter(url => {
       if (typeof url !== "string") return false;
       try { return ["http:", "https:"].includes(new URL(url).protocol); }
