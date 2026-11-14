@@ -1,52 +1,64 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildTicketBatch } from "../lib/tickets/builder.js";
+import { buildTicketBatch, normalizeCandidate } from "../lib/tickets/builder.js";
 
 const publishedAt = "2026-11-12T08:00:00.000Z";
 const base = {
   fixtureId: "fx-1", home: "Home FC", away: "Away FC",
   competition: "League A", kickoff: "2026-11-12T16:00:00.000Z",
-  market: "TOTAL_GOALS", selection: "Over 1.5", bestOdds: 1.8,
-  fairProbability: 0.65, bestBookmaker: "BantuBet",
-  rationale: "A equipa apresenta média ofensiva consistente nos últimos jogos."
+  market: "TOTAL_GOALS", selection: "Over 1.5",
+  fairProbability: 0.7,
+  rationale: "A equipa apresenta média ofensiva consistente nos últimos jogos.",
+  quotes: [
+    { bookmaker: "BantuBet", odds: 1.8, collectedAt: publishedAt },
+    { bookmaker: "ElephantBet", odds: 1.9, collectedAt: publishedAt }
+  ]
 };
 
-test("exclui selecções abaixo da odd mínima e jogos com menos de três horas", () => {
-  const result = buildTicketBatch([
-    { ...base, fixtureId: "low-odd", bestOdds: 1.39 },
-    { ...base, fixtureId: "soon", kickoff: "2026-11-12T10:00:00.000Z" }
-  ], { publishedAt });
-  assert.equal(result.pool_size, 2);
-  assert.equal(result.slips.length, 0);
-});
-
-
-test("aceita jogos que começam com pelo menos três horas de antecedência", () => {
-  const pool = Array.from({ length: 5 }, (_, index) => ({
+test("exclui selecções abaixo da odd mínima ou sem cotação de uma das casas", () => {
+  assert.equal(normalizeCandidate({
     ...base,
-    fixtureId: `four-hours-${index}`,
-    home: `Home FC ${index}`,
-    away: `Away FC ${index}`,
-    competition: `League ${index}`,
-    kickoff: "2026-11-12T12:00:00.000Z",
-    bestOdds: 2,
-    fairProbability: 0.7
-  }));
-  const result = buildTicketBatch(pool, { publishedAt });
-  assert.equal(result.pool_size, 5);
-  assert.ok(result.slips.length > 0);
+    quotes: [
+      { bookmaker: "BantuBet", odds: 1.39, collectedAt: publishedAt },
+      { bookmaker: "ElephantBet", odds: 1.9, collectedAt: publishedAt }
+    ]
+  }, Date.parse(publishedAt)), null);
+  assert.equal(normalizeCandidate({
+    ...base,
+    quotes: base.quotes.filter(q => q.bookmaker === "BantuBet")
+  }, Date.parse(publishedAt)), null);
 });
 
-test("não inventa boletins quando não há candidatos suficientes", () => {
+test("aceita apenas jogos com pelo menos seis horas de antecedência", () => {
+  const now = Date.parse(publishedAt);
+  assert.ok(normalizeCandidate({ ...base, kickoff: "2026-11-12T14:00:00.000Z" }, now));
+  assert.equal(normalizeCandidate({ ...base, kickoff: "2026-11-12T12:00:00.000Z" }, now), null);
+});
+
+test("exige EV mínimo individual nas duas casas", () => {
+  const candidate = {
+    ...base,
+    fairProbability: 0.5,
+    quotes: [
+      { bookmaker: "BantuBet", odds: 1.8, collectedAt: publishedAt },
+      { bookmaker: "ElephantBet", odds: 1.45, collectedAt: publishedAt }
+    ]
+  };
+  assert.equal(normalizeCandidate(candidate, Date.parse(publishedAt)), null);
+});
+
+test("não inventa boletins quando não há candidatos comuns suficientes", () => {
   const result = buildTicketBatch([base], { publishedAt });
   assert.equal(result.slips.length, 0);
+  assert.equal(result.sharedTicketGroups, 0);
   assert.equal(result.validation.valid, false);
 });
 
-test("devolve o contrato de lote e métricas mesmo quando não atinge seis boletins", () => {
+test("devolve o contrato de lote e métricas mesmo sem candidatos", () => {
   const result = buildTicketBatch([], { publishedAt });
   assert.equal(result.level, "A");
   assert.equal(result.pool_size, 0);
+  assert.equal(result.sharedTicketGroups, 0);
   assert.equal(result.validation.sixSlipsMinimum, false);
   assert.equal(result.validation.probabilityAtLeastOneMinimum, false);
 });
