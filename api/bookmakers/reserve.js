@@ -20,7 +20,7 @@ function kickoffMillis(value) {
   if (!value) return NaN;
   const iso = Date.parse(value);
   if (Number.isFinite(iso)) return iso;
-  const match = String(value).match(/^(\\d{2})[.\\/](\\d{2})[.\\/](\\d{4}),?\\s+(\\d{2}):(\\d{2})$/);
+  const match = String(value).match(/^(\d{2})[./](\d{2})[./](\d{4}),?\s+(\d{2}):(\d{2})$/);
   if (!match) return NaN;
   const [, day, month, year, hour, minute] = match;
   // Africa/Luanda = UTC+1.
@@ -82,7 +82,7 @@ function buildPayload(site, selections, suppliedTotal) {
 export function extractBookingId(data) {
   const direct = data?.share?.bookId;
   if (direct != null && String(direct).trim()) return String(direct);
-  return data?.share?.bookingLink?.match(/bookingId=(\\d+)/)?.[1] || null;
+  return data?.share?.bookingLink?.match(/bookingId=(\d+)/)?.[1] || null;
 }
 
 export async function createBooking({ site, selections, totalOdd }) {
@@ -109,7 +109,7 @@ export async function createBooking({ site, selections, totalOdd }) {
   } finally { clearTimeout(timeout); }
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(`A casa recusou a criação da reserva (HTTP ${response.status}).`);
-  const bookingId = data.share?.bookId || data.share?.bookingLink?.match(/bookingId=(\\d+)/)?.[1];
+  const bookingId = extractBookingId(data);
   if (!bookingId) throw new Error("A casa não devolveu bookingId.");
   return {
     ok: true, site: configs[site].siteName, bookingId: String(bookingId),
