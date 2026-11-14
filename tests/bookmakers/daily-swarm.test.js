@@ -34,7 +34,7 @@ test("exclui equipas diferentes, ordem invertida e horários incompatíveis", ()
     fixture("wrong-time", 2300, "Boavista", "Farense")
   ];
   const elephant = [
-    fixture("elephant-different-teams", 2000, "Porto", "Braga"),
+    fixture("elephant-different-teams", 2000, "Benfica", "Sporting"),
     fixture("elephant-reversed", 2200, "Braga", "Porto"),
     fixture("elephant-wrong-time", 2300 + 4 * 60 * 60, "Boavista", "Farense")
   ];
