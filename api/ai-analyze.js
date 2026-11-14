@@ -199,6 +199,8 @@ export default async function handler(req, res) {
   const fixtureQuotes = fixtures.filter(f => safeIds.has(f.id) && !isStarted(f.status));
   const aiInput = deduplicatedFixtures.map(({ stats, markets, ...fixture }) => ({ ...fixture, stats, markets }));
   try {
+    const researchStartedAt = Date.now();
+    console.info("[FK Groq] research:start", { fixtures: aiInput.length, model: MODEL });
     const researchResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
@@ -222,7 +224,20 @@ export default async function handler(req, res) {
     });
 
     const researchPayload = await researchResponse.json().catch(() => ({}));
+    console.info("[FK Groq] research:response", {
+      status: researchResponse.status,
+      elapsedMs: Date.now() - researchStartedAt,
+      retryAfter: researchResponse.headers.get("retry-after"),
+      rateLimitRemaining: researchResponse.headers.get("x-ratelimit-remaining-requests"),
+      rateLimitReset: researchResponse.headers.get("x-ratelimit-reset-requests")
+    });
     if (!researchResponse.ok) {
+      console.warn("[FK Groq] research:failed", {
+        status: researchResponse.status,
+        type: researchPayload.error?.type || null,
+        code: researchPayload.error?.code || null,
+        detail: researchPayload.error?.message || null
+      });
       return res.status(researchResponse.status === 429 ? 429 : 502).json({
         error: researchResponse.status === 429 ? "Limite de pesquisa Web da Groq atingido." : "A pesquisa Web da Groq falhou.",
         detail: researchPayload.error?.message || `Resposta HTTP ${researchResponse.status}.`
@@ -231,6 +246,8 @@ export default async function handler(req, res) {
     const researchText = researchPayload.choices?.[0]?.message?.content || "";
     if (!researchText.trim()) return res.status(502).json({ error: "A Groq não devolveu resultados da pesquisa Web." });
 
+    const analysisStartedAt = Date.now();
+    console.info("[FK Groq] analysis:start", { fixtures: aiInput.length, model: MODEL });
     const analysisResponse = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
@@ -252,7 +269,20 @@ export default async function handler(req, res) {
     });
 
     const payload = await analysisResponse.json().catch(() => ({}));
+    console.info("[FK Groq] analysis:response", {
+      status: analysisResponse.status,
+      elapsedMs: Date.now() - analysisStartedAt,
+      retryAfter: analysisResponse.headers.get("retry-after"),
+      rateLimitRemaining: analysisResponse.headers.get("x-ratelimit-remaining-requests"),
+      rateLimitReset: analysisResponse.headers.get("x-ratelimit-reset-requests")
+    });
     if (!analysisResponse.ok) {
+      console.warn("[FK Groq] analysis:failed", {
+        status: analysisResponse.status,
+        type: payload.error?.type || null,
+        code: payload.error?.code || null,
+        detail: payload.error?.message || null
+      });
       return res.status(analysisResponse.status === 429 ? 429 : 502).json({
         error: analysisResponse.status === 429 ? "Limite da análise Groq atingido." : "A Groq não conseguiu concluir a análise estruturada.",
         detail: payload.error?.message || `Resposta HTTP ${analysisResponse.status}.`
