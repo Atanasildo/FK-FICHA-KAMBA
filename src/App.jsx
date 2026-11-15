@@ -250,13 +250,16 @@ function AnalysisPanel({ row }) {
         <span>{match.kickoff_at ? new Date(match.kickoff_at).toLocaleString('pt-AO') : 'Data não indicada'}</span>
         <span>{row.provider || 'ChatGPT'}{row.model ? ' · ' + row.model : ''}</span>
       </div>
-      {row.summary && <p className="panel-note">{row.summary}</p>}
+      {(row.summary || report.verdict) && <p className="panel-note">{row.summary || report.verdict}</p>}
+      {Array.isArray(report.riskFlags) && report.riskFlags.length > 0 && <p className="panel-note">Riscos: {report.riskFlags.join(' · ')}</p>}
       {selections.length ? <div className="history-legs">{selections.map((pick,index) => <div key={pick.id || index}>
         <span>{pick.market || 'Mercado'} · {pick.selection || 'Selecção'}</span>
         <small>Odd: {pick.bestOdds ?? pick.odds ?? '—'} · Probabilidade: {percent(pick.probability ?? pick.estimatedProbability)} · Edge: {percent(pick.edge)} · Valor esperado: {percent(pick.expectedValue)}</small>
         {pick.bestBookmaker && <small>Melhor cotação: {pick.bestBookmaker}</small>}
+        {pick.confidence && <small>Confiança: {pick.confidence}</small>}
         {pick.rationale && <small>{pick.rationale}</small>}
       </div>)}</div> : <div className="panel-note">Relatório sem selecções recomendadas. Consulta os fundamentos e os riscos no relatório completo.</div>}
+      {Array.isArray(report.sources) && report.sources.length > 0 && <div className="panel-note">Fontes: {report.sources.map((source,index) => <React.Fragment key={source.url || index}>{index > 0 ? ' · ' : ''}{source.url ? <a href={source.url} target="_blank" rel="noreferrer">{source.name || source.url}</a> : source.name || 'Fonte não identificada'}</React.Fragment>)}</div>}
       <div className="ticket-detail-footer"><span>ANÁLISE GUARDADA</span><b>{row.generated_at ? new Date(row.generated_at).toLocaleString('pt-AO') : '—'}</b></div>
     </div>
   </section>;
