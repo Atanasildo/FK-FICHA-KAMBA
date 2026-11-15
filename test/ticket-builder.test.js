@@ -35,7 +35,7 @@ test("aceita apenas jogos do mesmo dia com pelo menos uma hora de antecedência"
   assert.equal(normalizeCandidate({ ...base, kickoff: "2026-11-12T08:30:00.000Z" }, now), null);
 });
 
-test("exige EV mínimo individual nas duas casas", () => {
+test("não aplica um corte automático de EV quando a odd e a análise são válidas", () => {
   const candidate = {
     ...base,
     fairProbability: 0.5,
@@ -44,7 +44,7 @@ test("exige EV mínimo individual nas duas casas", () => {
       { bookmaker: "ElephantBet", odds: 1.45, collectedAt: publishedAt }
     ]
   };
-  assert.equal(normalizeCandidate(candidate, Date.parse(publishedAt)), null);
+  assert.ok(normalizeCandidate(candidate, Date.parse(publishedAt)));
 });
 
 test("não inventa boletins quando não há candidatos comuns suficientes", () => {
