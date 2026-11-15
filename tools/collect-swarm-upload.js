@@ -91,7 +91,7 @@ console.log("Cada jogo terá até " + maxCollectionAttempts + " tentativas em ca
 
 async function collectOnePair(item, index) {
   const label = item.bantu.home + " x " + item.bantu.away;
-  console.log("\\nJogo " + (index + 1) + "/" + pairsToCollect.length + " — " + label + "...");
+  console.log("\nJogo " + (index + 1) + "/" + pairsToCollect.length + " — " + label + "...");
 
   let bantu;
   let elephant;
