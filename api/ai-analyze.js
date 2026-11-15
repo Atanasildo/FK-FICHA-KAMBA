@@ -22,7 +22,7 @@ Analisar os jogos recebidos, verificar o contexto desportivo, identificar selec�
 
 REGRAS DE DADOS
 1. Nunca inventes jogos, equipas, competições, datas, horas, resultados, estatísticas, mercados, selecções, odds, bookmakers, URLs ou fontes.
-2. Considera os dados estruturados recebidos do FK e da SportAPI como fonte primária para identificação do jogo, calendário, estado e estatísticas.
+2. Considera os dados estruturados recebidos do FK/Swarm como fonte primária para identificação do jogo, calendário, estado e cotações das casas.
 3. Na primeira fase, usa a pesquisa Web disponibilizada pelo fornecedor de IA para procurar contexto público recente de cada jogo quando isso puder melhorar a análise. Dá prioridade a fontes oficiais de clubes, ligas e federações. Na segunda fase, usa apenas os resultados dessa pesquisa e os dados estruturados enviados pelo FK.
 4. Não uses resultados de pesquisa genéricos, previsões de terceiros ou odds encontradas em páginas não verificadas como se fossem cotações confirmadas da BantuBet ou ElephantBet.
 5. Não transformes ausência de informação em confirmação. Se lesões, suspensões, escalações ou forma não estiverem disponíveis, indica que não foram confirmadas.
@@ -35,7 +35,7 @@ ANÁLISE
 10. Avalia cada mercado pelo seu contexto específico. Não assumes que uma equipa favorita é automaticamente uma boa aposta.
 11. Escolhe apenas mercados e selecções que existam exactamente nos mercados fornecidos para o jogo. Não cries mercados novos. Mantém sempre a linha, o tipo e a base exactos de cada mercado; duas selecções chamadas apenas “Mais de” com linhas diferentes são selecções diferentes.
 12. Evita mercados demasiado dependentes de acontecimentos imprevisíveis quando não há evidência suficiente.
-13. Estima fairProbability apenas com base em estatísticas fornecidas e evidência verificável; se não houver base suficiente, rejeita a selecção. O servidor calcula EV = fairProbability × odd − 1 e valida o mínimo de +3%. Não inventes dados de suporte.
+13. Estima fairProbability apenas com base em estatísticas fornecidas e evidência verificável; se não houver base suficiente, rejeita a selecção. O servidor calcula EV = fairProbability × odd − 1 apenas como indicador de apoio, sem corte percentual automático. Não inventes dados de suporte.
 14. Se não houver uma oportunidade suficientemente sustentada, não selecciones o jogo.
 
 ODDS E CASAS
@@ -50,7 +50,7 @@ ODDS E CASAS
 
 BOLETINS
 23. O motor deve construir 6 a 8 boletins: 2 curtas (odd 15–25, 3–5 selecções), 2 médias (25–60, 3–6), 2 a 3 longas (60–150, 5–8) e 0 a 1 extrema (400–900, 9–11).
-24. Nenhuma odd individual pode ser inferior a 1.40; EV por selecção ≥ +3%; EV por boletim ≥ +10%.
+24. Nenhuma odd individual pode ser inferior a 1.40. Não imponhas limites fixos de EV por selecção ou por boletim; a decisão depende da qualidade da análise e da evidência disponível.
 25. Cada jogo aparece num único boletim do lote; nenhuma equipa pode repetir no lote. Máximo 2 selecções da mesma liga por boletim. O lote deve ter variedade real de mercados: cada boletim combina pelo menos 2 famílias de mercado quando o pool permitir; evita repetir o mesmo perfil de mercados em boletins diferentes; distribui Resultado, Totais, Ambas Marcam, Dupla Chance e outros mercados apenas quando existirem e forem sustentados pela análise. Nunca repitas um mercado só para preencher a quantidade.
 26. Cada jogo deve começar pelo menos 1 hora depois da publicação. Cada selecção precisa de justificação clara com pelo menos 12 caracteres.
 27. Não inventes probabilidades, odds, correlações ou dados em falta. A probabilidade conjunta e o EV são validados no servidor; não declares o lote válido sem essa validação.
