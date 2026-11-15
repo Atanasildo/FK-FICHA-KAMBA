@@ -6,12 +6,22 @@ import {
 } from "../lib/bookmakers/swarm.js";
 import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
 
-const baseUrl = (process.env.FK_API_URL || "https://fk-ficha-kamba.vercel.app").replace(/\/$/, "");
-const ingestUrl = process.env.FK_INGEST_URL || baseUrl + "/api/bookmakers/save-comparison";
+const dryRun = process.argv.includes("--dry-run");
+const maxGamesArg = process.argv.find(arg => arg.startsWith("--max-games="));
+const maxGames = Number(maxGamesArg?.split("=")[1] ?? process.env.FK_MAX_GAMES ?? 1);
+if (!Number.isInteger(maxGames) || maxGames < 1 || maxGames > 50) {
+  console.error("FK_MAX_GAMES/--max-games deve ser um número inteiro entre 1 e 50.");
+  process.exit(1);
+}
+const baseUrl = (process.env.FK_API_URL || "").replace(/\/$/, "");
+const ingestUrl = process.env.FK_INGEST_URL || (baseUrl ? baseUrl + "/api/bookmakers/save-comparison" : "");
 const secret = process.env.CRON_SECRET;
 const vercelBypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-const dryRun = process.argv.includes("--dry-run");
 
+if (!dryRun && !ingestUrl) {
+  console.error("Falta definir FK_API_URL para escolher explicitamente o ambiente de destino. Por segurança, não será usada Production por defeito.");
+  process.exit(1);
+}
 if (!dryRun && !secret) {
   console.error("Falta definir a variável CRON_SECRET no ambiente deste computador.");
   process.exit(1);
@@ -55,10 +65,11 @@ const eligiblePairs = commonPairs.map(pair => ({
   elephant: elephantById.get(pair.elephantId)
 })).filter(item => item.bantu && item.elephant);
 
-const pairsToCollect = eligiblePairs.slice(0, 50);
+const pairsToCollect = eligiblePairs.slice(0, maxGames);
 
 console.log("Jogos comuns BantuBet/ElephantBet:", commonPairs.length);
 console.log("A SportAPI não é necessária para esta recolha.");
+console.log("Limite configurado:", maxGames, "par(es).");
 console.log("A recolher:", pairsToCollect.length, "pares de jogos comuns.");
 
 if (!pairsToCollect.length) {
