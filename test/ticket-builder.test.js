@@ -101,4 +101,17 @@ test("cria duas versões com selecções idênticas e odds próprias por casa", 
   assert.notEqual(firstGroup[0].bookmaker, firstGroup[1].bookmaker);
   assert.notEqual(firstGroup[0].total_odd, firstGroup[1].total_odd);
   assert.equal(result.validation.valid, true);
+
+  const fixturesByGroup = new Map();
+  for (const slip of result.slips) {
+    if (!fixturesByGroup.has(slip.shared_ticket_id)) fixturesByGroup.set(slip.shared_ticket_id, new Set());
+    for (const leg of slip.legs) fixturesByGroup.get(slip.shared_ticket_id).add(leg.event_id);
+  }
+  const groups = [...fixturesByGroup.values()];
+  for (let i = 0; i < groups.length; i++) {
+    for (let j = i + 1; j < groups.length; j++) {
+      assert.equal([...groups[i]].some(fixtureId => groups[j].has(fixtureId)), false,
+        "um jogo não deve ser repetido entre boletins diferentes");
+    }
+  }
 });
