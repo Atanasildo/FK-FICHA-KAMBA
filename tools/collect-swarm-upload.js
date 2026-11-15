@@ -77,82 +77,121 @@ if (!pairsToCollect.length) {
   process.exit(1);
 }
 
-const batchSize = 1;
+const concurrency = 5;
+const maxCollectionAttempts = 3;
 let totalSavedGames = 0;
 let totalSavedComparisons = 0;
 let totalSavedSelections = 0;
 let totalSavedRawMarkets = 0;
 let failedBatches = 0;
+let processedGames = 0;
 
-console.log("A recolher os dois IDs independentes em lotes de " + batchSize + "...");
+console.log("A recolher até " + concurrency + " jogos em paralelo (cada jogo consulta as duas casas em simultâneo).");
+console.log("Cada jogo terá até " + maxCollectionAttempts + " tentativas em caso de falha de rede.");
 
-for (let offset = 0; offset < pairsToCollect.length; offset += batchSize) {
-  const batch = pairsToCollect.slice(offset, offset + batchSize);
-  const batchNumber = Math.floor(offset / batchSize) + 1;
-  const item = batch[0];
-  console.log("\nLote " + batchNumber + " — " + item.bantu.home + " x " + item.bantu.away + "...");
+async function collectOnePair(item, index) {
+  const label = item.bantu.home + " x " + item.bantu.away;
+  console.log("\\nJogo " + (index + 1) + "/" + pairsToCollect.length + " — " + label + "...");
 
-  try {
-    const [bantu, elephant] = await Promise.all([
-      collectSwarm({ ...SWARM_BOOKMAKERS.bantu, gameIds: [String(item.bantu.id)], timeoutMs: 60000 }),
-      collectSwarm({ ...SWARM_BOOKMAKERS.elephant, gameIds: [String(item.elephant.id)], timeoutMs: 60000 })
-    ]);
+  let bantu;
+  let elephant;
+  let lastCollectionError;
 
-    if (!bantu.received || !elephant.received) {
-      throw new Error("Uma das casas não devolveu a recolha completa deste jogo.");
-    }
-
-    if (dryRun) {
-      console.log("Teste concluído para este jogo; envio ao Supabase ignorado.");
-      continue;
-    }
-
-    const batchId = randomUUID();
-    const payload = JSON.stringify({ batchId, bantu, elephant });
-    let result = null;
-    let lastIngestError = null;
-
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      try {
-        const response = await fetch(ingestUrl, {
-          method: "POST",
-          headers: requestHeaders,
-          body: payload,
-          signal: AbortSignal.timeout(90000)
-        });
-        const body = await response.json().catch(() => ({}));
-        if (!response.ok || !body.ok) {
-          const summary = body.error || body.message || "A nuvem não confirmou a gravação.";
-          const detail = body.detail ? " | Detalhe: " + body.detail : "";
-          const error = new Error(summary + " (HTTP " + response.status + ")" + detail);
-          error.status = response.status;
-          if (response.status < 500 || attempt === 2) throw error;
-          lastIngestError = error;
-        } else {
-          result = body;
-          break;
-        }
-      } catch (error) {
-        if (error.status && error.status < 500) throw error;
-        lastIngestError = error;
-        if (attempt === 2) throw error;
+  for (let attempt = 1; attempt <= maxCollectionAttempts; attempt++) {
+    try {
+      [bantu, elephant] = await Promise.all([
+        collectSwarm({ ...SWARM_BOOKMAKERS.bantu, gameIds: [String(item.bantu.id)], timeoutMs: 60000 }),
+        collectSwarm({ ...SWARM_BOOKMAKERS.elephant, gameIds: [String(item.elephant.id)], timeoutMs: 60000 })
+      ]);
+      if (!bantu.received || !elephant.received) {
+        throw new Error("Uma das casas não devolveu a recolha completa deste jogo.");
       }
+      lastCollectionError = null;
+      break;
+    } catch (error) {
+      lastCollectionError = error;
+      if (attempt < maxCollectionAttempts) {
+        console.warn("Falha de recolha para " + label + "; nova tentativa (" + (attempt + 1) + "/" + maxCollectionAttempts + "):", error.message);
+        await new Promise(resolve => setTimeout(resolve, 1500 * attempt));
+      }
+    }
+  }
 
-      console.warn("A ingestão falhou; repetição segura do mesmo lote (" + (attempt + 1) + "/2):", lastIngestError?.message || "erro de rede");
-      await new Promise(resolve => setTimeout(resolve, 1500));
+  if (lastCollectionError) throw lastCollectionError;
+
+  if (dryRun) {
+    console.log("Teste concluído para " + label + "; envio ao Supabase ignorado.");
+    return { savedGames: 0, savedComparisons: 0, savedSelections: 0, savedRawMarkets: 0 };
+  }
+
+  const batchId = randomUUID();
+  const payload = JSON.stringify({ batchId, bantu, elephant });
+  let result = null;
+  let lastIngestError = null;
+
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const response = await fetch(ingestUrl, {
+        method: "POST",
+        headers: requestHeaders,
+        body: payload,
+        signal: AbortSignal.timeout(90000)
+      });
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok || !body.ok) {
+        const summary = body.error || body.message || "A nuvem não confirmou a gravação.";
+        const detail = body.detail ? " | Detalhe: " + body.detail : "";
+        const error = new Error(summary + " (HTTP " + response.status + ")" + detail);
+        error.status = response.status;
+        if (response.status < 500 || attempt === 2) throw error;
+        lastIngestError = error;
+      } else {
+        result = body;
+        break;
+      }
+    } catch (error) {
+      if (error.status && error.status < 500) throw error;
+      lastIngestError = error;
+      if (attempt === 2) throw error;
     }
 
-    if (!result) throw lastIngestError || new Error("A nuvem não confirmou a gravação após a repetição.");
-
-    totalSavedGames += Number(result.savedGames || 0);
-    totalSavedComparisons += Number(result.savedComparisons || 0);
-    totalSavedSelections += Number(result.savedSelections || 0);
-    totalSavedRawMarkets += Number(result.savedRawMarkets || 0);
-    console.log("Guardado:", result.savedGames, "jogo comum;", result.savedRawMarkets, "mercados brutos;", result.savedSelections, "selecções equivalentes.");
-  } catch (error) {
-    failedBatches++;
-    console.error("Falha no lote " + batchNumber + ":", error.message);
+    console.warn("A ingestão falhou para " + label + "; repetição segura do mesmo lote (" + (attempt + 1) + "/2):", lastIngestError?.message || "erro de rede");
+    await new Promise(resolve => setTimeout(resolve, 1500));
   }
+
+  if (!result) throw lastIngestError || new Error("A nuvem não confirmou a gravação após a repetição.");
+
+  console.log("Guardado:", result.savedGames, "jogo comum;", result.savedRawMarkets, "mercados brutos;", result.savedSelections, "selecções equivalentes.");
+  return {
+    savedGames: Number(result.savedGames || 0),
+    savedComparisons: Number(result.savedComparisons || 0),
+    savedSelections: Number(result.savedSelections || 0),
+    savedRawMarkets: Number(result.savedRawMarkets || 0)
+  };
+}
+
+for (let offset = 0; offset < pairsToCollect.length; offset += concurrency) {
+  const chunk = pairsToCollect.slice(offset, offset + concurrency);
+  const outcomes = await Promise.all(chunk.map(async (item, localIndex) => {
+    try {
+      return { ok: true, counts: await collectOnePair(item, offset + localIndex) };
+    } catch (error) {
+      failedBatches++;
+      console.error("Falha no jogo " + (offset + localIndex + 1) + " (" + item.bantu.home + " x " + item.bantu.away + "):", error.message);
+      return { ok: false };
+    } finally {
+      processedGames++;
+    }
+  }));
+
+  for (const outcome of outcomes) {
+    if (!outcome.ok || !outcome.counts) continue;
+    totalSavedGames += outcome.counts.savedGames;
+    totalSavedComparisons += outcome.counts.savedComparisons;
+    totalSavedSelections += outcome.counts.savedSelections;
+    totalSavedRawMarkets += outcome.counts.savedRawMarkets;
+  }
+  console.log("Progresso: " + processedGames + "/" + pairsToCollect.length + " jogos processados; " + failedBatches + " falha(s).");
 }
 
 console.log("\nRECOLHA TERMINADA");
