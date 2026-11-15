@@ -10,6 +10,7 @@ const baseUrl = (process.env.FK_API_URL || "https://fk-ficha-kamba.vercel.app").
 const ingestUrl = process.env.FK_INGEST_URL || baseUrl + "/api/bookmakers/save-comparison";
 const secret = process.env.CRON_SECRET;
 const vercelBypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+const dryRun = process.argv.includes("--dry-run");
 
 if (!dryRun && !secret) {
   console.error("Falta definir a variável CRON_SECRET no ambiente deste computador.");
@@ -26,7 +27,6 @@ const requestHeaders = {
   "x-vercel-protection-bypass": vercelBypass
 };
 
-const dryRun = process.argv.includes("--dry-run");
 if (dryRun) console.log("MODO DE TESTE: os jogos serão recolhidos, mas nada será enviado para o Supabase.");
 
 const providers = ["bantu", "elephant"];
