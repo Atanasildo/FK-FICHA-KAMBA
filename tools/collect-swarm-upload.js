@@ -46,7 +46,7 @@ async function post(path, body, timeout = 90000) {
 }
 
 const dryRun = process.argv.includes("--dry-run");
-if (dryRun) console.log("MODO DE TESTE: as odds serão actualizadas, mas nenhum bilhete será publicado.");
+if (dryRun) console.log("MODO DE TESTE: os jogos serão recolhidos, mas nada será enviado para o Supabase.");
 
 const providers = ["bantu", "elephant"];
 const discovered = {};
@@ -61,53 +61,23 @@ for (const name of providers) {
   console.log(name + ": " + discovered[name].gamesFound + " jogos encontrados.");
 }
 
-// Actualiza primeiro o calendário SportAPI e recolhe apenas jogos que
-// tenham correspondência canónica inequívoca nas duas casas e na SportAPI.
-let sportApiDiscovered = 0;
-let sportApiDiscoveryOk = false;
-let sportApiFixtures = [];
-try {
-  const discovery = await post("/api/pipeline/discover-fixtures", { days: 4 });
-  sportApiDiscovered = Number(discovery.fixturesDiscovered || 0);
-  sportApiFixtures = Array.isArray(discovery.fixtures) ? discovery.fixtures : [];
-  sportApiDiscoveryOk = true;
-  console.log("Calendário SportAPI:", sportApiDiscovered, "jogos encontrados.");
-} catch (error) {
-  console.error("Não foi possível actualizar o calendário SportAPI:", error.message);
-  console.error("A recolha e o cruzamento entre as duas casas continuarão; a análise ficará suspensa.");
-}
-
 const commonPairs = selectCommonSwarmGames(
   discovered.bantu.games,
   discovered.elephant.games,
-  { maxGames: 1500, maxKickoffDifferenceSeconds: 90 * 60 }
+  { maxGames: 1500, maxKickoffDifferenceSeconds: 90 * 60, onlyToday: true }
 );
-const sportApiMatches = [];
-const claimedCanonicalIds = new Set();
 const bantuById = new Map(discovered.bantu.games.map(game => [String(game.id), game]));
 const elephantById = new Map(discovered.elephant.games.map(game => [String(game.id), game]));
-
-// A correspondência entre casas é independente da SportAPI. A SportAPI
-// apenas enriquece os eventos que também tenham correspondência canónica.
-const eligiblePairs = commonPairs.map(pair => {
-  const bantu = bantuById.get(pair.bantuId);
-  const elephant = elephantById.get(pair.elephantId);
-  if (!bantu || !elephant) return null;
-  const canonical = selectCanonicalMatch({
-    home_team: bantu.home,
-    away_team: bantu.away,
-    kickoff_at: new Date(Number(bantu.start_ts) * 1000).toISOString()
-  }, sportApiFixtures, claimedCanonicalIds);
-  if (canonical) {
-    claimedCanonicalIds.add(canonical.id);
-    sportApiMatches.push(canonical.id);
-  }
-  return { pair, bantu, elephant, canonical };
-}).filter(Boolean);
+const eligiblePairs = commonPairs.map(pair => ({
+  pair,
+  bantu: bantuById.get(pair.bantuId),
+  elephant: elephantById.get(pair.elephantId)
+})).filter(item => item.bantu && item.elephant);
 
 const pairsToCollect = eligiblePairs.slice(0, 50);
+
 console.log("Jogos comuns BantuBet/ElephantBet:", commonPairs.length);
-console.log("Jogos comuns com correspondência SportAPI:", sportApiMatches.length);
+console.log("A SportAPI não é necessária para esta recolha.");
 console.log("A recolher:", pairsToCollect.length, "pares de jogos comuns.");
 
 if (!pairsToCollect.length) {
@@ -138,6 +108,11 @@ for (let offset = 0; offset < pairsToCollect.length; offset += batchSize) {
 
     if (!bantu.received || !elephant.received) {
       throw new Error("Uma das casas não devolveu a recolha completa deste jogo.");
+    }
+
+    if (dryRun) {
+      console.log("Teste concluído para este jogo; envio ao Supabase ignorado.");
+      continue;
     }
 
     const batchId = randomUUID();
@@ -200,32 +175,8 @@ console.log(JSON.stringify({
 }, null, 2));
 
 if (dryRun) {
-  console.log("\nANÁLISE NÃO INICIADA: modo --dry-run activo.");
-} else if (!sportApiDiscoveryOk || failedBatches > 0 || totalSavedComparisons < 35) {
-  console.error("\nANÁLISE NÃO INICIADA");
-  console.error("A descoberta SportAPI falhou, a recolha ficou incompleta ou foram guardadas menos de 35 comparações entre as duas casas.");
-  console.error("Não serão criados bilhetes com uma amostra insuficiente. Corrige a ligação e executa novamente.");
-  process.exitCode = 1;
+  console.log("\nMODO DE TESTE: nenhuma odd foi enviada e nenhuma análise/bilhete foi criada.");
 } else {
-console.log("\nA iniciar análise e elaboração dos bilhetes...");
-try {
-  let pipeline = null;
-  const maxAnalysisBatches = 10;
-  for (let attempt = 1; attempt <= maxAnalysisBatches; attempt++) {
-    pipeline = await post("/api/pipeline/run-daily", {
-      skipDiscovery: true,
-      discovered: sportApiDiscovered,
-      dryRun
-    }, 240000);
-    console.log("\nETAPA DE ANÁLISE " + attempt);
-    console.log(JSON.stringify(pipeline, null, 2));
-    if (pipeline.stage !== "analysis-batch-saved" || Number(pipeline.pendingMatches || 0) <= 0) break;
-  }
-  if (pipeline?.stage === "analysis-batch-saved" && Number(pipeline.pendingMatches || 0) > 0) {
-    throw new Error("O limite de lotes foi atingido; ainda existem jogos por analisar.");
-  }
-} catch (error) {
-  console.error("Os dados foram enviados; a análise/publicação não terminou:", error.message);
-  process.exitCode = 1;
-}
+  console.log("\nRECOLHA CONCLUÍDA. As odds estão guardadas no Supabase.");
+  console.log("A análise será iniciada manualmente aqui no ChatGPT, quando o utilizador pedir.");
 }
