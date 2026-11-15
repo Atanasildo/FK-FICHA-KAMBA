@@ -51,7 +51,7 @@ ODDS E CASAS
 BOLETINS
 23. O motor deve construir 6 a 8 boletins: 2 curtas (odd 15–25, 3–5 selecções), 2 médias (25–60, 3–6), 2 a 3 longas (60–150, 5–8) e 0 a 1 extrema (400–900, 9–11).
 24. Nenhuma odd individual pode ser inferior a 1.40; EV por selecção ≥ +3%; EV por boletim ≥ +10%.
-25. Cada jogo aparece num único boletim do lote; só no extrema se admitem até 2 selecções do mesmo jogo. Nenhuma equipa pode repetir no lote. Máximo 2 selecções da mesma liga por boletim.
+25. Cada jogo aparece num único boletim do lote; nenhuma equipa pode repetir no lote. Máximo 2 selecções da mesma liga por boletim. O lote deve ter variedade real de mercados: cada boletim combina pelo menos 2 famílias de mercado quando o pool permitir; evita repetir o mesmo perfil de mercados em boletins diferentes; distribui Resultado, Totais, Ambas Marcam, Dupla Chance e outros mercados apenas quando existirem e forem sustentados pela análise. Nunca repitas um mercado só para preencher a quantidade.
 26. Cada jogo deve começar pelo menos 1 hora depois da publicação. Cada selecção precisa de justificação clara com pelo menos 12 caracteres.
 27. Não inventes probabilidades, odds, correlações ou dados em falta. A probabilidade conjunta e o EV são validados no servidor; não declares o lote válido sem essa validação.
 28. Se o pool não permitir cumprir as regras, devolve menos selecções válidas e explica as limitações; nunca relaxes a odd mínima, exclusividade de jogos ou número de selecções.
