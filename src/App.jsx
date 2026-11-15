@@ -237,7 +237,7 @@ function TicketPanel({ ticket: t, expanded, onToggle, liveView = false }) {
   const status = ticketStatus(t);
   return <section className="panel daily-ticket">
     <button className="ticket-expand" onClick={onToggle} aria-expanded={expanded}>
-      <div className="ticket-expand-main"><div className="ticket-title-row"><span className={Number(t.totalOdds) >= 100 ? 'tag tag-gold' : 'tag'}>{t.type || 'FICHA DO DIA'}</span><span className={'ticket-status ' + ticketStatusClass(status)}>{status}</span></div><h3>{t.name || 'Ficha Kamba'}</h3><div className="ticket-subline"><span>{t.id}</span><span>{t.bookmaker || 'Casa de apostas não indicada'}</span><span>{legs.length} jogos</span></div></div>
+      <div className="ticket-expand-main"><div className="ticket-title-row"><span className={Number(t.totalOdds) >= 100 ? 'tag tag-gold' : 'tag'}>{t.type || 'FICHA DO DIA'}</span><span className={'ticket-status ' + ticketStatusClass(status)}>{status}</span></div><h3>{t.name || 'Ficha Kamba'}</h3><div className="ticket-subline"><span>{t.sharedTicketId ? 'FK-' + t.sharedTicketId.slice(0, 8).toUpperCase() : t.id}</span><span>{t.bookmakerEntries?.length ? 'BantuBet + ElephantBet' : t.bookmaker || 'Casa de apostas não indicada'}</span><span>{legs.length} jogos</span></div></div>
       <div className="ticket-quick">{t.bookmakerEntries?.length ? t.bookmakerEntries.map(entry => <div className="bookmaker-quick" key={entry.bookmaker}><small>{entry.bookmaker}</small><b>{money(entry.totalOdds)}</b><span>{entry.bookingId ? 'Reserva criada' : 'Reserva pendente'}</span></div>) : <><small>ODD TOTAL</small><b>{money(t.totalOdds)}</b><span className="reserve-id">ID do boletim: {t.bookingId || 'A aguardar ID'}</span></>}</div><span className="expand-icon">{expanded ? <ChevronDown/> : <ChevronRight/>}</span>
     </button>
     {expanded && <div className="ticket-details"><div className="details-heading"><b>Jogos e mercados desta ficha</b><span>{liveView ? 'Estado em directo quando disponível' : 'Mesmas selecções nas duas casas'}</span></div>
@@ -256,7 +256,7 @@ function TicketPanel({ ticket: t, expanded, onToggle, liveView = false }) {
         </div>}
         {leg.marketUpdate && <p className="market-update">{leg.marketUpdate}</p>}
       </article>) : <p className="muted-copy">Os jogos desta ficha serão apresentados aqui quando forem publicados.</p>}
-      <div className="ticket-detail-footer"><span>IDENTIFICADOR DO BOLETIM</span><b>{t.bookingId || 'Ainda não disponibilizado'}</b>{t.bookingUrl && <a className="reserve-link" href={t.bookingUrl} target="_blank" rel="noreferrer">Abrir boletim partilhável</a>}</div>
+      <div className="ticket-detail-footer"><span>{t.bookmakerEntries?.length ? 'CÓDIGOS DE RESERVA POR CASA' : 'IDENTIFICADOR DO BOLETIM'}</span><b>{t.bookmakerEntries?.length ? 'Apresentados acima para cada casa' : t.bookingId || 'Ainda não disponibilizado'}</b>{t.bookingUrl && <a className="reserve-link" href={t.bookingUrl} target="_blank" rel="noreferrer">Abrir boletim partilhável</a>}</div>
     </div>}
   </section>;
 }
