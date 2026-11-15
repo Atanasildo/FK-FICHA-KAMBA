@@ -9,8 +9,8 @@ import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
 const dryRun = process.argv.includes("--dry-run");
 const maxGamesArg = process.argv.find(arg => arg.startsWith("--max-games="));
 const maxGames = Number(maxGamesArg?.split("=")[1] ?? process.env.FK_MAX_GAMES ?? 1);
-if (!Number.isInteger(maxGames) || maxGames < 1 || maxGames > 50) {
-  console.error("FK_MAX_GAMES/--max-games deve ser um número inteiro entre 1 e 50.");
+if (!Number.isInteger(maxGames) || maxGames < 1 || maxGames > 1500) {
+  console.error("FK_MAX_GAMES/--max-games deve ser um número inteiro entre 1 e 1500.");
   process.exit(1);
 }
 const baseUrl = (process.env.FK_API_URL || "").replace(/\/$/, "");
