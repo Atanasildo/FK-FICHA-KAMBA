@@ -5,18 +5,17 @@ import {
   SWARM_BOOKMAKERS
 } from "../lib/bookmakers/swarm.js";
 import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
-import { selectCanonicalMatch } from "../lib/pipeline/match-linking.js";
 
 const baseUrl = (process.env.FK_API_URL || "https://fk-ficha-kamba.vercel.app").replace(/\/$/, "");
 const ingestUrl = process.env.FK_INGEST_URL || baseUrl + "/api/bookmakers/save-comparison";
 const secret = process.env.CRON_SECRET;
 const vercelBypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 
-if (!secret) {
+if (!dryRun && !secret) {
   console.error("Falta definir a variável CRON_SECRET no ambiente deste computador.");
   process.exit(1);
 }
-if (!vercelBypass) {
+if (!dryRun && !vercelBypass) {
   console.error("Falta definir VERCEL_AUTOMATION_BYPASS_SECRET para aceder à Preview protegida da Vercel.");
   process.exit(1);
 }
@@ -26,24 +25,6 @@ const requestHeaders = {
   authorization: "Bearer " + secret,
   "x-vercel-protection-bypass": vercelBypass
 };
-
-async function post(path, body, timeout = 90000) {
-  const response = await fetch(baseUrl.replace(/\/$/, "") + path, {
-    method: "POST",
-    headers: requestHeaders,
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(timeout)
-  });
-  const result = await response.json().catch(() => ({}));
-  if (!response.ok || result.ok === false) {
-    const summary = result.error || result.message || `HTTP ${response.status}`;
-    const detail = result.detail ? ` | Detalhe: ${result.detail}` : "";
-    const code = result.code ? ` | Código: ${result.code}` : "";
-    const retry = result.retry_after || result.retryAfter ? ` | Tentar novamente em: ${result.retry_after || result.retryAfter}` : "";
-    throw new Error(`${summary} (HTTP ${response.status})${detail}${code}${retry}`);
-  }
-  return result;
-}
 
 const dryRun = process.argv.includes("--dry-run");
 if (dryRun) console.log("MODO DE TESTE: os jogos serão recolhidos, mas nada será enviado para o Supabase.");
