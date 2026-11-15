@@ -92,9 +92,9 @@ export async function createBooking({ site, selections, totalOdd }) {
   if (selections.some(s => !s || !s.home || !s.away || !s.selectionName || !s.marketName || !s.startTime)) {
     throw new Error("Cada selecção precisa de jogo, mercado, selecção e hora de início.");
   }
-  const earliestKickoff = Date.now() + 6 * 60 * 60 * 1000;
+  const earliestKickoff = Date.now() + 1 * 60 * 60 * 1000;
   if (selections.some(s => !Number.isFinite(kickoffMillis(s.startTime)) || kickoffMillis(s.startTime) < earliestKickoff)) {
-    throw new Error("Todas as partidas devem começar pelo menos 6 horas após a reserva.");
+    throw new Error("Todas as partidas devem começar pelo menos 1 hora após a reserva.");
   }
   const payload = buildPayload(site, selections, totalOdd);
   const controller = new AbortController();
