@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 const json = (res, status, body) => {
   res.setHeader("Cache-Control", "no-store");
   return res.status(status).json(body);
@@ -18,6 +20,7 @@ export default async function handler(req, res) {
 
   let projectRef = null;
   try { projectRef = new URL(url).hostname.split(".")[0]; } catch {}
+  const keyFingerprint = createHash("sha256").update(key).digest("hex").slice(0, 12);
   const keyType = key.startsWith("sb_secret_") ? "sb_secret"
     : key.startsWith("sb_publishable_") ? "sb_publishable"
     : key.startsWith("eyJ") ? "legacy_jwt" : "unknown";
@@ -35,7 +38,7 @@ export default async function handler(req, res) {
     if (!probe.ok) {
       return json(res, 502, {
         ok: false, stage: "apikey_probe", httpStatus: probe.status,
-        keyType, keyLength: key.length, projectRef, urlSource: process.env.VITE_SUPABASE_URL ? "VITE_SUPABASE_URL" : "SUPABASE_URL",
+        keyType, keyLength: key.length, keyFingerprint, projectRef, urlSource: process.env.VITE_SUPABASE_URL ? "VITE_SUPABASE_URL" : "SUPABASE_URL",
         response: (await probe.text()).slice(0, 500)
       });
     }
@@ -82,13 +85,13 @@ export default async function handler(req, res) {
     return json(res, 200, {
       ok: true, stage: "complete", apiKeyAccepted: true,
       insertSucceeded: true, cleanupSucceeded: true,
-      persistedDiagnosticRows: 0, keyType, keyLength: key.length, projectRef, urlSource: process.env.VITE_SUPABASE_URL ? "VITE_SUPABASE_URL" : "SUPABASE_URL"
+      persistedDiagnosticRows: 0, keyType, keyLength: key.length, keyFingerprint, projectRef, urlSource: process.env.VITE_SUPABASE_URL ? "VITE_SUPABASE_URL" : "SUPABASE_URL"
     });
   } catch (error) {
     return json(res, 500, {
       ok: false, stage: rowId ? "cleanup" : "request",
       message: String(error.message || error), diagnosticRowId: rowId,
-      keyType, keyLength: key.length, projectRef
+      keyType, keyLength: key.length, keyFingerprint, projectRef
     });
   }
 }
