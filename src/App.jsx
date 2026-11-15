@@ -234,6 +234,11 @@ function AnalysisPanel({ row }) {
   const match = row.matches || {};
   const report = row.analysis || {};
   const selections = Array.isArray(report.selections) ? report.selections : [];
+  const percent = value => {
+    const number = Number(value);
+    if (value === null || value === undefined || value === '' || !Number.isFinite(number)) return '—';
+    return (Math.abs(number) <= 1 ? number * 100 : number).toFixed(1) + '%';
+  };
   return <section className="panel daily-ticket">
     <div className="ticket-details">
       <div className="details-heading">
@@ -248,7 +253,8 @@ function AnalysisPanel({ row }) {
       {row.summary && <p className="panel-note">{row.summary}</p>}
       {selections.length ? <div className="history-legs">{selections.map((pick,index) => <div key={pick.id || index}>
         <span>{pick.market || 'Mercado'} · {pick.selection || 'Selecção'}</span>
-        <small>Odd: {pick.bestOdds ?? pick.odds ?? '—'} · Probabilidade: {pick.probability ?? pick.estimatedProbability ?? '—'} · Edge: {pick.edge ?? '—'}</small>
+        <small>Odd: {pick.bestOdds ?? pick.odds ?? '—'} · Probabilidade: {percent(pick.probability ?? pick.estimatedProbability)} · Edge: {percent(pick.edge)} · Valor esperado: {percent(pick.expectedValue)}</small>
+        {pick.bestBookmaker && <small>Melhor cotação: {pick.bestBookmaker}</small>}
         {pick.rationale && <small>{pick.rationale}</small>}
       </div>)}</div> : <div className="panel-note">Relatório sem selecções recomendadas. Consulta os fundamentos e os riscos no relatório completo.</div>}
       <div className="ticket-detail-footer"><span>ANÁLISE GUARDADA</span><b>{row.generated_at ? new Date(row.generated_at).toLocaleString('pt-AO') : '—'}</b></div>
