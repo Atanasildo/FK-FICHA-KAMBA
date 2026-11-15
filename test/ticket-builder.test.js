@@ -101,6 +101,20 @@ test("cria duas versões com selecções idênticas e odds próprias por casa", 
   assert.notEqual(firstGroup[0].bookmaker, firstGroup[1].bookmaker);
   assert.notEqual(firstGroup[0].total_odd, firstGroup[1].total_odd);
   assert.equal(result.validation.valid, true);
+  assert.equal(result.validation.uniqueMarketProfiles, true);
+
+  const marketProfiles = new Set();
+  for (const slip of result.slips) {
+    const profile = [...new Set(slip.legs.map(leg => leg.market.trim().toLowerCase()))].sort().join("|");
+    marketProfiles.add(profile);
+    assert.ok(new Set(slip.legs.map(leg => leg.market)).size >= 2,
+      "cada ficha deve combinar pelo menos dois tipos de mercado");
+    const counts = new Map();
+    for (const leg of slip.legs) counts.set(leg.market, (counts.get(leg.market) || 0) + 1);
+    assert.ok([...counts.values()].every(count => count <= 2),
+      "um mercado não deve dominar a mesma ficha");
+  }
+  assert.equal(marketProfiles.size, 8, "cada ficha deve ter um perfil de mercados diferente");
 
   const fixturesByGroup = new Map();
   for (const slip of result.slips) {
