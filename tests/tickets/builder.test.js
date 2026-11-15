@@ -29,7 +29,7 @@ test("só aceita uma selecção com odds verificadas nas duas casas", () => {
   }, now), null);
 });
 
-test("rejeita odds abaixo do mínimo ou EV insuficiente em qualquer uma das casas", () => {
+test("não rejeita uma selecção válida apenas por EV inferior ao corte antigo", () => {
   const now = Date.parse("2026-11-14T10:00:00.000Z");
   const candidate = {
     fixtureId: "sport-2", home: "Benfica", away: "Sporting", competition: "Liga",
@@ -42,7 +42,7 @@ test("rejeita odds abaixo do mínimo ou EV insuficiente em qualquer uma das casa
       { bookmaker: "ElephantBet", odds: 1.45, collectedAt: "2026-11-14T09:51:00.000Z" }
     ]
   };
-  assert.equal(normalizeCandidate(candidate, now), null);
+  assert.ok(normalizeCandidate(candidate, now));
 });
 
 test("rejeita jogos de outro dia de Luanda mesmo com antecedência suficiente", () => {
