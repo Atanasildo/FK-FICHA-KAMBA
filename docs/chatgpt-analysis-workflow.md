@@ -40,9 +40,9 @@ where m.source = 'swarm'
 order by m.kickoff_at asc;
 ```
 
-A consulta é apenas o ponto de partida. Antes de recomendar um mercado, confirmar também que as duas cotações desse mercado estão presentes e recentes em `comparison.events[].comparisons[].quotes[]`.
+A consulta é apenas o ponto de partida. Antes de recomendar um mercado, confirmar também que as duas cotações desse mercado estão presentes e recentes em `comparison.events[].comparisons[].quotes[]`. Não interpretar mercados especiais (por exemplo, empate anula aposta) como resultado final 1X2.
 
-## 2. Pesquisa e análise
+## 2. Pesquisa e análise no ChatGPT
 
 Para cada jogo elegível:
 - confirmar competição, data, hora e identidade das equipas;
@@ -53,7 +53,74 @@ Para cada jogo elegível:
 - calcular edge e valor esperado, considerando a incerteza;
 - excluir mercados sem informação suficiente, linhas ambíguas ou odds desactualizadas.
 
-Não inventar xG, escalações, lesões, clima ou estatísticas. Distinguir claramente factos confirmados, estimativas e informação indisponível.
+Não inventar xG, escalações, lesões, clima ou estatísticas. Distinguir claramente factos confirmados, estimativas e informação indisponível. A ausência de SportAPI não bloqueia esta pesquisa: ChatGPT pesquisa fontes públicas e regista explicitamente as lacunas.
+
+### Contexto de pesquisa a guardar
+
+Quando o jogo não tiver estatísticas SportAPI, guardar em `match_statistics` um registo com `source = 'InternetSearch'` e um payload de pesquisa concluída. Exemplo de estrutura:
+
+```json
+{
+  "source": "InternetSearch",
+  "collectedAt": "ISO-8601",
+  "fixture": {
+    "home": "Equipa da casa",
+    "away": "Equipa visitante",
+    "competition": "Competição confirmada ou null",
+    "kickoff": "ISO-8601"
+  },
+  "research": {
+    "status": "complete",
+    "researchedBy": "ChatGPT",
+    "checkedAt": "ISO-8601",
+    "facts": [
+      {
+        "topic": "recent_form",
+        "claim": "Facto confirmado e datado, sem extrapolação.",
+        "sourceUrl": "https://...",
+        "observedAt": "ISO-8601"
+      },
+      {
+        "topic": "standings",
+        "claim": "Outro facto confirmado por fonte independente.",
+        "sourceUrl": "https://...",
+        "observedAt": "ISO-8601"
+      },
+      {
+        "topic": "availability",
+        "claim": "A fonte consultada não confirmou ausências.",
+        "sourceUrl": "https://...",
+        "observedAt": "ISO-8601"
+      }
+    ],
+    "sources": [
+      {
+        "name": "Fonte oficial da competição",
+        "url": "https://...",
+        "checkedAt": "ISO-8601",
+        "usedFor": "Classificação e calendário"
+      },
+      {
+        "name": "Fonte oficial do clube",
+        "url": "https://...",
+        "checkedAt": "ISO-8601",
+        "usedFor": "Forma recente e notícias da equipa"
+      }
+    ],
+    "limitations": ["Escalações ainda não confirmadas."]
+  }
+}
+```
+
+Regras de validação:
+- o payload tem de identificar as duas equipas;
+- tem de conter pelo menos três factos concretos;
+- tem de referenciar pelo menos duas fontes HTTP/HTTPS distintas;
+- pelo menos dois factos têm de apontar para URLs incluídos na lista de fontes;
+- cada facto deve ter uma afirmação verificável e, quando aplicável, uma data;
+- um marcador `webResearchRequired: true` é apenas uma indicação de pesquisa pendente e **não** conta como estatística nem como contexto concluído.
+
+O validador `lib/pipeline/context-quality.js` aplica estes requisitos aos registos `InternetSearch`. O contexto SportAPI estruturado continua a ser aceite pelas regras existentes.
 
 ## 3. Estrutura do relatório
 
@@ -112,14 +179,16 @@ Estrutura JSON recomendada para a coluna `analysis`:
 }
 ```
 
-Os valores acima são apenas exemplos de formato, não previsões nem dados reais.
+Os valores acima são apenas exemplos de formato, não previsões nem dados reais. Se não existir uma selecção com evidência e valor esperado suficientes, guardar `selections: []` e explicar a razão no veredicto; não forçar recomendações.
 
 ## 4. Gravação e apresentação
 
-- Inserir o relatório em `match_analyses` apenas depois de validar o jogo e as fontes.
+- Inserir o contexto de pesquisa em `match_statistics` e o relatório em `match_analyses` apenas depois de validar jogo, odds e fontes.
 - A área **Análises** do site lê apenas registos com `status = 'ready'`.
 - A política RLS permite leitura pública de análises prontas; as escritas continuam reservadas ao servidor/credenciais privilegiadas.
 - Não inserir nem actualizar linhas em `tickets` ou `ticket_legs` durante este procedimento.
 - Não chamar endpoints de reserva, construção de bilhetes ou publicação.
+
+**Importante:** para a rotina manual do ChatGPT, não executar o pipeline legado `/api/pipeline` / `run-daily`. Esse fluxo ainda depende de um fornecedor de IA configurado e contém uma etapa separada de bilhetes/publicação. A análise manual consulta o Supabase nesta conversa, pesquisa a Web e grava directamente os registos validados.
 
 Se não houver evidência suficiente, não criar uma análise pronta para esse jogo. Registar a razão separadamente como dados insuficientes, se for útil.
