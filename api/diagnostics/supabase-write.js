@@ -1,5 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
-
 const json = (res, status, body) => {
   res.setHeader("Cache-Control", "no-store");
   return res.status(status).json(body);
@@ -7,59 +5,90 @@ const json = (res, status, body) => {
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return json(res, 405, { ok: false, error: "POST only" });
-  const secret = process.env.CRON_SECRET;
-  if (!secret || req.headers.authorization !== "Bearer " + secret) {
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret || req.headers.authorization !== "Bearer " + cronSecret) {
     return json(res, 401, { ok: false, error: "Unauthorized" });
   }
 
-  const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
-  if (!url || !key) return json(res, 503, { ok: false, hasUrl: !!url, hasSecretKey: !!key });
+  const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "";
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || "";
+  if (!url || !key) {
+    return json(res, 503, { ok: false, stage: "configuration", hasUrl: !!url, hasKey: !!key });
+  }
 
-  const customFetch = (input, init = {}) => {
-    const headers = new Headers(input instanceof Request ? input.headers : undefined);
-    new Headers(init.headers || {}).forEach((v, k) => headers.set(k, v));
-    headers.set("apikey", key);
-    if (headers.get("authorization") === "Bearer " + key) headers.delete("authorization");
-    return fetch(input, { ...init, headers });
-  };
+  let projectRef = null;
+  try { projectRef = new URL(url).hostname.split(".")[0]; } catch {}
+  const keyType = key.startsWith("sb_secret_") ? "sb_secret"
+    : key.startsWith("sb_publishable_") ? "sb_publishable"
+    : key.startsWith("eyJ") ? "legacy_jwt" : "unknown";
 
-  const db = createClient(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
-    global: { fetch: customFetch }
-  });
-
+  const headers = { apikey: key, "Content-Type": "application/json" };
   const marker = "fk-diagnostic-" + Date.now();
   let rowId = null;
+
   try {
-    const { data, error } = await db.from("matches").insert({
-      external_id: marker,
-      home_team: "Ficha Kamba Diagnostic",
-      away_team: "Temporary API key test",
-      competition: "Temporary diagnostic",
-      status: "scheduled",
-      source: "diagnostic"
-    }).select("id").single();
-
-    if (error) return json(res, 502, {
-      ok: false, stage: "insert", message: error.message, code: error.code || null
+    // Test the REST API directly, independently of supabase-js.
+    const probe = await fetch(url + "/rest/v1/bookmakers?select=id&limit=1", {
+      method: "GET",
+      headers: { apikey: key }
     });
+    if (!probe.ok) {
+      return json(res, 502, {
+        ok: false, stage: "apikey_probe", httpStatus: probe.status,
+        keyType, keyLength: key.length, projectRef,
+        response: (await probe.text()).slice(0, 500)
+      });
+    }
 
-    rowId = data.id;
-    const { error: deleteError } = await db.from("matches").delete().eq("id", rowId);
-    if (deleteError) return json(res, 500, {
-      ok: false, stage: "cleanup", inserted: true, cleanupSucceeded: false,
-      diagnosticRowId: rowId, message: deleteError.message
+    const insert = await fetch(url + "/rest/v1/matches?select=id", {
+      method: "POST",
+      headers: { ...headers, Prefer: "return=representation" },
+      body: JSON.stringify({
+        external_id: marker,
+        home_team: "Ficha Kamba Diagnostic",
+        away_team: "Temporary API key test",
+        competition: "Temporary diagnostic",
+        status: "scheduled",
+        source: "diagnostic"
+      })
     });
+    const insertBody = await insert.text();
+    if (!insert.ok) {
+      return json(res, 502, {
+        ok: false, stage: "insert", httpStatus: insert.status,
+        keyType, keyLength: key.length, projectRef,
+        response: insertBody.slice(0, 700)
+      });
+    }
+
+    const inserted = JSON.parse(insertBody);
+    rowId = inserted?.[0]?.id || null;
+    if (!rowId) {
+      return json(res, 500, { ok: false, stage: "insert_response", keyType, projectRef });
+    }
+
+    const cleanup = await fetch(url + "/rest/v1/matches?id=eq." + encodeURIComponent(rowId), {
+      method: "DELETE",
+      headers: { apikey: key, Prefer: "return=minimal" }
+    });
+    if (!cleanup.ok) {
+      return json(res, 500, {
+        ok: false, stage: "cleanup", httpStatus: cleanup.status,
+        diagnosticRowId: rowId, response: (await cleanup.text()).slice(0, 500),
+        keyType, projectRef
+      });
+    }
 
     return json(res, 200, {
       ok: true, stage: "complete", apiKeyAccepted: true,
-      insertSucceeded: true, cleanupSucceeded: true, persistedDiagnosticRows: 0
+      insertSucceeded: true, cleanupSucceeded: true,
+      persistedDiagnosticRows: 0, keyType, keyLength: key.length, projectRef
     });
   } catch (error) {
     return json(res, 500, {
       ok: false, stage: rowId ? "cleanup" : "request",
-      message: String(error.message || error), diagnosticRowId: rowId
+      message: String(error.message || error), diagnosticRowId: rowId,
+      keyType, keyLength: key.length, projectRef
     });
   }
 }
