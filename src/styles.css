@@ -268,3 +268,38 @@ footer{color:#7890a2}
   text-decoration: none;
 }
 .reserve-link:hover { text-decoration: underline; }
+
+
+/* Fichas emparelhadas: uma ficha, duas casas, uma só lista de jogos */
+.daily-ticket-list{gap:16px}
+.daily-ticket{border:1px solid #24445a;border-radius:15px;box-shadow:0 12px 34px #02091455}
+.ticket-expand{padding:20px 22px;gap:20px;align-items:center}
+.ticket-expand-main{min-width:0}
+.ticket-title-row .tag{font-size:9px;padding:6px 9px;letter-spacing:.9px}
+.ticket-expand h3{font-size:17px;letter-spacing:-.25px;margin:11px 0 8px}
+.ticket-subline{gap:9px 16px;font-size:10px}
+.ticket-subline span+span:before{content:'•';color:#496276;margin-right:13px}
+.ticket-quick{display:grid;grid-template-columns:1fr 1fr;gap:9px;min-width:300px;text-align:left}
+.bookmaker-quick{display:grid;gap:5px;padding:10px 12px;border:1px solid #29465b;border-radius:10px;background:#0a1928;min-width:0}
+.bookmaker-quick:first-child{border-top:2px solid #20d69a}
+.bookmaker-quick:last-child{border-top:2px solid #ff9b45}
+.bookmaker-quick small{font-size:9px;letter-spacing:.6px;color:#b7c9d5;font-weight:800}
+.bookmaker-quick b{font-size:19px;line-height:1.1;color:#f1f7fa}
+.bookmaker-quick span{font-size:8px;color:#8da5b6}
+.ticket-details{padding:17px 21px 20px}
+.details-heading{margin-bottom:13px}
+.ticket-reservations{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.reservation-row{display:flex;align-items:center;gap:12px;min-width:0;padding:12px 14px;border:1px solid #29465b;border-radius:10px;background:#0a1928}
+.reservation-row>div:first-child{display:grid;gap:4px;min-width:88px}
+.reservation-row>div:first-child b{font-size:10px;color:#edf5f8}
+.reservation-row>div:first-child small{font-size:9px;color:#91a9b9}
+.reservation-code{display:grid;gap:4px;min-width:0;flex:1}
+.reservation-code small{font-size:7px;letter-spacing:.8px;color:#829bad}
+.reservation-code b{font-size:10px;color:#20d69a;overflow-wrap:anywhere}
+.reservation-row .reserve-link{font-size:9px;white-space:nowrap}
+.match-detail{padding:14px 15px;border-radius:10px}
+.match-detail+.match-detail{margin-top:9px}
+.match-teams>b{font-size:13px}
+.market-detail-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) 78px}
+@media(max-width:900px){.ticket-expand{align-items:flex-start;flex-wrap:wrap}.ticket-expand-main{flex:1 1 100%}.ticket-quick{min-width:0;flex:1 1 calc(100% - 35px)}.expand-icon{margin-left:auto}}
+@media(max-width:760px){.ticket-expand{padding:15px}.ticket-quick{grid-template-columns:1fr 1fr}.bookmaker-quick{padding:9px}.bookmaker-quick b{font-size:17px}.ticket-details{padding:14px}.ticket-reservations{grid-template-columns:1fr}.reservation-row{flex-wrap:wrap}.reservation-code{flex-basis:100%;order:3}.match-detail{padding:12px}.market-detail-grid{grid-template-columns:1fr 1fr}.market-detail-grid>div:last-child{grid-column:auto}}
