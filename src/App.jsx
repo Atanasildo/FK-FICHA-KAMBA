@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Activity, CalendarDays, ChevronDown, ChevronRight, FileText, History, LayoutDashboard, Radio, ShieldCheck, Ticket, Menu, X } from 'lucide-react';
 import { supabase } from './lib/supabase.js';
 
-const NAV = [['Bilhetes do dia', LayoutDashboard], ['Acompanhamento ao vivo', Activity], ['Histórico', History]];
+const NAV = [['Bilhetes do dia', LayoutDashboard], ['Análises', FileText], ['Acompanhamento ao vivo', Activity], ['Histórico', History]];
 const money = n => Number(n || 0).toFixed(2);
 const isToday = value => value && new Date(value).toDateString() === new Date().toDateString();
 const matchState = leg => String(leg.matchStatus || leg.status || '').toUpperCase();
@@ -26,6 +26,8 @@ const resultClass = leg => {
 export default function App() {
   const [page, setPage] = useState('Bilhetes do dia');
   const [data, setData] = useState({ tickets: [] });
+  const [analyses, setAnalyses] = useState([]);
+  const [analysesLoading, setAnalysesLoading] = useState(true);
   const [liveUpdates, setLiveUpdates] = useState({});
   const [liveUpdatedAt, setLiveUpdatedAt] = useState(null);
   const [expanded, setExpanded] = useState({});
@@ -94,6 +96,34 @@ export default function App() {
     const timer = window.setInterval(loadPublishedTickets, 300000);
     return () => { active = false; window.clearInterval(timer); };
   }, []);
+  // Consulta apenas análises prontas; a análise é feita manualmente no ChatGPT.
+  useEffect(() => {
+    let active = true;
+    async function loadAnalyses() {
+      if (!supabase) {
+        if (active) setAnalysesLoading(false);
+        return;
+      }
+      const { data: rows, error } = await supabase
+        .from('match_analyses')
+        .select('id,match_id,provider,model,status,summary,analysis,generated_at,matches(home_team,away_team,competition,kickoff_at)')
+        .eq('status', 'ready')
+        .order('generated_at', { ascending: false })
+        .limit(100);
+      if (!active) return;
+      if (error) {
+        setNotice('Não foi possível carregar as análises: ' + error.message);
+        setAnalysesLoading(false);
+        return;
+      }
+      setAnalyses(rows || []);
+      setAnalysesLoading(false);
+    }
+    loadAnalyses();
+    const timer = window.setInterval(loadAnalyses, 300000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, []);
+
   useEffect(() => {
     let active = true;
     const refreshLive = async () => {
@@ -130,6 +160,12 @@ export default function App() {
           <div className="daily-summary"><div className="daily-icon"><Ticket size={21}/></div><div><b>{todayTickets.length} {todayTickets.length === 1 ? 'ficha publicada' : 'fichas publicadas'} hoje</b><span>As fichas do dia, os IDs de reserva e todos os jogos ficam reunidos aqui.</span></div><div className="daily-date">{new Date().toLocaleDateString('pt-AO')}</div></div>
           {todayTickets.length ? <div className="daily-ticket-list">{todayTickets.map(t => <TicketPanel key={t.id} ticket={t} expanded={!!expanded[t.id]} onToggle={() => toggle(t.id)}/>)}</div> : <EmptyState icon={FileText} title="Ainda não há fichas publicadas para hoje" detail="As fichas aparecerão automaticamente aqui quando o serviço de análise e publicação da IA estiver ligado. Não são apresentados palpites ou IDs de reserva inventados."/>}
           <div className="quiet-note"><ShieldCheck size={16}/><span>Esta área é apenas de consulta. A elaboração das fichas é uma tarefa interna do sistema.</span></div>
+        </>}
+        {page === 'Análises' && <>
+          <div className="daily-summary"><div className="daily-icon"><FileText size={21}/></div><div><b>{analyses.length} {analyses.length === 1 ? 'análise disponível' : 'análises disponíveis'}</b><span>Relatórios preparados aqui no ChatGPT e guardados no Supabase.</span></div><div className="daily-date">ChatGPT</div></div>
+          {analysesLoading ? <div className="empty-state"><b>A carregar análises...</b></div> :
+            analyses.length ? <div className="daily-ticket-list">{analyses.map(row => <AnalysisPanel key={row.id} row={row}/>)}</div> :
+            <EmptyState icon={FileText} title="Ainda não existem análises guardadas" detail="Depois da recolha diária das odds, pede aqui no ChatGPT para analisar os jogos. As análises aprovadas aparecerão nesta área."/>}
         </>}
         {page === 'Acompanhamento ao vivo' && <>
           {liveUpdatedAt && <div className="quiet-note"><Radio size={15}/><span>Marcador a cada 5 minutos · estatísticas em rotação conforme os jogos activos e a quota da fonte · última consulta {new Date(liveUpdatedAt).toLocaleTimeString('pt-AO')}</span></div>}
@@ -191,6 +227,32 @@ function TicketPanel({ ticket: t, expanded, onToggle, liveView = false }) {
       </article>) : <p className="muted-copy">Os jogos desta ficha serão apresentados aqui quando forem publicados.</p>}
       <div className="ticket-detail-footer"><span>IDENTIFICADOR DO BOLETIM</span><b>{t.bookingId || 'Ainda não disponibilizado'}</b>{t.bookingUrl && <a className="reserve-link" href={t.bookingUrl} target="_blank" rel="noreferrer">Abrir boletim partilhável</a>}</div>
     </div>}
+  </section>;
+}
+
+function AnalysisPanel({ row }) {
+  const match = row.matches || {};
+  const report = row.analysis || {};
+  const selections = Array.isArray(report.selections) ? report.selections : [];
+  return <section className="panel daily-ticket">
+    <div className="ticket-details">
+      <div className="details-heading">
+        <b>{match.home_team || 'Equipa da casa'} <span>vs</span> {match.away_team || 'Equipa visitante'}</b>
+        <span>{row.status === 'ready' ? 'Análise concluída' : row.status}</span>
+      </div>
+      <div className="ticket-subline">
+        <span>{match.competition || 'Competição não indicada'}</span>
+        <span>{match.kickoff_at ? new Date(match.kickoff_at).toLocaleString('pt-AO') : 'Data não indicada'}</span>
+        <span>{row.provider || 'ChatGPT'}{row.model ? ' · ' + row.model : ''}</span>
+      </div>
+      {row.summary && <p className="panel-note">{row.summary}</p>}
+      {selections.length ? <div className="history-legs">{selections.map((pick,index) => <div key={pick.id || index}>
+        <span>{pick.market || 'Mercado'} · {pick.selection || 'Selecção'}</span>
+        <small>Odd: {pick.bestOdds ?? pick.odds ?? '—'} · Probabilidade: {pick.probability ?? pick.estimatedProbability ?? '—'} · Edge: {pick.edge ?? '—'}</small>
+        {pick.rationale && <small>{pick.rationale}</small>}
+      </div>)}</div> : <div className="panel-note">Relatório sem selecções recomendadas. Consulta os fundamentos e os riscos no relatório completo.</div>}
+      <div className="ticket-detail-footer"><span>ANÁLISE GUARDADA</span><b>{row.generated_at ? new Date(row.generated_at).toLocaleString('pt-AO') : '—'}</b></div>
+    </div>
   </section>;
 }
 
