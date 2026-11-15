@@ -6,7 +6,7 @@ Plataforma de consulta de odds, análises desportivas e fichas de futebol. A rec
 
 - **PC do utilizador:** recolhe jogos e mercados na BantuBet e ElephantBet.
 - **Vercel:** recebe e valida os lotes de recolha e serve o site/API. A recolha diária não chama modelos de IA nem inicia a criação de bilhetes.
-- **Supabase:** guarda jogos, mercados brutos, comparações de odds e análises concluídas.
+- **Supabase:** guarda jogos, mercados brutos, comparações de odds, contexto pesquisado e análises concluídas.
 - **ChatGPT (nesta conversa):** consulta os dados do Supabase, pesquisa fontes desportivas, compara mercados, estima probabilidades e riscos e, mediante pedido, grava o relatório em `match_analyses`.
 - **Ficha Kamba:** apresenta as odds e análises guardadas. Não chama esta conversa nem precisa de uma chave Groq/DeepSeek para mostrar os relatórios.
 
@@ -23,7 +23,6 @@ npm run collect:upload
 ```
 
 O comando:
-
 1. Descobre os jogos disponíveis na BantuBet e ElephantBet.
 2. Selecciona jogos comuns das duas casas, com início no dia actual de Luanda e pelo menos uma hora de antecedência.
 3. Compara as equipas pela ordem casa/visitante e pelo horário, sem depender dos IDs próprios de cada casa.
@@ -43,14 +42,12 @@ O modo `--dry-run` descobre os jogos e recolhe os mercados, mas **não envia dad
 ### Variáveis de ambiente
 
 No PC, para uma recolha real:
-
 - `CRON_SECRET`
 - `VERCEL_AUTOMATION_BYPASS_SECRET` se o endpoint de ingestão estiver protegido pela Vercel
 - `FK_API_URL` (opcional; endereço da API de ingestão)
 - `FK_INGEST_URL` (opcional; URL completa de ingestão)
 
 Na Vercel:
-
 - `SUPABASE_URL`
 - `SUPABASE_SECRET_KEY` ou `SUPABASE_SERVICE_ROLE_KEY`
 - `VITE_SUPABASE_URL`
@@ -63,16 +60,18 @@ Nunca coloques segredos no código, no GitHub ou em mensagens de chat. Não part
 
 Depois de uma recolha concluída, pede nesta conversa: **“Vamos analisar os jogos de hoje da Ficha Kamba.”**
 
-O fluxo previsto é:
-
+O fluxo é:
 1. Consultar no Supabase os jogos e as odds recentes das duas casas.
 2. Excluir jogos iniciados, adiados, ambíguos ou com odds desactualizadas.
 3. Pesquisar forma recente, confrontos, classificação, ausências, escalações e outras informações relevantes, indicando quando uma fonte não disponibiliza determinado dado.
-4. Avaliar mercados, probabilidades, odds implícitas, valor esperado e incerteza.
-5. Guardar os relatórios estruturados em `match_analyses`, associados aos jogos.
-6. Mostrar as análises na área **Análises** do site.
+4. Guardar contexto `InternetSearch` apenas depois de recolher factos verificáveis de pelo menos duas fontes distintas. Um marcador de pesquisa pendente não conta como estatística.
+5. Avaliar mercados, probabilidades, odds implícitas, valor esperado e incerteza.
+6. Guardar os relatórios estruturados em `match_analyses`.
+7. Mostrar as análises na área **Análises** do site.
 
-As análises só devem ser guardadas depois de verificar a identidade do jogo, a actualidade das odds e a qualidade das fontes. Não inventar estatísticas ou probabilidades para preencher lacunas.
+As análises só devem ser guardadas depois de verificar a identidade do jogo, a actualidade das odds e a qualidade das fontes. Não inventar estatísticas ou probabilidades para preencher lacunas. O formato e as regras de validação do contexto estão em [docs/chatgpt-analysis-workflow.md](docs/chatgpt-analysis-workflow.md).
+
+Para esta rotina manual, **não executar o pipeline legado `/api/pipeline` / `run-daily`**: ele ainda depende de um fornecedor externo de IA e tem uma etapa separada de bilhetes/publicação. O ChatGPT pesquisa e grava os relatórios directamente no Supabase nesta conversa.
 
 ## Bilhetes e publicação
 
