@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     return json(res, 401, { ok: false, error: "Unauthorized" });
   }
 
-  const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "";
+  const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "";
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || "";
   if (!url || !key) {
     return json(res, 503, { ok: false, stage: "configuration", hasUrl: !!url, hasKey: !!key });
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     if (!probe.ok) {
       return json(res, 502, {
         ok: false, stage: "apikey_probe", httpStatus: probe.status,
-        keyType, keyLength: key.length, projectRef,
+        keyType, keyLength: key.length, projectRef, urlSource: process.env.VITE_SUPABASE_URL ? "VITE_SUPABASE_URL" : "SUPABASE_URL",
         response: (await probe.text()).slice(0, 500)
       });
     }
@@ -82,7 +82,7 @@ export default async function handler(req, res) {
     return json(res, 200, {
       ok: true, stage: "complete", apiKeyAccepted: true,
       insertSucceeded: true, cleanupSucceeded: true,
-      persistedDiagnosticRows: 0, keyType, keyLength: key.length, projectRef
+      persistedDiagnosticRows: 0, keyType, keyLength: key.length, projectRef, urlSource: process.env.VITE_SUPABASE_URL ? "VITE_SUPABASE_URL" : "SUPABASE_URL"
     });
   } catch (error) {
     return json(res, 500, {
