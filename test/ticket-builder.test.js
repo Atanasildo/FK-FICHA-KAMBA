@@ -29,10 +29,11 @@ test("exclui selecções abaixo da odd mínima ou sem cotação de uma das casas
   }, Date.parse(publishedAt)), null);
 });
 
-test("aceita apenas jogos do mesmo dia com pelo menos uma hora de antecedência", () => {
+test("aceita jogos futuros mesmo quando começam em menos de uma hora e exclui os já iniciados", () => {
   const now = Date.parse(publishedAt);
-  assert.ok(normalizeCandidate({ ...base, kickoff: "2026-11-12T14:00:00.000Z" }, now));
-  assert.equal(normalizeCandidate({ ...base, kickoff: "2026-11-12T08:30:00.000Z" }, now), null);
+  assert.ok(normalizeCandidate({ ...base, kickoff: "2026-11-12T08:01:00.000Z" }, now));
+  assert.equal(normalizeCandidate({ ...base, kickoff: publishedAt }, now), null);
+  assert.equal(normalizeCandidate({ ...base, kickoff: "2026-11-12T07:59:00.000Z" }, now), null);
 });
 
 test("não aplica um corte automático de EV quando a odd e a análise são válidas", () => {
@@ -63,69 +64,72 @@ test("devolve o contrato de lote e métricas mesmo sem candidatos", () => {
   assert.equal(result.validation.probabilityAtLeastOneMinimum, false);
 });
 
-test("cria duas versões com selecções idênticas e odds próprias por casa", () => {
-  const makePick = ({ fixtureId, index, odd, fairProbability, duplicate = false }) => ({
-    fixtureId,
-    home: `Home ${fixtureId}`,
-    away: `Away ${fixtureId}`,
-    competition: `League ${fixtureId}`,
-    kickoff: "2026-11-12T18:00:00.000Z",
-    market: ["Resultado do Jogo", "Total de golos", "Ambas equipas marcarão", "Dupla Chance", "Ambas marcam", "Total de cantos", "Resultado ao intervalo", "Total de cartões"][((Number(fixtureId.split("-").at(-1)) || 0) + index - 1) % 8],
-    selection: `Selection ${index}`,
-    rationale: "A evidência estatística sustenta esta selecção.",
-    fairProbability,
-    correlationRatio: duplicate ? 1.3 : undefined,
-    quotes: [
-      { bookmaker: "BantuBet", odds: odd, collectedAt: publishedAt },
-      { bookmaker: "ElephantBet", odds: odd + 0.1, collectedAt: publishedAt }
-    ]
-  });
+test("respeita a nova distribuição: 2 fichas 25-50, 2 fichas 30-70 e 4 fichas 100-10000", () => {
   const pool = [];
-  for (let i = 0; i < 6; i++) {
-    pool.push(makePick({ fixtureId: `extreme-${i}`, index: 1, odd: 2, fairProbability: 0.8 }));
-    if (i < 3) pool.push(makePick({ fixtureId: `extreme-${i}`, index: 2, odd: 2, fairProbability: 0.8, duplicate: true }));
-  }
-  for (let i = 0; i < 15; i++) pool.push(makePick({ fixtureId: `long-${i}`, index: 1, odd: 2.5, fairProbability: 0.6 }));
-  for (let i = 0; i < 6; i++) pool.push(makePick({ fixtureId: `medium-${i}`, index: 1, odd: 3.2, fairProbability: 0.5 }));
-  for (let i = 0; i < 6; i++) pool.push(makePick({ fixtureId: `short-${i}`, index: 1, odd: 2.5, fairProbability: 0.5 }));
+  const expected = [
+    { tier: "alta", odd: 3.3, count: 4 },
+    { tier: "mediaAlta", odd: 2.7, count: 2 },
+    { tier: "media", odd: 2.5, count: 2 }
+  ];
+
+  expected.forEach((group, groupIndex) => {
+    for (let ticket = 0; ticket < group.count; ticket++) {
+      const ticketIndex = expected.slice(0, groupIndex).reduce((sum, item) => sum + item.count, 0) + ticket;
+      for (let legIndex = 0; legIndex < 4; legIndex++) {
+        const fixtureId = `tier-${ticketIndex}-fixture-${legIndex}`;
+        pool.push({
+          fixtureId,
+          home: `Home ${fixtureId}`,
+          away: `Away ${fixtureId}`,
+          competition: `League ${fixtureId}`,
+          kickoff: "2026-11-12T18:00:00.000Z",
+          market: legIndex < 2 ? `Market ${ticketIndex} A` : `Market ${ticketIndex} B`,
+          selection: `Selection ${legIndex}`,
+          rationale: "A evidência estatística sustenta esta selecção.",
+          fairProbability: 0.5,
+          quotes: [
+            { bookmaker: "BantuBet", odds: group.odd, collectedAt: publishedAt },
+            { bookmaker: "ElephantBet", odds: group.odd + 0.01, collectedAt: publishedAt }
+          ]
+        });
+      }
+    }
+  });
 
   const result = buildTicketBatch(pool, { publishedAt });
-  assert.ok(result.sharedTicketGroups >= 6 && result.sharedTicketGroups <= 8);
-  assert.equal(result.slips.length, result.sharedTicketGroups * 2);
-  const firstGroup = result.slips.filter(slip => slip.shared_ticket_id === result.slips[0].shared_ticket_id);
-  assert.equal(firstGroup.length, 2);
-  assert.deepEqual(
-    firstGroup[0].legs.map(leg => [leg.event_id, leg.market, leg.selection]),
-    firstGroup[1].legs.map(leg => [leg.event_id, leg.market, leg.selection])
-  );
-  assert.notEqual(firstGroup[0].bookmaker, firstGroup[1].bookmaker);
-  assert.notEqual(firstGroup[0].total_odd, firstGroup[1].total_odd);
+  assert.equal(result.sharedTicketGroups, 8);
+  assert.equal(result.slips.length, 16);
   assert.equal(result.validation.valid, true);
-  assert.equal(result.validation.uniqueMarketProfiles, true);
 
-  const marketProfiles = new Set();
+  const groups = new Map();
   for (const slip of result.slips) {
-    const profile = [...new Set(slip.legs.map(leg => leg.market.trim().toLowerCase()))].sort().join("|");
-    marketProfiles.add(profile);
-    assert.ok(new Set(slip.legs.map(leg => leg.market)).size >= 2,
-      "cada ficha deve combinar pelo menos dois tipos de mercado");
-    const counts = new Map();
-    for (const leg of slip.legs) counts.set(leg.market, (counts.get(leg.market) || 0) + 1);
-    assert.ok([...counts.values()].every(count => count <= 2),
-      "um mercado não deve dominar a mesma ficha");
+    if (!groups.has(slip.shared_ticket_id)) groups.set(slip.shared_ticket_id, []);
+    groups.get(slip.shared_ticket_id).push(slip);
   }
-  assert.equal(marketProfiles.size, result.sharedTicketGroups, "cada ficha deve ter um perfil de mercados diferente");
+  const tierCounts = {};
+  for (const pair of groups.values()) {
+    assert.equal(pair.length, 2, "cada ficha partilhada deve ter uma versão por casa");
+    assert.deepEqual(
+      pair[0].legs.map(leg => [leg.event_id, leg.market, leg.selection]),
+      pair[1].legs.map(leg => [leg.event_id, leg.market, leg.selection])
+    );
+    assert.notEqual(pair[0].bookmaker, pair[1].bookmaker);
+    for (const slip of pair) {
+      tierCounts[slip.tier] = (tierCounts[slip.tier] || 0) + (slip.bookmaker === "BantuBet" ? 1 : 0);
+      if (slip.tier === "alta") assert.ok(slip.total_odd >= 100 && slip.total_odd <= 10000);
+      if (slip.tier === "mediaAlta") assert.ok(slip.total_odd >= 30 && slip.total_odd <= 70);
+      if (slip.tier === "media") assert.ok(slip.total_odd >= 25 && slip.total_odd <= 50);
+    }
+  }
+  assert.deepEqual(tierCounts, { alta: 4, mediaAlta: 2, media: 2 });
 
-  const fixturesByGroup = new Map();
-  for (const slip of result.slips) {
-    if (!fixturesByGroup.has(slip.shared_ticket_id)) fixturesByGroup.set(slip.shared_ticket_id, new Set());
-    for (const leg of slip.legs) fixturesByGroup.get(slip.shared_ticket_id).add(leg.event_id);
-  }
-  const groups = [...fixturesByGroup.values()];
-  for (let i = 0; i < groups.length; i++) {
-    for (let j = i + 1; j < groups.length; j++) {
-      assert.equal([...groups[i]].some(fixtureId => groups[j].has(fixtureId)), false,
-        "um jogo não deve ser repetido entre boletins diferentes");
+  const fixturesByGroup = [...groups.values()].map(pair =>
+    new Set(pair[0].legs.map(leg => leg.event_id))
+  );
+  for (let i = 0; i < fixturesByGroup.length; i++) {
+    for (let j = i + 1; j < fixturesByGroup.length; j++) {
+      assert.equal([...fixturesByGroup[i]].some(id => fixturesByGroup[j].has(id)), false,
+        "um jogo não deve ser repetido entre fichas diferentes");
     }
   }
 });
