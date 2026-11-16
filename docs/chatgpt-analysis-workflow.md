@@ -7,7 +7,7 @@ Este procedimento substitui a análise automática por Groq/DeepSeek. A recolha 
 Consultar apenas jogos:
 - com `source = 'swarm'`;
 - agendados para a data actual em `Africa/Luanda`;
-- com início pelo menos uma hora depois da hora actual;
+- com `kickoff_at > now()`; jogos já iniciados ou terminados ficam excluídos, mesmo que a reserva seja feita poucos minutos antes do início;
 - com uma comparação de odds criada na última hora;
 - com cotações recentes das duas casas.
 
@@ -33,14 +33,14 @@ join lateral (
   limit 1
 ) latest on true
 where m.source = 'swarm'
-  and m.kickoff_at > now() + interval '1 hour'
+  and m.kickoff_at > now()
   and (m.kickoff_at at time zone 'Africa/Luanda')::date =
       (now() at time zone 'Africa/Luanda')::date
   and latest.created_at >= now() - interval '1 hour'
 order by m.kickoff_at asc;
 ```
 
-A consulta é apenas o ponto de partida. Antes de recomendar um mercado, confirmar também que as duas cotações desse mercado estão presentes e recentes em `comparison.events[].comparisons[].quotes[]`. Não interpretar mercados especiais (por exemplo, empate anula aposta) como resultado final 1X2.
+A consulta é apenas o ponto de partida. A elegibilidade do jogo depende apenas de ainda não ter começado; não aplicar um bloqueio automático de 60 minutos. Antes de recomendar um mercado, confirmar também que as duas cotações desse mercado estão presentes e recentes em `comparison.events[].comparisons[].quotes[]`. Não interpretar mercados especiais (por exemplo, empate anula aposta) como resultado final 1X2.
 
 ## 2. Pesquisa e análise no ChatGPT
 
