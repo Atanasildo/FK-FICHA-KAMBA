@@ -27,6 +27,11 @@ export function kickoffMillis(value) {
   return Date.UTC(Number(year), Number(month) - 1, Number(day), Number(hour) - 1, Number(minute));
 }
 
+export function isKickoffEligible(value, now = Date.now()) {
+  const kickoff = kickoffMillis(value);
+  return Number.isFinite(kickoff) && kickoff > now;
+}
+
 function buildPayload(site, selections, suppliedTotal) {
   const cfg = configs[site];
   const events = selections.map(s => {
@@ -92,9 +97,9 @@ export async function createBooking({ site, selections, totalOdd }) {
   if (selections.some(s => !s || !s.home || !s.away || !s.selectionName || !s.marketName || !s.startTime)) {
     throw new Error("Cada selecção precisa de jogo, mercado, selecção e hora de início.");
   }
-  const earliestKickoff = Date.now() + 1 * 60 * 60 * 1000;
-  if (selections.some(s => !Number.isFinite(kickoffMillis(s.startTime)) || kickoffMillis(s.startTime) < earliestKickoff)) {
-    throw new Error("Todas as partidas devem começar pelo menos 1 hora após a reserva.");
+  const now = Date.now();
+  if (selections.some(s => !isKickoffEligible(s.startTime, now))) {
+    throw new Error("Todas as partidas devem ainda não ter começado.");
   }
   const payload = buildPayload(site, selections, totalOdd);
   const controller = new AbortController();
