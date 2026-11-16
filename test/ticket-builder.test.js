@@ -66,6 +66,7 @@ test("devolve o contrato de lote e métricas mesmo sem candidatos", () => {
 
 test("respeita a nova distribuição: 2 fichas 25-50, 2 fichas 30-70 e 4 fichas 100-10000", () => {
   const pool = [];
+  const profileNames = ["Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", "Eta", "Theta"];
   const expected = [
     { tier: "alta", odd: 3.3, count: 4 },
     { tier: "mediaAlta", odd: 2.7, count: 2 },
@@ -83,7 +84,7 @@ test("respeita a nova distribuição: 2 fichas 25-50, 2 fichas 30-70 e 4 fichas 
           away: `Away ${fixtureId}`,
           competition: `League ${fixtureId}`,
           kickoff: "2026-11-12T18:00:00.000Z",
-          market: legIndex < 2 ? `Market ${ticketIndex} A` : `Market ${ticketIndex} B`,
+          market: legIndex < 2 ? `Market ${profileNames[ticketIndex]} A` : `Market ${profileNames[ticketIndex]} B`,
           selection: `Selection ${legIndex}`,
           rationale: "A evidência estatística sustenta esta selecção.",
           fairProbability: 0.5,
