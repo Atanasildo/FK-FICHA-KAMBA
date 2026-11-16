@@ -11,9 +11,12 @@ const RESEARCH_MODEL = AI_PROVIDER === "deepseek"
   : AI_PROVIDER === "gemini"
     ? MODEL
     : (process.env.GROQ_RESEARCH_MODEL || "openai/gpt-oss-20b");
-const RESEARCH_TIMEOUT_MS = 30000;
+const RESEARCH_TIMEOUT_MS = 45000;
 const ANALYSIS_TIMEOUT_MS = 18000;
 const MIN_ODDS = 1.4;
+const TIP_SOURCES = ["https://www.footballsuper.tips/todays-free-football-super-tips/", "https://primatips.com/", "https://www.predictz.com/predictions/tomorrow/", "https://wintips.com/soccer-predictions/"];
+const TIP_HOSTS = new Set(["footballsuper.tips", "primatips.com", "predictz.com", "wintips.com"]);
+const sourceHost = value => { try { return new URL(value).hostname.toLowerCase().replace(/^www\./, ""); } catch { return ""; } };
 
 const SYSTEM_PROMPT = `És o agente autónomo de análise desportiva do FK — Ficha Kamba, focado em futebol e no mercado angolano.
 
@@ -23,20 +26,21 @@ Analisar os jogos recebidos, verificar o contexto desportivo, identificar selec�
 REGRAS DE DADOS
 1. Nunca inventes jogos, equipas, competições, datas, horas, resultados, estatísticas, mercados, selecções, odds, bookmakers, URLs ou fontes.
 2. Considera os dados estruturados recebidos do FK/Swarm como fonte primária para identificação do jogo, calendário, estado e cotações das casas.
-3. Na primeira fase, usa a pesquisa Web disponibilizada pelo fornecedor de IA para procurar contexto público recente de cada jogo quando isso puder melhorar a análise. Dá prioridade a fontes oficiais de clubes, ligas e federações. Na segunda fase, usa apenas os resultados dessa pesquisa e os dados estruturados enviados pelo FK.
-4. Não uses resultados de pesquisa genéricos, previsões de terceiros ou odds encontradas em páginas não verificadas como se fossem cotações confirmadas da BantuBet ou ElephantBet.
+3. Na primeira fase, pesquisa factos desportivos em fontes oficiais e bases de resultados reconhecidas. Consulta também explicitamente FootballSuperTips (https://www.footballsuper.tips/todays-free-football-super-tips/), PrimaTips (https://primatips.com/), PredictZ (https://www.predictz.com/predictions/tomorrow/) e WinTips (https://wintips.com/soccer-predictions/). Para cada jogo/site, regista o mercado e selecção recomendados, se existirem; ausência de recomendação deve ficar explícita.
+4. Prognósticos são sinais de consenso, não prova estatística nem odds confirmadas. Distingue recomendação explícita de percentagem/probabilidade; não contes duas páginas do mesmo domínio como fontes independentes e não inventes recomendações.
 5. Não transformes ausência de informação em confirmação. Se lesões, suspensões, escalações ou forma não estiverem disponíveis, indica que não foram confirmadas.
 6. Verifica sempre a data, o fuso horário Africa/Luanda e o estado do jogo. Exclui jogos iniciados, terminados, adiados, cancelados ou com estado incerto.
 7. Se os dados forem insuficientes, contraditórios, antigos ou não corresponderem ao jogo, rejeita-o em vez de adivinhar.
 
 ANÁLISE
-8. Analisa primeiro o desempenho desportivo, sem usar odds para decidir a selecção.
-9. Considera forma recente, golos marcados/sofridos, desempenho casa/fora, confrontos directos, classificação, calendário, descanso e ausências confirmadas, apenas quando os dados existirem. Se stats.source for "InternetSearch" ou matchStats estiver ausente, a pesquisa Web tem de encontrar pelo menos 3 resultados terminados, com data e placar, para cada equipa, nos últimos 180 dias, confirmados por pelo menos 2 fontes independentes e identificáveis. Se não conseguir confirmar estes dados, rejeita o jogo. Nunca uses páginas de prognósticos como prova estatística.
-10. Avalia cada mercado pelo seu contexto específico. Não assumes que uma equipa favorita é automaticamente uma boa aposta.
-11. Escolhe apenas mercados e selecções que existam exactamente nos mercados fornecidos para o jogo. Não cries mercados novos. Mantém sempre a linha, o tipo e a base exactos de cada mercado; duas selecções chamadas apenas “Mais de” com linhas diferentes são selecções diferentes.
-12. Evita mercados demasiado dependentes de acontecimentos imprevisíveis quando não há evidência suficiente.
-13. Estima fairProbability apenas com base em estatísticas fornecidas e evidência verificável; se não houver base suficiente, rejeita a selecção. O servidor calcula EV = fairProbability × odd − 1 apenas como indicador de apoio, sem corte percentual automático. Não inventes dados de suporte.
-14. Se não houver uma oportunidade suficientemente sustentada, não selecciones o jogo.
+8. Analisa o desempenho desportivo sem deixar que as odds ditem a previsão.
+9. Considera forma recente, golos marcados/sofridos, casa/fora, confrontos directos, classificação, calendário, descanso e ausências confirmadas. Se stats.source for InternetSearch ou matchStats estiver ausente, exige 3 resultados terminados com data e placar por equipa, nos últimos 180 dias, confirmados por 2 fontes factuais independentes. Prognósticos não contam como prova estatística.
+10. Analisa todos os mercados disponíveis: 1X2, Dupla Chance, empate anula, totais de golos em todas as linhas, golos por equipa, Ambas Marcam Sim/Não, handicaps e combos/Bet Builder apenas quando existirem exactamente na lista de mercados recolhida.
+11. Se o 1X2 não tiver consenso ou a análise não sustentar vitória, não forces esse mercado: compara golos, Ambas Marcam, dupla hipótese, handicaps e combinações existentes. Escolhe o mercado melhor sustentado ou rejeita o jogo.
+12. Escolhe apenas selecções que existam exactamente nos mercados fornecidos; mantém linha, período, tipo e base exactos. Não mistures mercados semanticamente diferentes.
+13. Evita mercados demasiado dependentes de acontecimentos imprevisíveis sem evidência suficiente. Estima fairProbability apenas com base em estatísticas e evidência verificável; o EV é indicador auxiliar, sem corte percentual fixo.
+14. Regista em sourceRecommendations as recomendações das quatro fontes, com fonte, URL, mercado, selecção e recommendationType (explicit ou probability_only). Só usa URLs realmente encontradas; percentagens isoladas não contam como recomendação explícita.
+15. Se não houver uma oportunidade suficientemente sustentada, não selecciones o jogo.
 
 ODDS E CASAS
 15. As odds não podem influenciar a escolha inicial do mercado.
@@ -85,9 +89,24 @@ const responseSchema = {
           marketBase: { type: ["string", "null"] },
           rationale: { type: "string" },
           fairProbability: { type: "number", minimum: 0, maximum: 1 },
-          confidence: { type: "string", enum: ["low", "medium", "high"] }
+          confidence: { type: "string", enum: ["low", "medium", "high"] },
+          sourceRecommendations: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                source: { type: "string" },
+                url: { type: "string" },
+                market: { type: "string" },
+                selection: { type: "string" },
+                recommendationType: { type: "string", enum: ["explicit", "probability_only"] }
+              },
+              required: ["source", "url", "market", "selection", "recommendationType"],
+              additionalProperties: false
+            }
+          }
         },
-        required: ["fixtureId", "market", "selection", "line", "marketType", "marketBase", "rationale", "fairProbability", "confidence"],
+        required: ["fixtureId", "market", "selection", "line", "marketType", "marketBase", "rationale", "fairProbability", "confidence", "sourceRecommendations"],
         additionalProperties: false
       }
     },
@@ -219,7 +238,7 @@ export default async function handler(req, res) {
   try {
     const researchStartedAt = Date.now();
     console.info("[FK AI] research:start", { provider: AI_PROVIDER, fixtures: aiInput.length, model: RESEARCH_MODEL, timeoutMs: RESEARCH_TIMEOUT_MS });
-    const researchPrompt = "És o investigador desportivo do FK. Pesquisa na Web cada jogo. Dá prioridade a sites oficiais de ligas, federações e clubes e a bases de resultados desportivos reconhecidas. Para CADA equipa, tenta confirmar os 3 jogos oficiais mais recentes dos últimos 180 dias, com data, adversário e resultado; procura também classificação, desempenho casa/fora, confrontos directos e notícias de ausências confirmadas. Para cada facto, indica URL, nome da fonte e data. Exige pelo menos 2 fontes independentes para confirmar os resultados recentes. Distingue factos confirmados de informação não encontrada ou contraditória. Se o contexto do jogo indicar source=InternetSearch, não assumes que existem estatísticas estruturadas: a pesquisa tem de fornecer a evidência acima, caso contrário recomenda rejeitar o jogo. Não procures odds nem prognósticos de apostas. Nunca inventes resultados, estatísticas, fontes ou URLs.";
+    const researchPrompt = `Pesquisa cada jogo em fontes oficiais e bases de resultados reconhecidas; tenta confirmar 3 resultados recentes por equipa com data, adversário e placar, por pelo menos 2 fontes factuais independentes. Consulta explicitamente estas quatro fontes de prognósticos: ${TIP_SOURCES.join(" ; ")}. Para cada jogo/site, regista apenas a recomendação explícita de mercado e selecção, ou probability_only se houver só percentagem sem pick. Se o jogo não aparecer, indica sem recomendação. Devolve URLs exactos, nomes e datas. Prognósticos não são prova estatística nem odds das casas. Nunca inventes dados. Fuso horário Africa/Luanda.`;
     const researchResponse = AI_PROVIDER === "deepseek"
       ? await fetch("https://api.deepseek.com/chat/completions", {
           method: "POST",
@@ -373,7 +392,7 @@ export default async function handler(req, res) {
     const analysisStartedAt = Date.now();
     console.info("[FK AI] analysis:start", { provider: AI_PROVIDER, fixtures: aiInput.length, model: MODEL, timeoutMs: ANALYSIS_TIMEOUT_MS });
     const analysisInput = {
-      task: "Analisa a evidência desportiva e escolhe apenas mercados sustentados. As odds não são fornecidas. Para jogos com stats.source=InternetSearch, só aceita se a pesquisa apresentar 3 resultados recentes por equipa, com datas e placares, confirmados por pelo menos 2 fontes independentes; caso contrário rejeita o jogo. Nunca inventes estatísticas.",
+      task: "Analisa todos os mercados recebidos, não apenas vitórias. Se 1X2 não for sustentado, avalia golos, Ambas Marcam, dupla chance, handicaps, golos por equipa e combos existentes. Usa consenso explícito das quatro fontes; percentagens isoladas não contam. Não forces selecções e exige fontes factuais para estatísticas.",
       timezone: "Africa/Luanda", fixtures: aiInput, webResearch: researchText
     };
     const analysisResponse = AI_PROVIDER === "deepseek"
@@ -466,7 +485,22 @@ export default async function handler(req, res) {
       if (!candidate || candidate.quotes.length < 2 || candidate.bestOdds < MIN_ODDS) continue;
       const fairProbability = Number(item.fairProbability);
       const expectedValue = fairProbability * candidate.bestOdds - 1;
-      if (!Number.isFinite(fairProbability) || fairProbability <= 0 || fairProbability > 1 || expectedValue < 0.03 || String(item.rationale || "").trim().length < 12) continue;
+      if (!Number.isFinite(fairProbability) || fairProbability <= 0 || fairProbability > 1 || String(item.rationale || "").trim().length < 12) continue;
+      const tipRecs = (Array.isArray(item.sourceRecommendations) ? item.sourceRecommendations : []).filter(rec => {
+        if (!rec || typeof rec.url !== "string" || !sourceUrls.includes(rec.url)) return false;
+        const host = sourceHost(rec.url);
+        if (!TIP_HOSTS.has(host)) return false;
+        if (typeof rec.market !== "string" || typeof rec.selection !== "string") return false;
+        return canonicalMarketKey(rec.market, rec.selection, item) === wantedKey;
+      });
+      const explicitByHost = new Map();
+      for (const rec of tipRecs) {
+        if (rec.recommendationType !== "explicit") continue;
+        const host = sourceHost(rec.url);
+        if (!explicitByHost.has(host)) explicitByHost.set(host, { source: rec.source, url: rec.url });
+      }
+      const checkedHosts = new Set(sourceUrls.map(sourceHost).filter(host => TIP_HOSTS.has(host)));
+      const sourceConsensus = { explicitCount: explicitByHost.size, sourcesChecked: checkedHosts.size, percentage: checkedHosts.size ? Number((explicitByHost.size / checkedHosts.size * 100).toFixed(1)) : null, sources: [...explicitByHost.values()] };
       verifiedSelections.push({
         fixtureId: item.fixtureId,
         home: fixture.home,
@@ -483,6 +517,7 @@ export default async function handler(req, res) {
         fairProbability,
         ev: Number(expectedValue.toFixed(4)),
         confidence: item.confidence,
+        sourceConsensus,
         bestOdds: candidate.bestOdds,
         bestBookmaker: candidate.bestBookmaker,
         quotes: candidate.quotes
@@ -504,7 +539,7 @@ export default async function handler(req, res) {
       rejectedFixtureIds: [...new Set([...(analysis.rejectedFixtureIds || []), ...excluded.map(x => x.fixtureId)])],
       excluded,
       comparisonCount: comparison.comparisonCount,
-      rules: { minimumIndividualOdds: MIN_ODDS, bookmakerCountRequired: 2 },
+      rules: { minimumIndividualOdds: MIN_ODDS, bookmakerCountRequired: 2, predictionSources: TIP_SOURCES },
       note: `${AI_PROVIDER} analisou sem receber as odds; depois o servidor comparou cotações equivalentes das duas casas. Nenhum ID de reserva foi solicitado ou criado.`
     });
   } catch (error) {
