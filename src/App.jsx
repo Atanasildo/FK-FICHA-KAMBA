@@ -170,7 +170,7 @@ export default function App() {
         }
         setLiveUpdates(result.legs || {});
         setLiveUpdatedAt(result.updatedAt || new Date().toISOString());
-        setLiveStatus(`${result.matchedMatches || 0} jogos associados · ${result.fixturesUpdated || 0} jogos recebidos${result.providers?.warnings?.length ? ' · Avisos: ' + result.providers.warnings.join(' | ') : ''}`);
+        setLiveStatus(`${result.matchedMatches || 0} jogos associados · ${result.fixturesUpdated || 0} jogos recebidos${result.providers?.swarmMatchedMatches ? ' · Swarm das casas: ' + result.providers.swarmMatchedMatches : ''}${result.providers?.warnings?.length ? ' · Avisos: ' + result.providers.warnings.join(' | ') : ''}`);
       } catch (error) {
         if (active) setLiveStatus(error?.message || 'Falha de comunicação com o acompanhamento.');
       }
