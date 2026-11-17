@@ -290,3 +290,7 @@ Requisitos:
 - A última correcção de interface normaliza espaços/hífens nos estados live do fornecedor (commit `bc0f0b69657e165bef455c3cf51d84e6691b5bf5`). O deployment correspondente está em validação pela Vercel; confirmar estado antes de utilizar o link como Preview final.
 - A primeira versão visual profissional foi compilada com sucesso no Preview, mas ainda não foi validada visualmente pelo utilizador. A produção continua inalterada.
 - Próxima verificação obrigatória: abrir o Preview final, confirmar que os boletins e o novo estilo aparecem, chamar o acompanhamento ao vivo durante partidas reais e comparar os marcadores/resultados devolvidos pela SportAPI. Só depois dessa verificação se deve considerar promover para produção.
+
+
+- Confirmação posterior do Preview de código: commit `bc0f0b69657e165bef455c3cf51d84e6691b5bf5` ficou `READY` na Vercel, URL https://fk-ficha-kamba-9wfrjnso9-atanasildos-projects.vercel.app. A execução do build reportou 110 testes aprovados e 0 falhas.
+- O deployment é Preview da branch `feat/analysis-before-odds`, não produção. O link deve ser usado para revisão funcional/visual antes de promover qualquer alteração.
