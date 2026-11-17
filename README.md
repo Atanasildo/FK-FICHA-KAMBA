@@ -1,3 +1,7 @@
+> **AVISO — documentação histórica da branch `main` (17/11/2026):** este README descreve uma versão anterior do produto e contém referências a funcionalidades/integrações que já não representam a interface actualmente publicada. A versão activa está na branch `feat/analysis-before-odds`. Antes de qualquer trabalho, consulta o [README actualizado da branch activa](https://github.com/Atanasildo/FK-FICHA-KAMBA/blob/feat/analysis-before-odds/README.md). A produção está em https://fk-ficha-kamba.vercel.app. Não uses este README antigo para inferir o estado actual nem faças merge integral entre branches sem analisar as diferenças.
+
+---
+
 # FK — Ficha Kamba
 
 Plataforma web de consulta de fichas de futebol. O utilizador entra para ver as fichas publicadas para o dia, consultar o identificador de reserva e expandir cada ficha para acompanhar os jogos, mercados, selecções e resultados.
