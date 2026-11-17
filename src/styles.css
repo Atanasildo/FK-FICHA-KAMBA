@@ -303,3 +303,16 @@ footer{color:#7890a2}
 .market-detail-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) 78px}
 @media(max-width:900px){.ticket-expand{align-items:flex-start;flex-wrap:wrap}.ticket-expand-main{flex:1 1 100%}.ticket-quick{min-width:0;flex:1 1 calc(100% - 35px)}.expand-icon{margin-left:auto}}
 @media(max-width:760px){.ticket-expand{padding:15px}.ticket-quick{grid-template-columns:1fr 1fr}.bookmaker-quick{padding:9px}.bookmaker-quick b{font-size:17px}.ticket-details{padding:14px}.ticket-reservations{grid-template-columns:1fr}.reservation-row{flex-wrap:wrap}.reservation-code{flex-basis:100%;order:3}.match-detail{padding:12px}.market-detail-grid{grid-template-columns:1fr 1fr}.market-detail-grid>div:last-child{grid-column:auto}}
+
+
+/* Acompanhamento ao vivo e resumo de liquidação */
+.live-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 16px}
+.live-overview>div{display:grid;gap:5px;padding:15px 17px;background:linear-gradient(145deg,#14231e,#111a18);border:1px solid #29453a;border-radius:12px}
+.live-overview b{font-size:24px;line-height:1;color:#e9f4ed;letter-spacing:-.8px}
+.live-overview span{font-size:9px;color:#91a79a;letter-spacing:.5px}
+.live-stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:11px}
+.live-stats-grid>div{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border:1px solid #263e35;background:#0c1b18;border-radius:8px}
+.live-stats-grid small{font-size:9px;color:#8fa79b}
+.live-stats-grid b{font-size:11px;color:#d6f0df;font-variant-numeric:tabular-nums}
+@media(max-width:900px){.live-overview{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.live-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.live-overview>div{padding:12px}.live-overview b{font-size:21px}}
