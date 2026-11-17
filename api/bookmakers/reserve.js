@@ -181,7 +181,7 @@ async function createBookingForTicket(ticketId, requestedSite) {
     return {
       home: match.home_team, away: match.away_team, competition: match.competition || "",
       startTime: match.kickoff_at, marketName: leg.market_name, selectionName: leg.selection,
-      odd: leg.odd, base: market.line ?? null, isLive: false
+      odd: leg.odd, base: null, isLive: false
     };
   });
 
