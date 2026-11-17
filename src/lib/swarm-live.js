@@ -27,6 +27,39 @@ function normalizeTeam(value) {
   return aliases[normalized] || normalized;
 }
 
+const STAT_KEYS = {
+  goal: "goals", goals: "goals", shot: "shots", shots: "shots",
+  shot_on_target: "shots_on_target", shots_on_target: "shots_on_target",
+  shot_off_target: "shots_off_target", shots_off_target: "shots_off_target",
+  shot_blocked: "shots_blocked", blocked_shots: "shots_blocked",
+  corner: "corners", corners: "corners", foul: "fouls", fouls: "fouls",
+  yellow_card: "yellow_cards", yellow_cards: "yellow_cards",
+  red_card: "red_cards", red_cards: "red_cards",
+  goalkeeper_save: "saves", goalkeeper_saves: "saves", saves: "saves"
+};
+function normalizeStats(raw) {
+  const home = {}, away = {};
+  for (const [sourceKey, value] of Object.entries(raw || {})) {
+    const key = STAT_KEYS[String(sourceKey).toLowerCase()];
+    if (!key) continue;
+    let pair = null;
+    if (Array.isArray(value) && value.length >= 2) pair = value;
+    else if (value && typeof value === "object") {
+      const h = value.home ?? value.team1 ?? value.home_value ?? value.value1 ?? value.team1_value;
+      const a = value.away ?? value.team2 ?? value.away_value ?? value.value2 ?? value.team2_value;
+      if (h !== undefined && a !== undefined) pair = [h, a];
+    } else if (typeof value === "string") {
+      const match = value.trim().match(/^(-?\\d+(?:[.,]\\d+)?)\\s*[:/]\\s*(-?\\d+(?:[.,]\\d+)?)$/);
+      if (match) pair = [match[1], match[2]];
+    }
+    if (!pair) continue;
+    const h = Number(String(pair[0]).replace(",", "."));
+    const a = Number(String(pair[1]).replace(",", "."));
+    if (Number.isFinite(h) && Number.isFinite(a)) { home[key] = h; away[key] = a; }
+  }
+  return { home, away, raw: raw || {} };
+}
+
 function unwrapGames(message) {
   const root = message?.data?.data || message?.data || {};
   const found = new Map();
@@ -170,7 +203,7 @@ export function buildSwarmLegUpdates(tickets, feeds) {
         awayScore: game.awayScore,
         minute,
         lastEvent: event ? [event.event_type || event.type || event.name, event.player_name || event.player, event.minute || event.time].filter(Boolean).join(" · ") : null,
-        liveStats: { raw: stats },
+        liveStats: normalizeStats(stats),
         liveSource: game.bookmaker
       };
       matched += 1;
