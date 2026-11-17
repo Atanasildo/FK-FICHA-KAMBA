@@ -223,3 +223,18 @@ footer{color:#7890a2}
 
 .odds-auth-row{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin:12px 0}.odds-auth-row .field{flex:1;min-width:220px}.odds-auth-row .primary-btn{min-height:44px}.odds-workspace .notice{margin-top:12px}.odds-result-heading .odds-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.odds-result-heading .primary-btn{white-space:nowrap}
 @media(max-width:700px){.odds-result-heading .odds-actions{width:100%;justify-content:flex-start}.odds-result-heading .odds-actions button{flex:1}.odds-auth-row{align-items:stretch;flex-direction:column}.odds-auth-row .field{min-width:0}}
+
+/* Fichas sincronizadas: comparação das duas casas no mesmo boletim */
+.bookmaker-quick{display:grid;gap:2px;margin-bottom:4px}
+.bookmaker-quick small{font-size:8px;letter-spacing:.7px;color:#aab6aa}
+.bookmaker-quick b{font-size:17px;color:#d2f18a}
+.bookmaker-quick span{font-size:8px;color:#849187}
+.ticket-reservations{display:grid;gap:8px;margin-bottom:12px}
+.reservation-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;background:#0e140f;border:1px solid #263229;border-radius:8px}
+.reservation-row>div{display:grid;gap:4px}
+.reservation-row b{font-size:10px;color:#dce7d8}
+.reservation-row small{font-size:8px;color:#879487}
+.reservation-code{text-align:right}
+.reservation-code b{font-variant-numeric:tabular-nums}
+.reserve-link{font-size:9px;color:#c6e98a;text-decoration:underline}
+@media(max-width:640px){.reservation-row{align-items:flex-start;flex-wrap:wrap}.reservation-code{text-align:left}.bookmaker-quick b{font-size:14px}}
