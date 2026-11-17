@@ -270,3 +270,13 @@ Requisitos:
 - Estado posterior: o commit `07fb051c5e74710a7e76c71c561de9fc4b16b18b` foi compilado pela Vercel e o deployment Preview ficou `READY`. A versão inclui a correcção do mapeamento Swarm→SportAPI, o envio da linha nativa do mercado ao avaliador, a vista diária de acompanhamento e a inclusão de fichas liquidadas no Histórico.
 - O Preview deve ser aberto e observado durante jogos reais para confirmar a taxa de associação por nomes/horários, a resposta do fornecedor e a gravação dos resultados finais. A validação de build não é prova de que a SportAPI já devolveu marcadores para cada jogo.
 - Não promover à produção até essa validação. Depois de estabilizar o acompanhamento e a liquidação, avançar para o redesenho visual profissional, mantendo as quatro secções actuais e sem reintroduzir o comparador de odds.
+
+
+### Direcção visual profissional — 17/11/2026
+
+- Foi introduzido um sistema visual consistente para o dashboard: fundo azul-noite, superfícies azul-marinho, bordas frias, acento verde-lima da marca e teal para indicadores live; dourado fica reservado a odds/risco.
+- Foram harmonizados sidebar, navegação activa, barra superior, cabeçalhos, cartões de resumo, fichas, detalhes dos jogos, estados de mercado, marcadores, estatísticas, pesquisa e estados vazios.
+- Melhorias de legibilidade: tipografia e hierarquia reforçadas, espaçamento mais regular, cartões com contraste e bordas coerentes, estados de jogo com cores semânticas e painéis live mais fáceis de distinguir.
+- Responsividade revista para desktop, tablet e telemóvel; foi respeitada a preferência do sistema por movimento reduzido.
+- A identidade e a estrutura funcional foram preservadas: Bilhetes do dia, Análises, Acompanhamento ao vivo e Histórico. O comparador de odds não foi reintroduzido.
+- Esta é uma primeira passagem visual em CSS, sem alterar a lógica de dados. Validar o Preview em desktop e telemóvel antes de promover à produção; ajustes finos podem ser feitos depois da observação visual.
