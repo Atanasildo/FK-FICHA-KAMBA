@@ -255,3 +255,13 @@ Requisitos:
 - A página **Histórico** inclui fichas de dias anteriores e fichas do próprio dia apenas quando todas as selecções estiverem liquidadas. Uma ficha acumuladora pode ficar marcada como perdida logo que uma selecção falhe, mas só é arquivada como concluída quando todos os jogos tiverem resultado final confirmado.
 - Na consulta Supabase de 17/11/2026 havia 148 jogos, 162 selecções publicadas ligadas a jogos e todos os resultados das selecções estavam ainda em `pending`. A origem era `swarm`; não havia amostras de estatísticas live guardadas. Estes números são uma fotografia da base de dados nesse momento e devem ser actualizados em novas verificações.
 - Ainda é necessário validar no Preview, com partidas reais e a resposta actual da SportAPI, a percentagem de jogos associados, o formato das estatísticas e a liquidação de mercados representativos. Não promover esta alteração a produção antes dessa validação. O design visual profissional será uma etapa separada depois da validação funcional do acompanhamento e histórico.
+
+
+### Validação do primeiro Preview do acompanhamento
+
+- Commit do primeiro build completo com o novo fluxo: `07fb051c5e74710a7e76c71c561de9fc4b16b18b`.
+- Deployment Vercel Preview: `dpl_DcPknW36TSgRnQSPeYwqrs4ppZp1`, estado `READY`, URL https://fk-ficha-kamba-p0s126h3c-atanasildos-projects.vercel.app.
+- O build Vite terminou e os testes automatizados concluíram sem falhas no build anterior da mesma sequência (105/105). O último commit acrescentou a leitura da linha nativa do mercado e voltou a compilar com sucesso.
+- A validação funcional em runtime da SportAPI ainda está pendente: o Preview não ficou acessível através do navegador de validação utilizado nesta sessão. Não assumir que os jogos já estão a receber marcadores live só porque o deployment está READY.
+- O endpoint agora consulta as linhas nativas em `markets.line` para que os mercados com selecção textual genérica (por exemplo, “Mais de”) possam ser avaliados sem adivinhar a linha.
+- A produção `https://fk-ficha-kamba.vercel.app` não foi promovida nem alterada nesta etapa. Validar a associação dos jogos e a liquidação no Preview antes de qualquer promoção.
