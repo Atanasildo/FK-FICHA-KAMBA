@@ -161,7 +161,7 @@ export default function App() {
     let active = true;
     const refreshLive = async () => {
       try {
-        const response = await fetch('/api/pipeline/live-tickets', { cache: 'no-store' });
+        const response = await fetch('/api/pipeline?action=live-tickets', { cache: 'no-store' });
         const result = await response.json().catch(() => ({}));
         if (!active) return;
         if (!response.ok || !result.ok) {
