@@ -60,6 +60,7 @@ export default function App() {
   const [analysesLoading, setAnalysesLoading] = useState(true);
   const [liveUpdates, setLiveUpdates] = useState({});
   const [liveUpdatedAt, setLiveUpdatedAt] = useState(null);
+  const [liveStatus, setLiveStatus] = useState('A aguardar primeira consulta');
   const [expanded, setExpanded] = useState({});
   const [mobile, setMobile] = useState(false);
   const [query, setQuery] = useState('');
@@ -159,13 +160,18 @@ export default function App() {
     let active = true;
     const refreshLive = async () => {
       try {
-        const response = await fetch('/api/pipeline/live-tickets');
+        const response = await fetch('/api/pipeline/live-tickets', { cache: 'no-store' });
         const result = await response.json().catch(() => ({}));
-        if (!response.ok || !result.ok || !active) return;
+        if (!active) return;
+        if (!response.ok || !result.ok) {
+          setLiveStatus(result.detail || result.error || `Falha na consulta (HTTP ${response.status})`);
+          return;
+        }
         setLiveUpdates(result.legs || {});
         setLiveUpdatedAt(result.updatedAt || new Date().toISOString());
-      } catch {
-        // Mantém a última actualização válida quando a fonte está temporariamente indisponível.
+        setLiveStatus(`${result.matchedMatches || 0} jogos associados · ${result.fixturesUpdated || 0} jogos recebidos${result.providers?.warnings?.length ? ' · Avisos: ' + result.providers.warnings.join(' | ') : ''}`);
+      } catch (error) {
+        if (active) setLiveStatus(error?.message || 'Falha de comunicação com o acompanhamento.');
       }
     };
     refreshLive();
@@ -209,7 +215,7 @@ export default function App() {
             <div><b>{liveTickets.reduce((n,t) => n + (t.legs || []).filter(leg => !isLive(leg) && !isFinished(leg)).length, 0)}</b><span>Por iniciar</span></div>
             <div><b>{liveTickets.length}</b><span>Fichas de hoje</span></div>
           </div>
-          <div className="quiet-note live-help"><Radio size={15}/><span><b>Como ler o acompanhamento:</b> “Em directo” significa que a fonte confirmou que o jogo começou; nessa situação aparecem marcador e minuto quando disponíveis. “Por iniciar” significa que o pontapé de saída ainda não chegou. “Terminado” só aparece quando a fonte confirma o fim. Abre a ficha pela seta para consultar os jogos e mercados. {liveUpdatedAt ? `Última consulta: ${new Date(liveUpdatedAt).toLocaleTimeString('pt-AO', { timeZone: 'Africa/Luanda' })}. ` : ''}A actualização automática ocorre a cada 5 minutos.</span></div>
+          <div className="quiet-note live-help"><Radio size={15}/><span><b>Como ler o acompanhamento:</b> “Em directo” significa que a fonte confirmou que o jogo começou; nessa situação aparecem marcador e minuto quando disponíveis. “Por iniciar” significa que o pontapé de saída ainda não chegou. “Terminado” só aparece quando a fonte confirma o fim. Abre a ficha pela seta para consultar os jogos e mercados. {liveUpdatedAt ? `Última consulta: ${new Date(liveUpdatedAt).toLocaleTimeString('pt-AO', { timeZone: 'Africa/Luanda' })}. ` : ''}Estado da fonte: {liveStatus}. Actualização automática a cada 5 minutos.</span></div>
           {liveTickets.length ? <div className="daily-ticket-list">{liveTickets.map(t => <TicketPanel key={t.id} ticket={t} expanded={expanded[t.id] !== false} onToggle={() => toggle(t.id)} liveView/>)}</div> : <EmptyState icon={Radio} title="Ainda não há fichas de hoje para acompanhar" detail="Quando forem publicadas, os jogos por iniciar, em directo e terminados serão acompanhados dentro de cada ficha."/>}
         </>}
         {page === 'Histórico' && <>
