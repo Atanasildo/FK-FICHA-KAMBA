@@ -265,3 +265,8 @@ Requisitos:
 - A validação funcional em runtime da SportAPI ainda está pendente: o Preview não ficou acessível através do navegador de validação utilizado nesta sessão. Não assumir que os jogos já estão a receber marcadores live só porque o deployment está READY.
 - O endpoint agora consulta as linhas nativas em `markets.line` para que os mercados com selecção textual genérica (por exemplo, “Mais de”) possam ser avaliados sem adivinhar a linha.
 - A produção `https://fk-ficha-kamba.vercel.app` não foi promovida nem alterada nesta etapa. Validar a associação dos jogos e a liquidação no Preview antes de qualquer promoção.
+
+
+- Estado posterior: o commit `07fb051c5e74710a7e76c71c561de9fc4b16b18b` foi compilado pela Vercel e o deployment Preview ficou `READY`. A versão inclui a correcção do mapeamento Swarm→SportAPI, o envio da linha nativa do mercado ao avaliador, a vista diária de acompanhamento e a inclusão de fichas liquidadas no Histórico.
+- O Preview deve ser aberto e observado durante jogos reais para confirmar a taxa de associação por nomes/horários, a resposta do fornecedor e a gravação dos resultados finais. A validação de build não é prova de que a SportAPI já devolveu marcadores para cada jogo.
+- Não promover à produção até essa validação. Depois de estabilizar o acompanhamento e a liquidação, avançar para o redesenho visual profissional, mantendo as quatro secções actuais e sem reintroduzir o comparador de odds.
