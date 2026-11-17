@@ -176,9 +176,10 @@ export default function App() {
       }
     };
     refreshLive();
-    const timer = window.setInterval(refreshLive, 300000);
+    // Actualiza a cada 30 segundos enquanto a página de acompanhamento estiver aberta.
+    const timer = window.setInterval(refreshLive, 30000);
     return () => { active = false; window.clearInterval(timer); };
-  }, []);
+  }, [page]);
 
   const ticketsWithLive = useMemo(() => data.tickets.map(ticket => ({
     ...ticket,
