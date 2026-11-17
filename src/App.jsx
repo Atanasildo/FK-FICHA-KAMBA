@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Activity, CalendarDays, ChevronDown, ChevronRight, FileText, History, LayoutDashboard, Radio, ShieldCheck, Ticket, Menu, X } from 'lucide-react';
 import { supabase } from './lib/supabase.js';
+import { fetchBookmakerLiveFeeds, buildSwarmLegUpdates } from './lib/swarm-live.js';
 
 const NAV = [['Bilhetes do dia', LayoutDashboard], ['Análises', FileText], ['Acompanhamento ao vivo', Activity], ['Histórico', History]];
 const money = n => Number(n || 0).toFixed(2);
@@ -159,27 +160,49 @@ export default function App() {
   useEffect(() => {
     if (page !== 'Acompanhamento ao vivo') return undefined;
     let active = true;
+    let refreshing = false;
     const refreshLive = async () => {
+      if (refreshing) return;
+      refreshing = true;
       try {
-        const response = await fetch('/api/pipeline?action=live-tickets', { cache: 'no-store' });
-        const result = await response.json().catch(() => ({}));
+        const [apiResult, swarmFeeds] = await Promise.all([
+          fetch('/api/pipeline?action=live-tickets', { cache: 'no-store' })
+            .then(async response => ({ response, result: await response.json().catch(() => ({})) }))
+            .catch(error => ({ networkError: error?.message || String(error) })),
+          fetchBookmakerLiveFeeds()
+        ]);
         if (!active) return;
-        if (!response.ok || !result.ok) {
-          setLiveStatus(result.detail || result.error || `Falha na consulta (HTTP ${response.status})`);
-          return;
+        let apiMessage = '';
+        if (apiResult.networkError) {
+          apiMessage = 'API estatística: ' + apiResult.networkError;
+        } else if (!apiResult.response.ok || !apiResult.result.ok) {
+          apiMessage = apiResult.result.detail || apiResult.result.error || `API estatística HTTP ${apiResult.response.status}`;
+        } else {
+          setLiveUpdates(current => ({ ...current, ...(apiResult.result.legs || {}) }));
         }
-        setLiveUpdates(result.legs || {});
-        setLiveUpdatedAt(result.updatedAt || new Date().toISOString());
-        setLiveStatus(`${result.matchedMatches || 0} jogos associados · ${result.fixturesUpdated || 0} jogos recebidos${result.providers?.swarmMatchedMatches ? ' · Swarm das casas: ' + result.providers.swarmMatchedMatches : ''}${result.providers?.warnings?.length ? ' · Avisos: ' + result.providers.warnings.join(' | ') : ''}`);
+        const swarm = buildSwarmLegUpdates(data.tickets, swarmFeeds);
+        if (swarm.matched) setLiveUpdates(current => ({ ...current, ...swarm.updates }));
+        const feedErrors = swarmFeeds.filter(feed => feed.error).map(feed => feed.name + ': ' + feed.error);
+        const connected = swarmFeeds.filter(feed => !feed.error).map(feed => feed.name);
+        const warnings = [apiMessage, ...feedErrors].filter(Boolean);
+        setLiveUpdatedAt(new Date().toISOString());
+        setLiveStatus(
+          `${swarm.matched} jogos associados pelo Swarm · ${swarm.totalGames} jogos recebidos das casas` +
+          (connected.length ? ' · Ligações: ' + connected.join(', ') : '') +
+          (warnings.length ? ' · Avisos: ' + warnings.join(' | ') : '') +
+          (!swarm.totalGames && !warnings.length ? ' · As casas não devolveram jogos em directo.' : '')
+        );
       } catch (error) {
         if (active) setLiveStatus(error?.message || 'Falha de comunicação com o acompanhamento.');
+      } finally {
+        refreshing = false;
       }
     };
     refreshLive();
-    // Actualiza a cada 30 segundos enquanto a página de acompanhamento estiver aberta.
+    // Consulta API estatística e feeds Swarm a cada 30 segundos nesta página.
     const timer = window.setInterval(refreshLive, 30000);
     return () => { active = false; window.clearInterval(timer); };
-  }, [page]);
+  }, [page, data.tickets]);
 
   const ticketsWithLive = useMemo(() => data.tickets.map(ticket => ({
     ...ticket,
@@ -217,7 +240,7 @@ export default function App() {
             <div><b>{liveTickets.reduce((n,t) => n + (t.legs || []).filter(leg => !isLive(leg) && !isFinished(leg)).length, 0)}</b><span>Por iniciar</span></div>
             <div><b>{liveTickets.length}</b><span>Fichas de hoje</span></div>
           </div>
-          <div className="quiet-note live-help"><Radio size={15}/><span><b>Como ler o acompanhamento:</b> “Em directo” significa que a fonte confirmou que o jogo começou; nessa situação aparecem marcador e minuto quando disponíveis. “Por iniciar” significa que o pontapé de saída ainda não chegou. “Terminado” só aparece quando a fonte confirma o fim. Abre a ficha pela seta para consultar os jogos e mercados. {liveUpdatedAt ? `Última consulta: ${new Date(liveUpdatedAt).toLocaleTimeString('pt-AO', { timeZone: 'Africa/Luanda' })}. ` : ''}Estado da fonte: {liveStatus}. Actualização automática a cada 5 minutos.</span></div>
+          <div className="quiet-note live-help"><Radio size={15}/><span><b>Como ler o acompanhamento:</b> “Em directo” significa que a fonte confirmou que o jogo começou; nessa situação aparecem marcador e minuto quando disponíveis. “Por iniciar” significa que o pontapé de saída ainda não chegou. “Terminado” só aparece quando a fonte confirma o fim. Abre a ficha pela seta para consultar os jogos e mercados. {liveUpdatedAt ? `Última consulta: ${new Date(liveUpdatedAt).toLocaleTimeString('pt-AO', { timeZone: 'Africa/Luanda' })}. ` : ''}Estado da fonte: {liveStatus}. Actualização automática a cada 30 segundos.</span></div>
           {liveTickets.length ? <div className="daily-ticket-list">{liveTickets.map(t => <TicketPanel key={t.id} ticket={t} expanded={expanded[t.id] !== false} onToggle={() => toggle(t.id)} liveView/>)}</div> : <EmptyState icon={Radio} title="Ainda não há fichas de hoje para acompanhar" detail="Quando forem publicadas, os jogos por iniciar, em directo e terminados serão acompanhados dentro de cada ficha."/>}
         </>}
         {page === 'Histórico' && <>
