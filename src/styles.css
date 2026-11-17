@@ -534,3 +534,27 @@ footer{border-top:1px solid rgba(129,164,195,.13);margin-top:34px;padding-top:18
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+
+
+/* Horários de início dos jogos e orientação do acompanhamento */
+.ticket-first-kickoff{
+  color:#d7f4a1!important;
+  font-weight:750;
+  border:1px solid rgba(199,239,121,.22);
+  background:rgba(199,239,121,.07);
+  border-radius:6px;
+  padding:4px 7px;
+}
+.match-kickoff{
+  display:flex;align-items:center;flex-wrap:wrap;gap:6px;
+  margin-top:8px;color:#9fb6c8;font-size:10px;
+}
+.match-kickoff svg{color:#4ed8c2;flex:0 0 auto}
+.match-kickoff b{color:#d7f4a1;font-size:11px;font-variant-numeric:tabular-nums}
+.live-help{display:flex;align-items:flex-start;gap:10px;margin:0 0 16px}
+.live-help svg{flex:0 0 auto;color:#4ed8c2;margin-top:2px}
+.live-help b{color:#e4f4ee}
+@media(max-width:760px){
+  .ticket-first-kickoff{display:inline-block}
+  .match-kickoff{font-size:9px}
+}
