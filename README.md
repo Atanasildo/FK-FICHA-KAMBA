@@ -230,3 +230,14 @@ Requisitos:
 4. Começar pela tarefa **Códigos de reserva**, conforme a ordem acordada com o utilizador.
 5. Não pedir novamente ao utilizador informação já documentada aqui; perguntar apenas quando for necessária uma decisão ou confirmação que não possa ser obtida com segurança.
 6. Não declarar concluída uma funcionalidade apenas porque o build passou. Confirmar o comportamento real e separar claramente implementado, testado e ainda pendente.
+
+
+### Implementação técnica da geração de links (17/11/2026)
+
+- A rota `POST /api/bookmakers/reserve` aceita agora `{ "ticketId": "<uuid>" }` sob autenticação `Authorization: Bearer CRON_SECRET`; a operação lê a ficha e as relações no servidor com `SUPABASE_SERVICE_ROLE_KEY` ou `SUPABASE_SECRET_KEY`.
+- A rota valida que a ficha está publicada, que todas as selecções têm mercado associado, que os mercados pertencem à casa indicada pelo título da ficha e que os jogos ainda não começaram. O campo `markets.line` é preservado em `base`, incluindo `null` quando não existe linha.
+- Foi acrescentada uma reserva de processamento em `booking_reference` para impedir pedidos concorrentes repetidos; uma referência já existente é devolvida sem criar novo pedido.
+- A resposta é guardada como JSON com `id`, `url`, `status=share_link_created`, `site` e `createdAt`. Este estado significa apenas que foi criado um link de partilha pela casa; não significa que uma aposta foi colocada ou confirmada.
+- A rota não foi chamada contra as casas durante a implementação. Não foram criados links nem alterados os 16 boletins existentes.
+- A interface passou a descrever o identificador como link de partilha, evitando afirmar que uma reserva/aposta foi confirmada.
+- Para executar manualmente, enviar um POST autenticado à rota com o UUID de uma ficha e manter o `CRON_SECRET` apenas num ambiente seguro. Nunca o colocar no frontend.
