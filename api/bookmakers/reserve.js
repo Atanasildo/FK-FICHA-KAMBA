@@ -1,4 +1,3 @@
-const MIN_ODDS = 1.4;
 const configs = {
   elephant: {
     url: "https://winners.elephantbet.co.ao/image-creator/share-booking/",
@@ -36,7 +35,7 @@ function buildPayload(site, selections, suppliedTotal) {
   const cfg = configs[site];
   const events = selections.map(s => {
     const odd = Number(s.odd);
-    if (!Number.isFinite(odd) || odd < MIN_ODDS) throw new Error("Cada selecção deve ter odd igual ou superior a 1.40.");
+    if (!Number.isFinite(odd) || odd <= 1) throw new Error("Cada selecção deve ter uma odd decimal válida superior a 1.00.");
     return {
       finalPayoutFormatted: false, isLive: s.isLive ? 1 : 0, price: String(odd),
       stake: "0", taxOnStake: false, totalStake: "0", taxOnProfitOrReturn: false,
@@ -91,8 +90,8 @@ export function extractBookingId(data) {
 }
 
 export async function createBooking({ site, selections, totalOdd }) {
-  if (!configs[site] || !Array.isArray(selections) || selections.length < 1 || selections.length > 11) {
-    throw new Error("Indica casa válida e entre 1 e 11 selecções.");
+  if (!configs[site] || !Array.isArray(selections) || selections.length < 1) {
+    throw new Error("Indica uma casa válida e pelo menos uma selecção.");
   }
   if (selections.some(s => !s || !s.home || !s.away || !s.selectionName || !s.marketName || !s.startTime)) {
     throw new Error("Cada selecção precisa de jogo, mercado, selecção e hora de início.");
