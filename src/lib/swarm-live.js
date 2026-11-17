@@ -10,10 +10,21 @@ export const SWARM_BOOKMAKERS = {
 };
 
 function normalizeTeam(value) {
-  return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  const normalized = String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ")
     .replace(/\b(fc|cf|sc|ac|afc|club|football|futebol)\b/g, " ")
     .replace(/\s+/g, " ").trim();
+  const aliases = {
+    "argelia": "algeria", "marrocos": "morocco", "tunisia": "tunisia",
+    "egito": "egypt", "costa do marfim": "ivory coast", "africa do sul": "south africa",
+    "polonia": "poland", "suecia": "sweden", "pais de gales": "wales",
+    "bosnia e herzegovina": "bosnia and herzegovina", "republica da irlanda": "republic of ireland",
+    "ucrania": "ukraine", "dinamarca": "denmark", "noruega": "norway",
+    "espanha": "spain", "alemanha": "germany", "franca": "france",
+    "inglaterra": "england", "italia": "italy", "holanda": "netherlands",
+    "turquia": "turkey", "grecia": "greece", "suica": "switzerland"
+  };
+  return aliases[normalized] || normalized;
 }
 
 function unwrapGames(message) {
