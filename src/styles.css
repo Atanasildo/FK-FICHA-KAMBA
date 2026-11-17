@@ -534,3 +534,134 @@ footer{border-top:1px solid rgba(129,164,195,.13);margin-top:34px;padding-top:18
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+
+
+/* FICHA KAMBA — COSMIC INTELLIGENCE VISUAL PASS */
+:root{
+  --fk-accent:#d6ff72;
+  --fk-teal:#42f5d1;
+  --fk-gold:#ffc96b;
+  --fk-border:rgba(113,164,205,.24);
+}
+body{
+  background:
+    radial-gradient(ellipse 70% 42% at 78% -8%,rgba(35,190,180,.19),transparent 68%),
+    radial-gradient(ellipse 55% 48% at 3% 28%,rgba(79,110,255,.14),transparent 70%),
+    radial-gradient(ellipse 50% 40% at 88% 85%,rgba(116,70,255,.09),transparent 72%),
+    #070d19;
+  background-attachment:fixed;
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.16;
+  background-image:linear-gradient(rgba(129,174,214,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(129,174,214,.075) 1px,transparent 1px);
+  background-size:54px 54px;
+  mask-image:linear-gradient(to bottom,black,transparent 82%);
+}
+.app-shell{position:relative;isolation:isolate}
+.sidebar{
+  background:linear-gradient(180deg,rgba(13,27,47,.97),rgba(8,17,32,.98));
+  border-right-color:rgba(91,160,190,.22);
+  box-shadow:16px 0 55px rgba(0,0,0,.28),inset -1px 0 rgba(255,255,255,.025);
+}
+.brand-mark{
+  border-color:rgba(66,245,209,.42);
+  background:linear-gradient(145deg,rgba(39,105,111,.72),rgba(23,43,69,.95));
+  box-shadow:0 0 26px rgba(66,245,209,.13),inset 0 1px rgba(255,255,255,.12);
+}
+.nav-item{position:relative;overflow:hidden}
+.nav-item.active{
+  background:linear-gradient(105deg,rgba(214,255,114,.17),rgba(66,245,209,.10) 58%,rgba(84,115,255,.08));
+  box-shadow:inset 3px 0 var(--fk-accent),inset 0 0 0 1px rgba(66,245,209,.18),0 7px 24px rgba(20,190,170,.08);
+}
+.nav-item.active:after{
+  content:"";position:absolute;right:12px;top:50%;width:5px;height:5px;border-radius:50%;
+  background:var(--fk-teal);box-shadow:0 0 12px 3px rgba(66,245,209,.42);transform:translateY(-50%);
+}
+.topbar{
+  background:rgba(7,14,27,.76);
+  border-bottom-color:rgba(93,163,196,.2);
+  box-shadow:0 10px 35px rgba(0,0,0,.12);
+}
+.content{position:relative;z-index:1}
+h1{
+  background:linear-gradient(100deg,#ffffff 0%,#d9f7ff 42%,#a9f8df 78%,#d8ff8b 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 34px rgba(66,245,209,.08);
+}
+.eyebrow{color:#69f1d7}
+.stat-card,.panel,.ticket-card{
+  position:relative;overflow:hidden;
+  background:linear-gradient(145deg,rgba(21,40,64,.96),rgba(11,24,42,.98));
+  border-color:rgba(111,165,204,.25);
+  box-shadow:0 16px 42px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.045);
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+.stat-card:before,.panel:before,.ticket-card:before{
+  content:"";position:absolute;inset:0 0 auto;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(66,245,209,.48),rgba(214,255,114,.24),transparent);
+  opacity:.72;pointer-events:none;
+}
+.stat-card:hover,.panel:hover,.ticket-card:hover{
+  transform:translateY(-3px);
+  border-color:rgba(66,245,209,.38);
+  box-shadow:0 22px 48px rgba(0,0,0,.29),0 0 28px rgba(30,194,179,.07);
+}
+.stat-card>strong{font-size:30px;text-shadow:0 0 22px rgba(255,255,255,.10)}
+.stat-top svg{filter:drop-shadow(0 0 7px rgba(66,245,209,.45))}
+.daily-summary{
+  position:relative;overflow:hidden;
+  background:linear-gradient(112deg,rgba(21,75,82,.72),rgba(17,42,65,.96) 54%,rgba(27,35,69,.88));
+  border-color:rgba(66,245,209,.3);
+  box-shadow:0 18px 44px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.07);
+}
+.daily-summary:after{
+  content:"";position:absolute;width:230px;height:230px;right:8%;top:-165px;border-radius:50%;
+  border:1px solid rgba(66,245,209,.18);box-shadow:0 0 0 22px rgba(66,245,209,.025),0 0 0 48px rgba(66,245,209,.018);
+  pointer-events:none;
+}
+.daily-icon{box-shadow:0 0 24px rgba(66,245,209,.12),inset 0 0 18px rgba(66,245,209,.08)}
+.daily-ticket{border-color:rgba(108,161,199,.3)}
+.ticket-expand{position:relative}
+.ticket-expand h3{letter-spacing:-.55px}
+.ticket-quick{
+  display:grid;grid-template-columns:1fr 1fr;gap:9px;min-width:320px;
+}
+.bookmaker-quick{
+  position:relative;overflow:hidden;
+  background:linear-gradient(145deg,rgba(25,53,78,.98),rgba(13,32,54,.98));
+  border-color:rgba(105,160,201,.28);
+  box-shadow:inset 0 1px rgba(255,255,255,.06),0 8px 20px rgba(0,0,0,.12);
+}
+.bookmaker-quick b{font-variant-numeric:tabular-nums;text-shadow:0 0 18px rgba(66,245,209,.12)}
+.bookmaker-quick:first-child{border-top-color:#42f5d1}
+.bookmaker-quick:last-child{border-top-color:#ffc96b}
+.reservation-row{box-shadow:inset 0 1px rgba(255,255,255,.035)}
+.reserve-link,.reservation-code b{ text-shadow:0 0 14px rgba(66,245,209,.2) }
+.match-detail{
+  background:linear-gradient(120deg,rgba(19,42,65,.88),rgba(13,28,48,.92));
+  border-color:rgba(103,160,201,.25);
+  box-shadow:inset 0 1px rgba(255,255,255,.035);
+}
+.match-teams>b{letter-spacing:-.2px}
+.live-score-strip,.final-score-strip{
+  box-shadow:0 0 24px rgba(66,245,209,.07),inset 0 1px rgba(255,255,255,.06);
+}
+.state-live{box-shadow:0 0 16px rgba(66,245,209,.09)}
+.primary-btn{
+  background:linear-gradient(105deg,#d8ff78,#8ff2bd);
+  box-shadow:0 7px 22px rgba(173,240,122,.16),inset 0 1px rgba(255,255,255,.42);
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+.primary-btn:hover{transform:translateY(-2px);filter:saturate(1.08);box-shadow:0 11px 28px rgba(173,240,122,.23)}
+.secondary-btn,.small-btn{box-shadow:inset 0 1px rgba(255,255,255,.06)}
+.searchbox:focus-within,.filter-wrap:focus-within{border-color:rgba(66,245,209,.58);box-shadow:0 0 0 3px rgba(66,245,209,.08)}
+.empty-state,.empty{background:linear-gradient(145deg,rgba(19,39,63,.96),rgba(11,24,42,.98))}
+footer{color:#819bb1}
+@media(max-width:760px){
+  body:before{background-size:38px 38px;opacity:.1}
+  .stat-card:hover,.panel:hover,.ticket-card:hover{transform:none}
+  .ticket-quick{grid-template-columns:1fr 1fr;min-width:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .stat-card,.panel,.ticket-card,.primary-btn{transition:none}
+}
