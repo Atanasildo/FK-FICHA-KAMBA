@@ -31,14 +31,89 @@ const resultClass = leg => {
 
 export default function App() {
   const [page, setPage] = useState('Bilhetes do dia');
-  const [data] = useState(readStore);
+  const [data, setData] = useState(readStore);
   const [expanded, setExpanded] = useState({});
   const [mobile, setMobile] = useState(false);
   const [query, setQuery] = useState('');
   const [notice, setNotice] = useState('');
-  const todayTickets = useMemo(() => data.tickets.filter(t => t.origin === 'ai' && isToday(t.createdAt)), [data.tickets]);
+
+  // As fichas publicadas no Supabase são a fonte principal; os registos locais não-IA são preservados.
+  useEffect(() => {
+    let active = true;
+    const loadPublishedTickets = async () => {
+      if (!supabase) {
+        if (active) setNotice('A ligação ao Supabase não está configurada. A apresentar apenas os dados locais disponíveis.');
+        return;
+      }
+
+      const { data: rows, error } = await supabase
+        .from('tickets')
+        .select('id,shared_ticket_id,title,status,total_odds,booking_reference,published_at,created_at,ticket_legs(id,match_id,market_name,selection,odd,result,matches(home_team,away_team,competition,kickoff_at,status))')
+        .eq('status', 'published')
+        .order('published_at', { ascending: false });
+
+      if (!active) return;
+      if (error) {
+        setNotice('Não foi possível sincronizar as fichas publicadas: ' + error.message);
+        return;
+      }
+
+      const remoteTickets = (rows || []).map(ticket => {
+        const titleParts = String(ticket.title || '').split('·').map(part => part.trim());
+        const rawBooking = ticket.booking_reference;
+        let booking = null;
+        if (rawBooking && typeof rawBooking === 'object') booking = rawBooking;
+        else if (rawBooking) {
+          try { booking = JSON.parse(rawBooking); }
+          catch { booking = { id: rawBooking }; }
+        }
+        return {
+          id: ticket.id,
+          sharedTicketId: ticket.shared_ticket_id || ticket.id,
+          name: titleParts[0] || ticket.title || 'Ficha Kamba',
+          type: (titleParts[0] || '').replace(/^Boletim\s+\d+\s*/i, '') || 'FICHA DO DIA',
+          bookmaker: /elephant/i.test(ticket.title || '') ? 'ElephantBet' : /bantu/i.test(ticket.title || '') ? 'BantuBet' : null,
+          origin: 'ai',
+          status: 'Publicada',
+          totalOdds: ticket.total_odds,
+          bookingId: booking && typeof booking === 'object' ? booking.id || null : null,
+          bookingUrl: booking && typeof booking === 'object' ? booking.url || null : null,
+          createdAt: ticket.published_at || ticket.created_at,
+          legs: (ticket.ticket_legs || []).map(leg => {
+            const match = leg.matches || {};
+            return {
+              id: leg.id,
+              matchId: leg.match_id,
+              home: match.home_team,
+              away: match.away_team,
+              league: match.competition,
+              date: match.kickoff_at,
+              matchStatus: match.status,
+              market: leg.market_name,
+              selection: leg.selection,
+              odd: leg.odd,
+              marketStatus: leg.result
+            };
+          })
+        };
+      });
+
+      setData(current => ({
+        ...current,
+        tickets: [...remoteTickets, ...(current.tickets || []).filter(ticket => ticket.origin !== 'ai')]
+      }));
+      setNotice('');
+    };
+
+    loadPublishedTickets();
+    const refresh = window.setInterval(loadPublishedTickets, 300000);
+    return () => { active = false; window.clearInterval(refresh); };
+  }, []);
+
+  const groupedTickets = useMemo(() => groupBookmakerPairs(data.tickets), [data.tickets]);
+  const todayTickets = useMemo(() => groupedTickets.filter(t => t.origin === 'ai' && isToday(t.createdAt)), [groupedTickets]);
   const liveTickets = useMemo(() => todayTickets.filter(t => t.legs?.some(isLive) || ['Em directo', 'Em acompanhamento'].includes(t.status)), [todayTickets]);
-  const history = useMemo(() => data.tickets.filter(t => t.origin !== 'ai' || !isToday(t.createdAt)), [data.tickets]);
+  const history = useMemo(() => groupedTickets.filter(t => t.origin !== 'ai' || !isToday(t.createdAt)), [groupedTickets]);
   const filteredHistory = history.filter(t => [t.id, t.name, t.bookmaker, t.bookingId].join(' ').toLowerCase().includes(query.toLowerCase()));
   const toggle = id => setExpanded(p => ({ ...p, [id]: !p[id] }));
   const side = <><div className="brand"><div className="brand-mark">FK<span>.</span></div><div><b>FICHA KAMBA</b><small>FUTEBOL • INTELIGÊNCIA</small></div></div><div className="side-label">MENU PRINCIPAL</div><nav>{NAV.map(([label, Icon]) => <button key={label} className={page === label ? 'nav-item active' : 'nav-item'} onClick={() => { setPage(label); setMobile(false); }}><Icon size={18}/><span>{label}</span>{label === 'Acompanhamento ao vivo' && liveTickets.length > 0 && <i className="live-dot"/>}</button>)}</nav><div className="side-bottom"><div className="side-status"><span className="status-dot"/> Consulta de fichas <small>As fichas publicadas aparecem neste painel</small></div><div className="profile"><div className="avatar">FK</div><div><b>Utilizador</b><small>Ficha Kamba</small></div></div></div></>;
@@ -70,21 +145,61 @@ export default function App() {
   </div>;
 }
 
+function groupBookmakerPairs(tickets) {
+  const groups = new Map();
+  for (const ticket of tickets) {
+    const key = ticket.sharedTicketId || ticket.id;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(ticket);
+  }
+  return [...groups.values()].map(items => {
+    if (items.length === 1) return items[0];
+    const first = items[0];
+    const entries = items.map(item => ({
+      bookmaker: item.bookmaker || 'Casa não indicada',
+      totalOdds: item.totalOdds,
+      bookingId: item.bookingId,
+      bookingUrl: item.bookingUrl,
+      legs: item.legs || []
+    })).sort((a, b) => a.bookmaker.localeCompare(b.bookmaker));
+    return {
+      ...first,
+      id: first.sharedTicketId || first.id,
+      name: String(first.name || 'Ficha Kamba').replace(/ · (?:BantuBet|ElephantBet) · .+$/i, ''),
+      bookmaker: null,
+      bookmakerEntries: entries,
+      totalOdds: null,
+      bookingId: null,
+      bookingUrl: null
+    };
+  });
+}
+
 function TicketPanel({ ticket: t, expanded, onToggle, liveView = false }) {
   const legs = t.legs || [];
   const liveCount = legs.filter(isLive).length;
+  const highestOdds = t.bookmakerEntries?.length
+    ? Math.max(...t.bookmakerEntries.map(entry => Number(entry.totalOdds) || 0))
+    : Number(t.totalOdds) || 0;
   return <section className="panel daily-ticket">
     <button className="ticket-expand" onClick={onToggle} aria-expanded={expanded}>
-      <div className="ticket-expand-main"><div className="ticket-title-row"><span className={Number(t.totalOdds) >= 100 ? 'tag tag-gold' : 'tag'}>{t.type || 'FICHA DO DIA'}</span><span className={'ticket-status ' + (liveCount ? 'state-live' : 'state-pending')}>{liveCount ? liveCount + ' jogo(s) em directo' : t.status || 'Publicada'}</span></div><h3>{t.name || 'Ficha Kamba'}</h3><div className="ticket-subline"><span>{t.id}</span><span>{t.bookmaker || 'Casa de apostas não indicada'}</span><span>{legs.length} jogos</span></div></div>
-      <div className="ticket-quick"><small>ODD TOTAL</small><b>{money(t.totalOdds)}</b><span className="reserve-id">Reserva: {t.bookingId || 'A aguardar ID'}</span></div><span className="expand-icon">{expanded ? <ChevronDown/> : <ChevronRight/>}</span>
+      <div className="ticket-expand-main"><div className="ticket-title-row"><span className={highestOdds >= 100 ? 'tag tag-gold' : 'tag'}>{t.type || 'FICHA DO DIA'}</span><span className={'ticket-status ' + (liveCount ? 'state-live' : 'state-pending')}>{liveCount ? liveCount + ' jogo(s) em directo' : t.status || 'Publicada'}</span></div><h3>{t.name || 'Ficha Kamba'}</h3><div className="ticket-subline"><span>{t.sharedTicketId ? 'FK-' + t.sharedTicketId.slice(0, 8).toUpperCase() : t.id}</span><span>{t.bookmakerEntries?.length ? 'BantuBet + ElephantBet' : t.bookmaker || 'Casa de apostas não indicada'}</span><span>{legs.length} jogos</span></div></div>
+      <div className="ticket-quick">{t.bookmakerEntries?.length ? t.bookmakerEntries.map(entry => <div className="bookmaker-quick" key={entry.bookmaker}><small>{entry.bookmaker}</small><b>{money(entry.totalOdds)}</b><span>{entry.bookingId ? 'Reserva criada' : 'Reserva pendente'}</span></div>) : <><small>ODD TOTAL</small><b>{money(t.totalOdds)}</b><span className="reserve-id">Reserva: {t.bookingId || 'A aguardar ID'}</span></>}</div><span className="expand-icon">{expanded ? <ChevronDown/> : <ChevronRight/>}</span>
     </button>
-    {expanded && <div className="ticket-details"><div className="details-heading"><b>Jogos e mercados desta ficha</b><span>{liveView ? 'Estado em directo quando disponível' : 'Todas as selecções'}</span></div>
-      {legs.length ? legs.map((leg, i) => <article className="match-detail" key={leg.id || i}><div className="match-detail-top"><span className="match-number">JOGO {String(i + 1).padStart(2, '0')}</span><span className={resultClass(leg)}>{resultLabel(leg)}</span></div><div className="match-teams"><b>{leg.home || leg.homeTeam || 'Equipa da casa'} <span>vs</span> {leg.away || leg.awayTeam || 'Equipa visitante'}</b><small>{leg.league || leg.competition || 'Campeonato não indicado'}{leg.date ? ' · ' + new Date(leg.date).toLocaleString('pt-AO') : ''}</small></div>
-        <div className="market-detail-grid"><div><small>MERCADO</small><b>{leg.market || 'Mercado'}</b></div><div><small>SELECÇÃO</small><b>{leg.selection || '—'}</b></div><div><small>ODD</small><b>{money(leg.odd)}</b></div></div>
-        {(isLive(leg) || isFinished(leg) || matchScore(leg)) && <div className={isLive(leg) ? 'live-score-strip' : 'final-score-strip'}><Radio size={15}/><b>{matchScore(leg) || '— : —'}</b><span>{isLive(leg) ? (leg.minute ? leg.minute + "'" : leg.matchStatus || 'Em directo') : isFinished(leg) ? 'RESULTADO FINAL' : (leg.matchStatus || 'Resultado disponível')}</span>{leg.lastEvent && isLive(leg) && <small>{leg.lastEvent}</small>}</div>}
-        {leg.marketUpdate && <p className="market-update">{leg.marketUpdate}</p>}
-      </article>) : <p className="muted-copy">Os jogos desta ficha serão apresentados aqui quando forem publicados.</p>}
-      <div className="ticket-detail-footer"><span>IDENTIFICADOR DE RESERVA</span><b>{t.bookingId || 'Ainda não disponibilizado'}</b></div>
+    {expanded && <div className="ticket-details"><div className="details-heading"><b>Jogos e mercados desta ficha</b><span>{liveView ? 'Estado em directo quando disponível' : 'Selecções e odds por casa'}</span></div>
+      {t.bookmakerEntries?.length > 0 && <div className="ticket-reservations">{t.bookmakerEntries.map(entry => <div className="reservation-row" key={entry.bookmaker}><div><b>{entry.bookmaker}</b><small>Odd total: {money(entry.totalOdds)}</small></div><div className="reservation-code"><small>CÓDIGO DE RESERVA</small><b>{entry.bookingId || 'A aguardar reserva'}</b></div>{entry.bookingUrl && <a className="reserve-link" href={entry.bookingUrl} target="_blank" rel="noreferrer">Abrir boletim</a>}</div>)}</div>}
+      {legs.length ? legs.map((leg, i) => {
+        const oddsByBookmaker = t.bookmakerEntries?.map(entry => {
+          const matchingLeg = entry.legs.find(item => item.matchId && item.matchId === leg.matchId) || entry.legs[i];
+          return entry.bookmaker + ': ' + money(matchingLeg?.odd);
+        });
+        return <article className="match-detail" key={leg.id || i}><div className="match-detail-top"><span className="match-number">JOGO {String(i + 1).padStart(2, '0')}</span><span className={resultClass(leg)}>{resultLabel(leg)}</span></div><div className="match-teams"><b>{leg.home || leg.homeTeam || 'Equipa da casa'} <span>vs</span> {leg.away || leg.awayTeam || 'Equipa visitante'}</b><small>{leg.league || leg.competition || 'Campeonato não indicado'}{leg.date ? ' · ' + new Date(leg.date).toLocaleString('pt-AO') : ''}</small></div>
+          <div className="market-detail-grid"><div><small>MERCADO</small><b>{leg.market || 'Mercado'}</b></div><div><small>SELECÇÃO</small><b>{leg.selection || '—'}</b></div><div><small>{oddsByBookmaker?.length ? 'ODDS POR CASA' : 'ODD'}</small><b>{oddsByBookmaker?.length ? oddsByBookmaker.join(' · ') : money(leg.odd)}</b></div></div>
+          {(isLive(leg) || isFinished(leg) || matchScore(leg)) && <div className={isLive(leg) ? 'live-score-strip' : 'final-score-strip'}><Radio size={15}/><b>{matchScore(leg) || '— : —'}</b><span>{isLive(leg) ? (leg.minute ? leg.minute + "'" : leg.matchStatus || 'Em directo') : isFinished(leg) ? 'RESULTADO FINAL' : (leg.matchStatus || 'Resultado disponível')}</span>{leg.lastEvent && isLive(leg) && <small>{leg.lastEvent}</small>}</div>}
+          {leg.marketUpdate && <p className="market-update">{leg.marketUpdate}</p>}
+        </article>;
+      }) : <p className="muted-copy">Os jogos desta ficha serão apresentados aqui quando forem publicados.</p>}
+      <div className="ticket-detail-footer"><span>{t.bookmakerEntries?.length ? 'CÓDIGOS DE RESERVA POR CASA' : 'IDENTIFICADOR DE RESERVA'}</span><b>{t.bookmakerEntries?.length ? 'Apresentados acima para cada casa' : t.bookingId || 'Ainda não disponibilizado'}</b></div>
     </div>}
   </section>;
 }
