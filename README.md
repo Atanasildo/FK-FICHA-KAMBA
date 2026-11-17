@@ -162,6 +162,19 @@ O comparador de odds não faz parte desta interface actual. Não o reintroduzir.
 
 Trabalhar por etapas e validar cada uma antes de avançar. A ordem acordada é:
 
+### Estado técnico adicional — reserva/partilha (17/11/2026)
+
+- Foi recuperado o código fornecido pelo utilizador em 12/11/2026 e comparado com o repositório.
+- Já existe a implementação base em `api/bookmakers/reserve.js`, com `createBooking()`, construção do payload `translations/share/configs/betslip`, os dois endpoints `image-creator/share-booking`, extracção de `share.bookId` ou do parâmetro `bookingId` em `share.bookingLink`.
+- Configuração recuperada do código original: ElephantBet `siteId=18756188`, BantuBet `siteId=1869146`; os respectivos domínios e URLs estão definidos no ficheiro. O payload usa stake zero e serve para gerar uma ligação de partilha; não é uma submissão de aposta nem confirmação de aposta colocada.
+- A rota HTTP actual exige `Authorization: Bearer CRON_SECRET`. O frontend `src/App.jsx` ainda não chama esta rota e não existe, nesta versão inspeccionada, um fluxo de administração/autorização no frontend para a invocar com segurança. Não colocar `CRON_SECRET` no browser.
+- O frontend lê `tickets.booking_reference` e interpreta texto simples ou JSON com `id` e `url`, mas o carregamento não grava reservas.
+- A revisão de 17/11 confirmou `booking_reference IS NULL` nos 16 registos publicados.
+- Foi removido do endpoint o limite artificial de odd mínima 1.40 e o máximo artificial de 11 selecções, pois não constavam do código original fornecido pelo utilizador e impediam boletins publicados com odds abaixo de 1.40 ou 12 jogos. Mantém-se a validação de odd decimal superior a 1.00, campos essenciais e partidas ainda não iniciadas.
+- **Ainda não gerar códigos automaticamente nem marcar reservas como concluídas:** falta implementar uma chamada server-side autenticada que leia a ficha e os seus `ticket_legs/matches/markets`, construa os campos originais sem inventar `base`/IDs de mercado, contacte a casa, e grave a resposta em `booking_reference`. A execução deve ser idempotente: não criar um segundo código se já existir um código válido.
+- A tabela `markets` contém `market_key`, `period`, `line`, `selection`, `market_name`, `odd` e `bookmaker_id`; `ticket_legs.market_id` liga a selecção ao mercado. Usar esses dados para mapear o payload e validar que a casa corresponde à ficha. O campo `base` ainda precisa de ser confrontado com o objecto bruto do Network fornecido originalmente; não assumir que `market_key` é equivalente.
+- A criação de link de partilha deve ser distinguida de reserva confirmada: apresentar “Link de partilha criado”/“Aguardando confirmação” até haver confirmação explícita na casa.
+
 ### 1. Códigos de reserva (próxima tarefa)
 
 Objectivo: registar e apresentar os códigos/IDs de reserva reais, separadamente para BantuBet e ElephantBet, em cada versão do boletim.
