@@ -280,3 +280,13 @@ Requisitos:
 - Responsividade revista para desktop, tablet e telemóvel; foi respeitada a preferência do sistema por movimento reduzido.
 - A identidade e a estrutura funcional foram preservadas: Bilhetes do dia, Análises, Acompanhamento ao vivo e Histórico. O comparador de odds não foi reintroduzido.
 - Esta é uma primeira passagem visual em CSS, sem alterar a lógica de dados. Validar o Preview em desktop e telemóvel antes de promover à produção; ajustes finos podem ser feitos depois da observação visual.
+
+
+### Última revisão do acompanhamento e interface — 17/11/2026
+
+- A associação Swarm→SportAPI passou a normalizar também nomes de selecções nacionais em português/inglês (por exemplo, Polónia/Poland, Suécia/Sweden, País de Gales/Wales, Ucrânia/Ukraine e República da Irlanda/Republic of Ireland), além de acentos e sufixos comuns de clubes.
+- O normalizador remove diacríticos antes de comparar nomes. A correspondência continua a exigir equipa da casa com equipa da casa, visitante com visitante e início dentro da tolerância de quatro horas. Candidatos temporais ambíguos não são escolhidos automaticamente.
+- Foram acrescentados testes unitários específicos para a associação de jogos, ordem casa/visitante, tolerância horária, ambiguidade e prevenção de reutilização do mesmo fixture. Na compilação do commit `fd1d60e1d64829e76c5da8ef0a3635e91431d0b6`, os 110 testes passaram (0 falhas).
+- A última correcção de interface normaliza espaços/hífens nos estados live do fornecedor (commit `bc0f0b69657e165bef455c3cf51d84e6691b5bf5`). O deployment correspondente está em validação pela Vercel; confirmar estado antes de utilizar o link como Preview final.
+- A primeira versão visual profissional foi compilada com sucesso no Preview, mas ainda não foi validada visualmente pelo utilizador. A produção continua inalterada.
+- Próxima verificação obrigatória: abrir o Preview final, confirmar que os boletins e o novo estilo aparecem, chamar o acompanhamento ao vivo durante partidas reais e comparar os marcadores/resultados devolvidos pela SportAPI. Só depois dessa verificação se deve considerar promover para produção.
