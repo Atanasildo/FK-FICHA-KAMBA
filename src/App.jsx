@@ -127,7 +127,7 @@ export default function App() {
     loadPublishedTickets();
     const timer = window.setInterval(loadPublishedTickets, 300000);
     return () => { active = false; window.clearInterval(timer); };
-  }, []);
+  }, [page]);
   // Consulta apenas análises prontas; a análise é feita manualmente no ChatGPT.
   useEffect(() => {
     let active = true;
@@ -157,6 +157,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (page !== 'Acompanhamento ao vivo') return undefined;
     let active = true;
     const refreshLive = async () => {
       try {
