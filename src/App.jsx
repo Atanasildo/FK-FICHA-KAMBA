@@ -39,7 +39,7 @@ const liveStatRows = leg => {
   const home = leg.liveStats?.home || {}, away = leg.liveStats?.away || {};
   const fields = [
     ['Remates', 'shots'], ['À baliza', 'shots_on_target'],
-    ['Fora', 'shots_off_target'], ['Cartões amarelos', 'yellow_cards'],
+    ['Fora', 'shots_off_target'], ['Cantos', 'corners'], ['Cartões amarelos', 'yellow_cards'],
     ['Faltas', 'fouls'], ['Defesas', 'saves']
   ];
   return fields.map(([label, key]) => ({ label, home: home[key], away: away[key] }))
