@@ -14,7 +14,23 @@ const matchScore = leg => {
   const away = leg.awayScore ?? score.away ?? score.fullTime?.away ?? score.regularTime?.away ?? score.current?.away;
   return home !== null && home !== undefined && away !== null && away !== undefined ? `${home} : ${away}` : null;
 };
-const resultLabel = leg => leg.marketStatus || leg.result || (isLive(leg) ? 'Em directo' : isFinished(leg) ? 'Jogo terminado · mercado a confirmar' : 'Por iniciar');
+const resultLabel = leg => {
+  const value = String(leg.marketStatus || leg.result || '').trim();
+  if (!value || /^pending$/i.test(value)) return isLive(leg) ? 'Em directo' : isFinished(leg) ? 'Resultado por confirmar' : 'Por iniciar';
+  return value;
+};
+const settledLeg = leg => /^(ganha|perdida|linha devolvida|won|lost|push|void)$/i.test(String(leg.marketStatus || leg.result || '').trim());
+const ticketFullySettled = ticket => (ticket.legs || []).length > 0 && ticket.legs.every(settledLeg);
+const liveStatRows = leg => {
+  const home = leg.liveStats?.home || {}, away = leg.liveStats?.away || {};
+  const fields = [
+    ['Remates', 'shots'], ['À baliza', 'shots_on_target'],
+    ['Fora', 'shots_off_target'], ['Cartões amarelos', 'yellow_cards'],
+    ['Faltas', 'fouls'], ['Defesas', 'saves']
+  ];
+  return fields.map(([label, key]) => ({ label, home: home[key], away: away[key] }))
+    .filter(row => row.home !== null && row.home !== undefined && row.away !== null && row.away !== undefined);
+};
 const resultClass = leg => {
   const s = String(resultLabel(leg)).toLowerCase();
   if (s.includes('ganh') || s.includes('favor')) return 'state-good';
@@ -147,9 +163,13 @@ export default function App() {
     ...ticket,
     legs: (ticket.legs || []).map(leg => ({ ...leg, ...(liveUpdates[leg.id] || {}) }))
   })), [data.tickets, liveUpdates]);
-  const todayTickets = useMemo(() => groupBookmakerPairs(ticketsWithLive.filter(t => t.origin === 'ai' && isToday(t.createdAt))), [ticketsWithLive]);
-  const liveTickets = useMemo(() => groupBookmakerPairs(ticketsWithLive.filter(t => t.origin === 'ai' && isToday(t.createdAt) && t.legs?.some(isLive))), [ticketsWithLive]);
-  const history = useMemo(() => groupBookmakerPairs(ticketsWithLive.filter(t => t.origin !== 'ai' || !isToday(t.createdAt))), [ticketsWithLive]);
+  const groupedTickets = useMemo(() => groupBookmakerPairs(ticketsWithLive), [ticketsWithLive]);
+  const todayTickets = useMemo(() => groupedTickets.filter(t => t.origin === 'ai' && isToday(t.createdAt)), [groupedTickets]);
+  // Acompanhamento mantém também jogos por iniciar e jogos terminados no próprio dia.
+  const liveTickets = todayTickets;
+  const history = useMemo(() => groupedTickets.filter(t =>
+    t.origin !== 'ai' || !isToday(t.createdAt) || ticketFullySettled(t)
+  ), [groupedTickets]);
   const filteredHistory = history.filter(t => [t.id, t.name, t.bookmaker, t.bookingId].join(' ').toLowerCase().includes(query.toLowerCase()));
   const toggle = id => setExpanded(p => ({ ...p, [id]: !p[id] }));
   const side = <><div className="brand"><div className="brand-mark">FK<span>.</span></div><div><b>FICHA KAMBA</b><small>FUTEBOL • INTELIGÊNCIA</small></div></div><div className="side-label">MENU PRINCIPAL</div><nav>{NAV.map(([label, Icon]) => <button key={label} className={page === label ? 'nav-item active' : 'nav-item'} onClick={() => { setPage(label); setMobile(false); }}><Icon size={18}/><span>{label}</span>{label === 'Acompanhamento ao vivo' && liveTickets.length > 0 && <i className="live-dot"/>}</button>)}</nav><div className="side-bottom"><div className="side-status"><span className="status-dot"/> Consulta de fichas <small>As fichas publicadas aparecem neste painel</small></div><div className="profile"><div className="avatar">FK</div><div><b>Utilizador</b><small>Ficha Kamba</small></div></div></div></>;
@@ -169,8 +189,14 @@ export default function App() {
             <EmptyState icon={FileText} title="Ainda não existem análises guardadas" detail="Depois da recolha diária das odds, pede aqui no ChatGPT para analisar os jogos. As análises aprovadas aparecerão nesta área."/>}
         </>}
         {page === 'Acompanhamento ao vivo' && <>
-          {liveUpdatedAt && <div className="quiet-note"><Radio size={15}/><span>Marcador a cada 5 minutos · estatísticas em rotação conforme os jogos activos e a quota da fonte · última consulta {new Date(liveUpdatedAt).toLocaleTimeString('pt-AO')}</span></div>}
-          {liveTickets.length ? <div className="daily-ticket-list">{liveTickets.map(t => <TicketPanel key={t.id} ticket={t} expanded={expanded[t.id] !== false} onToggle={() => toggle(t.id)} liveView/>)}</div> : <EmptyState icon={Radio} title="Não há jogos em directo nos bilhetes de hoje" detail="Quando uma partida começar, o marcador, minuto e estado do mercado serão apresentados dentro do respectivo bilhete, sempre que a fonte disponibilizar os dados necessários."/>}
+          <div className="live-overview">
+            <div><b>{liveTickets.reduce((n,t) => n + (t.legs || []).filter(isLive).length, 0)}</b><span>Em directo</span></div>
+            <div><b>{liveTickets.reduce((n,t) => n + (t.legs || []).filter(isFinished).length, 0)}</b><span>Terminados</span></div>
+            <div><b>{liveTickets.reduce((n,t) => n + (t.legs || []).filter(leg => !isLive(leg) && !isFinished(leg)).length, 0)}</b><span>Por iniciar</span></div>
+            <div><b>{liveTickets.length}</b><span>Fichas de hoje</span></div>
+          </div>
+          {liveUpdatedAt && <div className="quiet-note"><Radio size={15}/><span>Marcadores e estados actualizados a cada 5 minutos. As estatísticas são recolhidas em rotação para respeitar os limites da fonte. Última consulta: {new Date(liveUpdatedAt).toLocaleTimeString('pt-AO')}</span></div>}
+          {liveTickets.length ? <div className="daily-ticket-list">{liveTickets.map(t => <TicketPanel key={t.id} ticket={t} expanded={expanded[t.id] !== false} onToggle={() => toggle(t.id)} liveView/>)}</div> : <EmptyState icon={Radio} title="Ainda não há fichas de hoje para acompanhar" detail="Quando forem publicadas, os jogos por iniciar, em directo e terminados serão acompanhados dentro de cada ficha."/>}
         </>}
         {page === 'Histórico' && <>
           <div className="toolbar"><div className="searchbox"><History size={16}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Pesquisar por ficha, ID ou casa..."/></div></div>
@@ -215,10 +241,7 @@ function ticketStatus(ticket) {
   const legs = ticket.legs || [];
   const outcomes = legs.map(leg => String(leg.marketStatus || leg.result || '').toLowerCase());
   if (outcomes.some(value => value.includes('perdida') || value === 'lost')) return 'Perdida';
-  const allSettled = outcomes.length > 0 && outcomes.every(value =>
-    value.includes('ganha') || value.includes('linha devolvida') || value === 'won' || value === 'push'
-  );
-  if (allSettled) return 'Ganha';
+  if (ticketFullySettled(ticket)) return outcomes.every(value => value === 'void') ? 'Anulada' : 'Ganha';
   if (legs.some(isLive)) return legs.filter(isLive).length + ' jogo(s) em directo';
   if (legs.length && legs.every(isFinished)) return 'A aguardar liquidação';
   return ticket.status || 'Publicada';
@@ -245,6 +268,9 @@ function TicketPanel({ ticket: t, expanded, onToggle, liveView = false }) {
       {legs.length ? legs.map((leg, i) => <article className="match-detail" key={leg.id || i}><div className="match-detail-top"><span className="match-number">JOGO {String(i + 1).padStart(2, '0')}</span><span className={resultClass(leg)}>{resultLabel(leg)}</span></div><div className="match-teams"><b>{leg.home || leg.homeTeam || 'Equipa da casa'} <span>vs</span> {leg.away || leg.awayTeam || 'Equipa visitante'}</b><small>{leg.league || leg.competition || 'Campeonato não indicado'}{leg.date ? ' · ' + new Date(leg.date).toLocaleString('pt-AO') : ''}</small></div>
         <div className="market-detail-grid"><div><small>MERCADO</small><b>{leg.market || 'Mercado'}</b></div><div><small>SELECÇÃO</small><b>{leg.selection || '—'}</b></div><div><small>ODD</small><b>{money(leg.odd)}</b></div></div>
         {(isLive(leg) || isFinished(leg) || matchScore(leg)) && <div className={isLive(leg) ? 'live-score-strip' : 'final-score-strip'}><Radio size={15}/><b>{matchScore(leg) || '— : —'}</b><span>{isLive(leg) ? (leg.minute ? leg.minute + "'" : leg.matchStatus || 'Em directo') : isFinished(leg) ? 'RESULTADO FINAL' : (leg.matchStatus || 'Resultado disponível')}</span>{leg.lastEvent && isLive(leg) && <small>{leg.lastEvent}</small>}</div>}
+        {isLive(leg) && liveStatRows(leg).length > 0 && <div className="live-stats-grid">
+          {liveStatRows(leg).map(row => <div key={row.label}><small>{row.label}</small><b>{row.home} : {row.away}</b></div>)}
+        </div>}
         {leg.rationale && <div className="leg-analysis">
           <div className="leg-analysis-title">Fundamento da análise</div>
           <p>{leg.rationale}</p>
