@@ -5,7 +5,7 @@ import { supabase } from './lib/supabase.js';
 const NAV = [['Bilhetes do dia', LayoutDashboard], ['Análises', FileText], ['Acompanhamento ao vivo', Activity], ['Histórico', History]];
 const money = n => Number(n || 0).toFixed(2);
 const isToday = value => value && new Date(value).toDateString() === new Date().toDateString();
-const matchState = leg => String(leg.matchStatus || leg.status || '').toUpperCase().replace(/[\\s-]+/g, '_');
+const matchState = leg => String(leg.matchStatus || leg.status || '').toUpperCase().replace(/[\s-]+/g, '_');
 const isLive = leg => ['IN_PLAY', 'LIVE', 'PAUSED', '1H', '2H', 'HT', 'FIRST_HALF', 'SECOND_HALF', '1ST_HALF', '2ND_HALF', 'HALF_TIME', 'EXTRA_TIME', 'ET'].includes(matchState(leg)) || Boolean(leg.live);
 const isFinished = leg => ['FINISHED', 'FT', 'FULL_TIME', 'AFTER_EXTRA_TIME', 'PENALTY_SHOOTOUT', 'AET', 'PENS'].includes(matchState(leg));
 const matchScore = leg => {
