@@ -27,7 +27,9 @@ $config = [ordered]@{
 $configPath = Join-Path $appData "daily-collector-config.json"
 $config | ConvertTo-Json | Set-Content -LiteralPath $configPath -Encoding UTF8
 $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-& icacls $secretsPath /inheritance:r /grant:r ($currentUser + ":(R,W)") "SYSTEM:(R)" | Out-Null
+$userAcl = '{0}:(R,W)' -f $currentUser
+$aclArgs = @($secretsPath, '/inheritance:r', '/grant:r', $userAcl, 'SYSTEM:(R)')
+& icacls.exe @aclArgs | Out-Null
 $supervisor = Join-Path $PSScriptRoot "daily-collector-supervisor.ps1"
 $arguments = '-NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File "' + $supervisor + '" -ConfigPath "' + $configPath + '"'
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument $arguments
@@ -41,4 +43,4 @@ Write-Host "Instalacao concluida." -ForegroundColor Green
 Write-Host "A tarefa inicia no início da sessão Windows e verifica a Internet a cada $($config.pollSeconds) segundos."
 Write-Host "Máximo: uma recolha confirmada por dia, até $($config.maxGames) jogos."
 Write-Host "Logs: $logs"
-Write-Host "Para remover: Unregister-ScheduledTask -TaskName 'Ficha Kamba - Recolha diaria' -Confirm:$false"
+Write-Host 'Para remover: Unregister-ScheduledTask -TaskName "Ficha Kamba - Recolha diaria" -Confirm:$false'
