@@ -173,6 +173,13 @@ export default function App() {
   ), [groupedTickets]);
   const filteredHistory = history.filter(t => [t.id, t.name, t.bookmaker, t.bookingId].join(' ').toLowerCase().includes(query.toLowerCase()));
   const toggle = id => setExpanded(p => ({ ...p, [id]: !p[id] }));
+  if (page === 'Bilhetes do dia') return <DailyHome
+    tickets={todayTickets}
+    expanded={expanded}
+    onToggle={toggle}
+    notice={notice}
+    onDismissNotice={() => setNotice('')}
+  />;
   const side = <><div className="brand"><div className="brand-mark">FK<span>.</span></div><div><b>FICHA KAMBA</b><small>FUTEBOL • INTELIGÊNCIA</small></div></div><div className="side-label">MENU PRINCIPAL</div><nav>{NAV.map(([label, Icon]) => <button key={label} className={page === label ? 'nav-item active' : 'nav-item'} onClick={() => { setPage(label); setMobile(false); }}><Icon size={18}/><span>{label}</span>{label === 'Acompanhamento ao vivo' && liveTickets.length > 0 && <i className="live-dot"/>}</button>)}</nav><div className="side-bottom"><div className="side-status"><span className="status-dot"/> Consulta de fichas <small>As fichas publicadas aparecem neste painel</small></div><div className="profile"><div className="avatar">FK</div><div><b>Utilizador</b><small>Ficha Kamba</small></div></div></div></>;
   return <div className="app-shell"><aside className={mobile ? 'sidebar mobile-open' : 'sidebar'}>{side}</aside>{mobile && <button className="scrim" onClick={() => setMobile(false)} aria-label="Fechar menu"/>}
     <main className="main"><header className="topbar"><button className="icon-btn mobile-menu" onClick={() => setMobile(true)}><Menu/></button><div className="crumb">Plataforma <span>/</span> <b>{page}</b></div><div className="top-actions"><span className="date-chip"><CalendarDays size={15}/> {new Date().toLocaleDateString('pt-AO')}</span><span className="local-chip"><i/> PAINEL</span><div className="avatar small">FK</div></div></header>
@@ -255,55 +262,103 @@ function ticketStatusClass(status) {
   return 'state-pending';
 }
 
-function TicketPanel({ ticket: t, expanded, onToggle, liveView = false }) {
+function DailyHome({ tickets, expanded, onToggle, notice, onDismissNotice }) {
+  return <main className="fk-home">
+    <header className="fk-home-header">
+      <a className="fk-home-brand" href="/" aria-label="Ficha Kamba">
+        <span className="fk-home-logo">FK</span>
+        <span><b>FICHA KAMBA</b><small>FUTEBOL • INTELIGÊNCIA</small></span>
+      </a>
+      <div className="fk-home-header-right">
+        <span className="fk-home-date"><CalendarDays size={15}/> {new Date().toLocaleDateString('pt-AO')}</span>
+        <span className="fk-home-live"><i/> SISTEMA ONLINE</span>
+      </div>
+    </header>
+    <section className="fk-home-content">
+      <div className="fk-home-intro">
+        <div className="fk-home-kicker"><span/> FICHA KAMBA</div>
+        <h1>BILHETES DO DIA</h1>
+        <p>As fichas publicadas, os jogos e as respectivas selecções num só lugar.</p>
+      </div>
+      {notice && <div className="fk-home-notice"><ShieldCheck size={17}/><span>{notice}</span><button onClick={onDismissNotice} aria-label="Fechar aviso"><X size={15}/></button></div>}
+      <div className="fk-home-summary">
+        <div className="fk-home-summary-icon"><Ticket size={23}/></div>
+        <div className="fk-home-summary-copy">
+          <b>{tickets.length} {tickets.length === 1 ? 'FICHA PUBLICADA' : 'FICHAS PUBLICADAS'}</b>
+          <span>Fichas oficiais de hoje • Jogos, odds e referências de reserva actualizados.</span>
+        </div>
+        <div className="fk-home-summary-date">{new Date().toLocaleDateString('pt-AO')}</div>
+      </div>
+      {tickets.length ? <div className="fk-home-ticket-grid">
+        {tickets.map((ticket,index) => <TicketPanel key={ticket.id} ticket={ticket}
+          expanded={!!expanded[ticket.id]} onToggle={() => onToggle(ticket.id)}
+          featured={index === 0}/>)}
+      </div> : <div className="fk-home-empty">
+        <div className="fk-home-empty-icon"><FileText size={25}/></div>
+        <b>AINDA NÃO HÁ FICHAS PUBLICADAS HOJE</b>
+        <span>Quando as fichas reais forem publicadas, aparecerão automaticamente nesta página.</span>
+      </div>}
+      <footer className="fk-home-footer"><span>© FICHA KAMBA</span><span><i/> DADOS SINCRONIZADOS COM A PLATAFORMA</span></footer>
+    </section>
+  </main>;
+}
+
+function TicketPanel({ ticket: t, expanded, onToggle, liveView = false, featured = false }) {
   const legs = t.legs || [];
   const liveCount = legs.filter(isLive).length;
   const status = ticketStatus(t);
   const entries = t.bookmakerEntries || [];
-  return <section className="ticket-redesign">
-    <button className="ticket-redesign-head" onClick={onToggle} aria-expanded={expanded}>
-      <div className="ticket-brand-rail"><span>FK</span><small>FICHA</small></div>
-      <div className="ticket-redesign-main">
-        <div className="ticket-redesign-kickers">
-          <span className="ticket-type-pill">{t.type || 'FICHA DO DIA'}</span>
-          <span className={'ticket-status-pill ' + ticketStatusClass(status)}><i/> {status}</span>
-          {liveCount > 0 && <span className="ticket-live-pill"><i/> {liveCount} AO VIVO</span>}
-        </div>
-        <h3>{t.name || 'Ficha Kamba'}</h3>
-        <div className="ticket-meta-redesign">
-          <span><FileText size={13}/> {t.sharedTicketId ? 'FK-' + t.sharedTicketId.slice(0, 8).toUpperCase() : t.id}</span>
-          <span><ShieldCheck size={13}/> {entries.length ? 'BantuBet + ElephantBet' : t.bookmaker || 'Casa não indicada'}</span>
-          <span><Activity size={13}/> {legs.length} {legs.length === 1 ? 'jogo' : 'jogos'}</span>
-        </div>
-      </div>
-      <div className="ticket-redesign-odds">
-        {entries.length ? entries.map(entry => <div className="ticket-odds-house" key={entry.bookmaker}><small>{entry.bookmaker}</small><strong>{money(entry.totalOdds)}</strong></div>) : <><small>ODD COMBINADA</small><strong>{money(t.totalOdds)}</strong></>}
-      </div>
-      <span className="ticket-open-indicator">{expanded ? <ChevronDown/> : <ChevronRight/>}</span>
+  return <article className={'fk-ticket-card' + (featured ? ' fk-ticket-featured' : '')}>
+    <button className="fk-ticket-head" onClick={onToggle} aria-expanded={expanded}>
+      <span className="fk-ticket-mark">FK<small>FICHA</small></span>
+      <span className="fk-ticket-heading">
+        <span className="fk-ticket-tags">
+          {featured && <em className="fk-ticket-feature-tag">DESTAQUE</em>}
+          <em className="fk-ticket-kind">{t.type || 'FICHA DO DIA'}</em>
+          <em className={'fk-ticket-status ' + ticketStatusClass(status)}>{status}</em>
+          {liveCount > 0 && <em className="fk-ticket-live">{liveCount} AO VIVO</em>}
+        </span>
+        <strong>{t.name || 'Ficha Kamba'}</strong>
+        <small className="fk-ticket-meta">
+          <span><ShieldCheck size={12}/> {entries.length ? 'BantuBet + ElephantBet' : t.bookmaker || 'Casa não indicada'}</span>
+          <span><Activity size={12}/> {legs.length} {legs.length === 1 ? 'jogo' : 'jogos'}</span>
+          <span><FileText size={12}/> {t.sharedTicketId ? 'FK-' + t.sharedTicketId.slice(0,8).toUpperCase() : t.id}</span>
+        </small>
+      </span>
+      <span className="fk-ticket-odds">
+        <small>ODD COMBINADA</small>
+        {entries.length ? entries.map(entry => <b key={entry.bookmaker}>{money(entry.totalOdds)}<small>{entry.bookmaker}</small></b>) : <b>{money(t.totalOdds)}</b>}
+      </span>
+      <span className="fk-ticket-chevron">{expanded ? <ChevronDown/> : <ChevronRight/>}</span>
     </button>
-    <div className="ticket-redesign-bottom">
-      <span><b>{legs.length}</b> selecções incluídas</span>
-      <span>{entries.length ? 'Reservas por casa de apostas' : 'Referência de reserva'}</span>
-      <span className="ticket-bottom-ref">{entries.length ? entries.map(e => e.bookingId ? e.bookmaker + ': ' + e.bookingId : e.bookmaker + ': pendente').join('  •  ') : 'ID: ' + (t.bookingId || 'A aguardar')}</span>
+    <div className="fk-ticket-selections">
+      {legs.map((leg,index) => <div className="fk-selection-row" key={leg.id || index}>
+        <span className="fk-selection-number">{String(index+1).padStart(2,'0')}</span>
+        <span className="fk-selection-match"><b>{leg.home || leg.homeTeam || 'Equipa da casa'} <i>vs</i> {leg.away || leg.awayTeam || 'Equipa visitante'}</b><small>{leg.league || leg.competition || 'Competição'}{leg.date ? ' · '+new Date(leg.date).toLocaleString('pt-AO') : ''}</small></span>
+        <span className="fk-selection-pick"><small>{leg.market || 'MERCADO'}</small><b>{leg.selection || '—'}</b></span>
+        <span className="fk-selection-odd"><small>ODD</small><b>{money(leg.odd)}</b></span>
+      </div>)}
+      {!legs.length && <span className="fk-no-selections">As selecções desta ficha ainda não foram disponibilizadas.</span>}
     </div>
-    {expanded && <div className="ticket-redesign-details">
-      <div className="ticket-details-title"><div><span>DETALHE DA FICHA</span><b>Jogos e mercados seleccionados</b></div><small>{liveView ? 'Acompanhamento de resultados' : 'Selecções publicadas'}</small></div>
+    <div className="fk-ticket-foot">
+      <span>{legs.length} selecções incluídas</span>
+      <span>{entries.length ? 'Reservas por casa de apostas' : 'ID DE RESERVA'}</span>
+      <b>{entries.length ? entries.map(e => e.bookmaker + ': ' + (e.bookingId || 'A aguardar')).join(' • ') : (t.bookingId || 'A aguardar')}</b>
+      <a onClick={e => { e.preventDefault(); onToggle(); }} href="#detalhes">{expanded ? 'FECHAR DETALHES' : 'VER DETALHES'} <ChevronDown size={13}/></a>
+    </div>
+    {expanded && <div className="fk-ticket-details">
+      <div className="fk-details-heading"><b>DETALHES DA FICHA</b><span>{liveView ? 'ACOMPANHAMENTO AO VIVO' : 'INFORMAÇÃO PUBLICADA'}</span></div>
       {entries.length > 0 && <div className="ticket-reservation-grid">{entries.map(entry => <div className="ticket-reservation-card" key={entry.bookmaker}><div><small>CASA DE APOSTAS</small><b>{entry.bookmaker}</b></div><div><small>ODD TOTAL</small><strong>{money(entry.totalOdds)}</strong></div><div><small>ID DE RESERVA</small><b>{entry.bookingId || 'A aguardar reserva'}</b></div>{entry.bookingUrl && <a className="reserve-link" href={entry.bookingUrl} target="_blank" rel="noreferrer">Abrir boletim <ChevronRight size={14}/></a>}</div>)}</div>}
-      <div className="ticket-match-list">
-      {legs.length ? legs.map((leg, i) => <article className="ticket-match-card" key={leg.id || i}>
-        <div className="ticket-match-top"><span className="ticket-match-index">SELECÇÃO {String(i + 1).padStart(2, '0')}</span><span className={resultClass(leg)}>{resultLabel(leg)}</span></div>
-        <div className="ticket-match-league">{leg.league || leg.competition || 'Competição não indicada'}{leg.date ? '  ·  ' + new Date(leg.date).toLocaleString('pt-AO') : ''}</div>
-        <div className="ticket-match-teams"><b>{leg.home || leg.homeTeam || 'Equipa da casa'}</b><span>VS</span><b>{leg.away || leg.awayTeam || 'Equipa visitante'}</b></div>
-        <div className="ticket-pick-row"><div className="ticket-pick-market"><small>MERCADO</small><b>{leg.market || 'Mercado não indicado'}</b></div><div className="ticket-pick-selection"><small>PALPITE / SELECÇÃO</small><b>{leg.selection || '—'}</b></div><div className="ticket-pick-odd"><small>ODD</small><strong>{money(leg.odd)}</strong></div></div>
-        {(isLive(leg) || isFinished(leg) || matchScore(leg)) && <div className={isLive(leg) ? 'live-score-strip' : 'final-score-strip'}><Radio size={15}/><b>{matchScore(leg) || '— : —'}</b><span>{isLive(leg) ? (leg.minute ? leg.minute + "'" : leg.matchStatus || 'Em directo') : isFinished(leg) ? 'RESULTADO FINAL' : (leg.matchStatus || 'Resultado disponível')}</span>{leg.lastEvent && <small>{isLive(leg) ? leg.lastEvent : 'Último evento: ' + leg.lastEvent}</small>}</div>}
+      {legs.map((leg,i) => <div className="fk-leg-extra" key={leg.id || i}>
+        <div><b>{leg.home || leg.homeTeam || 'Equipa da casa'} vs {leg.away || leg.awayTeam || 'Equipa visitante'}</b><span>{leg.league || leg.competition || 'Competição não indicada'}</span></div>
+        <span className={resultClass(leg)}>{resultLabel(leg)}</span>
+        {(isLive(leg) || isFinished(leg) || matchScore(leg)) && <div className={isLive(leg) ? 'live-score-strip' : 'final-score-strip'}><Radio size={15}/><b>{matchScore(leg) || '— : —'}</b><span>{isLive(leg) ? (leg.minute ? leg.minute + "'" : leg.matchStatus || 'Em directo') : 'RESULTADO FINAL'}</span>{leg.lastEvent && <small>{leg.lastEvent}</small>}</div>}
         {(isLive(leg) || isFinished(leg)) && liveStatRows(leg).length > 0 && <div className="live-stats-grid">{liveStatRows(leg).map(row => <div key={row.label}><small>{row.label}</small><b>{row.home} : {row.away}</b></div>)}</div>}
-        {leg.rationale && <div className="leg-analysis"><div className="leg-analysis-title">Fundamento da análise</div><p>{leg.rationale}</p><div className="leg-analysis-meta">{leg.fairProbability != null && <span>Probabilidade estimada: {(Number(leg.fairProbability) * 100).toFixed(1)}%</span>}{leg.confidence && <span>Confiança: {({ low: 'baixa', medium: 'média', high: 'alta' })[leg.confidence] || leg.confidence}</span>}{leg.expectedValue != null && <span>EV estimado: {Number(leg.expectedValue) >= 0 ? '+' : ''}{(Number(leg.expectedValue) * 100).toFixed(1)}%</span>}</div></div>}
-        {leg.marketUpdate && <p className="market-update">{leg.marketUpdate}</p>}
-      </article>) : <p className="muted-copy">Os jogos desta ficha serão apresentados aqui quando forem publicados.</p>}
-      </div>
-      {!entries.length && <div className="ticket-redesign-reserve"><span>IDENTIFICADOR DO BOLETIM</span><b>{t.bookingId || 'Ainda não disponibilizado'}</b>{t.bookingUrl && <a className="reserve-link" href={t.bookingUrl} target="_blank" rel="noreferrer">Abrir boletim partilhável</a>}</div>}
+        {leg.rationale && <p className="leg-analysis">{leg.rationale}</p>}
+      </div>)}
+      {!entries.length && <div className="fk-booking-reference"><small>REFERÊNCIA DO BOLETIM</small><b>{t.bookingId || 'Ainda não disponibilizada'}</b>{t.bookingUrl && <a href={t.bookingUrl} target="_blank" rel="noreferrer">Abrir boletim</a>}</div>}
     </div>}
-  </section>;
+  </article>;
 }
 
 function AnalysisPanel({ row }) {
