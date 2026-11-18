@@ -1,0 +1,97 @@
+
+/* NOVA HOME — Bilhetes do Dia | visual dinâmico, sem dados de demonstração */
+:root{
+  --home-bg:#0A0A1F;--home-panel:#111B35;--home-panel-2:#152544;
+  --home-border:#263A61;--home-text:#F3F6FF;--home-muted:#9AAAC8;
+  --home-cyan:#47E5D0;--home-blue:#477BFF;--home-gold:#FFB15C;
+}
+html,body,#root{min-height:100%;background:var(--home-bg)}
+body,.app-shell{background:radial-gradient(ellipse at 78% 0%,rgba(42,91,151,.22),transparent 42%),var(--home-bg);color:var(--home-text)}
+.sidebar{background:linear-gradient(180deg,#0B142B,#090F22);border-color:#1E2C4A}
+.brand-mark{background:linear-gradient(145deg,#193D66,#102644);border:1px solid #34718B;color:#F4FBFF}
+.brand-mark span{color:var(--home-cyan)}
+.nav-item{color:#A4B1CB}
+.nav-item:hover,.nav-item.active{background:linear-gradient(90deg,#153956,#172747);color:#EAFBFF}
+.nav-item.active{box-shadow:inset 3px 0 var(--home-cyan)}
+.topbar{background:rgba(9,19,39,.94);border-color:#203452;backdrop-filter:blur(14px)}
+.content{max-width:1600px;padding-top:38px}
+.eyebrow{color:var(--home-cyan)}
+.eyebrow .status-dot,.status-dot,.live-dot{background:var(--home-cyan);box-shadow:0 0 12px #47e5d080}
+h1{font-size:clamp(30px,3vw,42px);letter-spacing:-1.5px;background:linear-gradient(90deg,#fff,#9fe9ed 70%,#80c9ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.welcome p{color:#A6B7D2;font-size:13px}
+.daily-summary{background:linear-gradient(110deg,#123A55,#142B4C 65%,#1B2850);border:1px solid #28617A;border-radius:17px;padding:20px 22px;box-shadow:0 15px 40px #02081680}
+.daily-icon{background:#12485B;border:1px solid #287A8D;color:#70F1D8;border-radius:13px;width:48px;height:48px}
+.daily-summary b{font-size:15px;color:#F4FAFF}.daily-summary span{font-size:11px;color:#A9BCD3}
+.daily-date{background:#142F4B;border:1px solid #35617D;color:#8FE8DC}
+.daily-ticket-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.ticket-redesign{min-width:0;border:1px solid #2B456A;border-radius:17px;background:linear-gradient(145deg,#142441,#101B35 75%,#142543);box-shadow:0 14px 34px #02081670;transition:transform .2s,border-color .2s,box-shadow .2s}
+.ticket-redesign:hover{transform:translateY(-3px);border-color:#4B819B;box-shadow:0 18px 42px #02081699,0 0 24px #35D8CE0D}
+.ticket-redesign-head{grid-template-columns:52px minmax(0,1fr) 112px 18px;gap:13px;padding:18px}
+.ticket-brand-rail{height:54px;border-radius:13px;background:linear-gradient(145deg,#176174,#153A59);border:1px solid #348A91}
+.ticket-brand-rail span{color:#B7FFF0}.ticket-brand-rail small{color:#8DDCD5}
+.ticket-type-pill{background:#143D50;border-color:#286B7D;color:#8FEBDD}
+.ticket-status-pill{background:#1A3049;border-color:#3A5675;color:#C5D7E8}
+.ticket-status-pill.state-good{background:#123D36;border-color:#28735F;color:#79E8BC}
+.ticket-status-pill.state-bad{background:#482A38;border-color:#80465A;color:#FF9EAF}
+.ticket-status-pill.state-live,.ticket-live-pill{background:#47371F;border-color:#80602F;color:#FFD18B}
+.ticket-redesign-main h3{font-size:16px;line-height:1.35;color:#F6F9FF}
+.ticket-meta-redesign{gap:9px 12px;color:#A1B5D0;font-size:9px}
+.ticket-meta-redesign svg{color:#5BDCCB}
+.ticket-redesign-odds{border-left:1px solid #304967;padding-left:12px}
+.ticket-redesign-odds>small,.ticket-odds-house small{font-size:7px;color:#9BAFC8;letter-spacing:.9px}
+.ticket-redesign-odds>strong,.ticket-odds-house strong{font-size:25px;color:var(--home-gold)}
+.ticket-odds-house strong{font-size:20px}
+.ticket-open-indicator{color:var(--home-cyan)}
+.ticket-redesign-bottom{padding:10px 15px 11px 83px;gap:8px 13px;background:#0D1930;border-color:#263D5D;color:#A2B4CE;font-size:8px}
+.ticket-redesign-bottom>span:first-child b{color:#F0F5FF}
+.ticket-bottom-ref{color:#B6C8DE}
+.ticket-redesign-details{background:linear-gradient(180deg,#0D1930,#0A1428);border-color:#2A4261;padding:17px}
+.ticket-details-title span{color:var(--home-cyan)}
+.ticket-details-title b{color:#F0F6FF}
+.ticket-details-title>small{color:#91A8C3}
+.ticket-match-list{grid-template-columns:1fr;gap:10px}
+.ticket-match-card{background:linear-gradient(145deg,#172B49,#12213B);border-color:#2D4968;border-radius:12px;padding:13px}
+.ticket-match-index{color:#75B6D0}
+.ticket-match-league{color:#9DB2CC}
+.ticket-match-teams b{color:#F2F6FC;font-size:12px}
+.ticket-match-teams>span{background:#1C4059;color:#83E5DA}
+.ticket-pick-row{background:#0B1930;border-color:#294361}
+.ticket-pick-row small{color:#8EA8C4}
+.ticket-pick-row b{color:#E3EDF8}
+.ticket-pick-odd strong{color:var(--home-gold)}
+.ticket-reservation-card{background:#132845;border-color:#31516F}
+.ticket-reservation-card small{color:#9AB2C9}
+.ticket-reservation-card b{color:#F0F6FC}
+.ticket-reservation-card strong{color:var(--home-gold)}
+.reserve-link{color:#72E9D5}
+.live-score-strip{background:#123B3B;border-color:#287A70;color:#7CF0D7}
+.final-score-strip{background:#18263D;border-color:#3B536F}
+.live-stats-grid>div{background:#0C1A30;border-color:#2B4563}
+.live-stats-grid small{color:#9CB1CA}
+.live-stats-grid b{color:#EDF5FC}
+.leg-analysis{background:#123247;border-left-color:#4CE0C9}
+.empty-state{background:linear-gradient(145deg,#142744,#101C35);border-color:#35516E}
+.empty-state-icon{background:#16465B;color:#6FEBD5}
+.empty-state>b{color:#F0F6FC}
+.empty-state>span{color:#A1B4CC}
+.quiet-note{background:#101F38;border-color:#2C4563;color:#A1B4CC}
+.quiet-note svg{color:var(--home-cyan)}
+.notice{background:#30291B;border-color:#6B5730;color:#FFE1A0}
+footer{color:#8299B7}
+@media(max-width:900px){.daily-ticket-list{grid-template-columns:1fr}.ticket-redesign-head{grid-template-columns:48px minmax(0,1fr) 104px 18px}}
+@media(max-width:620px){
+ .content{padding:22px 13px 18px}
+ .daily-ticket-list{grid-template-columns:1fr;gap:13px}
+ .ticket-redesign-head{grid-template-columns:42px minmax(0,1fr) 18px;gap:10px;padding:14px}
+ .ticket-brand-rail{height:46px}
+ .ticket-redesign-main h3{font-size:15px}
+ .ticket-redesign-odds{grid-column:2;grid-row:2;align-items:center;text-align:left;border-left:0;border-top:1px solid #304967;padding:9px 0 0;display:flex;flex-direction:row;gap:10px}
+ .ticket-redesign-odds>strong{font-size:23px}
+ .ticket-open-indicator{grid-column:3;grid-row:1}
+ .ticket-redesign-bottom{padding:10px 13px;gap:7px}
+ .ticket-bottom-ref{width:100%;max-width:100%;margin:0;text-align:left}
+ .ticket-redesign-details{padding:14px 12px}
+ .ticket-reservation-grid{grid-template-columns:1fr}
+ .ticket-match-list{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.ticket-redesign{transition:none}.ticket-redesign:hover{transform:none}}
