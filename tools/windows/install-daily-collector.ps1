@@ -33,7 +33,7 @@ $textCron = New-Object System.Windows.Forms.TextBox
 $textCron.Location = New-Object System.Drawing.Point(18, 45)
 $textCron.Size = New-Object System.Drawing.Size(515, 25)
 $textCron.UseSystemPasswordChar = $true
-$textCron.Anchor = 'Top,Left,Right'
+$textCron.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right
 $form.Controls.Add($textCron)
 
 $labelBypass = New-Object System.Windows.Forms.Label
@@ -46,7 +46,7 @@ $textBypass = New-Object System.Windows.Forms.TextBox
 $textBypass.Location = New-Object System.Drawing.Point(18, 107)
 $textBypass.Size = New-Object System.Drawing.Size(515, 25)
 $textBypass.UseSystemPasswordChar = $true
-$textBypass.Anchor = 'Top,Left,Right'
+$textBypass.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right
 $form.Controls.Add($textBypass)
 
 $hint = New-Object System.Windows.Forms.Label
@@ -127,6 +127,13 @@ if ($LASTEXITCODE -ne 0) {
     throw 'Could not set permissions on the encrypted secrets file.'
 }
 
+$taskName = 'Ficha Kamba - Recolha diaria'
+$existingTask = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
+if ($existingTask -and $existingTask.State -eq 'Running') {
+    Stop-ScheduledTask -TaskName $taskName
+    Start-Sleep -Seconds 2
+}
+
 $supervisor = Join-Path $PSScriptRoot 'daily-collector-supervisor.ps1'
 $taskArgs = '-NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File "{0}" -ConfigPath "{1}"' -f $supervisor, $configPath
 $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $taskArgs
@@ -134,12 +141,13 @@ $trigger = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew
 $principal = New-ScheduledTaskPrincipal -UserId $currentUser -LogonType Interactive -RunLevel Limited
 
-Register-ScheduledTask -TaskName 'Ficha Kamba - Recolha diaria' -Action $action -Trigger $trigger -Settings $settings -Principal $principal -Force | Out-Null
-Start-ScheduledTask -TaskName 'Ficha Kamba - Recolha diaria'
+Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Settings $settings -Principal $principal -Force | Out-Null
+Start-ScheduledTask -TaskName $taskName
 
 Write-Host ''
 Write-Host 'Installation completed.' -ForegroundColor Green
 Write-Host 'Credential lengths were validated before saving.'
+Write-Host 'The previous supervisor instance was restarted with the new credentials.'
 Write-Host ('The task starts at Windows sign-in and checks Internet every {0} seconds.' -f $config.pollSeconds)
 Write-Host ('Maximum: one confirmed collection per day, up to {0} games.' -f $config.maxGames)
 Write-Host ('Logs: {0}' -f $logs)
