@@ -43,4 +43,3 @@ Write-Host "Instalacao concluida." -ForegroundColor Green
 Write-Host "A tarefa inicia no início da sessão Windows e verifica a Internet a cada $($config.pollSeconds) segundos."
 Write-Host "Máximo: uma recolha confirmada por dia, até $($config.maxGames) jogos."
 Write-Host "Logs: $logs"
-Write-Host 'Para remover: Unregister-ScheduledTask -TaskName "Ficha Kamba - Recolha diaria" -Confirm:$false'
