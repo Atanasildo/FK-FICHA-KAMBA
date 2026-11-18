@@ -41,6 +41,29 @@ Body:
 
 A análise é gravada em `match_analyses`, com `provider` igual ao nome da IA autenticada. A API confirma que o jogo pertence à recolha Swarm, ainda não começou e que as equipas coincidem.
 
+A IA também pode enviar o campo opcional `research` para guardar pesquisa externa em `match_statistics`. Quando enviado, exige pelo menos três factos e duas fontes HTTP/HTTPS distintas, com pelo menos dois factos ligados a URLs declarados:
+
+```json
+{
+  "research": {
+    "status": "complete",
+    "checkedAt": "2026-11-18T15:00:00Z",
+    "facts": [
+      { "topic": "recent_form", "claim": "Facto confirmado e datado.", "sourceUrl": "https://fonte-a.example", "observedAt": "2026-11-18T14:00:00Z" },
+      { "topic": "standings", "claim": "Classificação confirmada.", "sourceUrl": "https://fonte-b.example", "observedAt": "2026-11-18T14:00:00Z" },
+      { "topic": "availability", "claim": "Disponibilidade consultada; sem confirmação de ausências.", "sourceUrl": "https://fonte-a.example", "observedAt": "2026-11-18T14:00:00Z" }
+    ],
+    "sources": [
+      { "name": "Fonte A", "url": "https://fonte-a.example", "checkedAt": "2026-11-18T14:00:00Z", "usedFor": "Forma recente" },
+      { "name": "Fonte B", "url": "https://fonte-b.example", "checkedAt": "2026-11-18T14:00:00Z", "usedFor": "Classificação" }
+    ],
+    "limitations": ["Escalações ainda não confirmadas."]
+  }
+}
+```
+
+Na gravação de uma análise com selecções, a API não confia nas odds enviadas pela IA: compara mercado, selecção e linha com a última comparação guardada e substitui as cotações pelas odds efectivamente recolhidas nas duas casas. A comparação tem de ter menos de uma hora e cada casa deve apresentar odd igual ou superior a 1,40.
+
 ### 3. Publicar boletins
 `POST /api/ai-access`
 
