@@ -665,3 +665,150 @@ footer{color:#819bb1}
 @media(prefers-reduced-motion:reduce){
   .stat-card,.panel,.ticket-card,.primary-btn{transition:none}
 }
+
+
+/* COSMIC INTELLIGENCE — acabamento, consistência e responsividade */
+:root{
+  --fk-radius-sm:10px;
+  --fk-radius-md:14px;
+  --fk-radius-lg:18px;
+  --fk-shadow-soft:0 12px 34px rgba(0,0,0,.18);
+  --fk-focus:0 0 0 3px rgba(66,245,209,.17);
+}
+html{scroll-behavior:smooth;scrollbar-color:#29465b #081321;scrollbar-width:thin}
+body{min-width:320px;line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:rgba(66,245,209,.25);color:#fff}
+button,a,input,select{ -webkit-tap-highlight-color:transparent }
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{
+  outline:2px solid var(--fk-teal);outline-offset:3px;box-shadow:var(--fk-focus)
+}
+button{touch-action:manipulation}
+.app-shell{min-height:100svh}
+.sidebar{height:100svh;overflow-y:auto;overscroll-behavior:contain}
+.sidebar nav{align-content:start}
+.nav-item{min-height:46px;letter-spacing:.01em}
+.nav-item svg{flex:0 0 18px;opacity:.9}
+.main{min-width:0}
+.topbar{min-width:0}
+.crumb{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.content{width:100%;min-width:0}
+.welcome{align-items:center}
+.welcome>div{min-width:0}
+.welcome p{max-width:680px}
+h1{line-height:1.12;overflow-wrap:anywhere}
+.daily-summary,.notice,.quiet-note{backdrop-filter:blur(12px)}
+.daily-summary{border-radius:var(--fk-radius-lg);min-height:82px}
+.daily-summary>div:nth-child(2){min-width:0}
+.daily-summary span{line-height:1.55}
+.daily-ticket-list{gap:15px}
+.daily-ticket{border-radius:var(--fk-radius-lg)}
+.ticket-expand{gap:18px;min-width:0}
+.ticket-expand-main{min-width:0}
+.ticket-title-row{row-gap:7px}
+.ticket-expand h3{line-height:1.3;overflow-wrap:anywhere}
+.ticket-subline{row-gap:6px}
+.ticket-quick{flex:0 0 auto}
+.bookmaker-quick{border-radius:12px;min-width:0}
+.bookmaker-quick small,.bookmaker-quick span{line-height:1.4}
+.ticket-details{padding:18px}
+.ticket-reservations{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.reservation-row{min-width:0;gap:10px;padding:13px}
+.reservation-row>div{min-width:0}
+.reservation-code b{overflow-wrap:anywhere}
+.match-detail{min-width:0}
+.match-teams>b{line-height:1.45;overflow-wrap:anywhere}
+.market-detail-grid{align-items:stretch}
+.market-detail-grid>div{min-width:0}
+.market-detail-grid b{overflow-wrap:anywhere}
+.live-overview>div{min-width:0;min-height:86px;align-content:center}
+.live-overview b{font-variant-numeric:tabular-nums}
+.live-stats-grid>div{min-width:0}
+.live-stats-grid b{font-variant-numeric:tabular-nums}
+.toolbar{align-items:center}
+.searchbox{min-width:0}
+.searchbox input{min-width:0}
+.empty-state{min-height:230px;justify-content:center}
+.empty-state>span{line-height:1.7}
+footer{line-height:1.6}
+.notice{align-items:flex-start;line-height:1.55}
+.notice span{min-width:0;overflow-wrap:anywhere}
+.panel-note,.muted-copy{line-height:1.7}
+.history-legs>div{min-width:0}
+.history-legs span,.history-legs small{overflow-wrap:anywhere}
+@media(max-width:1180px){
+  .sidebar{width:244px}
+  .main{margin-left:244px}
+  .content{padding-left:30px;padding-right:30px}
+  .topbar{padding-left:30px;padding-right:30px}
+  .ticket-expand{flex-wrap:wrap}
+  .ticket-expand-main{flex:1 1 100%}
+  .ticket-quick{flex:1 1 auto;min-width:0}
+  .expand-icon{align-self:center}
+}
+@media(max-width:760px){
+  .sidebar{height:100dvh;width:min(86vw,310px);padding:22px 16px 18px}
+  .brand{padding-bottom:28px}
+  .main{margin-left:0;width:100%}
+  .topbar{height:60px;padding:0 14px;gap:10px}
+  .mobile-menu{width:38px;height:38px;flex:0 0 38px}
+  .mobile-menu svg{width:19px;height:19px}
+  .crumb{font-size:10px}
+  .top-actions{gap:8px}
+  .local-chip{font-size:7px;padding:5px 7px}
+  .avatar.small{width:28px;height:28px;flex:0 0 28px}
+  .content{padding:23px 14px 18px}
+  .welcome{align-items:flex-start;gap:12px}
+  h1{font-size:clamp(24px,6vw,29px);margin-top:9px}
+  .welcome p{font-size:11px}
+  .daily-summary{align-items:flex-start;padding:14px;border-radius:14px}
+  .daily-icon{width:40px;height:40px;flex-basis:40px}
+  .daily-summary b{font-size:12px}
+  .daily-summary span{font-size:10px}
+  .ticket-expand{gap:12px;padding:15px}
+  .ticket-expand-main{flex:1 1 100%}
+  .ticket-expand h3{font-size:16px;margin:9px 0 7px}
+  .ticket-quick{width:100%;flex:1 1 100%;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ticket-quick:not(:has(.bookmaker-quick)){display:flex;align-items:flex-start;flex-direction:column}
+  .bookmaker-quick{padding:10px}
+  .bookmaker-quick b{font-size:18px}
+  .ticket-details{padding:13px}
+  .ticket-reservations{grid-template-columns:1fr}
+  .reservation-row{display:grid;grid-template-columns:1fr;align-items:start}
+  .reservation-code{min-width:0}
+  .match-detail{padding:12px}
+  .market-detail-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .market-detail-grid>div:last-child{grid-column:auto}
+  .live-overview{gap:9px}
+  .live-overview>div{min-height:76px;padding:12px}
+  .live-overview b{font-size:22px}
+  .live-overview span{font-size:9px}
+  .quiet-note{align-items:flex-start}
+  .quiet-note svg{flex:0 0 15px}
+  footer{gap:7px;margin-top:25px}
+}
+@media(max-width:420px){
+  .topbar{padding:0 10px}
+  .crumb span{padding:0 5px}
+  .top-actions{gap:6px}
+  .local-chip{letter-spacing:.5px}
+  .content{padding-left:11px;padding-right:11px}
+  .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat-card{padding:12px}
+  .stat-card>strong{font-size:21px}
+  .stat-top{gap:5px;font-size:8px}
+  .ticket-title-row{gap:6px}
+  .ticket-subline{font-size:9px;gap:7px}
+  .ticket-quick{gap:7px}
+  .bookmaker-quick b{font-size:16px}
+  .live-stats-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:350px){
+  .avatar.small{display:none}
+  .ticket-quick{grid-template-columns:1fr}
+  .market-detail-grid{grid-template-columns:1fr}
+  .market-detail-grid>div:last-child{grid-column:auto}
+}
+@media(hover:none){
+  .nav-item:hover,.primary-btn:hover{transform:none}
+  .stat-card:hover,.panel:hover,.ticket-card:hover{transform:none}
+}
