@@ -16,7 +16,7 @@ paths:
       summary: Consultar jogos elegíveis
       parameters:
         - in: query
-          name: action
+          name: op
           required: true
           schema: { type: string, const: fixtures }
         - in: query
