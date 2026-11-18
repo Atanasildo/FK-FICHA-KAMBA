@@ -35,6 +35,9 @@
     },
     "api/pipeline.js": {
       "maxDuration": 60
+    },
+    "api/ai-access.js": {
+      "maxDuration": 60
     }
   }
 }
