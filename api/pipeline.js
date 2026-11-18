@@ -4,6 +4,7 @@ import saveAnalysis from "../lib/pipeline/save-analysis.js";
 import collectContext from "../lib/pipeline/collect-context.js";
 import runDaily from "../lib/pipeline/run-daily.js";
 import liveTickets from "../lib/pipeline/live-tickets.js";
+import aiAccess from "../lib/ai-access.js";
 
 const handlers = {
   "build-tickets": buildTickets,
@@ -11,7 +12,8 @@ const handlers = {
   "save-analysis": saveAnalysis,
   "collect-context": collectContext,
   "run-daily": runDaily,
-  "live-tickets": liveTickets
+  "live-tickets": liveTickets,
+  "ai-access": aiAccess
 };
 
 export default async function handler(req, res) {
