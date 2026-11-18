@@ -24,7 +24,7 @@ $config = [ordered]@{
   statePath = (Join-Path $appData "daily-state.json")
   logDir = $logs
 }
-$configPath = Join-Path $PSScriptRoot "daily-collector-config.json"
+$configPath = Join-Path $appData "daily-collector-config.json"
 $config | ConvertTo-Json | Set-Content -LiteralPath $configPath -Encoding UTF8
 $currentUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 & icacls $secretsPath /inheritance:r /grant:r ($currentUser + ":(R,W)") "SYSTEM:(R)" | Out-Null
