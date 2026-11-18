@@ -1,89 +1,407 @@
 # FK — Ficha Kamba
 
-Plataforma de consulta de odds, análises desportivas e fichas de futebol. A recolha das odds é feita localmente no PC; a investigação e análise diária são feitas manualmente no ChatGPT, quando o utilizador as solicita. O site apresenta os relatórios guardados no Supabase.
+**Manual de arquitectura, operação e continuidade para desenvolvimento humano ou por IA.**
 
-## Arquitectura actual
+> Leia este documento inteiro antes de alterar o projecto. Ele descreve a árvore de ficheiros e o comportamento observado no código da branch indicada abaixo. Quando houver conflito entre documentação antiga e código, inspeccione o código e actualize este documento; não invente funcionalidades nem assuma que um deployment `READY` prova que tudo funciona em runtime.
 
-- **PC do utilizador:** recolhe jogos e mercados na BantuBet e ElephantBet.
-- **Vercel:** recebe e valida os lotes de recolha e serve o site/API. A recolha diária não chama modelos de IA nem inicia a criação de bilhetes.
-- **Supabase:** guarda jogos, mercados brutos, comparações de odds, contexto pesquisado e análises concluídas.
-- **ChatGPT (nesta conversa):** consulta os dados do Supabase, pesquisa fontes desportivas, compara mercados, estima probabilidades e riscos e, mediante pedido, grava o relatório em `match_analyses`.
-- **Ficha Kamba:** apresenta as odds e análises guardadas. Não chama esta conversa nem precisa de uma chave Groq/DeepSeek para mostrar os relatórios.
+## 1. Identificação e estado da versão
 
-A SportAPI não é obrigatória para descobrir ou associar jogos entre BantuBet e ElephantBet. Pode continuar como fonte auxiliar para dados de contexto ou acompanhamento ao vivo, quando estiver disponível, mas a ausência dela não bloqueia a recolha nem a análise manual no ChatGPT.
+| Item | Valor |
+|---|---|
+| Repositório | `Atanasildo/FK-FICHA-KAMBA` |
+| Plataforma frontend/backend | React 18 + Vite 6 + Vercel Functions |
+| Base de dados | Supabase / PostgreSQL |
+| Branch descrita nesta revisão | `feat/fk-cosmic-visual-refresh` |
+| Commit documentado | `1d7a427bb89f786181333b2505c4457cc3e56026` |
+| Branch predefinida do GitHub | `main` |
+| Projecto Vercel | `fk-ficha-kamba` |
+| Fuso horário operacional | `Africa/Luanda` |
+| Linguagem da interface | Português (Angola) |
 
-> O backend do site não consegue invocar automaticamente esta conversa do ChatGPT. O utilizador inicia a análise aqui no ChatGPT depois de confirmar que a recolha terminou.
+**Atenção às branches e à produção**
+- A documentação desta revisão descreve a branch `feat/fk-cosmic-visual-refresh`, que contém a alteração visual recente da página Bilhetes do Dia.
+- A branch `main` é a branch predefinida do GitHub; isso não significa que seja automaticamente a branch certa para continuar o trabalho ou que contenha todas as alterações desta branch.
+- O deployment Preview mais recente observado para o commit `1d7a427...` estava `QUEUED` no momento da revisão. A alteração visual ainda não foi confirmada visualmente em browser nem promovida a produção.
+- Não fazer merge, reset, rebase destrutivo ou promoção para produção sem comparar branches, confirmar o deployment e obter autorização explícita do responsável pelo projecto.
+- Antes de começar qualquer sessão, confirmar branch, commit local, branch remota e deployment Vercel correspondente. Não assumir que o URL de produção representa o código desta branch.
 
-## Recolha diária
+## 2. O que é o Ficha Kamba
 
-Executa no PC, dentro da pasta do projecto:
+O Ficha Kamba é uma plataforma de inteligência futebolística que reúne:
+1. Descoberta de jogos e recolha de mercados/odds em BantuBet e ElephantBet.
+2. Comparação e persistência dos dados recolhidos.
+3. Pesquisa e análise desportiva, incluindo um fluxo manual executado no ChatGPT.
+4. Apresentação de fichas publicadas e das respectivas selecções.
+5. Acompanhamento de partidas ao vivo e avaliação de mercados quando existem dados suficientes.
+6. Histórico e liquidação das selecções, com limitações que ainda precisam de validação.
+
+O projecto **não deve** inventar jogos, odds, estatísticas, resultados, códigos de reserva ou confirmações das casas. Não coloca apostas, não movimenta dinheiro e não deve automatizar uma aposta real.
+
+## 3. Arquitectura geral
+
+```text
+Casas de apostas
+  BantuBet ─────┐
+                ├─> Recolha local no PC (Node.js / Playwright / WebSocket)
+  ElephantBet ──┘
+                       |
+                       | HTTPS + CRON_SECRET + Vercel bypass (Preview protegida)
+                       v
+              Vercel Functions /api
+                       |
+                       v
+              Supabase PostgreSQL
+              - matches
+              - bookmakers
+              - markets
+              - odds_comparisons
+              - tickets
+              - ticket_legs
+              - match_statistics
+              - match_analyses
+                       |
+             +---------+-----------+
+             |                     |
+             v                     v
+       React/Vite no browser   ChatGPT / análise manual
+       lê dados via RLS        pesquisa e grava contexto/
+                               relatórios por fluxo seguro
+```
+
+### Responsabilidades
+
+- **PC do utilizador:** executa scripts locais para descobrir eventos, recolher odds e enviar lotes. A automação Windows diária existente no computador do utilizador é externa à árvore desta branch: os scripts de supervisor/agendamento locais não aparecem no repositório desta branch. Não os recriar nem alterar sem primeiro verificar o computador e a configuração actual.
+- **Vercel:** aloja o frontend e as funções em `api/`. Recebe recolhas autenticadas, consulta fornecedores externos e executa operações server-side.
+- **Supabase:** fonte persistente dos jogos, casas, mercados, comparações, fichas, selecções, estatísticas e análises.
+- **ChatGPT:** no fluxo manual documentado em `docs/chatgpt-analysis-workflow.md`, pesquisa e analisa os jogos depois da recolha. Não existe ligação automática desta conversa a um modelo de ChatGPT externo.
+- **SportAPI:** fornecedor auxiliar de fixtures, resultados, eventos, escalações e estatísticas. Não é necessária para descobrir/recolher odds das casas; o fluxo de associação live depende da disponibilidade e quota do fornecedor.
+- **BantuBet / ElephantBet:** fontes dos jogos e mercados. IDs de evento de uma casa não devem ser tratados como IDs da outra.
+
+## 4. Árvore completa do repositório nesta branch
+
+A lista abaixo reflecte os ficheiros versionados observados no commit indicado. Pode mudar com novos commits.
+
+```text
+FK-FICHA-KAMBA/
+├── .env.example
+├── .github/
+│   └── workflows/
+│       ├── ci.yml
+│       └── test-oddsdog.yml
+├── .gitignore
+├── README.md
+├── index.html
+├── package.json
+├── vercel.json
+├── api/
+│   ├── ai-analyze.js
+│   ├── bookmakers/
+│   │   ├── normalize.js
+│   │   ├── reserve.js
+│   │   └── save-comparison.js
+│   ├── diagnose-cron-secret.js
+│   ├── diagnostics/
+│   │   └── supabase-write.js
+│   ├── fixture-context.js
+│   ├── football-data.js
+│   ├── matches.js
+│   ├── pipeline.js
+│   └── test-ai-existing.js
+├── docs/
+│   └── chatgpt-analysis-workflow.md
+├── lib/
+│   ├── bookmakers/
+│   │   ├── bantubet.js
+│   │   ├── comparison.js
+│   │   ├── daily-swarm.js
+│   │   ├── elephantbet.js
+│   │   ├── event-discovery.js
+│   │   ├── ingest-swarm-handler.js
+│   │   ├── normalize.js
+│   │   ├── prepare-comparison.js
+│   │   ├── swarm-comparison.js
+│   │   ├── swarm.js
+│   │   └── team-matching.js
+│   ├── pipeline/
+│   │   ├── build-tickets.js
+│   │   ├── collect-context.js
+│   │   ├── context-quality.js
+│   │   ├── discover-fixtures.js
+│   │   ├── live-tickets.js
+│   │   ├── live-tickets.test.js
+│   │   ├── match-linking.js
+│   │   ├── run-daily.js
+│   │   └── save-analysis.js
+│   └── tickets/
+│       ├── builder.js
+│       └── live-market.js
+├── public/
+│   ├── fk-icon.svg
+│   └── manifest.webmanifest
+├── src/
+│   ├── App.jsx
+│   ├── home-redesign.css
+│   ├── main.jsx
+│   ├── styles.css
+│   └── lib/
+│       └── supabase.js
+├── supabase/
+│   ├── README.md
+│   ├── schema.sql
+│   └── migrations/
+│       ├── 20261108_match_context.sql
+│       ├── 20261113133000_swarm_ingest_idempotency.sql
+│       ├── 20261113150000_swarm_comparison_timeout_rpc.sql
+│       ├── 20261113_odds_retention_3_days.sql
+│       ├── 20261114001000_odds_comparisons_match_id_index.sql
+│       ├── 20261114153141_shared_ticket_pairs.sql
+│       ├── 20261115032000_match_analyses_public_read.sql
+│       └── 20261116140000_cleanup_swarm_matches_by_luanda_day.sql
+├── test/
+│   └── ticket-builder.test.js
+├── tests/
+│   ├── bookmakers/
+│   │   ├── comparison.test.js
+│   │   ├── daily-swarm.test.js
+│   │   ├── elephantbet.test.js
+│   │   ├── normalize.test.js
+│   │   ├── prepare-comparison.test.js
+│   │   ├── reserve.test.js
+│   │   ├── swarm-comparison.test.js
+│   │   └── team-matching.test.js
+│   ├── context-quality-fallback.test.js
+│   ├── event-discovery.test.js
+│   ├── local-collector.test.js
+│   ├── pipeline/
+│   │   ├── context-quality.test.js
+│   │   └── match-linking.test.js
+│   └── tickets/
+│       ├── builder.test.js
+│       └── live-market.test.js
+└── tools/
+    ├── bantubet-console-collector.js
+    ├── collect-swarm-upload.js
+    ├── collect-swarm.js
+    ├── discover-bookmaker-events.js
+    ├── elephantbet-console-collector.js
+    ├── events.local.example.json
+    ├── local-bookmaker-check.js
+    ├── local-bookmaker-collector.js
+    ├── recover-swarm-game.js
+    ├── report-swarm-comparison.js
+    ├── run-analysis-only.js
+    └── run-internet-fallback.js
+```
+
+## 5. Responsabilidade dos ficheiros e módulos
+
+### Raiz e configuração
+
+- `package.json`: scripts npm, dependências e comandos de testes/build.
+- `index.html`: documento HTML, idioma `pt-AO`, metadados, ícone e manifest.
+- `vercel.json`: rewrites das rotas `/api/pipeline/*` para o handler `api/pipeline.js` e limites de execução das funções.
+- `.env.example`: nomes e exemplos de variáveis; nunca colocar valores reais.
+- `.github/workflows/ci.yml`: workflow de integração contínua.
+- `.github/workflows/test-oddsdog.yml`: workflow separado de testes.
+- `.gitignore`: exclui dependências, builds, ficheiros locais e segredos.
+
+### Frontend — `src/`
+
+- `src/main.jsx`: ponto de entrada React; importa `App.jsx` e `styles.css`.
+- `src/App.jsx`: aplicação e lógica de interface. Carrega fichas publicadas em `tickets` com `ticket_legs` e dados de `matches`; agrupa versões BantuBet/ElephantBet pelo identificador partilhado; carrega análises prontas em `match_analyses`; consulta `/api/pipeline/live-tickets`; calcula vistas de hoje, ao vivo e histórico.
+- `src/styles.css`: folha de estilos global/estrutura anterior.
+- `src/home-redesign.css`: folha visual da página de Bilhetes do Dia da branch descrita. É importada por `App.jsx`.
+- `src/lib/supabase.js`: cria o cliente Supabase do browser com `VITE_SUPABASE_URL` e chave publicável/anon; exporta `supabase` e `isSupabaseConfigured`. Não pode receber chaves secret/service-role.
+- `public/`: ícone e manifest PWA.
+
+**Nota importante sobre a interface neste commit:** o componente `App` começa com a página `Bilhetes do dia` e retorna directamente `DailyHome` quando essa página está seleccionada. Nesta implementação, esse retorno antecipado não apresenta a navegação principal que existia na shell anterior. Os componentes/estados de Análises, Acompanhamento ao vivo e Histórico continuam no ficheiro, mas a navegação para os alcançar deve ser revista. A função `TicketPanel` antiga também permanece no ficheiro depois da introdução de `DailyTicketCard`; verificar e remover código morto apenas depois de confirmar que não é usado noutros caminhos. A próxima IA não deve assumir que os quatro separadores estão acessíveis na interface desta branch.
+
+### API — `api/`
+
+- `api/bookmakers/save-comparison.js`: endpoint POST. Com Bearer `CRON_SECRET`, encaminha para o ingest Swarm; no fluxo de importação autenticada também valida utilizador e grava comparação/mercados.
+- `api/bookmakers/reserve.js`: constrói pedido de link de partilha para as casas configuradas. A criação de link não equivale a aposta colocada nem a reserva confirmada.
+- `api/bookmakers/normalize.js`: normalização de dados por fornecedor, chamada por rewrites.
+- `api/pipeline.js`: router das operações de pipeline: descoberta, contexto, análise, gravação, construção de fichas e acompanhamento live, conforme `action`.
+- `api/ai-analyze.js`: integração de análise com fornecedor de IA configurado. É parte do pipeline legado/automatizado; não confundir com a análise manual no ChatGPT.
+- `api/football-data.js`: consulta fixtures à SportAPI por data.
+- `api/fixture-context.js`: obtém detalhes/contexto de um fixture SportAPI, incluindo estatísticas/eventos/lineups e dados associados.
+- `api/matches.js`: integração alternativa com football-data.org; requer `FOOTBALL_DATA_TOKEN`.
+- `api/diagnose-cron-secret.js`: diagnóstico da presença/comprimento/fingerprint do segredo. Não expor o fingerprint nem usar este endpoint para partilhar segredos.
+- `api/diagnostics/supabase-write.js`: diagnóstico de escrita Supabase; rever autenticação e necessidade antes de o usar.
+- `api/test-ai-existing.js`: endpoint de teste legado de IA. Não usar em produção sem rever o código e as protecções.
+
+### Bibliotecas — `lib/bookmakers/`
+
+- `swarm.js`: comunicação/recolha dos dados de eventos e odds nas casas.
+- `bantubet.js`, `elephantbet.js`: adaptadores específicos.
+- `event-discovery.js`: descoberta de eventos.
+- `daily-swarm.js`: selecção de jogos comuns e elegíveis para o dia.
+- `team-matching.js`: normalização e comparação dos nomes das equipas.
+- `comparison.js`, `swarm-comparison.js`, `prepare-comparison.js`: estruturação e comparação de mercados/cotações.
+- `normalize.js`: normalização partilhada de dados.
+- `ingest-swarm-handler.js`: valida o lote recebido e persiste dados no Supabase, incluindo jogos, bookmakers, mercados e comparações.
+
+### Bibliotecas — `lib/pipeline/`
+
+- `discover-fixtures.js`: descoberta/ligação de jogos.
+- `match-linking.js`: associação de fixtures entre fontes.
+- `collect-context.js`: recolha de contexto SportAPI.
+- `context-quality.js`: validação de qualidade/actualidade do contexto.
+- `run-daily.js`: pipeline automatizado legado, incluindo análise e possíveis etapas de criação/publicação. Não é o fluxo manual documentado para o ChatGPT.
+- `save-analysis.js`: grava relatórios de análise através de rota autenticada.
+- `build-tickets.js`: constrói e publica lotes de fichas no fluxo automatizado; contém efeitos reais na base de dados e chamadas de reserva.
+- `live-tickets.js`: consulta dados live, tenta associar jogos Swarm a fixtures SportAPI, guarda estatísticas/resultados suportados e devolve dados ao frontend.
+- `live-tickets.test.js`: testes do módulo live.
+
+### Bibliotecas — `lib/tickets/`
+
+- `builder.js`: regras e construção de fichas a partir de selecções.
+- `live-market.js`: avaliação de mercados com resultados/eventos/estatísticas finais disponíveis. Não deve adivinhar resultados quando a fonte não fornece os dados necessários.
+
+### Ferramentas locais — `tools/`
+
+- `collect-swarm-upload.js`: fluxo principal de recolha Swarm + envio autenticado para Vercel/Supabase.
+- `collect-swarm.js`: recolha manual por casa ou IDs de eventos, com gravação local em `data/collections/` (a pasta de saída é criada em runtime e não está versionada).
+- `discover-bookmaker-events.js`: descoberta auxiliar de eventos.
+- `bantubet-console-collector.js`, `elephantbet-console-collector.js`: coletores específicos.
+- `local-bookmaker-collector.js`, `local-bookmaker-check.js`: recolha/verificação local.
+- `recover-swarm-game.js`: recuperação de jogo específico.
+- `report-swarm-comparison.js`: relatório de comparação.
+- `run-analysis-only.js`: chama o pipeline legado em Preview, com modo de teste por omissão; rever argumentos antes de qualquer execução.
+- `run-internet-fallback.js`: teste isolado do fallback de contexto, em modo dry-run.
+- `events.local.example.json`: exemplo de dados locais, não é fonte de verdade nem dados de produção.
+
+## 6. Dados e relações Supabase
+
+A definição-base está em `supabase/schema.sql`; alterações posteriores estão em `supabase/migrations/`. Consultar também `supabase/README.md`.
+
+| Tabela | Papel e relações principais |
+|---|---|
+| `bookmakers` | Casas de apostas; `code` é único. |
+| `matches` | Jogos canónicos; guarda equipas, competição, início, estado, `source` e `external_id`. |
+| `markets` | Odds/mercados por jogo e bookmaker; liga a `matches` e `bookmakers`; guarda `market_key`, período, linha, selecção, odd e `collected_at`. |
+| `odds_comparisons` | Snapshot JSON da comparação por jogo; guarda `comparison` e `best_prices`. |
+| `tickets` | Fichas; `shared_ticket_id` agrupa versões equivalentes de casas diferentes; `booking_reference` pode conter texto ou JSON. |
+| `ticket_legs` | Selecções de uma ficha; liga `ticket_id`, opcionalmente `match_id` e `market_id`; guarda mercado, selecção, odd e resultado. |
+| `match_statistics` | Contexto desportivo/estatísticas e pesquisa, em JSONB, com fonte e data de recolha. |
+| `match_analyses` | Relatórios por jogo; inclui provider/model/status/summary/analysis e data. |
+
+Relações:
+- `tickets.id -> ticket_legs.ticket_id`.
+- `ticket_legs.match_id -> matches.id`.
+- `ticket_legs.market_id -> markets.id`.
+- `markets.match_id -> matches.id`.
+- `markets.bookmaker_id -> bookmakers.id`.
+- `odds_comparisons.match_id -> matches.id`.
+- `match_statistics.match_id -> matches.id`.
+- `match_analyses.match_id -> matches.id`.
+- `tickets.shared_ticket_id` liga as versões do mesmo boletim entre casas; não confundir com `tickets.id`.
+
+**Integridade:** não apagar fichas ou selecções publicadas para testar. Não alterar IDs, ligações ou `shared_ticket_id` sem migração/estratégia explícita. Usar migrações SQL versionadas e aditivas. Confirmar o esquema real do projecto Supabase antes de qualquer mudança: `schema.sql` mais migrações não substituem uma inspecção da base de dados actualmente aplicada.
+
+## 7. Fluxos operacionais
+
+### 7.1 Recolha diária de odds
+
+Comando principal, a partir da raiz do projecto:
 
 ```bash
 npm run collect:upload
 ```
 
-O comando:
-1. Descobre os jogos disponíveis na BantuBet e ElephantBet.
-2. Selecciona jogos comuns das duas casas, com início no dia actual de Luanda e pelo menos uma hora de antecedência.
-3. Compara as equipas pela ordem casa/visitante e pelo horário, sem depender dos IDs próprios de cada casa.
-4. Recolhe até 50 jogos comuns, em lotes de um jogo.
-5. Envia as odds e os mercados para `/api/bookmakers/save-comparison`.
-6. Guarda os mercados brutos, as comparações e os respectivos horários no Supabase.
-7. Termina. Não chama a SportAPI, não executa análise Groq/DeepSeek, não cria reservas e não publica bilhetes.
+O script:
+1. Descobre jogos em BantuBet e ElephantBet.
+2. Associa jogos comuns por equipas (casa com casa, visitante com visitante) e horário; não usa os IDs próprios das casas como se fossem iguais.
+3. Recolhe mercados/odds.
+4. Envia lotes para `/api/bookmakers/save-comparison`.
+5. A função server-side valida `CRON_SECRET` e guarda dados no Supabase.
 
-### Modo de teste
+Modo de teste sem escrita na base de dados:
 
 ```bash
 npm run collect:upload -- --dry-run
 ```
 
-O modo `--dry-run` descobre os jogos e recolhe os mercados, mas **não envia dados para o Supabase**. Não necessita das variáveis de autenticação da Vercel.
+Parâmetro opcional:
 
-### Variáveis de ambiente
+```bash
+npm run collect:upload -- --max-games=20
+```
 
-No PC, para uma recolha real:
-- `CRON_SECRET`
-- `VERCEL_AUTOMATION_BYPASS_SECRET` se o endpoint de ingestão estiver protegido pela Vercel
-- `FK_API_URL` (opcional; endereço da API de ingestão)
-- `FK_INGEST_URL` (opcional; URL completa de ingestão)
+O valor predefinido de `maxGames` vem de `FK_MAX_GAMES` ou do default definido no script. O limite de validação do script é 1–1500; a selecção diária de jogos comuns tem as próprias regras.
 
-Na Vercel:
-- `SUPABASE_URL`
-- `SUPABASE_SECRET_KEY` ou `SUPABASE_SERVICE_ROLE_KEY`
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_PUBLISHABLE_KEY` ou `VITE_SUPABASE_ANON_KEY`
-- `CRON_SECRET`
+**Atenção:** para uma recolha real, `FK_API_URL` ou `FK_INGEST_URL` tem de apontar explicitamente para o ambiente pretendido. O script recusa escolher Production por defeito. A Preview protegida também pode exigir `VERCEL_AUTOMATION_BYPASS_SECRET`. Nunca executar recolha real sem confirmar o destino e o estado da recolha do dia.
 
-Nunca coloques segredos no código, no GitHub ou em mensagens de chat. Não partilhes os valores das variáveis.
+### 7.2 Análise manual no ChatGPT
 
-## Análise diária no ChatGPT
+Seguir integralmente `docs/chatgpt-analysis-workflow.md`. Em resumo:
+1. Confirmar que a recolha terminou.
+2. Consultar jogos Swarm do dia de Luanda que ainda não começaram e cuja comparação de odds seja recente.
+3. Validar a identidade dos jogos e cotações de cada mercado.
+4. Pesquisar contexto em fontes identificáveis; separar factos, estimativas e lacunas.
+5. Calcular probabilidades/valor esperado apenas quando os dados suportarem.
+6. Guardar contexto validado em `match_statistics` e relatórios prontos em `match_analyses`.
+7. Não escrever em `tickets` nem `ticket_legs` durante a análise manual.
 
-Depois de uma recolha concluída, pede nesta conversa: **“Vamos analisar os jogos de hoje da Ficha Kamba.”**
+A documentação de análise manual é a referência prioritária para o fluxo ChatGPT. Não executar `/api/pipeline/run-daily` como se fosse a mesma rotina: esse endpoint pertence ao pipeline legado/automatizado.
 
-O fluxo é:
-1. Consultar no Supabase os jogos e as odds recentes das duas casas.
-2. Excluir jogos iniciados, adiados, ambíguos ou com odds desactualizadas.
-3. Pesquisar forma recente, confrontos, classificação, ausências, escalações e outras informações relevantes, indicando quando uma fonte não disponibiliza determinado dado.
-4. Guardar contexto `InternetSearch` apenas depois de recolher factos verificáveis de pelo menos duas fontes distintas. Um marcador de pesquisa pendente não conta como estatística.
-5. Avaliar mercados, probabilidades, odds implícitas, valor esperado e incerteza.
-6. Guardar os relatórios estruturados em `match_analyses`.
-7. Mostrar as análises na área **Análises** do site.
+### 7.3 Fichas e publicação
 
-As análises só devem ser guardadas depois de verificar a identidade do jogo, a actualidade das odds e a qualidade das fontes. Não inventar estatísticas ou probabilidades para preencher lacunas. O formato e as regras de validação do contexto estão em [docs/chatgpt-analysis-workflow.md](docs/chatgpt-analysis-workflow.md).
+- O frontend lê fichas com `status = 'published'`.
+- As versões BantuBet e ElephantBet podem ser agrupadas na interface por `shared_ticket_id`, mas continuam a ser registos distintos.
+- `booking_reference` pode conter texto simples ou JSON com identificador/link/estado.
+- Um link de partilha criado pela casa não é prova de aposta colocada nem de reserva confirmada.
+- O pipeline `lib/pipeline/build-tickets.js` pode escrever fichas e chamar o mecanismo de reserva. Tratar como operação com efeitos reais; nunca correr por rotina de análise sem autorização.
 
-Para esta rotina manual, **não executar o pipeline legado `/api/pipeline` / `run-daily`**: ele ainda depende de um fornecedor externo de IA e tem uma etapa separada de bilhetes/publicação. O ChatGPT pesquisa e grava os relatórios directamente no Supabase nesta conversa.
+### 7.4 Acompanhamento ao vivo
 
-## Bilhetes e publicação
+- O frontend consulta `GET /api/pipeline/live-tickets` a cada cinco minutos.
+- O handler precisa de Supabase server-side e `SPORTAPI_KEY`.
+- A associação Swarm→SportAPI deve respeitar ordem das equipas e tolerância horária; rejeitar candidatos ambíguos.
+- Dados ausentes devem continuar ausentes. Não substituir falta de resposta por 0–0, minuto inventado ou estatística zero.
+- Estatísticas podem estar sujeitas a cache/rotação para respeitar quotas. Uma partida terminada não implica que todos os mercados estejam liquidados.
+- Validar em jogos reais antes de afirmar que o acompanhamento está funcional.
 
-A análise manual no ChatGPT não cria bilhetes, não faz reservas, não submete apostas e não movimenta dinheiro. A área **Análises** é separada da área **Bilhetes do dia**. Qualquer futura funcionalidade de criação ou publicação de fichas exige uma decisão e autorização explícitas.
+### 7.5 Histórico/liquidação
 
-## Acompanhamento ao vivo
+- O frontend considera o resultado de cada selecção através de `ticket_legs.result`/estado recebido do endpoint live.
+- `lib/tickets/live-market.js` contém avaliadores de mercado.
+- Mercados que dependem de estatísticas finais devem aguardar os dados necessários.
+- A lógica agregada de ficha, devoluções, linhas asiáticas e mercados especiais deve ser testada por mercado; não presumir que todos os casos estão cobertos.
 
-O acompanhamento ao vivo é uma funcionalidade separada da análise diária. Se a fonte desportiva configurada estiver disponível, o site pode continuar a consultar marcadores e estados de jogos. Isso não torna a SportAPI necessária para a recolha das odds ou para a análise manual no ChatGPT.
+## 8. Variáveis de ambiente
 
-## Desenvolvimento e validação
+Consultar `.env.example` e as configurações da Vercel. Os nomes abaixo foram encontrados no código/documentação; a necessidade concreta varia conforme o fluxo utilizado.
 
-Requer Node.js 20 ou superior.
+| Variável | Uso | Onde |
+|---|---|---|
+| `VITE_SUPABASE_URL` | URL pública do Supabase para o browser | Vercel/frontend |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` ou `VITE_SUPABASE_ANON_KEY` | Chave publicável/anon, protegida por RLS | Vercel/frontend |
+| `SUPABASE_URL` | URL do Supabase em funções server-side | Vercel |
+| `SUPABASE_SECRET_KEY` ou `SUPABASE_SERVICE_ROLE_KEY` | Escritas privilegiadas server-side | Vercel, segredo |
+| `CRON_SECRET` | Autentica recolhas e rotas internas | Vercel e ambiente local autorizado |
+| `VERCEL_AUTOMATION_BYPASS_SECRET` | Acesso automatizado a Preview protegida | ambiente local seguro |
+| `FK_API_URL` | Base URL explícita do endpoint de ingestão/Preview | ambiente local |
+| `FK_INGEST_URL` | URL completa alternativa de ingestão | ambiente local |
+| `FK_MAX_GAMES` | Limite local de jogos a recolher | ambiente local |
+| `SPORTAPI_KEY` | Fixtures, eventos, estatísticas e acompanhamento | Vercel |
+| `FOOTBALL_DATA_TOKEN` | Endpoint alternativo football-data.org | Vercel |
+| `AI_PROVIDER` | Escolha do fornecedor no pipeline legado | Vercel |
+| `GROQ_API_KEY`, `GROQ_MODEL`, `GROQ_RESEARCH_MODEL` | Fornecedor Groq no pipeline legado | Vercel |
+| `DEEPSEEK_API_KEY`, `DEEPSEEK_MODEL` | Fornecedor DeepSeek no pipeline legado | Vercel |
+| `GEMINI_API_KEY`, `GEMINI_MODEL` | Fornecedor Gemini no pipeline legado | Vercel |
+| `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID` | Integração Browserbase opcional | Vercel/ambiente seguro |
+
+Regras:
+- Nunca colocar segredos em `VITE_*`, no browser, no Git, no README ou em mensagens.
+- Nunca pedir ao utilizador que cole API keys, cookies, OTPs ou passwords no chat.
+- Não mostrar valores de variáveis nos logs; mostrar apenas se estão configuradas quando necessário.
+- `.env.example` contém placeholders, não credenciais funcionais.
+- Não assumir que todas as variáveis listadas estão actualmente configuradas na Vercel; verificar o painel/ambiente sem revelar os valores.
+
+## 9. Instalação, desenvolvimento e testes
+
+Requisito declarado no histórico do projecto: Node.js 20 ou superior. Confirmar versão local antes de instalar.
 
 ```bash
 npm install
@@ -92,205 +410,91 @@ npm run build
 npm run dev
 ```
 
-## Segurança
+Scripts definidos:
+- `npm run dev`: Vite em `0.0.0.0`.
+- `npm test`: verificações de sintaxe e suite Node `node --test`.
+- `npm run build`: corre os testes e depois `vite build`.
+- `npm run preview`: preview local do build.
+- `npm run collect:upload`: recolha real/upload, salvo `--dry-run`.
 
-- As chaves do Supabase ficam no servidor; o frontend usa apenas a chave pública com políticas RLS.
-- As rotas de ingestão exigem `CRON_SECRET`.
-- As análises prontas são públicas apenas para leitura através de uma política RLS específica; as escritas continuam restritas ao servidor/credenciais privilegiadas.
-- Não contornar autenticação, CAPTCHA, controlos anti-bot ou restrições dos fornecedores.
-- O FK não coloca apostas, não recebe depósitos e não movimenta dinheiro.
+Depois de alterações:
+1. Correr testes.
+2. Correr build.
+3. Inspeccionar logs e erros.
+4. Validar comportamento em Preview no browser, desktop e telemóvel.
+5. Confirmar dados reais e integrações sem fazer escritas destrutivas.
+6. Distinguir explicitamente build concluído, deployment READY e validação funcional real.
 
-## Estado operacional confirmado — 17/11/2026
+## 10. Segurança e limites operacionais
 
-Esta secção é o ponto de partida para a próxima sessão de desenvolvimento/IA. Deve ser actualizada sempre que uma funcionalidade for concluída ou a arquitectura mudar.
+- RLS deve permanecer activo nas tabelas expostas ao browser.
+- O browser usa apenas chave publicável/anon; escritas privilegiadas são server-side.
+- Rotas internas exigem autenticação adequada. Não remover verificações para facilitar testes.
+- Não expor service-role/secret key, CRON_SECRET, chaves de fornecedores ou bypass da Vercel.
+- Não contornar CAPTCHA, autenticação, anti-bot ou limites das casas.
+- Não enviar apostas, não movimentar dinheiro e não afirmar que uma reserva foi confirmada sem resposta verificável.
+- Não alterar dados publicados para testes. Usar fixtures/mocks/testes isolados.
+- Antes de migrações, rever RLS, grants, índices, chaves e dados reais.
+- Não fazer chamadas de reserva nem publicar fichas sem autorização explícita.
 
-### Versão publicada
+## 11. Estado conhecido, limitações e tarefas em aberto
 
-- Repositório: `Atanasildo/FK-FICHA-KAMBA`.
-- Branch que contém a interface actual: `feat/analysis-before-odds`.
-- Commit publicado em produção nesta data: `8ec45599ddc147f169a70c464e5ccda6a699fd27`.
-- Projecto Vercel: `fk-ficha-kamba`.
-- URL de produção: https://fk-ficha-kamba.vercel.app
-- Projecto Supabase: `dcvadrtvyzwwvlwejach` (referência do projecto; não é uma credencial).
-- A interface de produção foi publicada a partir da branch `feat/analysis-before-odds`. A branch `main` tem histórico/interface anterior e não deve ser usada como base para substituir a interface actual sem comparar os commits e rever cuidadosamente as diferenças.
-- Não fazer merge indiscriminado entre `main` e `feat/analysis-before-odds`: as branches divergiram significativamente. Preservar a interface actual e os quatro separadores descritos abaixo.
-- O build de produção desta versão terminou com sucesso e os 105 testes automatizados passaram (0 falhas). Isto confirma testes/build, não substitui a validação funcional no browser e na fonte de dados.
+Esta secção evita que uma nova IA confunda código existente com funcionalidade validada.
 
-### Interface actualmente confirmada
+### Confirmado por inspecção do código nesta branch
+- Frontend React/Vite e cliente Supabase.
+- Leitura de fichas publicadas e análises prontas no frontend.
+- Endpoint de ingestão Swarm em `api/bookmakers/save-comparison.js` com handler em `lib/bookmakers/ingest-swarm-handler.js`.
+- Scripts locais de recolha em `tools/`.
+- Módulos de comparação, ligação de equipas, construção de fichas, reserva/link e avaliação live.
+- Migrations SQL versionadas.
+- Fluxo de análise manual documentado em `docs/chatgpt-analysis-workflow.md`.
+- Nova composição visual da página Bilhetes do Dia na branch `feat/fk-cosmic-visual-refresh`.
 
-A interface publicada contém estes separadores principais:
+### Não confirmado nesta revisão
+- A conclusão do deployment Vercel do commit `1d7a427...` (o último estado consultado foi `QUEUED`).
+- A reprodução visual exacta no browser após o último commit.
+- A acessibilidade actual de Análises, Acompanhamento ao vivo e Histórico na interface desta branch.
+- A disponibilidade actual da SportAPI e a taxa de associação de jogos reais.
+- A liquidação correcta de todos os mercados e todos os cenários.
+- A criação/validação de links de partilha nas duas casas com dados reais.
+- A configuração actual das variáveis de ambiente.
+- A configuração actual da automação Windows que corre no PC do utilizador.
+- O estado actual da produção e a branch/commit que a serve. Confirmar na Vercel antes de qualquer alteração de produção.
 
-1. **Bilhetes do dia** — apresenta as fichas publicadas para o dia, agrupando as versões das casas BantuBet e ElephantBet pelo `shared_ticket_id`. O detalhe expandido mostra os jogos, mercado, selecção, odd, estado da partida e referência de reserva.
-2. **Análises** — consulta análises prontas em `match_analyses`; a análise continua a ser preparada manualmente no ChatGPT, conforme [docs/chatgpt-analysis-workflow.md](docs/chatgpt-analysis-workflow.md).
-3. **Acompanhamento ao vivo** — separador existente na navegação. A implementação actual filtra fichas do dia que tenham pelo menos uma partida reconhecida como live; não assumir que todos os jogos ou todas as estatísticas estão cobertos.
-4. **Histórico** — separador existente. A implementação actual separa fichas que não pertencem ao dia actual; ainda falta consolidar a liquidação final de todas as selecções e apresentar um resultado inequívoco por ficha.
+### Prioridades recomendadas para a próxima IA
+1. **Validar e concluir o layout da página inicial:** abrir o deployment Preview mais recente; comparar com a referência visual fornecida pelo utilizador; corrigir a navegação para que os outros separadores não desapareçam; testar desktop/mobile. Não substituir dados reais por exemplos hardcoded.
+2. **Restaurar/confirmar a navegação funcional:** manter Bilhetes do dia, Análises, Acompanhamento ao vivo e Histórico acessíveis, com rotas/estado e layouts coerentes. A actual composição da página inicial retorna antes da shell de navegação.
+3. **Rever agrupamento e cartões de fichas:** confirmar que as versões BantuBet/ElephantBet não perdem dados específicos da casa, odds, selecções, IDs e referências de reserva.
+4. **Validar links de partilha/reserva:** separar link criado, reserva pendente e confirmação real; não submeter apostas.
+5. **Validar acompanhamento ao vivo:** associação inequívoca Swarm→SportAPI, cache, estados, marcador, eventos e estatísticas.
+6. **Completar liquidação/histórico:** testar mercado por mercado e não liquidar sem dados finais suficientes.
+7. **Rever segurança e migrações:** RLS, autenticação das rotas, idempotência, índices e retenção.
 
-O comparador de odds não faz parte desta interface actual. Não o reintroduzir.
+## 12. Instruções obrigatórias para qualquer outra IA
 
-### Estado dos dados publicados
+1. Ler este README inteiro, `docs/chatgpt-analysis-workflow.md` e `supabase/README.md`.
+2. Antes de editar, confirmar a branch, SHA e estado da Vercel. Fazer `git status` e não apagar alterações locais.
+3. Inspeccionar os ficheiros concretos relacionados com a tarefa; esta árvore é um mapa, não substitui leitura do código.
+4. Não assumir que `main` é a branch correcta. Não misturar branches divergentes sem comparar commits e rever o diff.
+5. Não alterar produção, esquema Supabase ou dados publicados sem autorização explícita.
+6. Não inventar estatísticas, odds, selecções, resultados, referências de reserva ou estado de deployment.
+7. Não pedir novamente ao utilizador informação que já está neste documento; pedir apenas decisões/credenciais que não possam ser obtidas com segurança. Segredos não devem ser enviados no chat.
+8. Para recolha real, confirmar o destino em `FK_API_URL`/`FK_INGEST_URL`, data local de Luanda e se já houve recolha nesse dia. Preferir `--dry-run` para validar sem escrita.
+9. Para análise manual, seguir o procedimento em `docs/chatgpt-analysis-workflow.md`; não chamar o pipeline legado automaticamente.
+10. Após cada alteração, correr `npm test` e `npm run build`; validar Preview visual e funcionalmente. Reportar o que foi implementado, testado, não testado e ainda pendente.
+11. Actualizar este README e os documentos de apoio quando arquitectura, comandos, tabelas, variáveis ou estado operacional mudarem.
+12. Não declarar uma tarefa concluída só porque o commit foi criado ou o deployment está `READY`.
 
-- Na verificação de 17/11/2026, `public.tickets` continha 16 registos com `status = 'published'`, agrupados em 8 `shared_ticket_id`: oito fichas partilhadas, cada uma com a versão BantuBet e a versão ElephantBet.
-- As imagens confirmadas pelo utilizador mostram as oito fichas na página **Bilhetes do dia**, as duas odds totais por ficha e as respectivas selecções/jogos no detalhe.
-- As referências/códigos de reserva aparecem como **pendentes** / “A aguardar reserva”. Não foram confirmados códigos reais de reserva pelas casas.
-- Não inventar códigos, não preencher uma referência fictícia e não marcar uma reserva como concluída sem confirmação verificável da casa de apostas.
-- Não apagar nem substituir os bilhetes existentes para desenvolver as próximas funcionalidades. Preservar os IDs e relações entre `tickets`, `ticket_legs`, `matches` e `shared_ticket_id`.
+## 13. Documentos de referência
 
-### Modelo de dados relevante (confirmado no Supabase)
+- [Procedimento de análise manual no ChatGPT](docs/chatgpt-analysis-workflow.md)
+- [Fundação e configuração Supabase](supabase/README.md)
+- [Schema base Supabase](supabase/schema.sql)
+- [Exemplo de variáveis de ambiente](.env.example)
+- [Configuração Vercel e rewrites](vercel.json)
+- [Scripts e dependências](package.json)
 
-- `tickets`: `id`, `shared_ticket_id`, `title`, `status`, `total_odds`, `booking_reference` (texto nullable), `published_at`, `created_at`, `updated_at`.
-- `ticket_legs`: `id`, `ticket_id`, `match_id` (nullable), `market_id` (nullable), `market_name`, `selection`, `odd`, `result`, `created_at`.
-- `matches`: `id`, `external_id` (nullable), `home_team`, `away_team`, `competition`, `kickoff_at`, `status`, `source`, timestamps.
-- `match_statistics`: `id`, `match_id`, `source`, `payload` (JSONB), `collected_at`, `created_at`.
-- `match_analyses`: `id`, `match_id`, `provider`, `model`, `status`, `summary`, `analysis` (JSONB), `generated_at`, `created_at`.
-- A relação de uma ficha às suas selecções é `tickets.id -> ticket_legs.ticket_id`; a relação de uma selecção ao jogo é `ticket_legs.match_id -> matches.id`.
-- `booking_reference` é actualmente um campo de texto. Antes de o usar para códigos, URLs ou estados mais complexos, inspeccionar os valores existentes e definir um formato compatível/migrável. Não assumir que contém um código válido: a UI interpreta texto/JSON, mas isso não prova que exista uma reserva confirmada.
+---
 
-### Implementação de acompanhamento ao vivo já existente
-
-- O frontend chama `GET /api/pipeline?action=live-tickets` e actualiza a informação a cada 5 minutos.
-- A rota está em `api/pipeline.js` e delega para `lib/pipeline/live-tickets.js`.
-- O endpoint requer no servidor: `SUPABASE_URL` (ou `VITE_SUPABASE_URL`), `SUPABASE_SERVICE_ROLE_KEY` (ou `SUPABASE_SECRET_KEY`) e `SPORTAPI_KEY`. Se faltar uma destas variáveis, responde com HTTP 503.
-- A implementação actual procura jogos ligados a SportAPI, com `matches.source = 'SportAPI'`, `external_id` numérico e início dentro da janela temporal definida no código. Jogos de outras fontes não são automaticamente associados à SportAPI.
-- Consulta fixtures, eventos e estatísticas SportAPI; guarda amostras em `match_statistics` com `source = 'SportAPI-live'` e `SportAPI-live-events'`. A recolha de estatísticas/eventos é rodada por lotes e usa uma idade máxima de cache de 15 minutos.
-- A lógica de mercado está em `lib/tickets/live-market.js`. Quando o fornecedor confirma um resultado suportado após o fim e os dados finais necessários estão disponíveis, o endpoint actualiza `ticket_legs.result` com valores como `Ganha`, `Perdida` ou `Linha devolvida`.
-- Mercados dependentes de estatísticas/eventos podem ficar em “Aguardando estatística final”. Não forçar liquidação quando a fonte não fornece a estatística necessária.
-- O endpoint também pode devolver informação da análise guardada antes do início da partida. A ausência de dados live não deve ser convertida em 0-0 nem em resultado de mercado.
-- A UI mistura os dados live recebidos com os dados das selecções por ID. A correspondência dos jogos entre fornecedores e o preenchimento de `match_id` são, portanto, fundamentais.
-- O código existente é uma base parcial, não uma implementação completa de acompanhamento de todos os jogos. Antes de o ampliar, rever integralmente `lib/pipeline/live-tickets.js`, `lib/tickets/live-market.js`, `api/pipeline.js`, `src/App.jsx` e as variáveis da Vercel. Não assumir que o caminho actual cobre todos os mercados ou que o histórico calcula correctamente o resultado agregado de cada ficha.
-
-## Próximas etapas acordadas com o utilizador
-
-Trabalhar por etapas e validar cada uma antes de avançar. A ordem acordada é:
-
-### Estado técnico adicional — reserva/partilha (17/11/2026)
-
-- Foi recuperado o código fornecido pelo utilizador em 12/11/2026 e comparado com o repositório.
-- Já existe a implementação base em `api/bookmakers/reserve.js`, com `createBooking()`, construção do payload `translations/share/configs/betslip`, os dois endpoints `image-creator/share-booking`, extracção de `share.bookId` ou do parâmetro `bookingId` em `share.bookingLink`.
-- Configuração recuperada do código original: ElephantBet `siteId=18756188`, BantuBet `siteId=1869146`; os respectivos domínios e URLs estão definidos no ficheiro. O payload usa stake zero e serve para gerar uma ligação de partilha; não é uma submissão de aposta nem confirmação de aposta colocada.
-- A rota HTTP actual exige `Authorization: Bearer CRON_SECRET`. O frontend `src/App.jsx` ainda não chama esta rota e não existe, nesta versão inspeccionada, um fluxo de administração/autorização no frontend para a invocar com segurança. Não colocar `CRON_SECRET` no browser.
-- O frontend lê `tickets.booking_reference` e interpreta texto simples ou JSON com `id` e `url`, mas o carregamento não grava reservas.
-- A revisão de 17/11 confirmou `booking_reference IS NULL` nos 16 registos publicados.
-- Foi removido do endpoint o limite artificial de odd mínima 1.40 e o máximo artificial de 11 selecções, pois não constavam do código original fornecido pelo utilizador e impediam boletins publicados com odds abaixo de 1.40 ou 12 jogos. Mantém-se a validação de odd decimal superior a 1.00, campos essenciais e partidas ainda não iniciadas.
-- **Ainda não gerar códigos automaticamente nem marcar reservas como concluídas:** falta implementar uma chamada server-side autenticada que leia a ficha e os seus `ticket_legs/matches/markets`, construa os campos originais sem inventar `base`/IDs de mercado, contacte a casa, e grave a resposta em `booking_reference`. A execução deve ser idempotente: não criar um segundo código se já existir um código válido.
-- A tabela `markets` contém `market_key`, `period`, `line`, `selection`, `market_name`, `odd` e `bookmaker_id`; `ticket_legs.market_id` liga a selecção ao mercado. Usar esses dados para mapear o payload e validar que a casa corresponde à ficha. O campo `base` ainda precisa de ser confrontado com o objecto bruto do Network fornecido originalmente; não assumir que `market_key` é equivalente.
-- A criação de link de partilha deve ser distinguida de reserva confirmada: apresentar “Link de partilha criado”/“Aguardando confirmação” até haver confirmação explícita na casa.
-
-### 1. Códigos de reserva (próxima tarefa)
-
-Objectivo: registar e apresentar os códigos/IDs de reserva reais, separadamente para BantuBet e ElephantBet, em cada versão do boletim.
-
-Antes de implementar:
-- Inspeccionar o fluxo real de reserva de cada casa e determinar se existe API, confirmação manual ou comprovativo que forneça o código.
-- Distinguir claramente: não reservado, reserva iniciada, aguardando confirmação, reservado/confirmado e erro/cancelado (os estados finais devem ser ajustados ao fluxo real de cada bookmaker).
-- Definir onde guardar o identificador, URL/comprovativo, estado, data/hora e casa de apostas. Considerar uma tabela própria de reservas em vez de sobrecarregar `booking_reference`, caso os dados e relações justifiquem.
-- Nunca guardar passwords, cookies de sessão ou tokens privados no frontend, GitHub ou README.
-- Não automatizar submissão de apostas nem movimentação de dinheiro. Qualquer acção que confirme uma reserva tem de respeitar os controlos e termos da casa e exigir a confirmação/autorização do utilizador quando aplicável.
-- Manter as duas versões da ficha independentes: o código BantuBet não é o código ElephantBet.
-
-Critério de conclusão: o código apresentado no site tem de corresponder a uma confirmação real fornecida pela casa; caso contrário, mostrar “Pendente” ou “Não reservado”.
-
-### 2. Acompanhamento ao vivo dentro dos boletins
-
-Objectivo: dentro do detalhe de cada boletim, cada jogo deve apresentar estado, minuto (quando disponível), marcador, eventos relevantes e estatísticas disponíveis. O separador **Acompanhamento ao vivo** deve oferecer uma visão conjunta das partidas em curso.
-
-Tarefas:
-- Rever a associação entre os jogos recolhidos (fonte Swarm/bookmakers) e os fixtures da fonte de resultados. Usar IDs externos quando confiáveis; caso contrário, associação por equipas normalizadas, competição e horário, com limiar de confiança e rejeição de ambiguidades.
-- Não associar o mesmo fixture a dois jogos diferentes. Registar a fonte, o ID externo, quando foi actualizado e a confiança/método de associação.
-- Mostrar “Dados indisponíveis” quando não houver correspondência ou resposta do fornecedor; não inventar marcador, minuto, eventos ou estatísticas.
-- Definir intervalos de actualização e cache respeitando limites/custos da API. Distinguir estado da partida de estado da selecção.
-- Preservar a última actualização válida em falhas temporárias e mostrar a hora da última actualização.
-
-### 3. Histórico e liquidação dos boletins
-
-Objectivo: depois de cada partida terminar, cruzar o resultado real com a selecção correspondente e mostrar claramente quais selecções entraram/falharam e o resultado total de cada ficha.
-
-Requisitos:
-- Avaliar cada `ticket_leg` pelo seu mercado e selecção exactos, não apenas pelo resultado 1X2 ou pelo marcador final.
-- Cobrir mercados suportados com regras explícitas (incluindo linhas asiáticas, handicaps, totais, ambas marcam, cartões e estatísticas, quando a fonte fornece os dados). Não aproximar linhas nem inventar estatísticas.
-- Estados por selecção: pendente, em curso, ganha, perdida, devolvida/void, adiada/cancelada e não liquidável/aguarda dados, conforme aplicável.
-- Uma partida terminada não significa que todos os mercados estejam automaticamente liquidados: aguardar estatísticas finais quando necessário.
-- Calcular o resultado agregado da ficha só quando todas as selecções tiverem estado final. Uma selecção perdida torna a ficha perdida; todas ganhas/devolvidas exigem cálculo correcto de odds efectivas e regras do bookmaker. Fichas incompletas continuam pendentes.
-- No histórico, mostrar por ficha e por casa: odd total, cada jogo, mercado, selecção, odd, resultado real, decisão da selecção e resultado final da ficha. As duas casas devem continuar separadas.
-- Criar testes unitários para cada mercado e cenários de empate/devolução, adiamento, cancelamento, abandono, prolongamento e dados ausentes.
-
-### 4. Segurança, integridade e validação
-
-- Rever políticas RLS, grants e validações do servidor antes de qualquer alteração de esquema.
-- Preferir migrações SQL versionadas no repositório para alterações de tabelas/índices/políticas; não alterar dados publicados para testar.
-- Não expor a chave service-role nem a SPORTAPI_KEY ao browser.
-- Testar com fixtures/dados de teste isolados; não liquidar os boletins reais com resultados simulados.
-- Depois de cada etapa: executar `npm test`, `npm run build`, verificar logs/deployment e validar no browser. Dizer explicitamente o que foi e não foi testado.
-- Não reintroduzir o comparador de odds nem substituir a interface moderna pela interface antiga da `main`.
-
-## Instruções para a próxima IA
-
-1. Ler este README inteiro e `docs/chatgpt-analysis-workflow.md` antes de modificar código.
-2. Confirmar a branch e o commit actualmente publicados na Vercel; não assumir que `main` é a versão de produção.
-3. Inspeccionar o código e o esquema real do Supabase antes de propor migrações ou alterações.
-4. Começar pela tarefa **Códigos de reserva**, conforme a ordem acordada com o utilizador.
-5. Não pedir novamente ao utilizador informação já documentada aqui; perguntar apenas quando for necessária uma decisão ou confirmação que não possa ser obtida com segurança.
-6. Não declarar concluída uma funcionalidade apenas porque o build passou. Confirmar o comportamento real e separar claramente implementado, testado e ainda pendente.
-
-
-### Implementação técnica da geração de links (17/11/2026)
-
-- A rota `POST /api/bookmakers/reserve` aceita agora `{ "ticketId": "<uuid>" }` sob autenticação `Authorization: Bearer CRON_SECRET`; a operação lê a ficha e as relações no servidor com `SUPABASE_SERVICE_ROLE_KEY` ou `SUPABASE_SECRET_KEY`.
-- A rota valida que a ficha está publicada, que todas as selecções têm mercado associado, que os mercados pertencem à casa indicada pelo título da ficha e que os jogos ainda não começaram. O campo `markets.line` é preservado em `base`, incluindo `null` quando não existe linha.
-- Foi acrescentada uma reserva de processamento em `booking_reference` para impedir pedidos concorrentes repetidos; uma referência já existente é devolvida sem criar novo pedido.
-- A resposta é guardada como JSON com `id`, `url`, `status=share_link_created`, `site` e `createdAt`. Este estado significa apenas que foi criado um link de partilha pela casa; não significa que uma aposta foi colocada ou confirmada.
-- A rota não foi chamada contra as casas durante a implementação. Não foram criados links nem alterados os 16 boletins existentes.
-- A interface passou a descrever o identificador como link de partilha, evitando afirmar que uma reserva/aposta foi confirmada.
-- Para executar manualmente, enviar um POST autenticado à rota com o UUID de uma ficha e manter o `CRON_SECRET` apenas num ambiente seguro. Nunca o colocar no frontend.
-
-
-### Implementação do acompanhamento ao vivo — 17/11/2026
-
-- O deployment da geração de links de partilha está READY em Preview: commit `59ced37645c7febf700b3249d912b258b5acadec`. Este estado confirma que a Vercel concluiu esse build; a geração real de links continua por validar com pedidos controlados às casas.
-- Foi identificado que os jogos publicados estão guardados com `matches.source = 'swarm'` e IDs externos próprios (slugs), enquanto a versão anterior do acompanhamento só consultava `source = 'SportAPI'` e IDs numéricos. A chave `SPORTAPI_KEY` existe nas configurações de ambiente de produção e Preview, mas a condição antiga excluía os jogos Swarm.
-- A nova associação não altera `matches.external_id` nem `matches.source`: procura os jogos SportAPI por nome normalizado da equipa da casa e visitante, respeitando a ordem, e por hora de início com tolerância máxima de quatro horas. Uma correspondência ambígua ou sem correspondência é rejeitada; o sistema não inventa resultados.
-- O endpoint procura partidas entre 36 horas antes e 24 horas depois da hora actual, consulta as datas necessárias na SportAPI e devolve o mapeamento por `match_id`. As partidas sem associação segura aparecem com estado de espera e explicação, sem marcador inventado nem liquidação automática.
-- A recolha de eventos e estatísticas continua sujeita à rotação/cache configurados para respeitar a quota do fornecedor. As estatísticas passam a ser recolhidas para todos os jogos activos elegíveis, não apenas para mercados cujo cálculo dependa delas. Quando a fonte fornece os campos esperados, a resposta inclui estatísticas da equipa da casa e visitante para o frontend.
-- A avaliação de mercado permanece em `lib/tickets/live-market.js`. Só são gravados resultados suportados e confirmados pela fonte: `Ganha`, `Perdida` ou `Linha devolvida`. Mercados sem dados finais suficientes permanecem pendentes.
-- A página **Acompanhamento ao vivo** passa a manter as fichas do dia visíveis, incluindo jogos por iniciar, em directo e terminados, em vez de esconder fichas quando o jogo deixa de estar live. Mostra contadores por estado, marcador/minuto/evento e estatísticas disponíveis dentro do jogo.
-- A página **Histórico** inclui fichas de dias anteriores e fichas do próprio dia apenas quando todas as selecções estiverem liquidadas. Uma ficha acumuladora pode ficar marcada como perdida logo que uma selecção falhe, mas só é arquivada como concluída quando todos os jogos tiverem resultado final confirmado.
-- Na consulta Supabase de 17/11/2026 havia 148 jogos, 162 selecções publicadas ligadas a jogos e todos os resultados das selecções estavam ainda em `pending`. A origem era `swarm`; não havia amostras de estatísticas live guardadas. Estes números são uma fotografia da base de dados nesse momento e devem ser actualizados em novas verificações.
-- Ainda é necessário validar no Preview, com partidas reais e a resposta actual da SportAPI, a percentagem de jogos associados, o formato das estatísticas e a liquidação de mercados representativos. Não promover esta alteração a produção antes dessa validação. O design visual profissional será uma etapa separada depois da validação funcional do acompanhamento e histórico.
-
-
-### Validação do primeiro Preview do acompanhamento
-
-- Commit do primeiro build completo com o novo fluxo: `07fb051c5e74710a7e76c71c561de9fc4b16b18b`.
-- Deployment Vercel Preview: `dpl_DcPknW36TSgRnQSPeYwqrs4ppZp1`, estado `READY`, URL https://fk-ficha-kamba-p0s126h3c-atanasildos-projects.vercel.app.
-- O build Vite terminou e os testes automatizados concluíram sem falhas no build anterior da mesma sequência (105/105). O último commit acrescentou a leitura da linha nativa do mercado e voltou a compilar com sucesso.
-- A validação funcional em runtime da SportAPI ainda está pendente: o Preview não ficou acessível através do navegador de validação utilizado nesta sessão. Não assumir que os jogos já estão a receber marcadores live só porque o deployment está READY.
-- O endpoint agora consulta as linhas nativas em `markets.line` para que os mercados com selecção textual genérica (por exemplo, “Mais de”) possam ser avaliados sem adivinhar a linha.
-- A produção `https://fk-ficha-kamba.vercel.app` não foi promovida nem alterada nesta etapa. Validar a associação dos jogos e a liquidação no Preview antes de qualquer promoção.
-
-
-- Estado posterior: o commit `07fb051c5e74710a7e76c71c561de9fc4b16b18b` foi compilado pela Vercel e o deployment Preview ficou `READY`. A versão inclui a correcção do mapeamento Swarm→SportAPI, o envio da linha nativa do mercado ao avaliador, a vista diária de acompanhamento e a inclusão de fichas liquidadas no Histórico.
-- O Preview deve ser aberto e observado durante jogos reais para confirmar a taxa de associação por nomes/horários, a resposta do fornecedor e a gravação dos resultados finais. A validação de build não é prova de que a SportAPI já devolveu marcadores para cada jogo.
-- Não promover à produção até essa validação. Depois de estabilizar o acompanhamento e a liquidação, avançar para o redesenho visual profissional, mantendo as quatro secções actuais e sem reintroduzir o comparador de odds.
-
-
-### Direcção visual profissional — 17/11/2026
-
-- Foi introduzido um sistema visual consistente para o dashboard: fundo azul-noite, superfícies azul-marinho, bordas frias, acento verde-lima da marca e teal para indicadores live; dourado fica reservado a odds/risco.
-- Foram harmonizados sidebar, navegação activa, barra superior, cabeçalhos, cartões de resumo, fichas, detalhes dos jogos, estados de mercado, marcadores, estatísticas, pesquisa e estados vazios.
-- Melhorias de legibilidade: tipografia e hierarquia reforçadas, espaçamento mais regular, cartões com contraste e bordas coerentes, estados de jogo com cores semânticas e painéis live mais fáceis de distinguir.
-- Responsividade revista para desktop, tablet e telemóvel; foi respeitada a preferência do sistema por movimento reduzido.
-- A identidade e a estrutura funcional foram preservadas: Bilhetes do dia, Análises, Acompanhamento ao vivo e Histórico. O comparador de odds não foi reintroduzido.
-- Esta é uma primeira passagem visual em CSS, sem alterar a lógica de dados. Validar o Preview em desktop e telemóvel antes de promover à produção; ajustes finos podem ser feitos depois da observação visual.
-
-
-### Última revisão do acompanhamento e interface — 17/11/2026
-
-- A associação Swarm→SportAPI passou a normalizar também nomes de selecções nacionais em português/inglês (por exemplo, Polónia/Poland, Suécia/Sweden, País de Gales/Wales, Ucrânia/Ukraine e República da Irlanda/Republic of Ireland), além de acentos e sufixos comuns de clubes.
-- O normalizador remove diacríticos antes de comparar nomes. A correspondência continua a exigir equipa da casa com equipa da casa, visitante com visitante e início dentro da tolerância de quatro horas. Candidatos temporais ambíguos não são escolhidos automaticamente.
-- Foram acrescentados testes unitários específicos para a associação de jogos, ordem casa/visitante, tolerância horária, ambiguidade e prevenção de reutilização do mesmo fixture. Na compilação do commit `fd1d60e1d64829e76c5da8ef0a3635e91431d0b6`, os 110 testes passaram (0 falhas).
-- A última correcção de interface normaliza espaços/hífens nos estados live do fornecedor (commit `bc0f0b69657e165bef455c3cf51d84e6691b5bf5`). O deployment correspondente está em validação pela Vercel; confirmar estado antes de utilizar o link como Preview final.
-- A primeira versão visual profissional foi compilada com sucesso no Preview, mas ainda não foi validada visualmente pelo utilizador. A produção continua inalterada.
-- Próxima verificação obrigatória: abrir o Preview final, confirmar que os boletins e o novo estilo aparecem, chamar o acompanhamento ao vivo durante partidas reais e comparar os marcadores/resultados devolvidos pela SportAPI. Só depois dessa verificação se deve considerar promover para produção.
-
-
-- Confirmação posterior do Preview de código: commit `bc0f0b69657e165bef455c3cf51d84e6691b5bf5` ficou `READY` na Vercel, URL https://fk-ficha-kamba-9wfrjnso9-atanasildos-projects.vercel.app. A execução do build reportou 110 testes aprovados e 0 falhas.
-- O deployment é Preview da branch `feat/analysis-before-odds`, não produção. O link deve ser usado para revisão funcional/visual antes de promover qualquer alteração.
+**Regra final:** preservar a integridade dos dados e a operação existente é mais importante do que completar uma tarefa depressa. Se a fonte não confirmar um dado ou uma operação, mostrar que está pendente/indisponível em vez de inventar.
