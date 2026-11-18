@@ -13,20 +13,21 @@ A API não entrega a chave service-role nem `CRON_SECRET` às IAs. A chave indiv
 Base: `https://<dominio-publico>/api/ai-access`
 
 ### 1. Consultar jogos
-`GET /api/ai-access?action=fixtures&limit=25&offset=0`
+`GET /api/ai-access?op=fixtures&limit=25&offset=0`
 
 Header: `Authorization: Bearer fkai_...`
 
 Devolve jogos Swarm ainda por iniciar no dia de Luanda, a comparação mais recente de odds, estatísticas recolhidas e análises anteriores.
 
 ### 2. Guardar análise
-`POST /api/ai-access?action=submit-analysis`
+`POST /api/ai-access`
 
 Headers: `Authorization: Bearer fkai_...`, `Content-Type: application/json`
 
 Body:
 ```json
 {
+  "action": "submit-analysis",
   "model": "nome-do-modelo",
   "matchId": "UUID-da-tabela-matches",
   "analysis": {
@@ -41,13 +42,14 @@ Body:
 A análise é gravada em `match_analyses`, com `provider` igual ao nome da IA autenticada. A API confirma que o jogo pertence à recolha Swarm, ainda não começou e que as equipas coincidem.
 
 ### 3. Publicar boletins
-`POST /api/ai-access?action=publish`
+`POST /api/ai-access`
 
 Headers: `Authorization: Bearer fkai_...`, `Content-Type: application/json`, `Idempotency-Key: identificador-unico-com-pelo-menos-8-caracteres`
 
 Body:
 ```json
 {
+  "action": "publish",
   "pool": [
     {
       "fixtureId": "ID externo do jogo",
@@ -73,16 +75,16 @@ O formato do pool deve respeitar também todos os requisitos do construtor exist
 Uma chave de idempotência só pode ser usada uma vez por IA. Se houver timeout ou resposta incerta, consultar o estado antes de tentar novamente.
 
 ### 4. Consultar publicação
-`POST /api/ai-access?action=status`
+`POST /api/ai-access`
 
-Body: `{"publicationId":"UUID-de-publicacao"}`
+Body: `{"action":"status","publicationId":"UUID-de-publicacao"}`
 
 A IA só pode consultar publicações criadas com a sua própria chave.
 
 ## Emissão e revogação de chaves
 Apenas o operador do projecto pode chamar:
-- `POST /api/ai-access?action=issue-key` com `x-fk-ai-admin-secret` e body `{"name":"Claude"}`.
-- `POST /api/ai-access?action=revoke-key` com `x-fk-ai-admin-secret` e body `{"keyId":"UUID"}`.
+- `POST /api/ai-access?action=issue-key` com `x-fk-ai-admin-secret` e body `{"action":"issue-key","name":"Claude"}`.
+- `POST /api/ai-access?action=revoke-key` com `x-fk-ai-admin-secret` e body `{"action":"revoke-key","keyId":"UUID"}`.
 
 O token é mostrado uma única vez. Guardar num gestor de segredos e configurar a integração da plataforma. Nunca o colocar no Manual Mestre, no repositório, em prompts públicos ou em conversas.
 
