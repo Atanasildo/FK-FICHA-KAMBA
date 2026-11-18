@@ -140,16 +140,90 @@ async function submitAnalysis(db, req, res, agent) {
   if (!Array.isArray(analysis.selections) || analysis.selections.length > 100) {
     return json(res, 400, { error: "analysis.selections deve ser uma lista com até 100 selecções." });
   }
+  const { data: latestComparison, error: comparisonError } = await db.from("odds_comparisons")
+    .select("comparison,created_at").eq("match_id", matchId)
+    .order("created_at", { ascending: false }).limit(1).maybeSingle();
+  if (comparisonError || !latestComparison) {
+    return json(res, 409, { error: "Não existe comparação de odds para validar esta análise." });
+  }
+  if (Date.now() - Date.parse(latestComparison.created_at) > 60 * 60 * 1000) {
+    return json(res, 409, { error: "A comparação de odds tem mais de uma hora. Aguarda nova recolha antes de guardar a análise." });
+  }
+
+  const storedMarkets = (latestComparison.comparison?.events || []).flatMap(event => event.comparisons || []);
+  const validatedSelections = [];
+  for (const selection of analysis.selections) {
+    const marketName = text(selection?.market);
+    const selectionName = text(selection?.selection);
+    const probability = Number(selection?.probability ?? selection?.fairProbability);
+    if (!marketName || !selectionName || !Number.isFinite(probability) || probability <= 0 || probability >= 1 ||
+        text(selection?.rationale).length < 12) {
+      return json(res, 400, { error: "Cada selecção precisa de mercado, selecção, probabilidade entre 0 e 1 e fundamentação." });
+    }
+    const stored = storedMarkets.find(item =>
+      text(item.market).toLocaleLowerCase() === marketName.toLocaleLowerCase() &&
+      text(item.selection).toLocaleLowerCase() === selectionName.toLocaleLowerCase() &&
+      String(item.line ?? "") === String(selection.line ?? "")
+    );
+    const quotes = stored?.quotes || [];
+    const bantu = quotes.find(q => q.bookmaker === "BantuBet" && Number(q.odds) >= 1.4);
+    const elephant = quotes.find(q => q.bookmaker === "ElephantBet" && Number(q.odds) >= 1.4);
+    if (!bantu || !elephant) {
+      return json(res, 400, { error: `A selecção "${marketName} — ${selectionName}" não existe com odds mínimas nas duas casas na comparação guardada.` });
+    }
+    const best = Number(bantu.odds) >= Number(elephant.odds) ? bantu : elephant;
+    validatedSelections.push({
+      ...selection,
+      probability,
+      bestOdds: Number(best.odds),
+      bestBookmaker: best.bookmaker,
+      quotes: [bantu, elephant].map(q => ({
+        bookmaker: q.bookmaker, odds: Number(q.odds),
+        line: q.line ?? null, collectedAt: q.collectedAt || latestComparison.created_at,
+        sourceUrl: q.sourceUrl || null
+      }))
+    });
+  }
+
+  let researchRecord = null;
+  if (body.research != null) {
+    const research = body.research;
+    const sources = Array.isArray(research.sources) ? research.sources : [];
+    const facts = Array.isArray(research.facts) ? research.facts : [];
+    const validSources = sources.filter(source => {
+      try { return ["http:", "https:"].includes(new URL(source.url).protocol); }
+      catch { return false; }
+    });
+    const sourceUrls = new Set(validSources.map(source => source.url));
+    if (facts.length < 3 || sourceUrls.size < 2 ||
+        facts.filter(fact => text(fact.claim).length >= 12 && sourceUrls.has(fact.sourceUrl)).length < 2) {
+      return json(res, 400, { error: "A pesquisa externa precisa de pelo menos 3 factos e 2 fontes HTTP/HTTPS distintas, ligadas aos factos." });
+    }
+    researchRecord = {
+      source: "InternetSearch", researchedBy: agent.name,
+      collectedAt: new Date().toISOString(),
+      fixture: { home: match.home_team, away: match.away_team, kickoff: match.kickoff_at },
+      research: { ...research, sources: validSources, facts }
+    };
+    const { error: researchError } = await db.from("match_statistics").insert({
+      match_id: matchId, source: "InternetSearch", payload: researchRecord,
+      collected_at: new Date().toISOString()
+    });
+    if (researchError) return json(res, 500, { error: "Falha ao guardar a pesquisa externa.", detail: researchError.message });
+  }
+
   const model = text(body.model).slice(0, 120) || "unspecified";
+  const storedAnalysis = { ...analysis, selections: validatedSelections, agent: agent.name, model, submittedAt: new Date().toISOString() };
   const { data, error } = await db.from("match_analyses").insert({
     match_id: matchId, provider: agent.name, model, status: "ready",
     summary: text(analysis.verdict || analysis.summary).slice(0, 4000) || null,
-    analysis: { ...analysis, agent: agent.name, model, submittedAt: new Date().toISOString() },
-    generated_at: new Date().toISOString()
+    analysis: storedAnalysis, generated_at: new Date().toISOString()
   }).select("id,match_id,provider,model,status,generated_at").single();
   if (error) return json(res, 500, { error: "Falha ao guardar a análise.", detail: error.message });
-  await audit(db, agent, "submit-analysis", "match_analysis", data.id, { matchId, selections: analysis.selections.length });
-  return json(res, 201, { ok: true, analysis: data });
+  await audit(db, agent, "submit-analysis", "match_analysis", data.id, {
+    matchId, selections: validatedSelections.length, researchSaved: Boolean(researchRecord)
+  });
+  return json(res, 201, { ok: true, analysis: data, researchSaved: Boolean(researchRecord) });
 }
 
 function createInternalResponse() {
