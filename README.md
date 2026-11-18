@@ -260,7 +260,7 @@ Requisitos:
 ### Validação do primeiro Preview do acompanhamento
 
 - Commit do primeiro build completo com o novo fluxo: `07fb051c5e74710a7e76c71c561de9fc4b16b18b`.
-- Deployment Vercel Preview: `dpl_DcPknW36TSgRnQSPeYwqrs4ppZp1`, estado `READY`, URL https://fk-ficha-kamba-p0s126h3c-atanasildos-projects.vercel.app.
+- Preview actual da integração Swarm: branch `feat/swarm-live-stats`; usar o alias estável https://fk-ficha-kamba-git-feat-swarm-live-stats-atanasildos-projects.vercel.app.
 - O build Vite terminou e os testes automatizados concluíram sem falhas no build anterior da mesma sequência (105/105). O último commit acrescentou a leitura da linha nativa do mercado e voltou a compilar com sucesso.
 - A validação funcional em runtime da SportAPI ainda está pendente: o Preview não ficou acessível através do navegador de validação utilizado nesta sessão. Não assumir que os jogos já estão a receber marcadores live só porque o deployment está READY.
 - O endpoint agora consulta as linhas nativas em `markets.line` para que os mercados com selecção textual genérica (por exemplo, “Mais de”) possam ser avaliados sem adivinhar a linha.
@@ -292,5 +292,5 @@ Requisitos:
 - Próxima verificação obrigatória: abrir o Preview final, confirmar que os boletins e o novo estilo aparecem, chamar o acompanhamento ao vivo durante partidas reais e comparar os marcadores/resultados devolvidos pela SportAPI. Só depois dessa verificação se deve considerar promover para produção.
 
 
-- Confirmação posterior do Preview de código: commit `bc0f0b69657e165bef455c3cf51d84e6691b5bf5` ficou `READY` na Vercel, URL https://fk-ficha-kamba-9wfrjnso9-atanasildos-projects.vercel.app. A execução do build reportou 110 testes aprovados e 0 falhas.
+- Os links de deployments Preview antigos foram retirados deste README; consultar a Vercel para histórico.
 - O deployment é Preview da branch `feat/analysis-before-odds`, não produção. O link deve ser usado para revisão funcional/visual antes de promover qualquer alteração.
