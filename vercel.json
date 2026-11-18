@@ -27,6 +27,10 @@
     {
       "source": "/api/pipeline/live-tickets",
       "destination": "/api/pipeline?action=live-tickets"
+    },
+    {
+      "source": "/api/ai-access",
+      "destination": "/api/pipeline?action=ai-access"
     }
   ],
   "functions": {
@@ -34,9 +38,6 @@
       "maxDuration": 60
     },
     "api/pipeline.js": {
-      "maxDuration": 60
-    },
-    "api/ai-access.js": {
       "maxDuration": 60
     }
   }
