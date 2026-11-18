@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Activity, CalendarDays, ChevronDown, ChevronRight, FileText, History, LayoutDashboard, Radio, ShieldCheck, Ticket, Menu, X } from 'lucide-react';
 import { supabase } from './lib/supabase.js';
+import './home-redesign.css';
 
 const NAV = [['Bilhetes do dia', LayoutDashboard], ['Análises', FileText], ['Acompanhamento ao vivo', Activity], ['Histórico', History]];
 const money = n => Number(n || 0).toFixed(2);
