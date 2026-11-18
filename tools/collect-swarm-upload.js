@@ -138,7 +138,8 @@ async function collectOnePair(item, index) {
         signal: AbortSignal.timeout(90000)
       });
       const body = await response.json().catch(() => ({}));
-      if (!response.ok || !body.ok) {
+      const confirmedWrite = Number(body.savedGames) > 0 && Number(body.savedComparisons) > 0 && Number(body.savedRawMarkets) > 0;
+      if (!response.ok || !body.ok || !confirmedWrite) {
         const summary = body.error || body.message || "A nuvem não confirmou a gravação.";
         const detail = body.detail ? " | Detalhe: " + body.detail : "";
         const error = new Error(summary + " (HTTP " + response.status + ")" + detail);
@@ -207,7 +208,10 @@ console.log(JSON.stringify({
 
 if (dryRun) {
   console.log("\nMODO DE TESTE: nenhuma odd foi enviada e nenhuma análise/bilhete foi criada.");
-} else {
-  console.log("\nRECOLHA CONCLUÍDA. As odds estão guardadas no Supabase.");
+} else if (failedBatches === 0 && totalSavedGames > 0 && totalSavedComparisons > 0 && totalSavedRawMarkets > 0) {
+  console.log("\nRECOLHA CONCLUÍDA. A API confirmou gravações positivas no Supabase.");
   console.log("A análise será iniciada manualmente aqui no ChatGPT, quando o utilizador pedir.");
+} else {
+  console.error("\nATENÇÃO: a recolha terminou sem confirmação completa de gravação. Não considerar os dados guardados.");
+  process.exitCode = 1;
 }
