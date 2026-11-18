@@ -26,8 +26,11 @@ function database() {
 }
 
 async function authenticate(db, req, requiredScope) {
-  const token = text(req.headers.authorization).replace(/^Bearer\s+/i, "");
-  if (!token || token.length < 30) return { error: "Credencial da IA inválida.", status: 401 };
+  const authorization = text(req.headers.authorization);
+  if (!/^Bearer\s+fkai_[A-Za-z0-9_-]{40,}$/.test(authorization)) {
+    return { error: "Credencial da IA inválida.", status: 401 };
+  }
+  const token = authorization.replace(/^Bearer\s+/i, "");
   const { data, error } = await db.from("ai_agent_keys")
     .select("id,name,key_prefix,key_hash,scopes,revoked_at")
     .eq("key_hash", sha256(token)).maybeSingle();
