@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { createSwarmBooking, SWARM_BOOKMAKERS } from "../../lib/bookmakers/swarm.js";
 
 const configs = {
   elephant: {
@@ -32,59 +33,6 @@ export function isKickoffEligible(value, now = Date.now()) {
   return Number.isFinite(kickoff) && kickoff > now;
 }
 
-function buildPayload(site, selections, suppliedTotal) {
-  const cfg = configs[site];
-  const events = selections.map(s => {
-    const odd = Number(s.odd);
-    if (!Number.isFinite(odd) || odd <= 1) throw new Error("Cada selecção deve ter uma odd decimal válida superior a 1.00.");
-    return {
-      finalPayoutFormatted: false, isLive: s.isLive ? 1 : 0, price: String(odd),
-      stake: "0", taxOnStake: false, totalStake: "0", taxOnProfitOrReturn: false,
-      showTotalStake: false, possibleWin: "0", finalPayout: false,
-      ...(site === "elephant" ? { betBuilderEvent: true } : {}),
-      childrenEvents: [], startTime: s.startTime || "", team1Name: s.home || "",
-      team2Name: s.away || "", eventName: s.selectionName || "",
-      competitionName: s.competition || "", regionName: s.region || "",
-      base: s.base ?? null, sportAlias: "Soccer", marketName: s.marketName || "",
-      incInSysCalc: false
-    };
-  });
-  const calculated = events.reduce((acc, e) => acc * Number(e.price), 1);
-  if (suppliedTotal != null && Math.abs(Number(suppliedTotal) - calculated) > Math.max(0.02, calculated * 0.002)) {
-    throw new Error("A odd total indicada não corresponde ao produto das odds individuais.");
-  }
-  if (cfg.maxOdd != null && calculated > cfg.maxOdd) throw new Error("A odd total excede o limite configurado para esta casa.");
-  return {
-    translations: {
-      "Booking ID": "Reserva ID", "Date/Time": "Data", "Bet Type": "Tipo de aposta",
-      "ODD Type": "Tipo de Odd", Single: "Simples", Express: "Múltipla", System: "Sistema",
-      Bonus: "Bónus", Chain: "Cadeia", Odds: site === "elephant" ? "Cotações" : "Odds",
-      Selections: "Selecções", Stake: "Aposta...", Tax: site === "elephant" ? "Imposto" : "Imposto prémios fonte 15%",
-      "Winning Bonus": "Bónus vencedor", "Enjoy the game": "Boa sorte",
-      "Final payout": site === "elephant" ? "Prémio potencial" : "Prémio líquido",
-      "Possible win": site === "elephant" ? "Prémio potencial" : "Prémio potencial",
-      "Accumulator bonus": "Bónus acumulador", "Total stake": "Aposta total",
-      "Net stake": "Aposta líquida", "Tax on stake": "Imposto na aposta",
-      "Look at my bet at {1}!": `Consulta o meu boletim em ${cfg.siteName}!`
-    },
-    share: { bookingLink: "", bookId: 0, date: new Date().toLocaleString("pt-PT") },
-    configs: {
-      key1: Date.now(), key2: Math.random().toString(36).slice(2, 14),
-      colors: { hero_color: cfg.hero, brand_color_2: cfg.brand2, skin_color: cfg.skin },
-      lang: "por", siteName: cfg.siteName, siteId: cfg.siteId, currencyName: "Kz",
-      oddFormat: "Decimal", rtl: false, ageRestriction: "18", logoUrl: cfg.logoUrl,
-      maxOdd: cfg.maxOdd, taxType: 2
-    },
-    betslip: {
-      events, betType: selections.length > 1 ? 2 : 1, sysVal: 2,
-      totalOdds: selections.length > 1 ? String(Number(calculated.toFixed(3))) : false,
-      stake: "0", taxOnStake: false, totalStake: "0", taxOnProfitOrReturn: false,
-      showTotalStake: false, possibleWin: "0", finalPayout: false,
-      expressBonusPercent: false, expressBonus: false
-    }
-  };
-}
-
 export function extractBookingId(data) {
   const direct = data?.share?.bookId;
   if (direct != null && String(direct).trim()) return String(direct);
@@ -95,32 +43,29 @@ export async function createBooking({ site, selections, totalOdd }) {
   if (!configs[site] || !Array.isArray(selections) || selections.length < 1) {
     throw new Error("Indica uma casa válida e pelo menos uma selecção.");
   }
-  if (selections.some(s => !s || !s.home || !s.away || !s.selectionName || !s.marketName || !s.startTime)) {
-    throw new Error("Cada selecção precisa de jogo, mercado, selecção e hora de início.");
+  if (selections.some(s => !s || !s.selectionId || !(Number(s.odd) > 1))) {
+    throw new Error("Cada selecção precisa de selectionId da casa e de uma odd decimal superior a 1.00.");
   }
-  if (selections.some(s => !isKickoffEligible(s.startTime))) {
+  if (selections.some(s => s.startTime && !isKickoffEligible(s.startTime))) {
     throw new Error("Todas as partidas devem ainda não ter começado.");
   }
-  const payload = buildPayload(site, selections, totalOdd);
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 20000);
-  let response;
-  try {
-    response = await fetch(configs[site].url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(payload), signal: controller.signal
-    });
-  } finally { clearTimeout(timeout); }
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(`A casa recusou a criação da partilha (HTTP ${response.status}).`);
-  const bookingId = extractBookingId(data);
-  if (!bookingId) throw new Error("A casa não devolveu bookingId.");
+  const calculated = selections.reduce((acc, s) => acc * Number(s.odd), 1);
+  if (totalOdd != null && Math.abs(Number(totalOdd) - calculated) > Math.max(0.02, calculated * 0.002)) {
+    throw new Error("A odd total indicada não corresponde ao produto das odds individuais.");
+  }
+  const cfg = configs[site];
+  if (cfg.maxOdd != null && calculated > cfg.maxOdd) throw new Error("A odd total excede o limite configurado para esta casa.");
+
+  const swarm = SWARM_BOOKMAKERS[site];
+  const result = await createSwarmBooking({
+    siteId: swarm.siteId, wsUrl: swarm.wsUrl,
+    selections: selections.map(s => ({ selectionId: s.selectionId, price: s.odd }))
+  });
   return {
-    ok: true, site: configs[site].siteName, bookingId: String(bookingId),
-    bookingLink: data.share?.bookingLink || configs[site].bookingBase + bookingId,
-    shareTemplateLink: data.shareTemplateLink || null,
-    totalOdd: Number(payload.betslip.totalOdds || selections[0].odd)
+    ok: true, site: cfg.siteName, bookingId: result.bookingId,
+    bookingLink: cfg.bookingBase + result.bookingId,
+    shareTemplateLink: null,
+    totalOdd: Number(calculated.toFixed(3))
   };
 }
 
@@ -141,14 +86,14 @@ async function createBookingForTicket(ticketId, requestedSite) {
   const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
 
   const { data: ticket, error: ticketError } = await db.from("tickets")
-    .select("id,title,status,total_odds,booking_reference,ticket_legs(id,market_id,market_name,selection,odd,matches(home_team,away_team,competition,kickoff_at))")
+    .select("id,title,status,total_odds,booking_reference,ticket_legs(id,market_id,selection_id,market_name,selection,odd,matches(home_team,away_team,competition,kickoff_at))")
     .eq("id", ticketId).maybeSingle();
   if (ticketError) throw new Error("Não foi possível ler a ficha: " + ticketError.message);
   if (!ticket || ticket.status !== "published") throw new Error("A ficha não existe ou não está publicada.");
 
   const existing = getExistingBooking(ticket.booking_reference);
   if (existing?.id && existing.status !== "creating") {
-    return { ok: true, alreadyExists: true, bookingId: String(existing.id), bookingLink: existing.url || null, status: existing.status || "share_link_created" };
+    return { ok: true, alreadyExists: true, bookingId: String(existing.id), bookingLink: existing.url || null, status: existing.status || "booking_created" };
   }
   if (existing?.status === "creating") throw new Error("Já existe um pedido de partilha em processamento para esta ficha.");
 
@@ -178,10 +123,11 @@ async function createBookingForTicket(ticketId, requestedSite) {
       throw new Error("Uma ou mais selecções não pertencem à casa indicada.");
     }
     if (!match.home_team || !match.away_team || !match.kickoff_at) throw new Error("Há um jogo sem equipas ou hora de início.");
+    if (!leg.selection_id) throw new Error("Há selecções sem selection_id da casa; não é possível reservar esta ficha.");
     return {
       home: match.home_team, away: match.away_team, competition: match.competition || "",
       startTime: match.kickoff_at, marketName: leg.market_name, selectionName: leg.selection,
-      odd: leg.odd, base: null, isLive: false
+      odd: leg.odd, selectionId: leg.selection_id
     };
   });
 
@@ -194,13 +140,13 @@ async function createBookingForTicket(ticketId, requestedSite) {
   try {
     const result = await createBooking({ site, selections, totalOdd: ticket.total_odds });
     const reference = JSON.stringify({
-      id: result.bookingId, url: result.bookingLink, status: "share_link_created",
+      id: result.bookingId, url: result.bookingLink, status: "booking_created",
       site, createdAt: new Date().toISOString(), shareTemplateLink: result.shareTemplateLink
     });
     const { error: saveError } = await db.from("tickets").update({ booking_reference: reference })
       .eq("id", ticketId).eq("booking_reference", claim);
     if (saveError) throw new Error("O link foi criado, mas não foi possível guardá-lo: " + saveError.message);
-    return { ...result, ticketId, status: "share_link_created", message: "Link de partilha criado; isto não confirma uma aposta colocada." };
+    return { ...result, ticketId, status: "booking_created", message: "Reserva criada; isto não confirma uma aposta colocada." };
   } catch (error) {
     await db.from("tickets").update({ booking_reference: null }).eq("id", ticketId).eq("booking_reference", claim);
     throw error;

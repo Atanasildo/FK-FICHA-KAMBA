@@ -1,0 +1,4563 @@
+{
+  "bookmaker": "ElephantBet",
+  "event": {
+    "id": "manchester-city-fulham",
+    "home": "Manchester City",
+    "away": "Fulham",
+    "competition": "Premier League",
+    "kickoff": "2026-11-09T18:00:00"
+  },
+  "categoriesRead": 6,
+  "marketCount": 35,
+  "usableMarketCount": 33,
+  "reviewMarketCount": 2,
+  "markets": [
+    {
+      "id": "elephantbet-1",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Jogo",
+      "categories": [
+        "Jogo"
+      ],
+      "market": "Resultado do Jogo",
+      "selections": [
+        {
+          "selection": "Manchester City",
+          "odd": 1.43,
+          "oddText": "1.43"
+        },
+        {
+          "selection": "Empate",
+          "odd": 4.8,
+          "oddText": "4.80"
+        },
+        {
+          "selection": "Fulham",
+          "odd": 5.9,
+          "oddText": "5.90"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Resultado do Jogo\n\nManchester City\nEmpate\nFulham\n1.43\n4.80\n5.90"
+    },
+    {
+      "id": "elephantbet-2",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Jogo",
+      "categories": [
+        "Jogo"
+      ],
+      "market": "Resultado do Jogo (1 Golo de Avanço)",
+      "selections": [
+        {
+          "selection": "Manchester City",
+          "odd": 1.22,
+          "oddText": "1.22"
+        },
+        {
+          "selection": "Empate",
+          "odd": 4.8,
+          "oddText": "4.80"
+        },
+        {
+          "selection": "Fulham",
+          "odd": 2.75,
+          "oddText": "2.75"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Resultado do Jogo (1 Golo de Avanço)\n\nManchester City\nEmpate\nFulham\n1.22\n4.80\n2.75"
+    },
+    {
+      "id": "elephantbet-3",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Jogo",
+      "categories": [
+        "Jogo"
+      ],
+      "market": "Dupla Chance",
+      "selections": [
+        {
+          "selection": "1X",
+          "odd": 1.12,
+          "oddText": "1.12"
+        },
+        {
+          "selection": "12",
+          "odd": 1.17,
+          "oddText": "1.17"
+        },
+        {
+          "selection": "X2",
+          "odd": 2.56,
+          "oddText": "2.56"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Dupla Chance\n\n1X\n12\nX2\n1.12\n1.17\n2.56"
+    },
+    {
+      "id": "elephantbet-4",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Jogo",
+      "categories": [
+        "Jogo"
+      ],
+      "market": "Ambas equipas marcarão",
+      "selections": [
+        {
+          "selection": "Sim",
+          "odd": 1.6,
+          "oddText": "1.60"
+        },
+        {
+          "selection": "Não",
+          "odd": 2.03,
+          "oddText": "2.03"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Ambas equipas marcarão\n\nSim\nNão\n1.60\n2.03"
+    },
+    {
+      "id": "elephantbet-5",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Jogo",
+      "categories": [
+        "Jogo"
+      ],
+      "market": "Ambas as Equipas Marcam 2 ou mais Golos\n\nNOVO",
+      "selections": [
+        {
+          "selection": "Sim",
+          "odd": 4.57,
+          "oddText": "4.57"
+        },
+        {
+          "selection": "Não",
+          "odd": 1.16,
+          "oddText": "1.16"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Ambas as Equipas Marcam 2 ou mais Golos\n\nNOVO\nSim\nNão\n4.57\n1.16"
+    },
+    {
+      "id": "elephantbet-6",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Jogo",
+      "categories": [
+        "Jogo"
+      ],
+      "market": "Empate anula aposta",
+      "selections": [
+        {
+          "selection": "Manchester City",
+          "odd": 1.14,
+          "oddText": "1.14"
+        },
+        {
+          "selection": "Fulham",
+          "odd": 4.06,
+          "oddText": "4.06"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Empate anula aposta\n\nManchester City\nFulham\n1.14\n4.06"
+    },
+    {
+      "id": "elephantbet-7",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Jogo",
+      "categories": [
+        "Jogo"
+      ],
+      "market": "1º Parte/Final do jogo",
+      "selections": [
+        {
+          "selection": "Manchester City/Manchester City",
+          "odd": 2.07,
+          "oddText": "2.07"
+        },
+        {
+          "selection": "Empate/Manchester City",
+          "odd": 3.11,
+          "oddText": "3.11"
+        },
+        {
+          "selection": "Fulham/Manchester City",
+          "odd": 11,
+          "oddText": "11.00"
+        },
+        {
+          "selection": "Manchester City/Empate",
+          "odd": 9,
+          "oddText": "9.00"
+        },
+        {
+          "selection": "Empate/Empate",
+          "odd": 4.7,
+          "oddText": "4.70"
+        },
+        {
+          "selection": "Fulham/Empate",
+          "odd": 9.7,
+          "oddText": "9.70"
+        },
+        {
+          "selection": "Manchester City/Fulham",
+          "odd": 21,
+          "oddText": "21.00"
+        },
+        {
+          "selection": "Empate/Fulham",
+          "odd": 7.1,
+          "oddText": "7.10"
+        },
+        {
+          "selection": "Fulham/Fulham",
+          "odd": 6.2,
+          "oddText": "6.20"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "1º Parte/Final do jogo\n\nManchester City/Manchester City\n2.07\nEmpate/Manchester City\n3.11\nFulham/Manchester City\n11.00\nManchester City/Empate\n9.00\nEmpate/Empate\n4.70\nFulham/Empate\n9.70\nManchester City/Fulham\n21.00\nEmpate/Fulham\n7.10\nFulham/Fulham\n6.20"
+    },
+    {
+      "id": "elephantbet-8",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Jogo",
+      "categories": [
+        "Jogo"
+      ],
+      "market": "Parte com mais golos",
+      "selections": [
+        {
+          "selection": "1 > 2",
+          "odd": 3.06,
+          "oddText": "3.06"
+        },
+        {
+          "selection": "1 = 2",
+          "odd": 3.79,
+          "oddText": "3.79"
+        },
+        {
+          "selection": "1 < 2",
+          "odd": 1.89,
+          "oddText": "1.89"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Parte com mais golos\n\n1 > 2\n1 = 2\n1 < 2\n3.06\n3.79\n1.89"
+    },
+    {
+      "id": "elephantbet-9",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Jogo",
+      "categories": [
+        "Jogo"
+      ],
+      "market": "Parte com mais golos: Dupla Chance",
+      "selections": [
+        {
+          "selection": "1º Parte ou Igual",
+          "odd": 1.74,
+          "oddText": "1.74"
+        },
+        {
+          "selection": "1º Parte ou 2º Parte",
+          "odd": 1.23,
+          "oddText": "1.23"
+        },
+        {
+          "selection": "2º Parte ou Igual",
+          "odd": 1.31,
+          "oddText": "1.31"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Parte com mais golos: Dupla Chance\n\n1º Parte ou Igual\n1º Parte ou 2º Parte\n2º Parte ou Igual\n1.74\n1.23\n1.31"
+    },
+    {
+      "id": "elephantbet-10",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Totais",
+      "categories": [
+        "Totais"
+      ],
+      "market": "Total de golos no jogo",
+      "selections": [
+        {
+          "selection": "Mais de 1",
+          "odd": 1.015,
+          "oddText": "1.015",
+          "line": "1"
+        },
+        {
+          "selection": "Menos 1",
+          "odd": 7.5,
+          "oddText": "7.50",
+          "line": "1"
+        },
+        {
+          "selection": "Mais de 1.5",
+          "odd": 1.14,
+          "oddText": "1.14",
+          "line": "1.5"
+        },
+        {
+          "selection": "Menos 1.5",
+          "odd": 4.45,
+          "oddText": "4.45",
+          "line": "1.5"
+        },
+        {
+          "selection": "Mais de 2",
+          "odd": 1.2,
+          "oddText": "1.20",
+          "line": "2"
+        },
+        {
+          "selection": "Menos 2",
+          "odd": 3.7,
+          "oddText": "3.70",
+          "line": "2"
+        },
+        {
+          "selection": "Mais de 2.5",
+          "odd": 1.48,
+          "oddText": "1.48",
+          "line": "2.5"
+        },
+        {
+          "selection": "Menos 2.5",
+          "odd": 2.45,
+          "oddText": "2.45",
+          "line": "2.5"
+        },
+        {
+          "selection": "Mais de 3",
+          "odd": 1.68,
+          "oddText": "1.68",
+          "line": "3"
+        },
+        {
+          "selection": "Menos 3",
+          "odd": 1.92,
+          "oddText": "1.92",
+          "line": "3"
+        },
+        {
+          "selection": "Mais de 3.5",
+          "odd": 2.12,
+          "oddText": "2.12",
+          "line": "3.5"
+        },
+        {
+          "selection": "Menos 3.5",
+          "odd": 1.55,
+          "oddText": "1.55",
+          "line": "3.5"
+        },
+        {
+          "selection": "Mais de 4",
+          "odd": 2.87,
+          "oddText": "2.87",
+          "line": "4"
+        },
+        {
+          "selection": "Menos 4",
+          "odd": 1.3,
+          "oddText": "1.30",
+          "line": "4"
+        },
+        {
+          "selection": "Mais de 4.5",
+          "odd": 3.35,
+          "oddText": "3.35",
+          "line": "4.5"
+        },
+        {
+          "selection": "Menos 4.5",
+          "odd": 1.24,
+          "oddText": "1.24",
+          "line": "4.5"
+        },
+        {
+          "selection": "Mais de 5",
+          "odd": 5,
+          "oddText": "5.00",
+          "line": "5"
+        },
+        {
+          "selection": "Menos 5",
+          "odd": 1.11,
+          "oddText": "1.11",
+          "line": "5"
+        },
+        {
+          "selection": "Mais de 5.5",
+          "odd": 5.6,
+          "oddText": "5.60",
+          "line": "5.5"
+        },
+        {
+          "selection": "Menos 5.5",
+          "odd": 1.08,
+          "oddText": "1.08",
+          "line": "5.5"
+        },
+        {
+          "selection": "Mais de 6",
+          "odd": 7.3,
+          "oddText": "7.30",
+          "line": "6"
+        },
+        {
+          "selection": "Menos 6",
+          "odd": 1.025,
+          "oddText": "1.025",
+          "line": "6"
+        },
+        {
+          "selection": "Mais de 6.5",
+          "odd": 7.5,
+          "oddText": "7.50",
+          "line": "6.5"
+        },
+        {
+          "selection": "Menos 6.5",
+          "odd": 1.023,
+          "oddText": "1.023",
+          "line": "6.5"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Total de golos no jogo\n\nMais de\nMenos\n1\n1.015\n7.50\n1.5\n1.14\n4.45\n2\n1.20\n3.70\n2.5\n1.48\n2.45\n3\n1.68\n1.92\n3.5\n2.12\n1.55\n4\n2.87\n1.30\n4.5\n3.35\n1.24\n5\n5.00\n1.11\n5.5\n5.60\n1.08\n6\n7.30\n1.025\n6.5\n7.50\n1.023"
+    },
+    {
+      "id": "elephantbet-11",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Totais",
+      "categories": [
+        "Totais"
+      ],
+      "market": "Total de golos do Manchester City",
+      "selections": [
+        {
+          "selection": "Mais de 1.5",
+          "odd": 1.4,
+          "oddText": "1.40",
+          "line": "1.5"
+        },
+        {
+          "selection": "Menos 1.5",
+          "odd": 2.55,
+          "oddText": "2.55",
+          "line": "1.5"
+        },
+        {
+          "selection": "Mais de 2",
+          "odd": 1.67,
+          "oddText": "1.67",
+          "line": "2"
+        },
+        {
+          "selection": "Menos 2",
+          "odd": 1.93,
+          "oddText": "1.93",
+          "line": "2"
+        },
+        {
+          "selection": "Mais de 2.5",
+          "odd": 2.18,
+          "oddText": "2.18",
+          "line": "2.5"
+        },
+        {
+          "selection": "Menos 2.5",
+          "odd": 1.52,
+          "oddText": "1.52",
+          "line": "2.5"
+        },
+        {
+          "selection": "Mais de 3",
+          "odd": 3.15,
+          "oddText": "3.15",
+          "line": "3"
+        },
+        {
+          "selection": "Menos 3",
+          "odd": 1.25,
+          "oddText": "1.25",
+          "line": "3"
+        },
+        {
+          "selection": "Mais de 3.5",
+          "odd": 3.7,
+          "oddText": "3.70",
+          "line": "3.5"
+        },
+        {
+          "selection": "Menos 3.5",
+          "odd": 1.18,
+          "oddText": "1.18",
+          "line": "3.5"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Total de golos do Manchester City\n\nMais de\nMenos\n1.5\n1.40\n2.55\n2\n1.67\n1.93\n2.5\n2.18\n1.52\n3\n3.15\n1.25\n3.5\n3.70\n1.18"
+    },
+    {
+      "id": "elephantbet-12",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Totais",
+      "categories": [
+        "Totais"
+      ],
+      "market": "Total de golos do Fulham",
+      "selections": [
+        {
+          "selection": "Mais de 0.5",
+          "odd": 1.45,
+          "oddText": "1.45",
+          "line": "0.5"
+        },
+        {
+          "selection": "Menos 0.5",
+          "odd": 2.35,
+          "oddText": "2.35",
+          "line": "0.5"
+        },
+        {
+          "selection": "Mais de 1",
+          "odd": 2.08,
+          "oddText": "2.08",
+          "line": "1"
+        },
+        {
+          "selection": "Menos 1",
+          "odd": 1.57,
+          "oddText": "1.57",
+          "line": "1"
+        },
+        {
+          "selection": "Mais de 1.5",
+          "odd": 3.05,
+          "oddText": "3.05",
+          "line": "1.5"
+        },
+        {
+          "selection": "Menos 1.5",
+          "odd": 1.27,
+          "oddText": "1.27",
+          "line": "1.5"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Total de golos do Fulham\n\nMais de\nMenos\n0.5\n1.45\n2.35\n1\n2.08\n1.57\n1.5\n3.05\n1.27"
+    },
+    {
+      "id": "elephantbet-13",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Totais",
+      "categories": [
+        "Totais"
+      ],
+      "market": "Total de golos exatos",
+      "selections": [],
+      "status": "review",
+      "warning": "A recolha encontrou odds sem conseguir associar todas às respectivas selecções.",
+      "rawContent": "Total de golos exatos\n\n0\n21.00\n1\n6.00\n2\n4.05\n3\n3.83\n4\n4.42\n5\n6.00\n6 ou mais\n5.60"
+    },
+    {
+      "id": "elephantbet-14",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Handicaps",
+      "categories": [
+        "Handicaps"
+      ],
+      "market": "Handicap de Golos (3-opções)",
+      "selections": [],
+      "status": "review",
+      "warning": "A recolha encontrou odds sem conseguir associar todas às respectivas selecções.",
+      "rawContent": "Handicap de Golos (3-opções)\n\nManchester City\nEmpate Fulham\nFulham\n-4\n8.35\n+4\n8.50\n+4\n1.07\n-3\n5.90\n+3\n5.85\n+3\n1.23\n-2\n3.42\n+2\n4.15\n+2\n1.62\n-1\n2.05\n+1\n3.65\n+1\n2.56\n+1\n1.12\n-1\n7.10\n-1\n8.00"
+    },
+    {
+      "id": "elephantbet-15",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Handicaps",
+      "categories": [
+        "Handicaps"
+      ],
+      "market": "Handicap de Golos",
+      "selections": [
+        {
+          "selection": "Manchester City -4.5",
+          "odd": 8.35,
+          "oddText": "8.35",
+          "line": "-4.5"
+        },
+        {
+          "selection": "Fulham +4.5",
+          "odd": 1.015,
+          "oddText": "1.015",
+          "line": "+4.5"
+        },
+        {
+          "selection": "Manchester City -4",
+          "odd": 8.35,
+          "oddText": "8.35",
+          "line": "-4"
+        },
+        {
+          "selection": "Fulham +4",
+          "odd": 1.015,
+          "oddText": "1.015",
+          "line": "+4"
+        },
+        {
+          "selection": "Manchester City -3.5",
+          "odd": 5.9,
+          "oddText": "5.90",
+          "line": "-3.5"
+        },
+        {
+          "selection": "Fulham +3.5",
+          "odd": 1.07,
+          "oddText": "1.07",
+          "line": "+3.5"
+        },
+        {
+          "selection": "Manchester City -3",
+          "odd": 5.3,
+          "oddText": "5.30",
+          "line": "-3"
+        },
+        {
+          "selection": "Fulham +3",
+          "odd": 1.09,
+          "oddText": "1.09",
+          "line": "+3"
+        },
+        {
+          "selection": "Manchester City -2.5",
+          "odd": 3.42,
+          "oddText": "3.42",
+          "line": "-2.5"
+        },
+        {
+          "selection": "Fulham +2.5",
+          "odd": 1.23,
+          "oddText": "1.23",
+          "line": "+2.5"
+        },
+        {
+          "selection": "Manchester City -2",
+          "odd": 2.88,
+          "oddText": "2.88",
+          "line": "-2"
+        },
+        {
+          "selection": "Fulham +2",
+          "odd": 1.32,
+          "oddText": "1.32",
+          "line": "+2"
+        },
+        {
+          "selection": "Manchester City -1.5",
+          "odd": 2.05,
+          "oddText": "2.05",
+          "line": "-1.5"
+        },
+        {
+          "selection": "Fulham +1.5",
+          "odd": 1.62,
+          "oddText": "1.62",
+          "line": "+1.5"
+        },
+        {
+          "selection": "Manchester City -1",
+          "odd": 1.62,
+          "oddText": "1.62",
+          "line": "-1"
+        },
+        {
+          "selection": "Fulham +1",
+          "odd": 2.05,
+          "oddText": "2.05",
+          "line": "+1"
+        },
+        {
+          "selection": "Manchester City -0.5",
+          "odd": 1.4,
+          "oddText": "1.40",
+          "line": "-0.5"
+        },
+        {
+          "selection": "Fulham +0.5",
+          "odd": 2.56,
+          "oddText": "2.56",
+          "line": "+0.5"
+        },
+        {
+          "selection": "Manchester City 0",
+          "odd": 1.16,
+          "oddText": "1.16",
+          "line": "0"
+        },
+        {
+          "selection": "Fulham 0",
+          "odd": 4.12,
+          "oddText": "4.12",
+          "line": "0"
+        },
+        {
+          "selection": "Manchester City +0.5",
+          "odd": 1.12,
+          "oddText": "1.12",
+          "line": "+0.5"
+        },
+        {
+          "selection": "Fulham -0.5",
+          "odd": 4.7,
+          "oddText": "4.70",
+          "line": "-0.5"
+        },
+        {
+          "selection": "Manchester City +1",
+          "odd": 1.025,
+          "oddText": "1.025",
+          "line": "+1"
+        },
+        {
+          "selection": "Fulham -1",
+          "odd": 7.75,
+          "oddText": "7.75",
+          "line": "-1"
+        },
+        {
+          "selection": "Manchester City +1.5",
+          "odd": 1.02,
+          "oddText": "1.02",
+          "line": "+1.5"
+        },
+        {
+          "selection": "Fulham -1.5",
+          "odd": 8,
+          "oddText": "8.00",
+          "line": "-1.5"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Handicap de Golos\n\nManchester City\nFulham\n-4.5\n8.35\n+4.5\n1.015\n-4\n8.35\n+4\n1.015\n-3.5\n5.90\n+3.5\n1.07\n-3\n5.30\n+3\n1.09\n-2.5\n3.42\n+2.5\n1.23\n-2\n2.88\n+2\n1.32\n-1.5\n2.05\n+1.5\n1.62\n-1\n1.62\n+1\n2.05\n-0.5\n1.40\n+0.5\n2.56\n0\n1.16\n0\n4.12\n+0.5\n1.12\n-0.5\n4.70\n+1\n1.025\n-1\n7.75\n+1.5\n1.02\n-1.5\n8.00"
+    },
+    {
+      "id": "elephantbet-16",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Partes",
+      "categories": [
+        "Partes"
+      ],
+      "market": "Resultado da 1º Parte",
+      "selections": [
+        {
+          "selection": "Manchester City",
+          "odd": 1.85,
+          "oddText": "1.85"
+        },
+        {
+          "selection": "Empate",
+          "odd": 2.49,
+          "oddText": "2.49"
+        },
+        {
+          "selection": "Fulham",
+          "odd": 5.8,
+          "oddText": "5.80"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Resultado da 1º Parte\n\nManchester City\nEmpate\nFulham\n1.85\n2.49\n5.80"
+    },
+    {
+      "id": "elephantbet-17",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Partes",
+      "categories": [
+        "Partes"
+      ],
+      "market": "Dupla Chance da 1º parte",
+      "selections": [
+        {
+          "selection": "1X",
+          "odd": 1.12,
+          "oddText": "1.12"
+        },
+        {
+          "selection": "12",
+          "odd": 1.44,
+          "oddText": "1.44"
+        },
+        {
+          "selection": "X2",
+          "odd": 1.83,
+          "oddText": "1.83"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Dupla Chance da 1º parte\n\n1X\n12\nX2\n1.12\n1.44\n1.83"
+    },
+    {
+      "id": "elephantbet-18",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Partes",
+      "categories": [
+        "Partes"
+      ],
+      "market": "Total de Golos na 1º Parte",
+      "selections": [
+        {
+          "selection": "Mais de 0.5",
+          "odd": 1.28,
+          "oddText": "1.28",
+          "line": "0.5"
+        },
+        {
+          "selection": "Menos 0.5",
+          "odd": 3.15,
+          "oddText": "3.15",
+          "line": "0.5"
+        },
+        {
+          "selection": "Mais de 1",
+          "odd": 1.52,
+          "oddText": "1.52",
+          "line": "1"
+        },
+        {
+          "selection": "Menos 1",
+          "odd": 2.18,
+          "oddText": "2.18",
+          "line": "1"
+        },
+        {
+          "selection": "Mais de 1.5",
+          "odd": 2.22,
+          "oddText": "2.22",
+          "line": "1.5"
+        },
+        {
+          "selection": "Menos 1.5",
+          "odd": 1.5,
+          "oddText": "1.50",
+          "line": "1.5"
+        },
+        {
+          "selection": "Mais de 2",
+          "odd": 3.7,
+          "oddText": "3.70",
+          "line": "2"
+        },
+        {
+          "selection": "Menos 2",
+          "odd": 1.18,
+          "oddText": "1.18",
+          "line": "2"
+        },
+        {
+          "selection": "Mais de 2.5",
+          "odd": 4.6,
+          "oddText": "4.60",
+          "line": "2.5"
+        },
+        {
+          "selection": "Menos 2.5",
+          "odd": 1.11,
+          "oddText": "1.11",
+          "line": "2.5"
+        },
+        {
+          "selection": "Mais de 3",
+          "odd": 7.3,
+          "oddText": "7.30",
+          "line": "3"
+        },
+        {
+          "selection": "Menos 3",
+          "odd": 1.02,
+          "oddText": "1.02",
+          "line": "3"
+        },
+        {
+          "selection": "Mais de 3.5",
+          "odd": 7.55,
+          "oddText": "7.55",
+          "line": "3.5"
+        },
+        {
+          "selection": "Menos 3.5",
+          "odd": 1.02,
+          "oddText": "1.02",
+          "line": "3.5"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Total de Golos na 1º Parte\n\nMais de\nMenos\n0.5\n1.28\n3.15\n1\n1.52\n2.18\n1.5\n2.22\n1.50\n2\n3.70\n1.18\n2.5\n4.60\n1.11\n3\n7.30\n1.02\n3.5\n7.55\n1.02"
+    },
+    {
+      "id": "elephantbet-19",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Partes",
+      "categories": [
+        "Partes"
+      ],
+      "market": "Total de Golos da Manchester City na 1º Parte",
+      "selections": [
+        {
+          "selection": "Mais de 0.5",
+          "odd": 1.52,
+          "oddText": "1.52",
+          "line": "0.5"
+        },
+        {
+          "selection": "Menos 0.5",
+          "odd": 2.37,
+          "oddText": "2.37",
+          "line": "0.5"
+        },
+        {
+          "selection": "Mais de 1",
+          "odd": 2.25,
+          "oddText": "2.25",
+          "line": "1"
+        },
+        {
+          "selection": "Menos 1",
+          "odd": 1.57,
+          "oddText": "1.57",
+          "line": "1"
+        },
+        {
+          "selection": "Mais de 1.5",
+          "odd": 3.3,
+          "oddText": "3.30",
+          "line": "1.5"
+        },
+        {
+          "selection": "Menos 1.5",
+          "odd": 1.28,
+          "oddText": "1.28",
+          "line": "1.5"
+        },
+        {
+          "selection": "Mais de 2",
+          "odd": 7.1,
+          "oddText": "7.10",
+          "line": "2"
+        },
+        {
+          "selection": "Menos 2",
+          "odd": 1.065,
+          "oddText": "1.065",
+          "line": "2"
+        },
+        {
+          "selection": "Mais de 2.5",
+          "odd": 8.2,
+          "oddText": "8.20",
+          "line": "2.5"
+        },
+        {
+          "selection": "Menos 2.5",
+          "odd": 1.045,
+          "oddText": "1.045",
+          "line": "2.5"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Total de Golos da Manchester City na 1º Parte\n\nMais de\nMenos\n0.5\n1.52\n2.37\n1\n2.25\n1.57\n1.5\n3.30\n1.28\n2\n7.10\n1.065\n2.5\n8.20\n1.045"
+    },
+    {
+      "id": "elephantbet-20",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Partes",
+      "categories": [
+        "Partes"
+      ],
+      "market": "Total de Golos da Fulham na 1º Parte",
+      "selections": [
+        {
+          "selection": "Mais de 0.5",
+          "odd": 2.8,
+          "oddText": "2.80",
+          "line": "0.5"
+        },
+        {
+          "selection": "Menos 0.5",
+          "odd": 1.38,
+          "oddText": "1.38",
+          "line": "0.5"
+        },
+        {
+          "selection": "Mais de 1",
+          "odd": 8.2,
+          "oddText": "8.20",
+          "line": "1"
+        },
+        {
+          "selection": "Menos 1",
+          "odd": 1.045,
+          "oddText": "1.045",
+          "line": "1"
+        },
+        {
+          "selection": "Mais de 1.5",
+          "odd": 9,
+          "oddText": "9.00",
+          "line": "1.5"
+        },
+        {
+          "selection": "Menos 1.5",
+          "odd": 1.03,
+          "oddText": "1.03",
+          "line": "1.5"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Total de Golos da Fulham na 1º Parte\n\nMais de\nMenos\n0.5\n2.80\n1.38\n1\n8.20\n1.045\n1.5\n9.00\n1.03"
+    },
+    {
+      "id": "elephantbet-21",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Partes",
+      "categories": [
+        "Partes"
+      ],
+      "market": "Total de golos Asiáticos da Manchester City na 1° Parte",
+      "selections": [
+        {
+          "selection": "Mais de 0.75",
+          "odd": 1.75,
+          "oddText": "1.75",
+          "line": "0.75"
+        },
+        {
+          "selection": "Menos 0.75",
+          "odd": 1.95,
+          "oddText": "1.95",
+          "line": "0.75"
+        },
+        {
+          "selection": "Mais de 1.25",
+          "odd": 2.85,
+          "oddText": "2.85",
+          "line": "1.25"
+        },
+        {
+          "selection": "Menos 1.25",
+          "odd": 1.37,
+          "oddText": "1.37",
+          "line": "1.25"
+        },
+        {
+          "selection": "Mais de 1.75",
+          "odd": 4.42,
+          "oddText": "4.42",
+          "line": "1.75"
+        },
+        {
+          "selection": "Menos 1.75",
+          "odd": 1.17,
+          "oddText": "1.17",
+          "line": "1.75"
+        },
+        {
+          "selection": "Mais de 2.25",
+          "odd": 7.85,
+          "oddText": "7.85",
+          "line": "2.25"
+        },
+        {
+          "selection": "Menos 2.25",
+          "odd": 1.05,
+          "oddText": "1.05",
+          "line": "2.25"
+        },
+        {
+          "selection": "Mais de 2.75",
+          "odd": 10,
+          "oddText": "10.00",
+          "line": "2.75"
+        },
+        {
+          "selection": "Menos 2.75",
+          "odd": 1.02,
+          "oddText": "1.02",
+          "line": "2.75"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Total de golos Asiáticos da Manchester City na 1° Parte\n\nMais de\nMenos\n0.75\n1.75\n1.95\n1.25\n2.85\n1.37\n1.75\n4.42\n1.17\n2.25\n7.85\n1.05\n2.75\n10.00\n1.02"
+    },
+    {
+      "id": "elephantbet-22",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Minutos",
+      "categories": [
+        "Minutos"
+      ],
+      "market": "Minuto do primeiro golo",
+      "selections": [
+        {
+          "selection": "1-10",
+          "odd": 3.2,
+          "oddText": "3.20"
+        },
+        {
+          "selection": "11-20",
+          "odd": 4,
+          "oddText": "4.00"
+        },
+        {
+          "selection": "21-30",
+          "odd": 5.3,
+          "oddText": "5.30"
+        },
+        {
+          "selection": "31-40",
+          "odd": 7.1,
+          "oddText": "7.10"
+        },
+        {
+          "selection": "41-50",
+          "odd": 8.8,
+          "oddText": "8.80"
+        },
+        {
+          "selection": "51-60",
+          "odd": 13,
+          "oddText": "13.00"
+        },
+        {
+          "selection": "61-70",
+          "odd": 19,
+          "oddText": "19.00"
+        },
+        {
+          "selection": "71-80",
+          "odd": 29,
+          "oddText": "29.00"
+        },
+        {
+          "selection": "81-90+",
+          "odd": 31,
+          "oddText": "31.00"
+        },
+        {
+          "selection": "Sem golo",
+          "odd": 13,
+          "oddText": "13.00"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Minuto do primeiro golo\n\n1-10\n3.20\n11-20\n4.00\n21-30\n5.30\n31-40\n7.10\n41-50\n8.80\n51-60\n13.00\n61-70\n19.00\n71-80\n29.00\n81-90+\n31.00\nSem golo\n13.00"
+    },
+    {
+      "id": "elephantbet-23",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Minutos",
+      "categories": [
+        "Minutos"
+      ],
+      "market": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)",
+      "selections": [
+        {
+          "selection": "1-10",
+          "odd": 4,
+          "oddText": "4.00"
+        },
+        {
+          "selection": "11-20",
+          "odd": 5,
+          "oddText": "5.00"
+        },
+        {
+          "selection": "21-30",
+          "odd": 5.9,
+          "oddText": "5.90"
+        },
+        {
+          "selection": "31-40",
+          "odd": 7.2,
+          "oddText": "7.20"
+        },
+        {
+          "selection": "41-50",
+          "odd": 8,
+          "oddText": "8.00"
+        },
+        {
+          "selection": "51-60",
+          "odd": 11,
+          "oddText": "11.00"
+        },
+        {
+          "selection": "61-70",
+          "odd": 14,
+          "oddText": "14.00"
+        },
+        {
+          "selection": "71-80",
+          "odd": 19,
+          "oddText": "19.00"
+        },
+        {
+          "selection": "81-90+",
+          "odd": 17,
+          "oddText": "17.00"
+        },
+        {
+          "selection": "Sem golo",
+          "odd": 5.9,
+          "oddText": "5.90"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)\n\n1-10\n4.00\n11-20\n5.00\n21-30\n5.90\n31-40\n7.20\n41-50\n8.00\n51-60\n11.00\n61-70\n14.00\n71-80\n19.00\n81-90+\n17.00\nSem golo\n5.90"
+    },
+    {
+      "id": "elephantbet-24",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Minutos",
+      "categories": [
+        "Minutos"
+      ],
+      "market": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)",
+      "selections": [
+        {
+          "selection": "1-10",
+          "odd": 7.2,
+          "oddText": "7.20"
+        },
+        {
+          "selection": "11-20",
+          "odd": 10,
+          "oddText": "10.00"
+        },
+        {
+          "selection": "21-30",
+          "odd": 11,
+          "oddText": "11.00"
+        },
+        {
+          "selection": "31-40",
+          "odd": 11,
+          "oddText": "11.00"
+        },
+        {
+          "selection": "41-50",
+          "odd": 11,
+          "oddText": "11.00"
+        },
+        {
+          "selection": "51-60",
+          "odd": 13,
+          "oddText": "13.00"
+        },
+        {
+          "selection": "61-70",
+          "odd": 14,
+          "oddText": "14.00"
+        },
+        {
+          "selection": "71-80",
+          "odd": 15,
+          "oddText": "15.00"
+        },
+        {
+          "selection": "81-90+",
+          "odd": 12,
+          "oddText": "12.00"
+        },
+        {
+          "selection": "Sem golo",
+          "odd": 2.07,
+          "oddText": "2.07"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)\n\n1-10\n7.20\n11-20\n10.00\n21-30\n11.00\n31-40\n11.00\n41-50\n11.00\n51-60\n13.00\n61-70\n14.00\n71-80\n15.00\n81-90+\n12.00\nSem golo\n2.07"
+    },
+    {
+      "id": "elephantbet-25",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Minutos",
+      "categories": [
+        "Minutos"
+      ],
+      "market": "Tempo do 1º golo (intervalo de 15 minutos)",
+      "selections": [
+        {
+          "selection": "1-15",
+          "odd": 2.52,
+          "oddText": "2.52"
+        },
+        {
+          "selection": "16-30",
+          "odd": 3.28,
+          "oddText": "3.28"
+        },
+        {
+          "selection": "31-45+",
+          "odd": 4.5,
+          "oddText": "4.50"
+        },
+        {
+          "selection": "46-60",
+          "odd": 7.9,
+          "oddText": "7.90"
+        },
+        {
+          "selection": "61-75",
+          "odd": 13,
+          "oddText": "13.00"
+        },
+        {
+          "selection": "76-90+",
+          "odd": 17,
+          "oddText": "17.00"
+        },
+        {
+          "selection": "Sem golo",
+          "odd": 19,
+          "oddText": "19.00"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Tempo do 1º golo (intervalo de 15 minutos)\n\n1-15\n2.52\n16-30\n3.28\n31-45+\n4.50\n46-60\n7.90\n61-75\n13.00\n76-90+\n17.00\nSem golo\n19.00"
+    },
+    {
+      "id": "elephantbet-26",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Minutos",
+      "categories": [
+        "Minutos"
+      ],
+      "market": "Primeiros 10 minutos (00:00 – 09:59) - Golos",
+      "selections": [
+        {
+          "selection": "Mais de 0.5",
+          "odd": 3.65,
+          "oddText": "3.65",
+          "line": "0.5"
+        },
+        {
+          "selection": "Menos 0.5",
+          "odd": 1.24,
+          "oddText": "1.24",
+          "line": "0.5"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Primeiros 10 minutos (00:00 – 09:59) - Golos\n\nMais de\nMenos\n0.5\n3.65\n1.24"
+    },
+    {
+      "id": "elephantbet-27",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Minutos",
+      "categories": [
+        "Minutos"
+      ],
+      "market": "Vencedor no minuto 1-15 Min.",
+      "selections": [
+        {
+          "selection": "Manchester City",
+          "odd": 4.1,
+          "oddText": "4.10"
+        },
+        {
+          "selection": "X",
+          "odd": 1.32,
+          "oddText": "1.32"
+        },
+        {
+          "selection": "Fulham",
+          "odd": 10,
+          "oddText": "10.00"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Vencedor no minuto 1-15 Min.\n\nManchester City\nX\nFulham\n4.10\n1.32\n10.00"
+    },
+    {
+      "id": "elephantbet-28",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Minutos",
+      "categories": [
+        "Minutos"
+      ],
+      "market": "Total de Golos no minuto 1-15 Min.",
+      "selections": [
+        {
+          "selection": "Mais de 0.5",
+          "odd": 2.45,
+          "oddText": "2.45",
+          "line": "0.5"
+        },
+        {
+          "selection": "Menos 0.5",
+          "odd": 1.48,
+          "oddText": "1.48",
+          "line": "0.5"
+        },
+        {
+          "selection": "Mais de 1",
+          "odd": 6.5,
+          "oddText": "6.50",
+          "line": "1"
+        },
+        {
+          "selection": "Menos 1",
+          "odd": 1.08,
+          "oddText": "1.08",
+          "line": "1"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Total de Golos no minuto 1-15 Min.\n\nMais de\nMenos\n0.5\n2.45\n1.48\n1\n6.50\n1.08"
+    },
+    {
+      "id": "elephantbet-29",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Combos",
+      "categories": [
+        "Combos"
+      ],
+      "market": "Manchester City marcará e resultado do jogo",
+      "selections": [
+        {
+          "selection": "Sim e Manchester City",
+          "odd": 1.4,
+          "oddText": "1.40"
+        },
+        {
+          "selection": "Sim e empate",
+          "odd": 5.35,
+          "oddText": "5.35"
+        },
+        {
+          "selection": "Não e empate",
+          "odd": 21,
+          "oddText": "21.00"
+        },
+        {
+          "selection": "Sim e Fulham",
+          "odd": 8,
+          "oddText": "8.00"
+        },
+        {
+          "selection": "Não e Fulham",
+          "odd": 8.7,
+          "oddText": "8.70"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Manchester City marcará e resultado do jogo\n\nSim e Manchester City\n1.40\nSim e empate\n5.35\nNão e empate\n21.00\nSim e Fulham\n8.00\nNão e Fulham\n8.70"
+    },
+    {
+      "id": "elephantbet-30",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Combos",
+      "categories": [
+        "Combos"
+      ],
+      "market": "Fulham marcará e resultado do jogo",
+      "selections": [
+        {
+          "selection": "Sim e Manchester City",
+          "odd": 2.48,
+          "oddText": "2.48"
+        },
+        {
+          "selection": "Não e Manchester City",
+          "odd": 2.68,
+          "oddText": "2.68"
+        },
+        {
+          "selection": "Sim e empate",
+          "odd": 5.35,
+          "oddText": "5.35"
+        },
+        {
+          "selection": "Não e empate",
+          "odd": 21,
+          "oddText": "21.00"
+        },
+        {
+          "selection": "Sim e Fulham",
+          "odd": 4.7,
+          "oddText": "4.70"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Fulham marcará e resultado do jogo\n\nSim e Manchester City\n2.48\nNão e Manchester City\n2.68\nSim e empate\n5.35\nNão e empate\n21.00\nSim e Fulham\n4.70"
+    },
+    {
+      "id": "elephantbet-31",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Combos",
+      "categories": [
+        "Combos"
+      ],
+      "market": "Resultado Final e Ambas Equipas Marcam",
+      "selections": [
+        {
+          "selection": "Manchester City e sim",
+          "odd": 2.48,
+          "oddText": "2.48"
+        },
+        {
+          "selection": "Empate e Não",
+          "odd": 21,
+          "oddText": "21.00"
+        },
+        {
+          "selection": "Manchester City e não",
+          "odd": 2.68,
+          "oddText": "2.68"
+        },
+        {
+          "selection": "Fulham e Sim",
+          "odd": 8,
+          "oddText": "8.00"
+        },
+        {
+          "selection": "Empate e sim",
+          "odd": 5.35,
+          "oddText": "5.35"
+        },
+        {
+          "selection": "Fulham e não",
+          "odd": 8.7,
+          "oddText": "8.70"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Resultado Final e Ambas Equipas Marcam\n\nManchester City e sim\n2.48\nEmpate e Não\n21.00\nManchester City e não\n2.68\nFulham e Sim\n8.00\nEmpate e sim\n5.35\nFulham e não\n8.70"
+    },
+    {
+      "id": "elephantbet-32",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Combos",
+      "categories": [
+        "Combos"
+      ],
+      "market": "Dupla Chance e Ambas equipas marcarão",
+      "selections": [
+        {
+          "selection": "1X e (Ambos vão marcar - Sim)",
+          "odd": 1.82,
+          "oddText": "1.82"
+        },
+        {
+          "selection": "12 e (Ambos vão marcar - Não)",
+          "odd": 2.06,
+          "oddText": "2.06"
+        },
+        {
+          "selection": "1X e (Ambos vão marcar - Não)",
+          "odd": 2.35,
+          "oddText": "2.35"
+        },
+        {
+          "selection": "X2 e (Ambos vão marcar - Sim)",
+          "odd": 3.16,
+          "oddText": "3.16"
+        },
+        {
+          "selection": "12 e (Ambos vão marcar - Sim)",
+          "odd": 1.96,
+          "oddText": "1.96"
+        },
+        {
+          "selection": "X2 e (Ambos vão marcar - Não)",
+          "odd": 6.2,
+          "oddText": "6.20"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Dupla Chance e Ambas equipas marcarão\n\n1X e (Ambos vão marcar - Sim)\n1.82\n12 e (Ambos vão marcar - Não)\n2.06\n1X e (Ambos vão marcar - Não)\n2.35\nX2 e (Ambos vão marcar - Sim)\n3.16\n12 e (Ambos vão marcar - Sim)\n1.96\nX2 e (Ambos vão marcar - Não)\n6.20"
+    },
+    {
+      "id": "elephantbet-33",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Combos",
+      "categories": [
+        "Combos"
+      ],
+      "market": "Resultado do Jogo e Total de Golos 1.5",
+      "selections": [
+        {
+          "selection": "Manchester City e mais de 1.5",
+          "odd": 1.56,
+          "oddText": "1.56"
+        },
+        {
+          "selection": "Manchester City e menos de 1.5",
+          "odd": 7.3,
+          "oddText": "7.30"
+        },
+        {
+          "selection": "Empate e mais de 1.5",
+          "odd": 5.35,
+          "oddText": "5.35"
+        },
+        {
+          "selection": "Empate e menos de 1.5",
+          "odd": 21,
+          "oddText": "21.00"
+        },
+        {
+          "selection": "Fulham e mais de 1.5",
+          "odd": 6.3,
+          "oddText": "6.30"
+        },
+        {
+          "selection": "Fulham e menos de1.5",
+          "odd": 19,
+          "oddText": "19.00"
+        },
+        {
+          "selection": "1X e mais de 1.5",
+          "odd": 1.28,
+          "oddText": "1.28"
+        },
+        {
+          "selection": "1X e menos de 1.5",
+          "odd": 5.7,
+          "oddText": "5.70"
+        },
+        {
+          "selection": "12 e mais de 1.5",
+          "odd": 1.34,
+          "oddText": "1.34"
+        },
+        {
+          "selection": "12 e menos de 1.5",
+          "odd": 6,
+          "oddText": "6.00"
+        },
+        {
+          "selection": "X2 e mais de 1.5",
+          "odd": 3.08,
+          "oddText": "3.08"
+        },
+        {
+          "selection": "X2 e menos de 1.5",
+          "odd": 9,
+          "oddText": "9.00"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Resultado do Jogo e Total de Golos 1.5\n\nManchester City e mais de 1.5\n1.56\nManchester City e menos de 1.5\n7.30\nEmpate e mais de 1.5\n5.35\nEmpate e menos de 1.5\n21.00\nFulham e mais de 1.5\n6.30\nFulham e menos de1.5\n19.00\n1X e mais de 1.5\n1.28\n1X e menos de 1.5\n5.70\n12 e mais de 1.5\n1.34\n12 e menos de 1.5\n6.00\nX2 e mais de 1.5\n3.08\nX2 e menos de 1.5\n9.00"
+    },
+    {
+      "id": "elephantbet-34",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Combos",
+      "categories": [
+        "Combos"
+      ],
+      "market": "Resultado do Jogo e Total de Golos 2.5",
+      "selections": [
+        {
+          "selection": "Manchester City e mais de 2.5",
+          "odd": 1.82,
+          "oddText": "1.82"
+        },
+        {
+          "selection": "Manchester City e menos de 2.5",
+          "odd": 4.2,
+          "oddText": "4.20"
+        },
+        {
+          "selection": "Empate e mais de 2.5",
+          "odd": 10,
+          "oddText": "10.00"
+        },
+        {
+          "selection": "Empate e menos de 2.5",
+          "odd": 5.9,
+          "oddText": "5.90"
+        },
+        {
+          "selection": "Fulham e mais de 2.5",
+          "odd": 7.4,
+          "oddText": "7.40"
+        },
+        {
+          "selection": "Fulham e menos de 2.5",
+          "odd": 12,
+          "oddText": "12.00"
+        },
+        {
+          "selection": "1X e mais de 2.5",
+          "odd": 1.64,
+          "oddText": "1.64"
+        },
+        {
+          "selection": "1X e menos de 2.5",
+          "odd": 2.66,
+          "oddText": "2.66"
+        },
+        {
+          "selection": "12 e mais de 2.5",
+          "odd": 1.57,
+          "oddText": "1.57"
+        },
+        {
+          "selection": "12 e menos de 2.5",
+          "odd": 3.52,
+          "oddText": "3.52"
+        },
+        {
+          "selection": "X2 e mais de 2.5",
+          "odd": 4.75,
+          "oddText": "4.75"
+        },
+        {
+          "selection": "X2 e menos de 2.5",
+          "odd": 4.3,
+          "oddText": "4.30"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Resultado do Jogo e Total de Golos 2.5\n\nManchester City e mais de 2.5\n1.82\nManchester City e menos de 2.5\n4.20\nEmpate e mais de 2.5\n10.00\nEmpate e menos de 2.5\n5.90\nFulham e mais de 2.5\n7.40\nFulham e menos de 2.5\n12.00\n1X e mais de 2.5\n1.64\n1X e menos de 2.5\n2.66\n12 e mais de 2.5\n1.57\n12 e menos de 2.5\n3.52\nX2 e mais de 2.5\n4.75\nX2 e menos de 2.5\n4.30"
+    },
+    {
+      "id": "elephantbet-35",
+      "bookmaker": "ElephantBet",
+      "event": {
+        "id": "manchester-city-fulham",
+        "home": "Manchester City",
+        "away": "Fulham",
+        "competition": "Premier League",
+        "kickoff": "2026-11-09T18:00:00"
+      },
+      "category": "Combos",
+      "categories": [
+        "Combos"
+      ],
+      "market": "Resultado do Jogo e Total de Golos 3.5",
+      "selections": [
+        {
+          "selection": "Manchester City e mais de 3.5",
+          "odd": 2.83,
+          "oddText": "2.83"
+        },
+        {
+          "selection": "Manchester City e menos de 3.5",
+          "odd": 2.35,
+          "oddText": "2.35"
+        },
+        {
+          "selection": "Empate e mais de 3.5",
+          "odd": 10,
+          "oddText": "10.00"
+        },
+        {
+          "selection": "Empate e menos de 3.5",
+          "odd": 5.9,
+          "oddText": "5.90"
+        },
+        {
+          "selection": "Fulham e mais de 3.5",
+          "odd": 15,
+          "oddText": "15.00"
+        },
+        {
+          "selection": "Fulham e menos de 3.5",
+          "odd": 7,
+          "oddText": "7.00"
+        },
+        {
+          "selection": "1X e mais de 3.5",
+          "odd": 2.28,
+          "oddText": "2.28"
+        },
+        {
+          "selection": "1X e menos de 3.5",
+          "odd": 1.82,
+          "oddText": "1.82"
+        },
+        {
+          "selection": "12 e mais de 3.5",
+          "odd": 2.37,
+          "oddText": "2.37"
+        },
+        {
+          "selection": "12 e menos de 3.5",
+          "odd": 1.96,
+          "oddText": "1.96"
+        },
+        {
+          "selection": "X2 e mais de 3.5",
+          "odd": 6.5,
+          "oddText": "6.50"
+        },
+        {
+          "selection": "X2 e menos de 3.5",
+          "odd": 3.5,
+          "oddText": "3.50"
+        }
+      ],
+      "status": "ok",
+      "warning": null,
+      "rawContent": "Resultado do Jogo e Total de Golos 3.5\n\nManchester City e mais de 3.5\n2.83\nManchester City e menos de 3.5\n2.35\nEmpate e mais de 3.5\n10.00\nEmpate e menos de 3.5\n5.90\nFulham e mais de 3.5\n15.00\nFulham e menos de 3.5\n7.00\n1X e mais de 3.5\n2.28\n1X e menos de 3.5\n1.82\n12 e mais de 3.5\n2.37\n12 e menos de 3.5\n1.96\nX2 e mais de 3.5\n6.50\nX2 e menos de 3.5\n3.50"
+    }
+  ],
+  "fixture": {
+    "id": "manchester-city-fulham",
+    "home": "Manchester City",
+    "away": "Fulham",
+    "competition": "Premier League",
+    "kickoff": "2026-11-09T18:00:00",
+    "bookmaker": "ElephantBet",
+    "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+    "collectedAt": "2026-11-08T19:16:03.043Z",
+    "markets": [
+      {
+        "market": "Resultado do Jogo",
+        "selection": "Manchester City",
+        "odds": 1.43,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo",
+        "selection": "Empate",
+        "odds": 4.8,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo",
+        "selection": "Fulham",
+        "odds": 5.9,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo (1 Golo de Avanço)",
+        "selection": "Manchester City",
+        "odds": 1.22,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo (1 Golo de Avanço)",
+        "selection": "Empate",
+        "odds": 4.8,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo (1 Golo de Avanço)",
+        "selection": "Fulham",
+        "odds": 2.75,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Dupla Chance",
+        "selection": "1X",
+        "odds": 1.12,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Dupla Chance",
+        "selection": "12",
+        "odds": 1.17,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Dupla Chance",
+        "selection": "X2",
+        "odds": 2.56,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Ambas equipas marcarão",
+        "selection": "Sim",
+        "odds": 1.6,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Ambas equipas marcarão",
+        "selection": "Não",
+        "odds": 2.03,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Ambas as Equipas Marcam 2 ou mais Golos\n\nNOVO",
+        "selection": "Sim",
+        "odds": 4.57,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Ambas as Equipas Marcam 2 ou mais Golos\n\nNOVO",
+        "selection": "Não",
+        "odds": 1.16,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Empate anula aposta",
+        "selection": "Manchester City",
+        "odds": 1.14,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Empate anula aposta",
+        "selection": "Fulham",
+        "odds": 4.06,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "1º Parte/Final do jogo",
+        "selection": "Manchester City/Manchester City",
+        "odds": 2.07,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "1º Parte/Final do jogo",
+        "selection": "Empate/Manchester City",
+        "odds": 3.11,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "1º Parte/Final do jogo",
+        "selection": "Fulham/Manchester City",
+        "odds": 11,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "1º Parte/Final do jogo",
+        "selection": "Manchester City/Empate",
+        "odds": 9,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "1º Parte/Final do jogo",
+        "selection": "Empate/Empate",
+        "odds": 4.7,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "1º Parte/Final do jogo",
+        "selection": "Fulham/Empate",
+        "odds": 9.7,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "1º Parte/Final do jogo",
+        "selection": "Manchester City/Fulham",
+        "odds": 21,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "1º Parte/Final do jogo",
+        "selection": "Empate/Fulham",
+        "odds": 7.1,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "1º Parte/Final do jogo",
+        "selection": "Fulham/Fulham",
+        "odds": 6.2,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Parte com mais golos",
+        "selection": "1 > 2",
+        "odds": 3.06,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Parte com mais golos",
+        "selection": "1 = 2",
+        "odds": 3.79,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Parte com mais golos",
+        "selection": "1 < 2",
+        "odds": 1.89,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Parte com mais golos: Dupla Chance",
+        "selection": "1º Parte ou Igual",
+        "odds": 1.74,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Parte com mais golos: Dupla Chance",
+        "selection": "1º Parte ou 2º Parte",
+        "odds": 1.23,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Parte com mais golos: Dupla Chance",
+        "selection": "2º Parte ou Igual",
+        "odds": 1.31,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Mais de 1",
+        "odds": 1.015,
+        "line": "1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Menos 1",
+        "odds": 7.5,
+        "line": "1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Mais de 1.5",
+        "odds": 1.14,
+        "line": "1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Menos 1.5",
+        "odds": 4.45,
+        "line": "1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Mais de 2",
+        "odds": 1.2,
+        "line": "2",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Menos 2",
+        "odds": 3.7,
+        "line": "2",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Mais de 2.5",
+        "odds": 1.48,
+        "line": "2.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Menos 2.5",
+        "odds": 2.45,
+        "line": "2.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Mais de 3",
+        "odds": 1.68,
+        "line": "3",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Menos 3",
+        "odds": 1.92,
+        "line": "3",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Mais de 3.5",
+        "odds": 2.12,
+        "line": "3.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Menos 3.5",
+        "odds": 1.55,
+        "line": "3.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Mais de 4",
+        "odds": 2.87,
+        "line": "4",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Menos 4",
+        "odds": 1.3,
+        "line": "4",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Mais de 4.5",
+        "odds": 3.35,
+        "line": "4.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Menos 4.5",
+        "odds": 1.24,
+        "line": "4.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Mais de 5",
+        "odds": 5,
+        "line": "5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Menos 5",
+        "odds": 1.11,
+        "line": "5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Mais de 5.5",
+        "odds": 5.6,
+        "line": "5.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Menos 5.5",
+        "odds": 1.08,
+        "line": "5.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Mais de 6",
+        "odds": 7.3,
+        "line": "6",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Menos 6",
+        "odds": 1.025,
+        "line": "6",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Mais de 6.5",
+        "odds": 7.5,
+        "line": "6.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos no jogo",
+        "selection": "Menos 6.5",
+        "odds": 1.023,
+        "line": "6.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Manchester City",
+        "selection": "Mais de 1.5",
+        "odds": 1.4,
+        "line": "1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Manchester City",
+        "selection": "Menos 1.5",
+        "odds": 2.55,
+        "line": "1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Manchester City",
+        "selection": "Mais de 2",
+        "odds": 1.67,
+        "line": "2",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Manchester City",
+        "selection": "Menos 2",
+        "odds": 1.93,
+        "line": "2",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Manchester City",
+        "selection": "Mais de 2.5",
+        "odds": 2.18,
+        "line": "2.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Manchester City",
+        "selection": "Menos 2.5",
+        "odds": 1.52,
+        "line": "2.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Manchester City",
+        "selection": "Mais de 3",
+        "odds": 3.15,
+        "line": "3",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Manchester City",
+        "selection": "Menos 3",
+        "odds": 1.25,
+        "line": "3",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Manchester City",
+        "selection": "Mais de 3.5",
+        "odds": 3.7,
+        "line": "3.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Manchester City",
+        "selection": "Menos 3.5",
+        "odds": 1.18,
+        "line": "3.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Fulham",
+        "selection": "Mais de 0.5",
+        "odds": 1.45,
+        "line": "0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Fulham",
+        "selection": "Menos 0.5",
+        "odds": 2.35,
+        "line": "0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Fulham",
+        "selection": "Mais de 1",
+        "odds": 2.08,
+        "line": "1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Fulham",
+        "selection": "Menos 1",
+        "odds": 1.57,
+        "line": "1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Fulham",
+        "selection": "Mais de 1.5",
+        "odds": 3.05,
+        "line": "1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos do Fulham",
+        "selection": "Menos 1.5",
+        "odds": 1.27,
+        "line": "1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City -4.5",
+        "odds": 8.35,
+        "line": "-4.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham +4.5",
+        "odds": 1.015,
+        "line": "+4.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City -4",
+        "odds": 8.35,
+        "line": "-4",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham +4",
+        "odds": 1.015,
+        "line": "+4",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City -3.5",
+        "odds": 5.9,
+        "line": "-3.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham +3.5",
+        "odds": 1.07,
+        "line": "+3.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City -3",
+        "odds": 5.3,
+        "line": "-3",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham +3",
+        "odds": 1.09,
+        "line": "+3",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City -2.5",
+        "odds": 3.42,
+        "line": "-2.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham +2.5",
+        "odds": 1.23,
+        "line": "+2.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City -2",
+        "odds": 2.88,
+        "line": "-2",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham +2",
+        "odds": 1.32,
+        "line": "+2",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City -1.5",
+        "odds": 2.05,
+        "line": "-1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham +1.5",
+        "odds": 1.62,
+        "line": "+1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City -1",
+        "odds": 1.62,
+        "line": "-1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham +1",
+        "odds": 2.05,
+        "line": "+1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City -0.5",
+        "odds": 1.4,
+        "line": "-0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham +0.5",
+        "odds": 2.56,
+        "line": "+0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City 0",
+        "odds": 1.16,
+        "line": "0",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham 0",
+        "odds": 4.12,
+        "line": "0",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City +0.5",
+        "odds": 1.12,
+        "line": "+0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham -0.5",
+        "odds": 4.7,
+        "line": "-0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City +1",
+        "odds": 1.025,
+        "line": "+1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham -1",
+        "odds": 7.75,
+        "line": "-1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Manchester City +1.5",
+        "odds": 1.02,
+        "line": "+1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Handicap de Golos",
+        "selection": "Fulham -1.5",
+        "odds": 8,
+        "line": "-1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado da 1º Parte",
+        "selection": "Manchester City",
+        "odds": 1.85,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado da 1º Parte",
+        "selection": "Empate",
+        "odds": 2.49,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado da 1º Parte",
+        "selection": "Fulham",
+        "odds": 5.8,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Dupla Chance da 1º parte",
+        "selection": "1X",
+        "odds": 1.12,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Dupla Chance da 1º parte",
+        "selection": "12",
+        "odds": 1.44,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Dupla Chance da 1º parte",
+        "selection": "X2",
+        "odds": 1.83,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Mais de 0.5",
+        "odds": 1.28,
+        "line": "0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Menos 0.5",
+        "odds": 3.15,
+        "line": "0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Mais de 1",
+        "odds": 1.52,
+        "line": "1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Menos 1",
+        "odds": 2.18,
+        "line": "1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Mais de 1.5",
+        "odds": 2.22,
+        "line": "1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Menos 1.5",
+        "odds": 1.5,
+        "line": "1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Mais de 2",
+        "odds": 3.7,
+        "line": "2",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Menos 2",
+        "odds": 1.18,
+        "line": "2",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Mais de 2.5",
+        "odds": 4.6,
+        "line": "2.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Menos 2.5",
+        "odds": 1.11,
+        "line": "2.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Mais de 3",
+        "odds": 7.3,
+        "line": "3",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Menos 3",
+        "odds": 1.02,
+        "line": "3",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Mais de 3.5",
+        "odds": 7.55,
+        "line": "3.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos na 1º Parte",
+        "selection": "Menos 3.5",
+        "odds": 1.02,
+        "line": "3.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Manchester City na 1º Parte",
+        "selection": "Mais de 0.5",
+        "odds": 1.52,
+        "line": "0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Manchester City na 1º Parte",
+        "selection": "Menos 0.5",
+        "odds": 2.37,
+        "line": "0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Manchester City na 1º Parte",
+        "selection": "Mais de 1",
+        "odds": 2.25,
+        "line": "1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Manchester City na 1º Parte",
+        "selection": "Menos 1",
+        "odds": 1.57,
+        "line": "1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Manchester City na 1º Parte",
+        "selection": "Mais de 1.5",
+        "odds": 3.3,
+        "line": "1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Manchester City na 1º Parte",
+        "selection": "Menos 1.5",
+        "odds": 1.28,
+        "line": "1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Manchester City na 1º Parte",
+        "selection": "Mais de 2",
+        "odds": 7.1,
+        "line": "2",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Manchester City na 1º Parte",
+        "selection": "Menos 2",
+        "odds": 1.065,
+        "line": "2",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Manchester City na 1º Parte",
+        "selection": "Mais de 2.5",
+        "odds": 8.2,
+        "line": "2.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Manchester City na 1º Parte",
+        "selection": "Menos 2.5",
+        "odds": 1.045,
+        "line": "2.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Fulham na 1º Parte",
+        "selection": "Mais de 0.5",
+        "odds": 2.8,
+        "line": "0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Fulham na 1º Parte",
+        "selection": "Menos 0.5",
+        "odds": 1.38,
+        "line": "0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Fulham na 1º Parte",
+        "selection": "Mais de 1",
+        "odds": 8.2,
+        "line": "1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Fulham na 1º Parte",
+        "selection": "Menos 1",
+        "odds": 1.045,
+        "line": "1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Fulham na 1º Parte",
+        "selection": "Mais de 1.5",
+        "odds": 9,
+        "line": "1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos da Fulham na 1º Parte",
+        "selection": "Menos 1.5",
+        "odds": 1.03,
+        "line": "1.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos Asiáticos da Manchester City na 1° Parte",
+        "selection": "Mais de 0.75",
+        "odds": 1.75,
+        "line": "0.75",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos Asiáticos da Manchester City na 1° Parte",
+        "selection": "Menos 0.75",
+        "odds": 1.95,
+        "line": "0.75",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos Asiáticos da Manchester City na 1° Parte",
+        "selection": "Mais de 1.25",
+        "odds": 2.85,
+        "line": "1.25",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos Asiáticos da Manchester City na 1° Parte",
+        "selection": "Menos 1.25",
+        "odds": 1.37,
+        "line": "1.25",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos Asiáticos da Manchester City na 1° Parte",
+        "selection": "Mais de 1.75",
+        "odds": 4.42,
+        "line": "1.75",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos Asiáticos da Manchester City na 1° Parte",
+        "selection": "Menos 1.75",
+        "odds": 1.17,
+        "line": "1.75",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos Asiáticos da Manchester City na 1° Parte",
+        "selection": "Mais de 2.25",
+        "odds": 7.85,
+        "line": "2.25",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos Asiáticos da Manchester City na 1° Parte",
+        "selection": "Menos 2.25",
+        "odds": 1.05,
+        "line": "2.25",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos Asiáticos da Manchester City na 1° Parte",
+        "selection": "Mais de 2.75",
+        "odds": 10,
+        "line": "2.75",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de golos Asiáticos da Manchester City na 1° Parte",
+        "selection": "Menos 2.75",
+        "odds": 1.02,
+        "line": "2.75",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Minuto do primeiro golo",
+        "selection": "1-10",
+        "odds": 3.2,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Minuto do primeiro golo",
+        "selection": "11-20",
+        "odds": 4,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Minuto do primeiro golo",
+        "selection": "21-30",
+        "odds": 5.3,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Minuto do primeiro golo",
+        "selection": "31-40",
+        "odds": 7.1,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Minuto do primeiro golo",
+        "selection": "41-50",
+        "odds": 8.8,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Minuto do primeiro golo",
+        "selection": "51-60",
+        "odds": 13,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Minuto do primeiro golo",
+        "selection": "61-70",
+        "odds": 19,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Minuto do primeiro golo",
+        "selection": "71-80",
+        "odds": 29,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Minuto do primeiro golo",
+        "selection": "81-90+",
+        "odds": 31,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Minuto do primeiro golo",
+        "selection": "Sem golo",
+        "odds": 13,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)",
+        "selection": "1-10",
+        "odds": 4,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)",
+        "selection": "11-20",
+        "odds": 5,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)",
+        "selection": "21-30",
+        "odds": 5.9,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)",
+        "selection": "31-40",
+        "odds": 7.2,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)",
+        "selection": "41-50",
+        "odds": 8,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)",
+        "selection": "51-60",
+        "odds": 11,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)",
+        "selection": "61-70",
+        "odds": 14,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)",
+        "selection": "71-80",
+        "odds": 19,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)",
+        "selection": "81-90+",
+        "odds": 17,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)",
+        "selection": "Sem golo",
+        "odds": 5.9,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)",
+        "selection": "1-10",
+        "odds": 7.2,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)",
+        "selection": "11-20",
+        "odds": 10,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)",
+        "selection": "21-30",
+        "odds": 11,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)",
+        "selection": "31-40",
+        "odds": 11,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)",
+        "selection": "41-50",
+        "odds": 11,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)",
+        "selection": "51-60",
+        "odds": 13,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)",
+        "selection": "61-70",
+        "odds": 14,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)",
+        "selection": "71-80",
+        "odds": 15,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)",
+        "selection": "81-90+",
+        "odds": 12,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)",
+        "selection": "Sem golo",
+        "odds": 2.07,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo (intervalo de 15 minutos)",
+        "selection": "1-15",
+        "odds": 2.52,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo (intervalo de 15 minutos)",
+        "selection": "16-30",
+        "odds": 3.28,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo (intervalo de 15 minutos)",
+        "selection": "31-45+",
+        "odds": 4.5,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo (intervalo de 15 minutos)",
+        "selection": "46-60",
+        "odds": 7.9,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo (intervalo de 15 minutos)",
+        "selection": "61-75",
+        "odds": 13,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo (intervalo de 15 minutos)",
+        "selection": "76-90+",
+        "odds": 17,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Tempo do 1º golo (intervalo de 15 minutos)",
+        "selection": "Sem golo",
+        "odds": 19,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Primeiros 10 minutos (00:00 – 09:59) - Golos",
+        "selection": "Mais de 0.5",
+        "odds": 3.65,
+        "line": "0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Primeiros 10 minutos (00:00 – 09:59) - Golos",
+        "selection": "Menos 0.5",
+        "odds": 1.24,
+        "line": "0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Vencedor no minuto 1-15 Min.",
+        "selection": "Manchester City",
+        "odds": 4.1,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Vencedor no minuto 1-15 Min.",
+        "selection": "X",
+        "odds": 1.32,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Vencedor no minuto 1-15 Min.",
+        "selection": "Fulham",
+        "odds": 10,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos no minuto 1-15 Min.",
+        "selection": "Mais de 0.5",
+        "odds": 2.45,
+        "line": "0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos no minuto 1-15 Min.",
+        "selection": "Menos 0.5",
+        "odds": 1.48,
+        "line": "0.5",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos no minuto 1-15 Min.",
+        "selection": "Mais de 1",
+        "odds": 6.5,
+        "line": "1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Total de Golos no minuto 1-15 Min.",
+        "selection": "Menos 1",
+        "odds": 1.08,
+        "line": "1",
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Manchester City marcará e resultado do jogo",
+        "selection": "Sim e Manchester City",
+        "odds": 1.4,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Manchester City marcará e resultado do jogo",
+        "selection": "Sim e empate",
+        "odds": 5.35,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Manchester City marcará e resultado do jogo",
+        "selection": "Não e empate",
+        "odds": 21,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Manchester City marcará e resultado do jogo",
+        "selection": "Sim e Fulham",
+        "odds": 8,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Manchester City marcará e resultado do jogo",
+        "selection": "Não e Fulham",
+        "odds": 8.7,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Fulham marcará e resultado do jogo",
+        "selection": "Sim e Manchester City",
+        "odds": 2.48,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Fulham marcará e resultado do jogo",
+        "selection": "Não e Manchester City",
+        "odds": 2.68,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Fulham marcará e resultado do jogo",
+        "selection": "Sim e empate",
+        "odds": 5.35,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Fulham marcará e resultado do jogo",
+        "selection": "Não e empate",
+        "odds": 21,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Fulham marcará e resultado do jogo",
+        "selection": "Sim e Fulham",
+        "odds": 4.7,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado Final e Ambas Equipas Marcam",
+        "selection": "Manchester City e sim",
+        "odds": 2.48,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado Final e Ambas Equipas Marcam",
+        "selection": "Empate e Não",
+        "odds": 21,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado Final e Ambas Equipas Marcam",
+        "selection": "Manchester City e não",
+        "odds": 2.68,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado Final e Ambas Equipas Marcam",
+        "selection": "Fulham e Sim",
+        "odds": 8,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado Final e Ambas Equipas Marcam",
+        "selection": "Empate e sim",
+        "odds": 5.35,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado Final e Ambas Equipas Marcam",
+        "selection": "Fulham e não",
+        "odds": 8.7,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Dupla Chance e Ambas equipas marcarão",
+        "selection": "1X e (Ambos vão marcar - Sim)",
+        "odds": 1.82,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Dupla Chance e Ambas equipas marcarão",
+        "selection": "12 e (Ambos vão marcar - Não)",
+        "odds": 2.06,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Dupla Chance e Ambas equipas marcarão",
+        "selection": "1X e (Ambos vão marcar - Não)",
+        "odds": 2.35,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Dupla Chance e Ambas equipas marcarão",
+        "selection": "X2 e (Ambos vão marcar - Sim)",
+        "odds": 3.16,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Dupla Chance e Ambas equipas marcarão",
+        "selection": "12 e (Ambos vão marcar - Sim)",
+        "odds": 1.96,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Dupla Chance e Ambas equipas marcarão",
+        "selection": "X2 e (Ambos vão marcar - Não)",
+        "odds": 6.2,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 1.5",
+        "selection": "Manchester City e mais de 1.5",
+        "odds": 1.56,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 1.5",
+        "selection": "Manchester City e menos de 1.5",
+        "odds": 7.3,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 1.5",
+        "selection": "Empate e mais de 1.5",
+        "odds": 5.35,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 1.5",
+        "selection": "Empate e menos de 1.5",
+        "odds": 21,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 1.5",
+        "selection": "Fulham e mais de 1.5",
+        "odds": 6.3,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 1.5",
+        "selection": "Fulham e menos de1.5",
+        "odds": 19,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 1.5",
+        "selection": "1X e mais de 1.5",
+        "odds": 1.28,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 1.5",
+        "selection": "1X e menos de 1.5",
+        "odds": 5.7,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 1.5",
+        "selection": "12 e mais de 1.5",
+        "odds": 1.34,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 1.5",
+        "selection": "12 e menos de 1.5",
+        "odds": 6,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 1.5",
+        "selection": "X2 e mais de 1.5",
+        "odds": 3.08,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 1.5",
+        "selection": "X2 e menos de 1.5",
+        "odds": 9,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 2.5",
+        "selection": "Manchester City e mais de 2.5",
+        "odds": 1.82,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 2.5",
+        "selection": "Manchester City e menos de 2.5",
+        "odds": 4.2,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 2.5",
+        "selection": "Empate e mais de 2.5",
+        "odds": 10,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 2.5",
+        "selection": "Empate e menos de 2.5",
+        "odds": 5.9,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 2.5",
+        "selection": "Fulham e mais de 2.5",
+        "odds": 7.4,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 2.5",
+        "selection": "Fulham e menos de 2.5",
+        "odds": 12,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 2.5",
+        "selection": "1X e mais de 2.5",
+        "odds": 1.64,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 2.5",
+        "selection": "1X e menos de 2.5",
+        "odds": 2.66,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 2.5",
+        "selection": "12 e mais de 2.5",
+        "odds": 1.57,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 2.5",
+        "selection": "12 e menos de 2.5",
+        "odds": 3.52,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 2.5",
+        "selection": "X2 e mais de 2.5",
+        "odds": 4.75,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 2.5",
+        "selection": "X2 e menos de 2.5",
+        "odds": 4.3,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 3.5",
+        "selection": "Manchester City e mais de 3.5",
+        "odds": 2.83,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 3.5",
+        "selection": "Manchester City e menos de 3.5",
+        "odds": 2.35,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 3.5",
+        "selection": "Empate e mais de 3.5",
+        "odds": 10,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 3.5",
+        "selection": "Empate e menos de 3.5",
+        "odds": 5.9,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 3.5",
+        "selection": "Fulham e mais de 3.5",
+        "odds": 15,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 3.5",
+        "selection": "Fulham e menos de 3.5",
+        "odds": 7,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 3.5",
+        "selection": "1X e mais de 3.5",
+        "odds": 2.28,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 3.5",
+        "selection": "1X e menos de 3.5",
+        "odds": 1.82,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 3.5",
+        "selection": "12 e mais de 3.5",
+        "odds": 2.37,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 3.5",
+        "selection": "12 e menos de 3.5",
+        "odds": 1.96,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 3.5",
+        "selection": "X2 e mais de 3.5",
+        "odds": 6.5,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      },
+      {
+        "market": "Resultado do Jogo e Total de Golos 3.5",
+        "selection": "X2 e menos de 3.5",
+        "odds": 3.5,
+        "line": null,
+        "side": null,
+        "team": null,
+        "sourceUrl": "https://www.elephantbet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham",
+        "collectedAt": "2026-11-08T19:16:03.043Z"
+      }
+    ]
+  }
+}
