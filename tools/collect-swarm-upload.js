@@ -4,7 +4,7 @@ import {
   discoverSwarmGames,
   SWARM_BOOKMAKERS
 } from "../lib/bookmakers/swarm.js";
-import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
+import { getSwarmMatchingDiagnostics, selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
 
 const dryRun = process.argv.includes("--dry-run");
 const maxGamesArg = process.argv.find(arg => arg.startsWith("--max-games="));
@@ -52,10 +52,14 @@ for (const name of providers) {
   console.log(name + ": " + discovered[name].gamesFound + " jogos encontrados.");
 }
 
+const matchingDiagnostics = getSwarmMatchingDiagnostics(discovered.bantu.games, discovered.elephant.games);
+console.log("Diagnóstico de elegibilidade (janela das próximas 72 horas):");
+console.log(JSON.stringify(matchingDiagnostics, null, 2));
+
 const commonPairs = selectCommonSwarmGames(
   discovered.bantu.games,
   discovered.elephant.games,
-  { maxGames: 1500, maxKickoffDifferenceSeconds: 90 * 60, onlyToday: true }
+  { maxGames: 1500, maxKickoffDifferenceSeconds: 3 * 60 * 60, onlyToday: false }
 );
 const bantuById = new Map(discovered.bantu.games.map(game => [String(game.id), game]));
 const elephantById = new Map(discovered.elephant.games.map(game => [String(game.id), game]));
@@ -67,7 +71,11 @@ const eligiblePairs = commonPairs.map(pair => ({
 
 const pairsToCollect = eligiblePairs.slice(0, maxGames);
 
-console.log("Jogos comuns BantuBet/ElephantBet:", commonPairs.length);
+console.log("Pares correspondentes BantuBet/ElephantBet:", commonPairs.length);
+if (commonPairs.length) {
+  const scores = commonPairs.map(pair => pair.matchingScore);
+  console.log("Confiança média de correspondência:", (scores.reduce((sum, score) => sum + score, 0) / scores.length).toFixed(3));
+}
 console.log("A SportAPI não é necessária para esta recolha.");
 console.log("Limite configurado:", maxGames, "par(es).");
 console.log("A recolher:", pairsToCollect.length, "pares de jogos comuns.");
