@@ -28,3 +28,33 @@ test("rejeita partidas que já começaram ou têm hora inválida", () => {
   assert.equal(isKickoffEligible("2026-11-16T15:00:00.000Z", now), false);
   assert.equal(isKickoffEligible("hora inválida", now), false);
 });
+
+import { createBooking } from "../../api/bookmakers/reserve.js";
+import { createSwarmBooking } from "../../lib/bookmakers/swarm.js";
+
+test("reserva recusa selecções sem selectionId da casa (sem contactar a rede)", async () => {
+  await assert.rejects(
+    createBooking({ site: "bantu", selections: [{ odd: 1.5 }] }),
+    /selectionId/
+  );
+});
+
+test("reserva recusa odd total que não bate com o produto das odds", async () => {
+  await assert.rejects(
+    createBooking({ site: "bantu", totalOdd: 9, selections: [{ selectionId: "7455536947", odd: 1.5 }, { selectionId: "7528610932", odd: 1.5 }] }),
+    /não corresponde/
+  );
+});
+
+test("reserva recusa jogos que já começaram", async () => {
+  await assert.rejects(
+    createBooking({ site: "elephant", selections: [{ selectionId: "7455536947", odd: 1.5, startTime: "2020-01-01T00:00:00.000Z" }] }),
+    /ainda não ter começado/
+  );
+});
+
+test("createSwarmBooking valida os identificadores antes de abrir a ligação", async () => {
+  await assert.rejects(createSwarmBooking({ siteId: 1, wsUrl: "wss://x", selections: [] }), /pelo menos uma/);
+  await assert.rejects(createSwarmBooking({ siteId: 1, wsUrl: "wss://x", selections: [{ selectionId: "abc", price: 2 }] }), /selectionId numérico/);
+  await assert.rejects(createSwarmBooking({ siteId: 1, wsUrl: "wss://x", selections: [{ selectionId: "1", price: 1 }] }), /preço superior/);
+});

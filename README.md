@@ -498,3 +498,11 @@ Esta secção evita que uma nova IA confunda código existente com funcionalidad
 ---
 
 **Regra final:** preservar a integridade dos dados e a operação existente é mais importante do que completar uma tarefa depressa. Se a fonte não confirmar um dado ou uma operação, mostrar que está pendente/indisponível em vez de inventar.
+
+## Reserva via Swarm (código de reserva)
+
+- O código de reserva é criado no momento da elaboração do boletim, com o comando `create_bet_book_v2` do Swarm (o mesmo que o botão "Obter reserva ID" do site), em `lib/bookmakers/swarm.js` (`createSwarmBooking`). Envia só `SelectionId` + preço, com `Amount: 0`; não coloca aposta.
+- A casa devolve o código em `data.details.Id`. A reserva mostra as odds **actuais** da casa, não as enviadas; por isso deve ser pedida logo após a recolha.
+- `api/bookmakers/reserve.js` (`createBooking`) usa essa função. O pipeline (`lib/pipeline/build-tickets.js`) só publica um par de boletins quando as duas casas devolvem código, e guarda o `selection_id` de cada selecção em `ticket_legs.selection_id` (migração `20261119230000_ticket_legs_selection_id.sql`).
+- `POST /api/bookmakers/reserve` com `{ "ticketId": "<uuid>" }` só funciona para fichas com `selection_id` guardado e jogos que ainda não começaram.
+- O endpoint `image-creator/share-booking` já não é usado para criar o código; serve apenas para a imagem de partilha, e exige um `bookId` já existente.
