@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Activity, CalendarDays, ChevronDown, ChevronRight, FileText, History, LayoutDashboard, Radio, ShieldCheck, Ticket, Menu, X } from 'lucide-react';
+import { Activity, ChevronDown, FileText, History, LayoutDashboard, Radio, Search, ShieldCheck, X } from 'lucide-react';
 import { supabase } from './lib/supabase.js';
 import './home-redesign.css';
 
@@ -183,40 +183,34 @@ export default function App() {
     onNavigate={setPage}
     liveCount={liveLegCount}
   />;
-  const side = <><div className="brand"><div className="brand-mark">FK<span>.</span></div><div><b>FICHA KAMBA</b><small>FUTEBOL • INTELIGÊNCIA</small></div></div><div className="side-label">MENU PRINCIPAL</div><nav>{NAV.map(([label, Icon]) => <button key={label} className={page === label ? 'nav-item active' : 'nav-item'} onClick={() => { setPage(label); setMobile(false); }}><Icon size={18}/><span>{label}</span>{label === 'Acompanhamento ao vivo' && liveTickets.length > 0 && <i className="live-dot"/>}</button>)}</nav><div className="side-bottom"><div className="side-status"><span className="status-dot"/> Consulta de fichas <small>As fichas publicadas aparecem neste painel</small></div><div className="profile"><div className="avatar">FK</div><div><b>Utilizador</b><small>Ficha Kamba</small></div></div></div></>;
-  return <div className="app-shell"><aside className={mobile ? 'sidebar mobile-open' : 'sidebar'}>{side}</aside>{mobile && <button className="scrim" onClick={() => setMobile(false)} aria-label="Fechar menu"/>}
-    <main className="main"><header className="topbar"><button className="icon-btn mobile-menu" onClick={() => setMobile(true)}><Menu/></button><div className="crumb">Plataforma <span>/</span> <b>{page}</b></div><div className="top-actions"><span className="date-chip"><CalendarDays size={15}/> {new Date().toLocaleDateString('pt-AO')}</span><span className="local-chip"><i/> PAINEL</span><div className="avatar small">FK</div></div></header>
-      <div className="content"><div className="welcome"><div><div className="eyebrow"><span className="status-dot"/> FICHA KAMBA</div><h1>{page}</h1><p>{page === 'Bilhetes do dia' ? 'Consulta as fichas preparadas e publicadas para hoje.' : page === 'Acompanhamento ao vivo' ? 'Acompanha cada jogo e o mercado correspondente dentro da ficha.' : 'Consulta fichas e resultados de dias anteriores.'}</p></div></div>
-        {notice && <div className="notice"><ShieldCheck size={17}/><span>{notice}</span><button onClick={() => setNotice('')}><X size={15}/></button></div>}
-        {page === 'Bilhetes do dia' && <>
-          <div className="daily-summary"><div className="daily-icon"><Ticket size={21}/></div><div><b>{todayTickets.length} {todayTickets.length === 1 ? 'ficha publicada' : 'fichas publicadas'} hoje</b><span>As fichas do dia, os IDs de reserva e todos os jogos ficam reunidos aqui.</span></div><div className="daily-date">{new Date().toLocaleDateString('pt-AO')}</div></div>
-          {todayTickets.length ? <div className="daily-ticket-list">{todayTickets.map(t => <TicketPanel key={t.id} ticket={t} expanded={!!expanded[t.id]} onToggle={() => toggle(t.id)}/>)}</div> : <EmptyState icon={FileText} title="Ainda não há fichas publicadas para hoje" detail="As fichas aparecerão automaticamente aqui quando o serviço de análise e publicação da IA estiver ligado. Não são apresentados palpites ou IDs de reserva inventados."/>}
-          <div className="quiet-note"><ShieldCheck size={16}/><span>Esta área é apenas de consulta. A elaboração das fichas é uma tarefa interna do sistema.</span></div>
-        </>}
-        {page === 'Análises' && <>
-          <div className="daily-summary"><div className="daily-icon"><FileText size={21}/></div><div><b>{analyses.length} {analyses.length === 1 ? 'análise disponível' : 'análises disponíveis'}</b><span>Relatórios preparados aqui no ChatGPT e guardados no Supabase.</span></div><div className="daily-date">ChatGPT</div></div>
-          {analysesLoading ? <div className="empty-state"><b>A carregar análises...</b></div> :
-            analyses.length ? <div className="daily-ticket-list">{analyses.map(row => <AnalysisPanel key={row.id} row={row}/>)}</div> :
-            <EmptyState icon={FileText} title="Ainda não existem análises guardadas" detail="Depois da recolha diária das odds, pede aqui no ChatGPT para analisar os jogos. As análises aprovadas aparecerão nesta área."/>}
-        </>}
-        {page === 'Acompanhamento ao vivo' && <>
-          <div className="live-overview">
-            <div><b>{liveTickets.reduce((n,t) => n + (t.legs || []).filter(isLive).length, 0)}</b><span>Em directo</span></div>
-            <div><b>{liveTickets.reduce((n,t) => n + (t.legs || []).filter(isFinished).length, 0)}</b><span>Terminados</span></div>
-            <div><b>{liveTickets.reduce((n,t) => n + (t.legs || []).filter(leg => !isLive(leg) && !isFinished(leg)).length, 0)}</b><span>Por iniciar</span></div>
-            <div><b>{liveTickets.length}</b><span>Fichas de hoje</span></div>
-          </div>
-          {liveUpdatedAt && <div className="quiet-note"><Radio size={15}/><span>Marcadores e estados actualizados a cada 5 minutos. As estatísticas são recolhidas em rotação para respeitar os limites da fonte. Última consulta: {new Date(liveUpdatedAt).toLocaleTimeString('pt-AO')}</span></div>}
-          {liveTickets.length ? <div className="daily-ticket-list">{liveTickets.map(t => <TicketPanel key={t.id} ticket={t} expanded={expanded[t.id] !== false} onToggle={() => toggle(t.id)} liveView/>)}</div> : <EmptyState icon={Radio} title="Ainda não há fichas de hoje para acompanhar" detail="Quando forem publicadas, os jogos por iniciar, em directo e terminados serão acompanhados dentro de cada ficha."/>}
-        </>}
-        {page === 'Histórico' && <>
-          <div className="toolbar"><div className="searchbox"><History size={16}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Pesquisar por ficha, ID ou casa..."/></div></div>
-          {filteredHistory.length ? <div className="daily-ticket-list">{filteredHistory.map(t => <TicketPanel key={t.id} ticket={t} expanded={!!expanded[t.id]} onToggle={() => toggle(t.id)}/>)}</div> : <EmptyState icon={History} title="Ainda não há histórico" detail="As fichas concluídas serão arquivadas aqui para consulta."/>}
-        </>}
-        <footer><span>FK — Ficha Kamba</span><span>Dados de jogos e resultados dependem de fontes desportivas autorizadas.</span></footer>
-      </div>
-    </main>
-  </div>;
+  const sum = fn => liveTickets.reduce((n, t) => n + (t.legs || []).filter(fn).length, 0);
+  const shell = { page, onNavigate: setPage, liveCount: liveLegCount, notice, onDismissNotice: () => setNotice('') };
+
+  if (page === 'Análises') return <FkShell {...shell} footer={analyses.length + ' análises guardadas • Actualização automática a cada 5 minutos'}>
+    <PageHeader emoji="📊" title="Análises" subtitle="Relatórios preparados e guardados no Supabase"
+      board={[[analyses.length, analyses.length === 1 ? 'Relatório' : 'Relatórios']]}/>
+    {analysesLoading ? <EmptyPanel emoji="⏳" title="A carregar análises…"/> :
+      analyses.length ? <section className="fk-reference-grid fk-two">{analyses.map(row => <AnalysisCard key={row.id} row={row}/>)}</section> :
+      <EmptyPanel emoji="📊" title="Ainda não existem análises guardadas" detail="Depois da recolha diária das odds, as análises aprovadas aparecem automaticamente aqui."/>}
+  </FkShell>;
+
+  if (page === 'Acompanhamento ao vivo') return <FkShell {...shell} footer={liveTickets.length + (liveTickets.length === 1 ? ' ficha' : ' fichas') + ' de hoje em acompanhamento'}>
+    <PageHeader emoji="📡" title="Ao vivo" subtitle="Marcadores e estados dentro de cada ficha"
+      board={[[sum(isLive), 'Ao vivo', true], [sum(isFinished), 'Terminados'], [sum(leg => !isLive(leg) && !isFinished(leg)), 'Por iniciar']]}/>
+    {liveUpdatedAt && <div className="fk-reference-note"><Radio size={15}/><span>Marcadores e estados actualizados a cada 5 minutos. As estatísticas são recolhidas em rotação para respeitar os limites da fonte. Última consulta: {new Date(liveUpdatedAt).toLocaleTimeString('pt-AO')}</span></div>}
+    {liveTickets.length ? <section className="fk-reference-grid">
+      {liveTickets.map(t => <DailyTicketCard key={t.id} ticket={t} expanded={expanded[t.id] !== false} onToggle={() => toggle(t.id)}/>)}
+    </section> : <EmptyPanel emoji="📡" title="Ainda não há fichas de hoje para acompanhar" detail="Quando forem publicadas, os jogos por iniciar, em directo e terminados aparecem aqui."/>}
+  </FkShell>;
+
+  return <FkShell {...shell} footer={filteredHistory.length + ' de ' + history.length + ' fichas no histórico'}>
+    <PageHeader emoji="📋" title="Histórico" subtitle="Fichas e resultados de dias anteriores"
+      board={[[history.length, history.length === 1 ? 'Ficha' : 'Fichas']]}/>
+    <label className="fk-reference-search"><Search size={16}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Pesquisar por ficha, ID ou casa…" aria-label="Pesquisar no histórico"/></label>
+    {filteredHistory.length ? <section className="fk-reference-grid">
+      {filteredHistory.map(t => <DailyTicketCard key={t.id} ticket={t} expanded={!!expanded[t.id]} onToggle={() => toggle(t.id)}/>)}
+    </section> : <EmptyPanel emoji="📋" title="Ainda não há histórico" detail={query ? 'Nenhuma ficha corresponde à pesquisa.' : 'As fichas concluídas serão arquivadas aqui para consulta.'}/>}
+  </FkShell>;
 }
 
 function groupBookmakerPairs(tickets) {
@@ -273,41 +267,56 @@ const crest = (name = '') => {
   return letters.toUpperCase();
 };
 
-function DailyHome({ tickets, expanded, onToggle, notice, onDismissNotice, onNavigate, liveCount = 0 }) {
-  const total = tickets.length;
-  const games = tickets.reduce((n, t) => n + (t.legs || []).length, 0);
+function FkShell({ page, onNavigate, liveCount = 0, notice, onDismissNotice, footer, children }) {
   return <main className="fk-reference-home">
     <div className="fk-reference-pitch" aria-hidden="true"/>
     <nav className="fk-reference-nav" aria-label="Navegação principal">
       <span className="fk-reference-logo"><b>FK</b><i>.</i><small>Ficha Kamba</small></span>
       <div className="fk-reference-tabs">
         {NAV.map(([label, Icon]) => <button key={label} title={label}
-          className={label === 'Bilhetes do dia' ? 'is-active' : ''}
-          aria-current={label === 'Bilhetes do dia' ? 'page' : undefined}
+          className={label === page ? 'is-active' : ''}
+          aria-current={label === page ? 'page' : undefined}
           onClick={() => onNavigate(label)}>
           <Icon size={16}/><span>{NAV_SHORT[label] || label}</span>
           {label === 'Acompanhamento ao vivo' && liveCount > 0 && <em>{liveCount}</em>}
         </button>)}
       </div>
     </nav>
-    <header className="fk-reference-header">
-      <div className="fk-reference-brand">
-        <span className="fk-reference-ball" aria-hidden="true">⚽</span>
-        <div><h1>Bilhetes do dia</h1><p>Ficha Kamba <i>•</i> {new Date().toLocaleDateString('pt-AO')}</p></div>
-      </div>
-      <div className="fk-reference-board" aria-label="Resumo do dia">
-        <div><strong>{total}</strong><span>{total === 1 ? 'Ficha' : 'Fichas'}</span></div>
-        <div><strong>{games}</strong><span>{games === 1 ? 'Jogo' : 'Jogos'}</span></div>
-        <div className={liveCount > 0 ? 'is-live' : ''}><strong>{liveCount}</strong><span>Ao vivo</span></div>
-      </div>
-    </header>
+    {children}
     {notice && <div className="fk-reference-notice" role="status"><ShieldCheck size={16}/><span>{notice}</span><button onClick={onDismissNotice} aria-label="Fechar aviso"><X size={15}/></button></div>}
+    <footer className="fk-reference-footer"><span><i/> {footer}</span></footer>
+  </main>;
+}
+
+function PageHeader({ emoji, title, subtitle, board = [] }) {
+  return <header className="fk-reference-header">
+    <div className="fk-reference-brand">
+      <span className="fk-reference-ball" aria-hidden="true">{emoji}</span>
+      <div><h1>{title}</h1><p>{subtitle}</p></div>
+    </div>
+    <div className="fk-reference-board" aria-label="Resumo">
+      {board.map(([value, label, live]) => <div key={label} className={live && value > 0 ? 'is-live' : ''}><strong>{value}</strong><span>{label}</span></div>)}
+    </div>
+  </header>;
+}
+
+function EmptyPanel({ emoji, title, detail }) {
+  return <section className="fk-reference-empty"><span>{emoji}</span><b>{title}</b>{detail && <small>{detail}</small>}</section>;
+}
+
+function DailyHome({ tickets, expanded, onToggle, notice, onDismissNotice, onNavigate, liveCount = 0 }) {
+  const total = tickets.length;
+  const games = tickets.reduce((n, t) => n + (t.legs || []).length, 0);
+  return <FkShell page="Bilhetes do dia" onNavigate={onNavigate} liveCount={liveCount} notice={notice} onDismissNotice={onDismissNotice}
+    footer={total + (total === 1 ? ' ficha carregada' : ' fichas carregadas') + ' • Actualização automática a cada 5 minutos'}>
+    <PageHeader emoji="⚽" title="Bilhetes do dia"
+      subtitle={<>Ficha Kamba <i>•</i> {new Date().toLocaleDateString('pt-AO')}</>}
+      board={[[total, total === 1 ? 'Ficha' : 'Fichas'], [games, games === 1 ? 'Jogo' : 'Jogos'], [liveCount, 'Ao vivo', true]]}/>
     {total ? <section className="fk-reference-grid">
       {tickets.map((ticket, index) => <DailyTicketCard key={ticket.id} ticket={ticket}
         expanded={!!expanded[ticket.id]} onToggle={() => onToggle(ticket.id)} featured={index === 0}/>)}
-    </section> : <section className="fk-reference-empty"><span>⚽</span><b>Nenhuma ficha publicada hoje</b><small>As fichas reais aparecerão aqui assim que forem publicadas.</small></section>}
-    <footer className="fk-reference-footer"><span><i/> {total} {total === 1 ? 'ficha carregada' : 'fichas carregadas'} <b>•</b> Actualização automática a cada 5 minutos</span></footer>
-  </main>;
+    </section> : <EmptyPanel emoji="⚽" title="Nenhuma ficha publicada hoje" detail="As fichas reais aparecerão aqui assim que forem publicadas."/>}
+  </FkShell>;
 }
 
 function DailyTicketCard({ ticket: t, expanded, onToggle, featured = false }) {
@@ -360,6 +369,9 @@ function DailyTicketCard({ ticket: t, expanded, onToggle, featured = false }) {
             <em className="fk-reference-chip" style={{ '--tone': { won: 'var(--fkh-win)', lost: '#6b7a90', live: 'var(--fkh-goal)', pending: 'var(--fkh-gold)' }[tone(resultClass(leg))] }}>{resultLabel(leg)}</em>
           </div>
           {leg.lastEvent && <small className="note">{leg.lastEvent}</small>}
+          {(live || done) && liveStatRows(leg).length > 0 && <div className="fk-reference-stats">
+            {liveStatRows(leg).map(row => <div key={row.label}><b>{row.home}</b><small>{row.label}</small><b>{row.away}</b></div>)}
+          </div>}
           {leg.rationale && <small className="note">{leg.rationale}</small>}
         </div>;
       })}
@@ -369,98 +381,53 @@ function DailyTicketCard({ ticket: t, expanded, onToggle, featured = false }) {
   </article>;
 }
 
-function TicketPanel({ ticket: t, expanded, onToggle, liveView = false, featured = false }) {
-  const legs = t.legs || [];
-  const liveCount = legs.filter(isLive).length;
-  const status = ticketStatus(t);
-  const entries = t.bookmakerEntries || [];
-  return <article className={'fk-ticket-card' + (featured ? ' fk-ticket-featured' : '')}>
-    <button className="fk-ticket-head" onClick={onToggle} aria-expanded={expanded}>
-      <span className="fk-ticket-mark">FK<small>FICHA</small></span>
-      <span className="fk-ticket-heading">
-        <span className="fk-ticket-tags">
-          {featured && <em className="fk-ticket-feature-tag">DESTAQUE</em>}
-          <em className="fk-ticket-kind">{t.type || 'FICHA DO DIA'}</em>
-          <em className={'fk-ticket-status ' + ticketStatusClass(status)}>{status}</em>
-          {liveCount > 0 && <em className="fk-ticket-live">{liveCount} AO VIVO</em>}
-        </span>
-        <strong>{t.name || 'Ficha Kamba'}</strong>
-        <small className="fk-ticket-meta">
-          <span><ShieldCheck size={12}/> {entries.length ? 'BantuBet + ElephantBet' : t.bookmaker || 'Casa não indicada'}</span>
-          <span><Activity size={12}/> {legs.length} {legs.length === 1 ? 'jogo' : 'jogos'}</span>
-          <span><FileText size={12}/> {t.sharedTicketId ? 'FK-' + t.sharedTicketId.slice(0,8).toUpperCase() : t.id}</span>
-        </small>
-      </span>
-      <span className="fk-ticket-odds">
-        <small>ODD COMBINADA</small>
-        {entries.length ? entries.map(entry => <b key={entry.bookmaker}>{money(entry.totalOdds)}<small>{entry.bookmaker}</small></b>) : <b>{money(t.totalOdds)}</b>}
-      </span>
-      <span className="fk-ticket-chevron">{expanded ? <ChevronDown/> : <ChevronRight/>}</span>
-    </button>
-    <div className="fk-ticket-selections">
-      {legs.map((leg,index) => <div className="fk-selection-row" key={leg.id || index}>
-        <span className="fk-selection-number">{String(index+1).padStart(2,'0')}</span>
-        <span className="fk-selection-match"><b>{leg.home || leg.homeTeam || 'Equipa da casa'} <i>vs</i> {leg.away || leg.awayTeam || 'Equipa visitante'}</b><small>{leg.league || leg.competition || 'Competição'}{leg.date ? ' · '+new Date(leg.date).toLocaleString('pt-AO') : ''}</small></span>
-        <span className="fk-selection-pick"><small>{leg.market || 'MERCADO'}</small><b>{leg.selection || '—'}</b></span>
-        <span className="fk-selection-odd"><small>ODD</small><b>{money(leg.odd)}</b></span>
-      </div>)}
-      {!legs.length && <span className="fk-no-selections">As selecções desta ficha ainda não foram disponibilizadas.</span>}
-    </div>
-    <div className="fk-ticket-foot">
-      <span>{legs.length} selecções incluídas</span>
-      <span>{entries.length ? 'Reservas por casa de apostas' : 'ID DE RESERVA'}</span>
-      <b>{entries.length ? entries.map(e => e.bookmaker + ': ' + (e.bookingId || 'A aguardar')).join(' • ') : (t.bookingId || 'A aguardar')}</b>
-      <a onClick={e => { e.preventDefault(); onToggle(); }} href="#detalhes">{expanded ? 'FECHAR DETALHES' : 'VER DETALHES'} <ChevronDown size={13}/></a>
-    </div>
-    {expanded && <div className="fk-ticket-details">
-      <div className="fk-details-heading"><b>DETALHES DA FICHA</b><span>{liveView ? 'ACOMPANHAMENTO AO VIVO' : 'INFORMAÇÃO PUBLICADA'}</span></div>
-      {entries.length > 0 && <div className="ticket-reservation-grid">{entries.map(entry => <div className="ticket-reservation-card" key={entry.bookmaker}><div><small>CASA DE APOSTAS</small><b>{entry.bookmaker}</b></div><div><small>ODD TOTAL</small><strong>{money(entry.totalOdds)}</strong></div><div><small>ID DE RESERVA</small><b>{entry.bookingId || 'A aguardar reserva'}</b></div>{entry.bookingUrl && <a className="reserve-link" href={entry.bookingUrl} target="_blank" rel="noreferrer">Abrir boletim <ChevronRight size={14}/></a>}</div>)}</div>}
-      {legs.map((leg,i) => <div className="fk-leg-extra" key={leg.id || i}>
-        <div><b>{leg.home || leg.homeTeam || 'Equipa da casa'} vs {leg.away || leg.awayTeam || 'Equipa visitante'}</b><span>{leg.league || leg.competition || 'Competição não indicada'}</span></div>
-        <span className={resultClass(leg)}>{resultLabel(leg)}</span>
-        {(isLive(leg) || isFinished(leg) || matchScore(leg)) && <div className={isLive(leg) ? 'live-score-strip' : 'final-score-strip'}><Radio size={15}/><b>{matchScore(leg) || '— : —'}</b><span>{isLive(leg) ? (leg.minute ? leg.minute + "'" : leg.matchStatus || 'Em directo') : 'RESULTADO FINAL'}</span>{leg.lastEvent && <small>{leg.lastEvent}</small>}</div>}
-        {(isLive(leg) || isFinished(leg)) && liveStatRows(leg).length > 0 && <div className="live-stats-grid">{liveStatRows(leg).map(row => <div key={row.label}><small>{row.label}</small><b>{row.home} : {row.away}</b></div>)}</div>}
-        {leg.rationale && <p className="leg-analysis">{leg.rationale}</p>}
-      </div>)}
-      {!entries.length && <div className="fk-booking-reference"><small>REFERÊNCIA DO BOLETIM</small><b>{t.bookingId || 'Ainda não disponibilizada'}</b>{t.bookingUrl && <a href={t.bookingUrl} target="_blank" rel="noreferrer">Abrir boletim</a>}</div>}
-    </div>}
-  </article>;
-}
-
-function AnalysisPanel({ row }) {
+function AnalysisCard({ row }) {
   const match = row.matches || {};
   const report = row.analysis || {};
   const selections = Array.isArray(report.selections) ? report.selections : [];
-  const percent = value => {
-    const number = Number(value);
-    if (value === null || value === undefined || value === '' || !Number.isFinite(number)) return '—';
-    return (Math.abs(number) <= 1 ? number * 100 : number).toFixed(1) + '%';
+  const num = value => {
+    const n = Number(value);
+    if (value === null || value === undefined || value === '' || !Number.isFinite(n)) return null;
+    return Math.abs(n) <= 1 ? n * 100 : n;
   };
-  return <section className="panel daily-ticket">
-    <div className="ticket-details">
-      <div className="details-heading">
-        <b>{match.home_team || 'Equipa da casa'} <span>vs</span> {match.away_team || 'Equipa visitante'}</b>
-        <span>{row.status === 'ready' ? 'Análise concluída' : row.status}</span>
+  const pct = value => { const n = num(value); return n === null ? '—' : n.toFixed(1) + '%'; };
+  const risks = Array.isArray(report.riskFlags) ? report.riskFlags : [];
+  const sources = Array.isArray(report.sources) ? report.sources : [];
+  return <article className="fk-reference-ticket fk-analysis is-pending">
+    <div className="fk-reference-ticket-main" style={{ cursor: 'default' }}>
+      <div className="fk-reference-ticket-top">
+        <span><b>{match.competition || 'Competição não indicada'}</b><i> — {match.kickoff_at ? new Date(match.kickoff_at).toLocaleString('pt-AO') : 'Data não indicada'}</i></span>
+        <em className="fk-reference-chip">{row.status === 'ready' ? 'Concluída' : row.status}</em>
       </div>
-      <div className="ticket-subline">
-        <span>{match.competition || 'Competição não indicada'}</span>
-        <span>{match.kickoff_at ? new Date(match.kickoff_at).toLocaleString('pt-AO') : 'Data não indicada'}</span>
-        <span>{row.provider || 'ChatGPT'}{row.model ? ' · ' + row.model : ''}</span>
+      <div className="fk-reference-fixture" style={{ margin: '14px 0 10px' }}>
+        <div className="fk-reference-team"><span className="fk-reference-crest" aria-hidden="true">{crest(match.home_team)}</span><span>{match.home_team || 'Equipa da casa'}</span></div>
+        <div className="fk-reference-score vs">VS</div>
+        <div className="fk-reference-team away"><span className="fk-reference-crest" aria-hidden="true">{crest(match.away_team)}</span><span>{match.away_team || 'Equipa visitante'}</span></div>
       </div>
-      {(row.summary || report.verdict) && <p className="panel-note">{row.summary || report.verdict}</p>}
-      {Array.isArray(report.riskFlags) && report.riskFlags.length > 0 && <p className="panel-note">Riscos: {report.riskFlags.join(' · ')}</p>}
-      {selections.length ? <div className="history-legs">{selections.map((pick,index) => <div key={pick.id || index}>
-        <span>{pick.market || 'Mercado'} · {pick.selection || 'Selecção'}</span>
-        <small>Odd: {pick.bestOdds ?? pick.odds ?? '—'} · Probabilidade: {percent(pick.probability ?? pick.estimatedProbability)} · Edge: {percent(pick.edge)} · Valor esperado: {percent(pick.expectedValue)}</small>
-        {pick.bestBookmaker && <small>Melhor cotação: {pick.bestBookmaker}</small>}
-        {pick.confidence && <small>Confiança: {pick.confidence}</small>}
-        {pick.rationale && <small>{pick.rationale}</small>}
-      </div>)}</div> : <div className="panel-note">Relatório sem selecções recomendadas. Consulta os fundamentos e os riscos no relatório completo.</div>}
-      {Array.isArray(report.sources) && report.sources.length > 0 && <div className="panel-note">Fontes: {report.sources.map((source,index) => <React.Fragment key={source.url || index}>{index > 0 ? ' · ' : ''}{source.url ? <a href={source.url} target="_blank" rel="noreferrer">{source.name || source.url}</a> : source.name || 'Fonte não identificada'}</React.Fragment>)}</div>}
-      <div className="ticket-detail-footer"><span>ANÁLISE GUARDADA</span><b>{row.generated_at ? new Date(row.generated_at).toLocaleString('pt-AO') : '—'}</b></div>
+      {(row.summary || report.verdict) && <p className="fk-analysis-verdict">{row.summary || report.verdict}</p>}
+      {selections.length > 0 ? <div className="fk-analysis-picks">
+        {selections.map((pick, index) => {
+          const prob = num(pick.probability ?? pick.estimatedProbability);
+          return <div className="fk-analysis-pick" key={pick.id || index}>
+            <div className="fk-analysis-pick-head">
+              <span>{pick.market || 'Mercado'} · <b>{pick.selection || 'Selecção'}</b></span>
+              <strong>{pick.bestOdds ?? pick.odds ?? '—'}</strong>
+            </div>
+            {prob !== null && <div className="fk-analysis-bar" aria-label={'Probabilidade ' + prob.toFixed(1) + '%'}><i style={{ width: Math.max(0, Math.min(100, prob)) + '%' }}/></div>}
+            <div className="fk-analysis-meta">
+              <span>Prob. <b>{pct(pick.probability ?? pick.estimatedProbability)}</b></span>
+              <span>Edge <b>{pct(pick.edge)}</b></span>
+              <span>Valor esp. <b>{pct(pick.expectedValue)}</b></span>
+              {pick.bestBookmaker && <span>Melhor cotação <b>{pick.bestBookmaker}</b></span>}
+              {pick.confidence && <span>Confiança <b>{pick.confidence}</b></span>}
+            </div>
+            {pick.rationale && <small className="note">{pick.rationale}</small>}
+          </div>;
+        })}
+      </div> : <small className="note">Relatório sem selecções recomendadas. Consulta os fundamentos e os riscos no relatório completo.</small>}
+      {risks.length > 0 && <div className="fk-analysis-risks">{risks.map((r, i) => <span key={i}>⚠ {typeof r === 'string' ? r : JSON.stringify(r)}</span>)}</div>}
+      {sources.length > 0 && <div className="fk-analysis-sources">Fontes: {sources.map((source, index) => <React.Fragment key={source.url || index}>{index > 0 ? ' · ' : ''}{source.url ? <a href={source.url} target="_blank" rel="noreferrer">{source.name || source.url}</a> : source.name || 'Fonte não identificada'}</React.Fragment>)}</div>}
+      <div className="fk-reference-ticket-foot">{row.provider || 'ChatGPT'}{row.model ? ' · ' + row.model : ''} <span>•</span> {row.generated_at ? new Date(row.generated_at).toLocaleString('pt-AO') : '—'}</div>
     </div>
-  </section>;
+  </article>;
 }
-
-function EmptyState({ icon: Icon, title, detail }) { return <div className="empty-state"><div className="empty-state-icon"><Icon size={23}/></div><b>{title}</b><span>{detail}</span></div>; }
-
