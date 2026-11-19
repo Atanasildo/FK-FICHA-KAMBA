@@ -76,6 +76,10 @@ console.log("Jogos comuns BantuBet/ElephantBet:", commonPairs.length);
 console.log("A SportAPI não é necessária para esta recolha.");
 console.log("Limite configurado:", maxGames, "par(es).");
 console.log("A recolher:", pairsToCollect.length, "pares de jogos comuns.");
+if (eligiblePairs.length > pairsToCollect.length) {
+  const firstCut = new Date(Number(eligiblePairs[pairsToCollect.length].bantu.start_ts) * 1000).toISOString();
+  console.log("ATENÇÃO: " + (eligiblePairs.length - pairsToCollect.length) + " jogo(s) elegível(eis) ficam de fora pelo limite (a partir de " + firstCut + "). Aumenta maxGames para os incluir.");
+}
 
 if (!pairsToCollect.length) {
   console.error("Não foram encontrados jogos comuns inequívocos entre as duas casas. Nenhuma odd será guardada.");
