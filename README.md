@@ -510,3 +510,10 @@ Esta secção evita que uma nova IA confunda código existente com funcionalidad
 - `api/bookmakers/reserve.js` (`createBooking`) usa essa função. O pipeline (`lib/pipeline/build-tickets.js`) só publica um par de boletins quando as duas casas devolvem código, e guarda o `selection_id` de cada selecção em `ticket_legs.selection_id` (migração `20261119230000_ticket_legs_selection_id.sql`).
 - `POST /api/bookmakers/reserve` com `{ "ticketId": "<uuid>" }` só funciona para fichas com `selection_id` guardado e jogos que ainda não começaram.
 - O endpoint `image-creator/share-booking` já não é usado para criar o código; serve apenas para a imagem de partilha, e exige um `bookId` já existente.
+
+### Reserva a partir do PC local (o Swarm recusa a Vercel)
+
+- Testado em 19/11/2026: a ligação WebSocket ao Swarm a partir de servidores da Vercel responde **HTTP 403** nas duas casas. A partir do PC local funciona.
+- Por isso o pipeline na Vercel **publica** os pares de boletins com `booking_reference = null` e `selection_id` guardado; e `tools/reserve-pending.js` (PC local) pede o código a seguir:
+  `npm run reserve:pending` (uma vez) ou `tools\windows\reserve-pending.bat` (a cada 2 minutos). Precisa de `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`.
+- O programa só reserva boletins com `selection_id` em todas as selecções e nenhum jogo iniciado; usa um bloqueio em `booking_reference` para não duplicar e faz uma só tentativa por boletim.
