@@ -215,8 +215,15 @@ export default function App() {
 
 function groupBookmakerPairs(tickets) {
   const groups = new Map();
+  // Fichas antigas não têm shared_ticket_id: junta as das duas casas pelo dia, tipo e conjunto de jogos.
+  const legacyKey = ticket => {
+    const sig = (ticket.legs || []).map(l => [l.home, l.away, l.selection].join('~')).sort().join('|');
+    if (!ticket.bookmaker || !sig) return ticket.id;
+    return 'legacy:' + String(ticket.createdAt || '').slice(0, 10) + ':' + ticket.type + ':' + sig;
+  };
   for (const ticket of tickets) {
-    const key = ticket.sharedTicketId || ticket.id;
+    let key = ticket.sharedTicketId && ticket.sharedTicketId !== ticket.id ? ticket.sharedTicketId : legacyKey(ticket);
+    if ((groups.get(key) || []).some(other => other.bookmaker && other.bookmaker === ticket.bookmaker)) key = key + '#' + ticket.id;
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(ticket);
   }
