@@ -1,0 +1,2240 @@
+{
+  "bookmaker": "BantuBet",
+  "urlPagina": "https://m.bantubet.co.ao/pt/sports/pre-match/event-view/Soccer/England/538-premier-league/31419243-manchester-city-fulham?s=0",
+  "recolhidoEm": "2026-11-08T19:15:34.421Z",
+  "categoriasLidas": 6,
+  "totalMercados": 26,
+  "totalOdds": 211,
+  "mercadosComAssociacaoCompleta": 17,
+  "categorias": [
+    {
+      "categoria": "Jogo",
+      "categoriaId": "8",
+      "quantidadeMercados": 8,
+      "mercados": [
+        {
+          "mercado": "Resultado do Jogo (1 Golo de Avanço)",
+          "quantidadeOdds": 3,
+          "odds": [
+            "1.20",
+            "4.80",
+            "2.61"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Manchester City",
+              "odd": "1.20"
+            },
+            {
+              "selecao": "Empate",
+              "odd": "4.80"
+            },
+            {
+              "selecao": "Fulham",
+              "odd": "2.61"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Manchester City",
+              "odd": "1.20"
+            },
+            {
+              "selecao": "Empate",
+              "odd": "4.80"
+            },
+            {
+              "selecao": "Fulham",
+              "odd": "2.61"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Resultado do Jogo (1 Golo de Avanço)\n\nManchester City\nEmpate\nFulham\n1.20\n4.80\n2.61"
+        },
+        {
+          "mercado": "Resultado do Jogo",
+          "quantidadeOdds": 3,
+          "odds": [
+            "1.43",
+            "4.80",
+            "5.90"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Manchester City",
+              "odd": "1.43"
+            },
+            {
+              "selecao": "Empate",
+              "odd": "4.80"
+            },
+            {
+              "selecao": "Fulham",
+              "odd": "5.90"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Manchester City",
+              "odd": "1.43"
+            },
+            {
+              "selecao": "Empate",
+              "odd": "4.80"
+            },
+            {
+              "selecao": "Fulham",
+              "odd": "5.90"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Resultado do Jogo\n\nManchester City\nEmpate\nFulham\n1.43\n4.80\n5.90"
+        },
+        {
+          "mercado": "Dupla Chance",
+          "quantidadeOdds": 3,
+          "odds": [
+            "1.12",
+            "1.16",
+            "2.58"
+          ],
+          "selecoes": [
+            {
+              "selecao": "1X",
+              "odd": "1.12"
+            },
+            {
+              "selecao": "12",
+              "odd": "1.16"
+            },
+            {
+              "selecao": "X2",
+              "odd": "2.58"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "1X",
+              "odd": "1.12"
+            },
+            {
+              "selecao": "12",
+              "odd": "1.16"
+            },
+            {
+              "selecao": "X2",
+              "odd": "2.58"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Dupla Chance\n\n1X\n12\nX2\n1.12\n1.16\n2.58"
+        },
+        {
+          "mercado": "Empate anula aposta",
+          "quantidadeOdds": 2,
+          "odds": [
+            "1.16",
+            "4.20"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Manchester City",
+              "odd": "1.16"
+            },
+            {
+              "selecao": "Fulham",
+              "odd": "4.20"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Manchester City",
+              "odd": "1.16"
+            },
+            {
+              "selecao": "Fulham",
+              "odd": "4.20"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Empate anula aposta\n\nManchester City\nFulham\n1.16\n4.20"
+        },
+        {
+          "mercado": "Ambas equipas marcarão",
+          "quantidadeOdds": 2,
+          "odds": [
+            "1.63",
+            "2.07"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Sim",
+              "odd": "1.63"
+            },
+            {
+              "selecao": "Não",
+              "odd": "2.07"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Sim",
+              "odd": "1.63"
+            },
+            {
+              "selecao": "Não",
+              "odd": "2.07"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Ambas equipas marcarão\n\nSim\nNão\n1.63\n2.07"
+        },
+        {
+          "mercado": "Ambas as Equipas Marcam 2 ou mais Golos\n\nNOVO",
+          "quantidadeOdds": 2,
+          "odds": [
+            "4.57",
+            "1.16"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Sim",
+              "odd": "4.57"
+            },
+            {
+              "selecao": "Não",
+              "odd": "1.16"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Sim",
+              "odd": "4.57"
+            },
+            {
+              "selecao": "Não",
+              "odd": "1.16"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Ambas as Equipas Marcam 2 ou mais Golos\n\nNOVO\nSim\nNão\n4.57\n1.16"
+        },
+        {
+          "mercado": "Golo em ambas partes",
+          "quantidadeOdds": 2,
+          "odds": [
+            "1.51",
+            "2.39"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Sim",
+              "odd": "1.51"
+            },
+            {
+              "selecao": "não",
+              "odd": "2.39"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Sim",
+              "odd": "1.51"
+            },
+            {
+              "selecao": "não",
+              "odd": "2.39"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Golo em ambas partes\n\nSim\nnão\n1.51\n2.39"
+        },
+        {
+          "mercado": "Primeira Equipe a Marcar",
+          "quantidadeOdds": 3,
+          "odds": [
+            "1.38",
+            "2.89",
+            "21.00"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Manchester City",
+              "odd": "1.38"
+            },
+            {
+              "selecao": "Fulham",
+              "odd": "2.89"
+            },
+            {
+              "selecao": "Sem golo",
+              "odd": "21.00"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Manchester City",
+              "odd": "1.38"
+            },
+            {
+              "selecao": "Fulham",
+              "odd": "2.89"
+            },
+            {
+              "selecao": "Sem golo",
+              "odd": "21.00"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Primeira Equipe a Marcar\n\nManchester City\nFulham\nSem golo\n1.38\n2.89\n21.00"
+        }
+      ]
+    },
+    {
+      "categoria": "Totais",
+      "categoriaId": "129",
+      "quantidadeMercados": 3,
+      "mercados": [
+        {
+          "mercado": "Total de golos no jogo",
+          "quantidadeOdds": 24,
+          "odds": [
+            "1.02",
+            "9.00",
+            "1.14",
+            "4.80",
+            "1.20",
+            "3.95",
+            "1.48",
+            "2.45",
+            "1.72",
+            "1.96",
+            "2.14",
+            "1.58",
+            "2.95",
+            "1.30",
+            "3.45",
+            "1.23",
+            "5.40",
+            "1.11",
+            "6.00",
+            "1.08",
+            "9.00",
+            "1.025",
+            "9.00",
+            "1.02"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Mais de 1",
+              "odd": "1.02",
+              "linha": "1",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1",
+              "odd": "9.00",
+              "linha": "1",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1.5",
+              "odd": "1.14",
+              "linha": "1.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1.5",
+              "odd": "4.80",
+              "linha": "1.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2",
+              "odd": "1.20",
+              "linha": "2",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2",
+              "odd": "3.95",
+              "linha": "2",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2.5",
+              "odd": "1.48",
+              "linha": "2.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2.5",
+              "odd": "2.45",
+              "linha": "2.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 3",
+              "odd": "1.72",
+              "linha": "3",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 3",
+              "odd": "1.96",
+              "linha": "3",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 3.5",
+              "odd": "2.14",
+              "linha": "3.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 3.5",
+              "odd": "1.58",
+              "linha": "3.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 4",
+              "odd": "2.95",
+              "linha": "4",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 4",
+              "odd": "1.30",
+              "linha": "4",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 4.5",
+              "odd": "3.45",
+              "linha": "4.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 4.5",
+              "odd": "1.23",
+              "linha": "4.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 5",
+              "odd": "5.40",
+              "linha": "5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 5",
+              "odd": "1.11",
+              "linha": "5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 5.5",
+              "odd": "6.00",
+              "linha": "5.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 5.5",
+              "odd": "1.08",
+              "linha": "5.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 6",
+              "odd": "9.00",
+              "linha": "6",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 6",
+              "odd": "1.025",
+              "linha": "6",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 6.5",
+              "odd": "9.00",
+              "linha": "6.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 6.5",
+              "odd": "1.02",
+              "linha": "6.5",
+              "coluna": "Menos"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Mais de 1",
+              "odd": "1.02",
+              "linha": "1",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1",
+              "odd": "9.00",
+              "linha": "1",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1.5",
+              "odd": "1.14",
+              "linha": "1.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1.5",
+              "odd": "4.80",
+              "linha": "1.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2",
+              "odd": "1.20",
+              "linha": "2",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2",
+              "odd": "3.95",
+              "linha": "2",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2.5",
+              "odd": "1.48",
+              "linha": "2.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2.5",
+              "odd": "2.45",
+              "linha": "2.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 3",
+              "odd": "1.72",
+              "linha": "3",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 3",
+              "odd": "1.96",
+              "linha": "3",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 3.5",
+              "odd": "2.14",
+              "linha": "3.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 3.5",
+              "odd": "1.58",
+              "linha": "3.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 4",
+              "odd": "2.95",
+              "linha": "4",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 4",
+              "odd": "1.30",
+              "linha": "4",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 4.5",
+              "odd": "3.45",
+              "linha": "4.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 4.5",
+              "odd": "1.23",
+              "linha": "4.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 5",
+              "odd": "5.40",
+              "linha": "5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 5",
+              "odd": "1.11",
+              "linha": "5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 5.5",
+              "odd": "6.00",
+              "linha": "5.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 5.5",
+              "odd": "1.08",
+              "linha": "5.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 6",
+              "odd": "9.00",
+              "linha": "6",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 6",
+              "odd": "1.025",
+              "linha": "6",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 6.5",
+              "odd": "9.00",
+              "linha": "6.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 6.5",
+              "odd": "1.02",
+              "linha": "6.5",
+              "coluna": "Menos"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Total de golos no jogo\n\nMais de\nMenos\n1\n1.02\n9.00\n1.5\n1.14\n4.80\n2\n1.20\n3.95\n2.5\n1.48\n2.45\n3\n1.72\n1.96\n3.5\n2.14\n1.58\n4\n2.95\n1.30\n4.5\n3.45\n1.23\n5\n5.40\n1.11\n5.5\n6.00\n1.08\n6\n9.00\n1.025\n6.5\n9.00\n1.02"
+        },
+        {
+          "mercado": "Total de golos do Manchester City",
+          "quantidadeOdds": 10,
+          "odds": [
+            "1.38",
+            "2.58",
+            "1.70",
+            "1.98",
+            "2.20",
+            "1.55",
+            "3.35",
+            "1.24",
+            "3.95",
+            "1.18"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Mais de 1.5",
+              "odd": "1.38",
+              "linha": "1.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1.5",
+              "odd": "2.58",
+              "linha": "1.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2",
+              "odd": "1.70",
+              "linha": "2",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2",
+              "odd": "1.98",
+              "linha": "2",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2.5",
+              "odd": "2.20",
+              "linha": "2.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2.5",
+              "odd": "1.55",
+              "linha": "2.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 3",
+              "odd": "3.35",
+              "linha": "3",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 3",
+              "odd": "1.24",
+              "linha": "3",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 3.5",
+              "odd": "3.95",
+              "linha": "3.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 3.5",
+              "odd": "1.18",
+              "linha": "3.5",
+              "coluna": "Menos"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Mais de 1.5",
+              "odd": "1.38",
+              "linha": "1.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1.5",
+              "odd": "2.58",
+              "linha": "1.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2",
+              "odd": "1.70",
+              "linha": "2",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2",
+              "odd": "1.98",
+              "linha": "2",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2.5",
+              "odd": "2.20",
+              "linha": "2.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2.5",
+              "odd": "1.55",
+              "linha": "2.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 3",
+              "odd": "3.35",
+              "linha": "3",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 3",
+              "odd": "1.24",
+              "linha": "3",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 3.5",
+              "odd": "3.95",
+              "linha": "3.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 3.5",
+              "odd": "1.18",
+              "linha": "3.5",
+              "coluna": "Menos"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Total de golos do Manchester City\n\nMais de\nMenos\n1.5\n1.38\n2.58\n2\n1.70\n1.98\n2.5\n2.20\n1.55\n3\n3.35\n1.24\n3.5\n3.95\n1.18"
+        },
+        {
+          "mercado": "Total de golos do Fulham",
+          "quantidadeOdds": 6,
+          "odds": [
+            "1.47",
+            "2.35",
+            "2.14",
+            "1.58",
+            "3.15",
+            "1.27"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Mais de 0.5",
+              "odd": "1.47",
+              "linha": "0.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 0.5",
+              "odd": "2.35",
+              "linha": "0.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1",
+              "odd": "2.14",
+              "linha": "1",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1",
+              "odd": "1.58",
+              "linha": "1",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1.5",
+              "odd": "3.15",
+              "linha": "1.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1.5",
+              "odd": "1.27",
+              "linha": "1.5",
+              "coluna": "Menos"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Mais de 0.5",
+              "odd": "1.47",
+              "linha": "0.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 0.5",
+              "odd": "2.35",
+              "linha": "0.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1",
+              "odd": "2.14",
+              "linha": "1",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1",
+              "odd": "1.58",
+              "linha": "1",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1.5",
+              "odd": "3.15",
+              "linha": "1.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1.5",
+              "odd": "1.27",
+              "linha": "1.5",
+              "coluna": "Menos"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Total de golos do Fulham\n\nMais de\nMenos\n0.5\n1.47\n2.35\n1\n2.14\n1.58\n1.5\n3.15\n1.27"
+        }
+      ]
+    },
+    {
+      "categoria": "Handicaps",
+      "categoriaId": "128",
+      "quantidadeMercados": 2,
+      "mercados": [
+        {
+          "mercado": "Handicap de Golos",
+          "quantidadeOdds": 26,
+          "odds": [
+            "9.00",
+            "1.02",
+            "9.00",
+            "1.02",
+            "6.00",
+            "1.08",
+            "5.60",
+            "1.09",
+            "3.45",
+            "1.23",
+            "2.85",
+            "1.32",
+            "2.07",
+            "1.63",
+            "1.63",
+            "2.07",
+            "1.38",
+            "2.58",
+            "1.16",
+            "4.20",
+            "1.12",
+            "5.00",
+            "1.03",
+            "8.30",
+            "1.02",
+            "9.00"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Manchester City -4.5",
+              "odd": "9.00",
+              "linha": "-4.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +4.5",
+              "odd": "1.02",
+              "linha": "+4.5",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -4",
+              "odd": "9.00",
+              "linha": "-4",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +4",
+              "odd": "1.02",
+              "linha": "+4",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -3.5",
+              "odd": "6.00",
+              "linha": "-3.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +3.5",
+              "odd": "1.08",
+              "linha": "+3.5",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -3",
+              "odd": "5.60",
+              "linha": "-3",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +3",
+              "odd": "1.09",
+              "linha": "+3",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -2.5",
+              "odd": "3.45",
+              "linha": "-2.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +2.5",
+              "odd": "1.23",
+              "linha": "+2.5",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -2",
+              "odd": "2.85",
+              "linha": "-2",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +2",
+              "odd": "1.32",
+              "linha": "+2",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -1.5",
+              "odd": "2.07",
+              "linha": "-1.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +1.5",
+              "odd": "1.63",
+              "linha": "+1.5",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -1",
+              "odd": "1.63",
+              "linha": "-1",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +1",
+              "odd": "2.07",
+              "linha": "+1",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -0.5",
+              "odd": "1.38",
+              "linha": "-0.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +0.5",
+              "odd": "2.58",
+              "linha": "+0.5",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City 0",
+              "odd": "1.16",
+              "linha": "0",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham 0",
+              "odd": "4.20",
+              "linha": "0",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City +0.5",
+              "odd": "1.12",
+              "linha": "+0.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham -0.5",
+              "odd": "5.00",
+              "linha": "-0.5",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City +1",
+              "odd": "1.03",
+              "linha": "+1",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham -1",
+              "odd": "8.30",
+              "linha": "-1",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City +1.5",
+              "odd": "1.02",
+              "linha": "+1.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham -1.5",
+              "odd": "9.00",
+              "linha": "-1.5",
+              "coluna": "Fulham"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Manchester City -4.5",
+              "odd": "9.00",
+              "linha": "-4.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +4.5",
+              "odd": "1.02",
+              "linha": "+4.5",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -4",
+              "odd": "9.00",
+              "linha": "-4",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +4",
+              "odd": "1.02",
+              "linha": "+4",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -3.5",
+              "odd": "6.00",
+              "linha": "-3.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +3.5",
+              "odd": "1.08",
+              "linha": "+3.5",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -3",
+              "odd": "5.60",
+              "linha": "-3",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +3",
+              "odd": "1.09",
+              "linha": "+3",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -2.5",
+              "odd": "3.45",
+              "linha": "-2.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +2.5",
+              "odd": "1.23",
+              "linha": "+2.5",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -2",
+              "odd": "2.85",
+              "linha": "-2",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +2",
+              "odd": "1.32",
+              "linha": "+2",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -1.5",
+              "odd": "2.07",
+              "linha": "-1.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +1.5",
+              "odd": "1.63",
+              "linha": "+1.5",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -1",
+              "odd": "1.63",
+              "linha": "-1",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +1",
+              "odd": "2.07",
+              "linha": "+1",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -0.5",
+              "odd": "1.38",
+              "linha": "-0.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +0.5",
+              "odd": "2.58",
+              "linha": "+0.5",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City 0",
+              "odd": "1.16",
+              "linha": "0",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham 0",
+              "odd": "4.20",
+              "linha": "0",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City +0.5",
+              "odd": "1.12",
+              "linha": "+0.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham -0.5",
+              "odd": "5.00",
+              "linha": "-0.5",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City +1",
+              "odd": "1.03",
+              "linha": "+1",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham -1",
+              "odd": "8.30",
+              "linha": "-1",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City +1.5",
+              "odd": "1.02",
+              "linha": "+1.5",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham -1.5",
+              "odd": "9.00",
+              "linha": "-1.5",
+              "coluna": "Fulham"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Handicap de Golos\n\nManchester City\nFulham\n-4.5\n9.00\n+4.5\n1.02\n-4\n9.00\n+4\n1.02\n-3.5\n6.00\n+3.5\n1.08\n-3\n5.60\n+3\n1.09\n-2.5\n3.45\n+2.5\n1.23\n-2\n2.85\n+2\n1.32\n-1.5\n2.07\n+1.5\n1.63\n-1\n1.63\n+1\n2.07\n-0.5\n1.38\n+0.5\n2.58\n0\n1.16\n0\n4.20\n+0.5\n1.12\n-0.5\n5.00\n+1\n1.03\n-1\n8.30\n+1.5\n1.02\n-1.5\n9.00"
+        },
+        {
+          "mercado": "Handicap Asiático de Golos",
+          "quantidadeOdds": 24,
+          "odds": [
+            "9.00",
+            "1.02",
+            "7.70",
+            "1.04",
+            "6.00",
+            "1.08",
+            "4.20",
+            "1.16",
+            "3.20",
+            "1.26",
+            "2.35",
+            "1.47",
+            "1.87",
+            "1.79",
+            "1.48",
+            "2.30",
+            "1.27",
+            "3.15",
+            "1.14",
+            "4.60",
+            "1.07",
+            "6.30",
+            "1.03",
+            "8.30"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Manchester City -4.25",
+              "odd": "9.00",
+              "linha": "-4.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +4.25",
+              "odd": "1.02",
+              "linha": "+4.25",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -3.75",
+              "odd": "7.70",
+              "linha": "-3.75",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +3.75",
+              "odd": "1.04",
+              "linha": "+3.75",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -3.25",
+              "odd": "6.00",
+              "linha": "-3.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +3.25",
+              "odd": "1.08",
+              "linha": "+3.25",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -2.75",
+              "odd": "4.20",
+              "linha": "-2.75",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +2.75",
+              "odd": "1.16",
+              "linha": "+2.75",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -2.25",
+              "odd": "3.20",
+              "linha": "-2.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +2.25",
+              "odd": "1.26",
+              "linha": "+2.25",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -1.75",
+              "odd": "2.35",
+              "linha": "-1.75",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +1.75",
+              "odd": "1.47",
+              "linha": "+1.75",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -1.25",
+              "odd": "1.87",
+              "linha": "-1.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +1.25",
+              "odd": "1.79",
+              "linha": "+1.25",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -0.75",
+              "odd": "1.48",
+              "linha": "-0.75",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +0.75",
+              "odd": "2.30",
+              "linha": "+0.75",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -0.25",
+              "odd": "1.27",
+              "linha": "-0.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +0.25",
+              "odd": "3.15",
+              "linha": "+0.25",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City +0.25",
+              "odd": "1.14",
+              "linha": "+0.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham -0.25",
+              "odd": "4.60",
+              "linha": "-0.25",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City +0.75",
+              "odd": "1.07",
+              "linha": "+0.75",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham -0.75",
+              "odd": "6.30",
+              "linha": "-0.75",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City +1.25",
+              "odd": "1.03",
+              "linha": "+1.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham -1.25",
+              "odd": "8.30",
+              "linha": "-1.25",
+              "coluna": "Fulham"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Manchester City -4.25",
+              "odd": "9.00",
+              "linha": "-4.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +4.25",
+              "odd": "1.02",
+              "linha": "+4.25",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -3.75",
+              "odd": "7.70",
+              "linha": "-3.75",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +3.75",
+              "odd": "1.04",
+              "linha": "+3.75",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -3.25",
+              "odd": "6.00",
+              "linha": "-3.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +3.25",
+              "odd": "1.08",
+              "linha": "+3.25",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -2.75",
+              "odd": "4.20",
+              "linha": "-2.75",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +2.75",
+              "odd": "1.16",
+              "linha": "+2.75",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -2.25",
+              "odd": "3.20",
+              "linha": "-2.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +2.25",
+              "odd": "1.26",
+              "linha": "+2.25",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -1.75",
+              "odd": "2.35",
+              "linha": "-1.75",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +1.75",
+              "odd": "1.47",
+              "linha": "+1.75",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -1.25",
+              "odd": "1.87",
+              "linha": "-1.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +1.25",
+              "odd": "1.79",
+              "linha": "+1.25",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -0.75",
+              "odd": "1.48",
+              "linha": "-0.75",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +0.75",
+              "odd": "2.30",
+              "linha": "+0.75",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City -0.25",
+              "odd": "1.27",
+              "linha": "-0.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham +0.25",
+              "odd": "3.15",
+              "linha": "+0.25",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City +0.25",
+              "odd": "1.14",
+              "linha": "+0.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham -0.25",
+              "odd": "4.60",
+              "linha": "-0.25",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City +0.75",
+              "odd": "1.07",
+              "linha": "+0.75",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham -0.75",
+              "odd": "6.30",
+              "linha": "-0.75",
+              "coluna": "Fulham"
+            },
+            {
+              "selecao": "Manchester City +1.25",
+              "odd": "1.03",
+              "linha": "+1.25",
+              "coluna": "Manchester City"
+            },
+            {
+              "selecao": "Fulham -1.25",
+              "odd": "8.30",
+              "linha": "-1.25",
+              "coluna": "Fulham"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Handicap Asiático de Golos\n\nManchester City\nFulham\n-4.25\n9.00\n+4.25\n1.02\n-3.75\n7.70\n+3.75\n1.04\n-3.25\n6.00\n+3.25\n1.08\n-2.75\n4.20\n+2.75\n1.16\n-2.25\n3.20\n+2.25\n1.26\n-1.75\n2.35\n+1.75\n1.47\n-1.25\n1.87\n+1.25\n1.79\n-0.75\n1.48\n+0.75\n2.30\n-0.25\n1.27\n+0.25\n3.15\n+0.25\n1.14\n-0.25\n4.60\n+0.75\n1.07\n-0.75\n6.30\n+1.25\n1.03\n-1.25\n8.30"
+        }
+      ]
+    },
+    {
+      "categoria": "Partes",
+      "categoriaId": "130",
+      "quantidadeMercados": 4,
+      "mercados": [
+        {
+          "mercado": "Resultado da 1º Parte",
+          "quantidadeOdds": 3,
+          "odds": [
+            "1.89",
+            "2.57",
+            "5.80"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Manchester City",
+              "odd": "1.89"
+            },
+            {
+              "selecao": "Empate",
+              "odd": "2.57"
+            },
+            {
+              "selecao": "Fulham",
+              "odd": "5.80"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Manchester City",
+              "odd": "1.89"
+            },
+            {
+              "selecao": "Empate",
+              "odd": "2.57"
+            },
+            {
+              "selecao": "Fulham",
+              "odd": "5.80"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Resultado da 1º Parte\n\nManchester City\nEmpate\nFulham\n1.89\n2.57\n5.80"
+        },
+        {
+          "mercado": "Dupla Chance da 1º parte",
+          "quantidadeOdds": 3,
+          "odds": [
+            "1.11",
+            "1.44",
+            "1.87"
+          ],
+          "selecoes": [
+            {
+              "selecao": "1X",
+              "odd": "1.11"
+            },
+            {
+              "selecao": "12",
+              "odd": "1.44"
+            },
+            {
+              "selecao": "X2",
+              "odd": "1.87"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "1X",
+              "odd": "1.11"
+            },
+            {
+              "selecao": "12",
+              "odd": "1.44"
+            },
+            {
+              "selecao": "X2",
+              "odd": "1.87"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Dupla Chance da 1º parte\n\n1X\n12\nX2\n1.11\n1.44\n1.87"
+        },
+        {
+          "mercado": "Total de Golos na 1º Parte",
+          "quantidadeOdds": 14,
+          "odds": [
+            "1.28",
+            "3.15",
+            "1.52",
+            "2.24",
+            "2.24",
+            "1.52",
+            "3.88",
+            "1.18",
+            "4.70",
+            "1.12",
+            "8.00",
+            "1.02",
+            "8.00",
+            "1.02"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Mais de 0.5",
+              "odd": "1.28",
+              "linha": "0.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 0.5",
+              "odd": "3.15",
+              "linha": "0.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1",
+              "odd": "1.52",
+              "linha": "1",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1",
+              "odd": "2.24",
+              "linha": "1",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1.5",
+              "odd": "2.24",
+              "linha": "1.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1.5",
+              "odd": "1.52",
+              "linha": "1.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2",
+              "odd": "3.88",
+              "linha": "2",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2",
+              "odd": "1.18",
+              "linha": "2",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2.5",
+              "odd": "4.70",
+              "linha": "2.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2.5",
+              "odd": "1.12",
+              "linha": "2.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 3",
+              "odd": "8.00",
+              "linha": "3",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 3",
+              "odd": "1.02",
+              "linha": "3",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 3.5",
+              "odd": "8.00",
+              "linha": "3.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 3.5",
+              "odd": "1.02",
+              "linha": "3.5",
+              "coluna": "Menos"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Mais de 0.5",
+              "odd": "1.28",
+              "linha": "0.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 0.5",
+              "odd": "3.15",
+              "linha": "0.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1",
+              "odd": "1.52",
+              "linha": "1",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1",
+              "odd": "2.24",
+              "linha": "1",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1.5",
+              "odd": "2.24",
+              "linha": "1.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1.5",
+              "odd": "1.52",
+              "linha": "1.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2",
+              "odd": "3.88",
+              "linha": "2",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2",
+              "odd": "1.18",
+              "linha": "2",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2.5",
+              "odd": "4.70",
+              "linha": "2.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2.5",
+              "odd": "1.12",
+              "linha": "2.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 3",
+              "odd": "8.00",
+              "linha": "3",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 3",
+              "odd": "1.02",
+              "linha": "3",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 3.5",
+              "odd": "8.00",
+              "linha": "3.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 3.5",
+              "odd": "1.02",
+              "linha": "3.5",
+              "coluna": "Menos"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Total de Golos na 1º Parte\n\nMais de\nMenos\n0.5\n1.28\n3.15\n1\n1.52\n2.24\n1.5\n2.24\n1.52\n2\n3.88\n1.18\n2.5\n4.70\n1.12\n3\n8.00\n1.02\n3.5\n8.00\n1.02"
+        },
+        {
+          "mercado": "Total de Golos da Manchester City na 1º Parte",
+          "quantidadeOdds": 10,
+          "odds": [
+            "1.48",
+            "2.32",
+            "2.17",
+            "1.55",
+            "3.20",
+            "1.26",
+            "6.20",
+            "1.06",
+            "7.00",
+            "1.04"
+          ],
+          "selecoes": [
+            {
+              "selecao": "Mais de 0.5",
+              "odd": "1.48",
+              "linha": "0.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 0.5",
+              "odd": "2.32",
+              "linha": "0.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1",
+              "odd": "2.17",
+              "linha": "1",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1",
+              "odd": "1.55",
+              "linha": "1",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1.5",
+              "odd": "3.20",
+              "linha": "1.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1.5",
+              "odd": "1.26",
+              "linha": "1.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2",
+              "odd": "6.20",
+              "linha": "2",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2",
+              "odd": "1.06",
+              "linha": "2",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2.5",
+              "odd": "7.00",
+              "linha": "2.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2.5",
+              "odd": "1.04",
+              "linha": "2.5",
+              "coluna": "Menos"
+            }
+          ],
+          "selecoesParciais": [
+            {
+              "selecao": "Mais de 0.5",
+              "odd": "1.48",
+              "linha": "0.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 0.5",
+              "odd": "2.32",
+              "linha": "0.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1",
+              "odd": "2.17",
+              "linha": "1",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1",
+              "odd": "1.55",
+              "linha": "1",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 1.5",
+              "odd": "3.20",
+              "linha": "1.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 1.5",
+              "odd": "1.26",
+              "linha": "1.5",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2",
+              "odd": "6.20",
+              "linha": "2",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2",
+              "odd": "1.06",
+              "linha": "2",
+              "coluna": "Menos"
+            },
+            {
+              "selecao": "Mais de 2.5",
+              "odd": "7.00",
+              "linha": "2.5",
+              "coluna": "Mais de"
+            },
+            {
+              "selecao": "Menos 2.5",
+              "odd": "1.04",
+              "linha": "2.5",
+              "coluna": "Menos"
+            }
+          ],
+          "oddsSemNome": [],
+          "associacaoCompleta": true,
+          "conteudo": "Total de Golos da Manchester City na 1º Parte\n\nMais de\nMenos\n0.5\n1.48\n2.32\n1\n2.17\n1.55\n1.5\n3.20\n1.26\n2\n6.20\n1.06\n2.5\n7.00\n1.04"
+        }
+      ]
+    },
+    {
+      "categoria": "Minutos",
+      "categoriaId": "193",
+      "quantidadeMercados": 4,
+      "mercados": [
+        {
+          "mercado": "Minuto do primeiro golo",
+          "quantidadeOdds": 10,
+          "odds": [
+            "2.84",
+            "3.51",
+            "4.50",
+            "5.80",
+            "7.10",
+            "10.00",
+            "14.00",
+            "19.00",
+            "21.00",
+            "9.80"
+          ],
+          "selecoes": [],
+          "selecoesParciais": [],
+          "oddsSemNome": [
+            "2.84",
+            "3.51",
+            "4.50",
+            "5.80",
+            "7.10",
+            "10.00",
+            "14.00",
+            "19.00",
+            "21.00",
+            "9.80"
+          ],
+          "associacaoCompleta": false,
+          "conteudo": "Minuto do primeiro golo\n\n1-10\n2.84\n11-20\n3.51\n21-30\n4.50\n31-40\n5.80\n41-50\n7.10\n51-60\n10.00\n61-70\n14.00\n71-80\n19.00\n81-90+\n21.00\nSem golo\n9.80"
+        },
+        {
+          "mercado": "Tempo do 1º golo (intervalo de 15 minutos)",
+          "quantidadeOdds": 7,
+          "odds": [
+            "2.52",
+            "3.28",
+            "4.50",
+            "7.90",
+            "13.00",
+            "17.00",
+            "19.00"
+          ],
+          "selecoes": [],
+          "selecoesParciais": [],
+          "oddsSemNome": [
+            "2.52",
+            "3.28",
+            "4.50",
+            "7.90",
+            "13.00",
+            "17.00",
+            "19.00"
+          ],
+          "associacaoCompleta": false,
+          "conteudo": "Tempo do 1º golo (intervalo de 15 minutos)\n\n1-15\n2.52\n16-30\n3.28\n31-45+\n4.50\n46-60\n7.90\n61-75\n13.00\n76-90+\n17.00\nSem golo\n19.00"
+        },
+        {
+          "mercado": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)",
+          "quantidadeOdds": 10,
+          "odds": [
+            "4.00",
+            "5.00",
+            "5.90",
+            "7.20",
+            "8.00",
+            "11.00",
+            "14.00",
+            "19.00",
+            "17.00",
+            "5.90"
+          ],
+          "selecoes": [],
+          "selecoesParciais": [],
+          "oddsSemNome": [
+            "4.00",
+            "5.00",
+            "5.90",
+            "7.20",
+            "8.00",
+            "11.00",
+            "14.00",
+            "19.00",
+            "17.00",
+            "5.90"
+          ],
+          "associacaoCompleta": false,
+          "conteudo": "Tempo do 1º golo de Manchester City (intervalo de 10 minutos)\n\n1-10\n4.00\n11-20\n5.00\n21-30\n5.90\n31-40\n7.20\n41-50\n8.00\n51-60\n11.00\n61-70\n14.00\n71-80\n19.00\n81-90+\n17.00\nSem golo\n5.90"
+        },
+        {
+          "mercado": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)",
+          "quantidadeOdds": 10,
+          "odds": [
+            "7.20",
+            "10.00",
+            "11.00",
+            "11.00",
+            "11.00",
+            "13.00",
+            "14.00",
+            "15.00",
+            "12.00",
+            "2.07"
+          ],
+          "selecoes": [],
+          "selecoesParciais": [],
+          "oddsSemNome": [
+            "7.20",
+            "10.00",
+            "11.00",
+            "11.00",
+            "11.00",
+            "13.00",
+            "14.00",
+            "15.00",
+            "12.00",
+            "2.07"
+          ],
+          "associacaoCompleta": false,
+          "conteudo": "Tempo do 1º golo de Fulham (intervalo de 10 minutos)\n\n1-10\n7.20\n11-20\n10.00\n21-30\n11.00\n31-40\n11.00\n41-50\n11.00\n51-60\n13.00\n61-70\n14.00\n71-80\n15.00\n81-90+\n12.00\nSem golo\n2.07"
+        }
+      ]
+    },
+    {
+      "categoria": "Combos",
+      "categoriaId": "305",
+      "quantidadeMercados": 5,
+      "mercados": [
+        {
+          "mercado": "Manchester City marcará e resultado do jogo",
+          "quantidadeOdds": 5,
+          "odds": [
+            "1.38",
+            "5.35",
+            "21.00",
+            "8.60",
+            "8.70"
+          ],
+          "selecoes": [],
+          "selecoesParciais": [],
+          "oddsSemNome": [
+            "1.38",
+            "5.35",
+            "21.00",
+            "8.60",
+            "8.70"
+          ],
+          "associacaoCompleta": false,
+          "conteudo": "Manchester City marcará e resultado do jogo\n\nSim e Manchester City\n1.38\nSim e empate\n5.35\nNão e empate\n21.00\nSim e Fulham\n8.60\nNão e Fulham\n8.70"
+        },
+        {
+          "mercado": "Fulham marcará e resultado do jogo",
+          "quantidadeOdds": 5,
+          "odds": [
+            "2.56",
+            "2.68",
+            "5.35",
+            "21.00",
+            "5.00"
+          ],
+          "selecoes": [],
+          "selecoesParciais": [],
+          "oddsSemNome": [
+            "2.56",
+            "2.68",
+            "5.35",
+            "21.00",
+            "5.00"
+          ],
+          "associacaoCompleta": false,
+          "conteudo": "Fulham marcará e resultado do jogo\n\nSim e Manchester City\n2.56\nNão e Manchester City\n2.68\nSim e empate\n5.35\nNão e empate\n21.00\nSim e Fulham\n5.00"
+        },
+        {
+          "mercado": "Resultado Final e Ambas Equipas Marcam",
+          "quantidadeOdds": 6,
+          "odds": [
+            "2.56",
+            "21.00",
+            "2.68",
+            "8.60",
+            "5.35",
+            "8.70"
+          ],
+          "selecoes": [],
+          "selecoesParciais": [],
+          "oddsSemNome": [
+            "2.56",
+            "21.00",
+            "2.68",
+            "8.60",
+            "5.35",
+            "8.70"
+          ],
+          "associacaoCompleta": false,
+          "conteudo": "Resultado Final e Ambas Equipas Marcam\n\nManchester City e sim\n2.56\nEmpate e Não\n21.00\nManchester City e não\n2.68\nFulham e Sim\n8.60\nEmpate e sim\n5.35\nFulham e não\n8.70"
+        },
+        {
+          "mercado": "Dupla Chance e Ambas equipas marcarão",
+          "quantidadeOdds": 6,
+          "odds": [
+            "1.88",
+            "2.21",
+            "2.35",
+            "3.55",
+            "2.10",
+            "6.30"
+          ],
+          "selecoes": [],
+          "selecoesParciais": [],
+          "oddsSemNome": [
+            "1.88",
+            "2.21",
+            "2.35",
+            "3.55",
+            "2.10",
+            "6.30"
+          ],
+          "associacaoCompleta": false,
+          "conteudo": "Dupla Chance e Ambas equipas marcarão\n\n1X e (Ambos vão marcar - Sim)\n1.88\n12 e (Ambos vão marcar - Não)\n2.21\n1X e (Ambos vão marcar - Não)\n2.35\nX2 e (Ambos vão marcar - Sim)\n3.55\n12 e (Ambos vão marcar - Sim)\n2.10\nX2 e (Ambos vão marcar - Não)\n6.30"
+        },
+        {
+          "mercado": "Resultado do Jogo e Total de Golos 1.5",
+          "quantidadeOdds": 12,
+          "odds": [
+            "1.60",
+            "7.30",
+            "5.35",
+            "21.00",
+            "7.00",
+            "21.00",
+            "1.30",
+            "6.30",
+            "1.36",
+            "6.00",
+            "3.30",
+            "10.00"
+          ],
+          "selecoes": [],
+          "selecoesParciais": [],
+          "oddsSemNome": [
+            "1.60",
+            "7.30",
+            "5.35",
+            "21.00",
+            "7.00",
+            "21.00",
+            "1.30",
+            "6.30",
+            "1.36",
+            "6.00",
+            "3.30",
+            "10.00"
+          ],
+          "associacaoCompleta": false,
+          "conteudo": "Resultado do Jogo e Total de Golos 1.5\n\nManchester City e mais de 1.5\n1.60\nManchester City e menos de 1.5\n7.30\nEmpate e mais de 1.5\n5.35\nEmpate e menos de 1.5\n21.00\nFulham e mais de 1.5\n7.00\nFulham e menos de1.5\n21.00\n1X e mais de 1.5\n1.30\n1X e menos de 1.5\n6.30\n12 e mais de 1.5\n1.36\n12 e menos de 1.5\n6.00\nX2 e mais de 1.5\n3.30\nX2 e menos de 1.5\n10.00"
+        }
+      ]
+    }
+  ]
+}
