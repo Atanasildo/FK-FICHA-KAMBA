@@ -517,3 +517,12 @@ Esta secção evita que uma nova IA confunda código existente com funcionalidad
 - Por isso o pipeline na Vercel **publica** os pares de boletins com `booking_reference = null` e `selection_id` guardado; e `tools/reserve-pending.js` (PC local) pede o código a seguir:
   `npm run reserve:pending` (uma vez) ou `tools\windows\reserve-pending.bat` (a cada 2 minutos). Precisa de `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`.
 - O programa só reserva boletins com `selection_id` em todas as selecções e nenhum jogo iniciado; usa um bloqueio em `booking_reference` para não duplicar e faz uma só tentativa por boletim.
+
+### Reserva agendada no PC local (automática)
+
+- `tools/windows/install-reserve-task.ps1` instala a tarefa agendada **Ficha Kamba - Reservas**. Ao iniciar sessão no Windows, `tools/windows/reserve-supervisor.ps1` corre `tools/reserve-pending.js` a cada 120 segundos e pede o código dos boletins publicados sem código e com jogos futuros. Não precisa de ser lançado à mão.
+- Instalação (uma vez, na pasta do projecto que tem `tools/reserve-pending.js` e `node_modules`): `powershell -ExecutionPolicy Bypass -File tools\windows\install-reserve-task.ps1`. A `SUPABASE_SERVICE_ROLE_KEY` é pedida numa janela com a escrita oculta e guardada cifrada para o utilizador do Windows, em `%LOCALAPPDATA%\FichaKamba\reserve-secrets.json`. Nunca vai para o GitHub.
+- Registo diário em `%LOCALAPPDATA%\FichaKamba\logs\reservas-AAAA-MM-DD.log`. Só regista reservas feitas e erros; os boletins antigos saltados não enchem o registo.
+- É independente da recolha diária (`daily-collector-supervisor.ps1`): a recolha corre uma vez por dia, enquanto as reservas têm de ser pedidas sempre que um boletim novo é publicado, a qualquer hora.
+- Remover: `Unregister-ScheduledTask -TaskName "Ficha Kamba - Reservas" -Confirm:$false`.
+- Estado: os scripts PowerShell não foram executados num Windows real nesta sessão; só o lado Node (`reserve-pending.js`) tem testes automatizados.
