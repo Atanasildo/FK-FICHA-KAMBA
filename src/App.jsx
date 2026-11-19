@@ -173,12 +173,15 @@ export default function App() {
   ), [groupedTickets]);
   const filteredHistory = history.filter(t => [t.id, t.name, t.bookmaker, t.bookingId].join(' ').toLowerCase().includes(query.toLowerCase()));
   const toggle = id => setExpanded(p => ({ ...p, [id]: !p[id] }));
+  const liveLegCount = liveTickets.reduce((n, t) => n + (t.legs || []).filter(isLive).length, 0);
   if (page === 'Bilhetes do dia') return <DailyHome
     tickets={todayTickets}
     expanded={expanded}
     onToggle={toggle}
     notice={notice}
     onDismissNotice={() => setNotice('')}
+    onNavigate={setPage}
+    liveCount={liveLegCount}
   />;
   const side = <><div className="brand"><div className="brand-mark">FK<span>.</span></div><div><b>FICHA KAMBA</b><small>FUTEBOL • INTELIGÊNCIA</small></div></div><div className="side-label">MENU PRINCIPAL</div><nav>{NAV.map(([label, Icon]) => <button key={label} className={page === label ? 'nav-item active' : 'nav-item'} onClick={() => { setPage(label); setMobile(false); }}><Icon size={18}/><span>{label}</span>{label === 'Acompanhamento ao vivo' && liveTickets.length > 0 && <i className="live-dot"/>}</button>)}</nav><div className="side-bottom"><div className="side-status"><span className="status-dot"/> Consulta de fichas <small>As fichas publicadas aparecem neste painel</small></div><div className="profile"><div className="avatar">FK</div><div><b>Utilizador</b><small>Ficha Kamba</small></div></div></div></>;
   return <div className="app-shell"><aside className={mobile ? 'sidebar mobile-open' : 'sidebar'}>{side}</aside>{mobile && <button className="scrim" onClick={() => setMobile(false)} aria-label="Fechar menu"/>}
@@ -262,54 +265,106 @@ function ticketStatusClass(status) {
   return 'state-pending';
 }
 
-function DailyHome({ tickets, expanded, onToggle, notice, onDismissNotice }) {
+const NAV_SHORT = { 'Bilhetes do dia': 'Bilhetes', 'Análises': 'Análises', 'Acompanhamento ao vivo': 'Ao vivo', 'Histórico': 'Histórico' };
+const tone = cls => ({ 'state-good': 'won', 'state-bad': 'lost', 'state-live': 'live' }[cls] || 'pending');
+const crest = (name = '') => {
+  const parts = String(name).trim().split(/\s+/).filter(Boolean);
+  const letters = parts.length > 1 ? parts[0][0] + parts[1][0] : (parts[0] || '?').slice(0, 2);
+  return letters.toUpperCase();
+};
+
+function DailyHome({ tickets, expanded, onToggle, notice, onDismissNotice, onNavigate, liveCount = 0 }) {
   const total = tickets.length;
+  const games = tickets.reduce((n, t) => n + (t.legs || []).length, 0);
   return <main className="fk-reference-home">
+    <div className="fk-reference-pitch" aria-hidden="true"/>
+    <nav className="fk-reference-nav" aria-label="Navegação principal">
+      <span className="fk-reference-logo"><b>FK</b><i>.</i><small>Ficha Kamba</small></span>
+      <div className="fk-reference-tabs">
+        {NAV.map(([label, Icon]) => <button key={label} title={label}
+          className={label === 'Bilhetes do dia' ? 'is-active' : ''}
+          aria-current={label === 'Bilhetes do dia' ? 'page' : undefined}
+          onClick={() => onNavigate(label)}>
+          <Icon size={16}/><span>{NAV_SHORT[label] || label}</span>
+          {label === 'Acompanhamento ao vivo' && liveCount > 0 && <em>{liveCount}</em>}
+        </button>)}
+      </div>
+    </nav>
     <header className="fk-reference-header">
       <div className="fk-reference-brand">
-        <span className="fk-reference-ball">⚽</span>
-        <div><h1>BILHETES DO DIA</h1><p>Ficha Kamba <i>•</i> {new Date().toLocaleDateString('pt-AO')}</p></div>
+        <span className="fk-reference-ball" aria-hidden="true">⚽</span>
+        <div><h1>Bilhetes do dia</h1><p>Ficha Kamba <i>•</i> {new Date().toLocaleDateString('pt-AO')}</p></div>
       </div>
-      <div className="fk-reference-count">{total} {total === 1 ? 'ficha publicada hoje' : 'fichas publicadas hoje'}</div>
+      <div className="fk-reference-board" aria-label="Resumo do dia">
+        <div><strong>{total}</strong><span>{total === 1 ? 'Ficha' : 'Fichas'}</span></div>
+        <div><strong>{games}</strong><span>{games === 1 ? 'Jogo' : 'Jogos'}</span></div>
+        <div className={liveCount > 0 ? 'is-live' : ''}><strong>{liveCount}</strong><span>Ao vivo</span></div>
+      </div>
     </header>
-    {notice && <div className="fk-reference-notice"><ShieldCheck size={16}/><span>{notice}</span><button onClick={onDismissNotice} aria-label="Fechar aviso"><X size={15}/></button></div>}
+    {notice && <div className="fk-reference-notice" role="status"><ShieldCheck size={16}/><span>{notice}</span><button onClick={onDismissNotice} aria-label="Fechar aviso"><X size={15}/></button></div>}
     {total ? <section className="fk-reference-grid">
-      {tickets.map((ticket,index) => <DailyTicketCard key={ticket.id} ticket={ticket}
-        expanded={!!expanded[ticket.id]} onToggle={() => onToggle(ticket.id)} featured={index===0}/>)}
+      {tickets.map((ticket, index) => <DailyTicketCard key={ticket.id} ticket={ticket}
+        expanded={!!expanded[ticket.id]} onToggle={() => onToggle(ticket.id)} featured={index === 0}/>)}
     </section> : <section className="fk-reference-empty"><span>⚽</span><b>Nenhuma ficha publicada hoje</b><small>As fichas reais aparecerão aqui assim que forem publicadas.</small></section>}
-    <footer className="fk-reference-footer"><span><i/> {total} fichas carregadas <b>•</b> Pronto para o próximo dia</span></footer>
+    <footer className="fk-reference-footer"><span><i/> {total} {total === 1 ? 'ficha carregada' : 'fichas carregadas'} <b>•</b> Actualização automática a cada 5 minutos</span></footer>
   </main>;
 }
 
-function DailyTicketCard({ ticket:t, expanded, onToggle, featured=false }) {
-  const legs=t.legs||[];
-  const entries=t.bookmakerEntries||[];
-  const bookmaker=t.bookmaker || (entries.length ? entries.map(e=>e.bookmaker).join(' / ') : 'Casa de apostas');
-  const date=t.createdAt ? new Date(t.createdAt).toLocaleDateString('pt-AO') : new Date().toLocaleDateString('pt-AO');
-  return <article className={'fk-reference-ticket'+(featured?' is-featured':'')}>
-    <div className="fk-reference-watermark">⚽</div>
+function DailyTicketCard({ ticket: t, expanded, onToggle, featured = false }) {
+  const legs = t.legs || [];
+  const entries = t.bookmakerEntries || [];
+  const status = ticketStatus(t);
+  const state = tone(ticketStatusClass(status));
+  const liveCount = legs.filter(isLive).length;
+  const bookmaker = t.bookmaker || (entries.length ? entries.map(e => e.bookmaker).join(' / ') : 'Casa de apostas');
+  const date = t.createdAt ? new Date(t.createdAt).toLocaleDateString('pt-AO') : new Date().toLocaleDateString('pt-AO');
+  const bestOdd = entries.length ? Math.max(...entries.map(e => Number(e.totalOdds) || 0)) : Number(t.totalOdds) || 0;
+  return <article className={'fk-reference-ticket is-' + state + (featured ? ' is-featured' : '')}>
+    <div className="fk-reference-watermark" aria-hidden="true">⚽</div>
     <button className="fk-reference-ticket-main" onClick={onToggle} aria-expanded={expanded}>
-      <div className="fk-reference-ticket-top"><span><b>{bookmaker}</b><i> — {date}</i></span>{featured&&<em><i/> PUBLICA</em>}</div>
-      <div className="fk-reference-total">{entries.length ? money(entries[0].totalOdds) : money(t.totalOdds)}</div>
+      <div className="fk-reference-ticket-top">
+        <span><b>{bookmaker}</b><i> — {date}</i></span>
+        <em className="fk-reference-chip">{liveCount > 0 && <i/>}{status}</em>
+      </div>
+      <div className="fk-reference-total"><small>{entries.length > 1 ? 'Melhor odd combinada' : 'Odd combinada'}</small>{money(bestOdd)}</div>
+      {entries.length > 1 && <div className="fk-reference-books">
+        {entries.map(e => <span key={e.bookmaker} className={(Number(e.totalOdds) || 0) === bestOdd ? 'is-best' : ''}>{e.bookmaker}<b>{money(e.totalOdds)}</b></span>)}
+      </div>}
       <div className="fk-reference-picks">
-        {legs.map((leg,index)=><div className="fk-reference-pick" key={leg.id||index}>
-          <span>{leg.selection || leg.market || (leg.home && leg.away ? leg.home+' vs '+leg.away : 'Selecção')}</span>
+        {legs.map((leg, index) => <div className="fk-reference-pick" key={leg.id || index}>
+          <span className={'dot is-' + tone(resultClass(leg))} aria-hidden="true"/>
+          <span>{leg.selection || leg.market || (leg.home && leg.away ? leg.home + ' vs ' + leg.away : 'Selecção')}</span>
           <b>{money(leg.odd)}</b>
         </div>)}
-        {!legs.length&&<div className="fk-reference-pick"><span>Selecções ainda não disponíveis</span><b>—</b></div>}
+        {!legs.length && <div className="fk-reference-pick"><span>Selecções ainda não disponíveis</span><b>—</b></div>}
       </div>
-      <div className="fk-reference-ticket-foot">{legs.length} selecções <span>•</span> {t.bookingId ? 'Reserva: '+t.bookingId : 'Reserva pendente'}</div>
-      <span className="fk-reference-expand">{expanded?'FECHAR DETALHES':'VER DETALHES'} <ChevronDown size={13}/></span>
+      <div className="fk-reference-ticket-foot">{legs.length} selecções <span>•</span> {entries.length ? entries.length + ' casas' : (t.bookingId ? 'Reserva: ' + t.bookingId : 'Reserva pendente')}</div>
+      <span className="fk-reference-expand">{expanded ? 'FECHAR DETALHES' : 'VER DETALHES'} <ChevronDown size={13}/></span>
     </button>
-    {expanded&&<div className="fk-reference-expanded">
-      {legs.map((leg,index)=><div className="fk-reference-leg" key={leg.id||index}>
-        <b>{leg.home||'—'} vs {leg.away||'—'}</b>
-        <span>{leg.league||'Competição não indicada'}{leg.date?' · '+new Date(leg.date).toLocaleString('pt-AO'):''}</span>
-        <small>{leg.market||'Mercado'}: {leg.selection||'—'} · Odd {money(leg.odd)}</small>
-        {leg.rationale&&<small>{leg.rationale}</small>}
-      </div>)}
-      {entries.map(entry=><div className="fk-reference-booking" key={entry.bookmaker}><span>{entry.bookmaker}</span><b>Odd {money(entry.totalOdds)}</b><strong>{entry.bookingId||'Reserva pendente'}</strong>{entry.bookingUrl&&<a href={entry.bookingUrl} target="_blank" rel="noreferrer">Abrir reserva</a>}</div>)}
-      {!entries.length&&<div className="fk-reference-booking"><span>Referência de reserva</span><strong>{t.bookingId||'A aguardar'}</strong>{t.bookingUrl&&<a href={t.bookingUrl} target="_blank" rel="noreferrer">Abrir reserva</a>}</div>}
+    {expanded && <div className="fk-reference-expanded">
+      {legs.map((leg, index) => {
+        const score = matchScore(leg);
+        const live = isLive(leg);
+        const done = isFinished(leg);
+        return <div className="fk-reference-leg" key={leg.id || index}>
+          <div className="fk-reference-fixture">
+            <div className="fk-reference-team"><span className="fk-reference-crest" aria-hidden="true">{crest(leg.home)}</span><span>{leg.home || '—'}</span></div>
+            {score
+              ? <div className={'fk-reference-score' + (live ? ' is-live' : '')}>{score}<small>{live ? (leg.minute ? leg.minute + "'" : 'AO VIVO') : done ? 'FIM' : ''}</small></div>
+              : <div className="fk-reference-score vs">VS</div>}
+            <div className="fk-reference-team away"><span className="fk-reference-crest" aria-hidden="true">{crest(leg.away)}</span><span>{leg.away || '—'}</span></div>
+          </div>
+          <div className="fk-reference-leg-meta">
+            <span>{leg.league || 'Competição não indicada'}{leg.date ? ' · ' + new Date(leg.date).toLocaleString('pt-AO') : ''}</span>
+            <span>{leg.market || 'Mercado'}: <b>{leg.selection || '—'}</b> · Odd <b>{money(leg.odd)}</b></span>
+            <em className="fk-reference-chip" style={{ '--tone': { won: 'var(--fkh-win)', lost: '#6b7a90', live: 'var(--fkh-goal)', pending: 'var(--fkh-gold)' }[tone(resultClass(leg))] }}>{resultLabel(leg)}</em>
+          </div>
+          {leg.lastEvent && <small className="note">{leg.lastEvent}</small>}
+          {leg.rationale && <small className="note">{leg.rationale}</small>}
+        </div>;
+      })}
+      {entries.map(entry => <div className="fk-reference-booking" key={entry.bookmaker}><span>{entry.bookmaker}</span><b>Odd {money(entry.totalOdds)}</b><strong>{entry.bookingId || 'Reserva pendente'}</strong>{entry.bookingUrl && <a href={entry.bookingUrl} target="_blank" rel="noreferrer">Abrir reserva</a>}</div>)}
+      {!entries.length && <div className="fk-reference-booking"><span>Referência de reserva</span><strong>{t.bookingId || 'A aguardar'}</strong>{t.bookingUrl && <a href={t.bookingUrl} target="_blank" rel="noreferrer">Abrir reserva</a>}</div>}
     </div>}
   </article>;
 }
