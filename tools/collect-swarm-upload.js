@@ -4,7 +4,8 @@ import {
   discoverSwarmGames,
   SWARM_BOOKMAKERS
 } from "../lib/bookmakers/swarm.js";
-import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
+import { selectCommonSwarmGames, describeUnmatchedSwarmGames } from "../lib/bookmakers/daily-swarm.js";
+import { writeFileSync } from "node:fs";
 
 const dryRun = process.argv.includes("--dry-run");
 const maxGamesArg = process.argv.find(arg => arg.startsWith("--max-games="));
@@ -57,6 +58,10 @@ const commonPairs = selectCommonSwarmGames(
   discovered.elephant.games,
   { maxGames: 1500, maxKickoffDifferenceSeconds: 90 * 60, onlyToday: true }
 );
+const diagnostic = describeUnmatchedSwarmGames(discovered.bantu.games, discovered.elephant.games, commonPairs);
+console.log("Jogos de hoje (com 1 h de antecedência): BantuBet " + diagnostic.bantuHoje + ", ElephantBet " + diagnostic.elephantHoje + ", em par " + diagnostic.emPar + ".");
+console.log("Sem par: " + diagnostic.soBantu.length + " só na BantuBet, " + diagnostic.soElephant.length + " só na ElephantBet. Lista em swarm-unmatched-today.json.");
+try { writeFileSync("swarm-unmatched-today.json", JSON.stringify(diagnostic, null, 2)); } catch (error) { console.log("Não foi possível gravar o diagnóstico:", error.message); }
 const bantuById = new Map(discovered.bantu.games.map(game => [String(game.id), game]));
 const elephantById = new Map(discovered.elephant.games.map(game => [String(game.id), game]));
 const eligiblePairs = commonPairs.map(pair => ({

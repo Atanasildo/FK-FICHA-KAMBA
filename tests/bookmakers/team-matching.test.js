@@ -97,3 +97,13 @@ test("regra de recurso só vale com hora quase igual e outra equipa idêntica", 
   const d = { home: "Arsenal Tula", away: "Spartak" };
   assert.equal(sameFixturePair(c, d, { deltaSeconds: 0 }), false);
 });
+
+test("etiquetas das casas (Wom/Mulh, Reserves/Res, B/II) funcionam como marcadores", () => {
+  assert.equal(teamsSameFixture("Arsenal (Mulh)", "Arsenal (Wom)"), true);
+  assert.equal(teamsSameFixture("Arsenal (Wom)", "Arsenal"), false);
+  assert.equal(teamsSameFixture("Almirante Brown (Reserves)", "Almirante Brown Res"), true);
+  assert.equal(teamsSameFixture("Almirante Brown (Reserves)", "Almirante Brown"), false);
+  assert.equal(teamsSameFixture("FC Hegelmann B", "FC Hegelmann II"), true);
+  assert.equal(teamsSameFixture("FC Hegelmann B", "FC Hegelmann"), false);
+  assert.equal(teamNameSimilarity("B. Dortmund", "Borussia Dortmund") >= 0.7, true);
+});
