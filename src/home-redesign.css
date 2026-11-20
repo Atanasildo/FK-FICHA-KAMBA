@@ -107,7 +107,7 @@
 .fk-reference-ticket:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(0,0,0,.5)}
 .fk-reference-ticket.is-live{--tone:var(--fkh-goal)}
 .fk-reference-ticket.is-won{--tone:var(--fkh-win)}
-.fk-reference-ticket.is-lost{--tone:#6b7a90}
+.fk-reference-ticket.is-lost{--tone:#ff5a5a}
 .fk-reference-ticket.is-pending{--tone:var(--fkh-gold)}
 .fk-reference-ticket.is-featured{box-shadow:0 0 0 1px rgba(212,245,60,.18),0 14px 34px rgba(0,0,0,.5)}
 .fk-reference-watermark{position:absolute;right:-6px;top:30px;font-size:96px;line-height:1;opacity:.06;filter:grayscale(1);pointer-events:none;transform:rotate(-12deg)}
@@ -261,7 +261,7 @@
 .fk-copy:hover{background:rgba(212,245,60,.14)}.fk-copy:active{transform:scale(.94)}.fk-copy.is-done{background:var(--fkh-led);color:#0b1a0f}
 .fk-progress{display:flex;gap:3px;margin:12px 0 4px}
 .fk-progress span{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.12)}
-.fk-progress .is-won{background:var(--fkh-win)}.fk-progress .is-lost{background:#6b7a90}.fk-progress .is-live{background:var(--fkh-goal);animation:fk-blink 1.2s ease-in-out infinite}
+.fk-progress .is-won{background:var(--fkh-win)}.fk-progress .is-lost{background:#ff4d4d}.fk-progress .is-live{background:var(--fkh-goal);animation:fk-blink 1.2s ease-in-out infinite}
 .fk-reference-ticket-main{cursor:pointer}
 .fk-reference-expand{display:inline-flex;align-items:center;gap:6px}.fk-reference-ticket-main:hover .fk-reference-expand svg{transform:translateX(4px)}
 .fk-reference-expand svg{transition:transform .2s}
@@ -519,3 +519,22 @@
   .fk-leg-toggle{min-height:44px}
 }
 @media(prefers-reduced-motion:reduce){.fk-drawer{animation:none!important}}
+
+.fk-phase.is-awaiting{color:var(--fkh-gold);background:rgba(255,196,60,.08);border-color:rgba(255,196,60,.3)}
+.fk-reference-leg{position:relative}
+.fk-seal{position:absolute;top:-10px;right:12px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;z-index:2;box-shadow:0 4px 14px rgba(0,0,0,.45)}
+.fk-seal.is-won{background:var(--fkh-win);color:#04210f}
+.fk-seal.is-lost{background:#ff4d4d;color:#2b0505}
+.fk-seal-ticket{top:auto;bottom:54px;right:16px;width:46px;height:46px}
+.fk-reference-ticket{position:relative}
+.fk-reference-chip{}
+
+.fk-odd{font-variant-numeric:tabular-nums}
+.fk-odd s{opacity:.55;margin-right:5px;font-weight:400}
+.fk-odd.is-up{color:var(--fkh-win)}.fk-odd.is-down{color:#ff8a4d}.fk-odd.is-suspended{color:#ff5a5a;text-transform:uppercase;font-size:11px;letter-spacing:.5px}
+.fk-reference-books .fk-odd{margin-left:6px}
+.fk-odds-now{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--fkh-muted)}
+.fk-odds-now>span{display:inline-flex;gap:4px;align-items:baseline}
+.fk-odds-now-box{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin:12px 0 0;padding:10px 12px;border-radius:10px;border:1px solid var(--fkh-border);background:rgba(255,255,255,.035);font-size:13px}
+.fk-odds-now-box small{flex:1 0 100%;color:var(--fkh-muted);font-size:11px;letter-spacing:.4px;text-transform:uppercase}
+.fk-odds-now-box s{opacity:.5;margin:0 4px}
