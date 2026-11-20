@@ -4,7 +4,8 @@ import {
   discoverSwarmGames,
   SWARM_BOOKMAKERS
 } from "../lib/bookmakers/swarm.js";
-import { selectCommonSwarmGames } from "../lib/bookmakers/daily-swarm.js";
+import { selectCommonSwarmGames, describeUnmatchedSwarmGames } from "../lib/bookmakers/daily-swarm.js";
+import { writeFileSync } from "node:fs";
 
 const dryRun = process.argv.includes("--dry-run");
 const maxGamesArg = process.argv.find(arg => arg.startsWith("--max-games="));
@@ -57,6 +58,10 @@ const commonPairs = selectCommonSwarmGames(
   discovered.elephant.games,
   { maxGames: 1500, maxKickoffDifferenceSeconds: 90 * 60, onlyToday: true }
 );
+const diagnostic = describeUnmatchedSwarmGames(discovered.bantu.games, discovered.elephant.games, commonPairs);
+console.log("Jogos de hoje (com 1 h de antecedência): BantuBet " + diagnostic.bantuHoje + ", ElephantBet " + diagnostic.elephantHoje + ", em par " + diagnostic.emPar + ".");
+console.log("Sem par: " + diagnostic.soBantu.length + " só na BantuBet, " + diagnostic.soElephant.length + " só na ElephantBet. Lista em swarm-unmatched-today.json.");
+try { writeFileSync("swarm-unmatched-today.json", JSON.stringify(diagnostic, null, 2)); } catch (error) { console.log("Não foi possível gravar o diagnóstico:", error.message); }
 const bantuById = new Map(discovered.bantu.games.map(game => [String(game.id), game]));
 const elephantById = new Map(discovered.elephant.games.map(game => [String(game.id), game]));
 const eligiblePairs = commonPairs.map(pair => ({
@@ -71,6 +76,10 @@ console.log("Jogos comuns BantuBet/ElephantBet:", commonPairs.length);
 console.log("A SportAPI não é necessária para esta recolha.");
 console.log("Limite configurado:", maxGames, "par(es).");
 console.log("A recolher:", pairsToCollect.length, "pares de jogos comuns.");
+if (eligiblePairs.length > pairsToCollect.length) {
+  const firstCut = new Date(Number(eligiblePairs[pairsToCollect.length].bantu.start_ts) * 1000).toISOString();
+  console.log("ATENÇÃO: " + (eligiblePairs.length - pairsToCollect.length) + " jogo(s) elegível(eis) ficam de fora pelo limite (a partir de " + firstCut + "). Aumenta maxGames para os incluir.");
+}
 
 if (!pairsToCollect.length) {
   console.error("Não foram encontrados jogos comuns inequívocos entre as duas casas. Nenhuma odd será guardada.");
@@ -138,7 +147,8 @@ async function collectOnePair(item, index) {
         signal: AbortSignal.timeout(90000)
       });
       const body = await response.json().catch(() => ({}));
-      if (!response.ok || !body.ok) {
+      const confirmedWrite = Number(body.savedGames) > 0 && Number(body.savedComparisons) > 0 && Number(body.savedRawMarkets) > 0;
+      if (!response.ok || !body.ok || !confirmedWrite) {
         const summary = body.error || body.message || "A nuvem não confirmou a gravação.";
         const detail = body.detail ? " | Detalhe: " + body.detail : "";
         const error = new Error(summary + " (HTTP " + response.status + ")" + detail);
@@ -207,7 +217,11 @@ console.log(JSON.stringify({
 
 if (dryRun) {
   console.log("\nMODO DE TESTE: nenhuma odd foi enviada e nenhuma análise/bilhete foi criada.");
-} else {
-  console.log("\nRECOLHA CONCLUÍDA. As odds estão guardadas no Supabase.");
+} else if (failedBatches <= Math.ceil(pairsToCollect.length * 0.03) && totalSavedGames > 0 && totalSavedComparisons > 0 && totalSavedRawMarkets > 0) {
+  if (failedBatches > 0) console.log("\nNOTA: " + failedBatches + " jogo(s) falharam (até 3% é tolerado). Os restantes foram gravados.");
+  console.log("\nRECOLHA CONCLUÍDA. A API confirmou gravações positivas no Supabase.");
   console.log("A análise será iniciada manualmente aqui no ChatGPT, quando o utilizador pedir.");
+} else {
+  console.error("\nATENÇÃO: a recolha terminou sem confirmação completa de gravação. Não considerar os dados guardados.");
+  process.exitCode = 1;
 }

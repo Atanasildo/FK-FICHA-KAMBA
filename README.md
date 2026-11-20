@@ -270,6 +270,7 @@ FK-FICHA-KAMBA/
 - `bantubet-console-collector.js`, `elephantbet-console-collector.js`: coletores específicos.
 - `local-bookmaker-collector.js`, `local-bookmaker-check.js`: recolha/verificação local.
 - `recover-swarm-game.js`: recuperação de jogo específico.
+- `collect-live-sofascore.js`: recolhe marcador, estado, eventos e estatísticas ao vivo dos jogos dos boletins (fonte não oficial; ver «Fonte ao vivo SofaScore»).
 - `report-swarm-comparison.js`: relatório de comparação.
 - `run-analysis-only.js`: chama o pipeline legado em Preview, com modo de teste por omissão; rever argumentos antes de qualquer execução.
 - `run-internet-fallback.js`: teste isolado do fallback de contexto, em modo dry-run.
@@ -517,3 +518,33 @@ Esta secção evita que uma nova IA confunda código existente com funcionalidad
 - Por isso o pipeline na Vercel **publica** os pares de boletins com `booking_reference = null` e `selection_id` guardado; e `tools/reserve-pending.js` (PC local) pede o código a seguir:
   `npm run reserve:pending` (uma vez) ou `tools\windows\reserve-pending.bat` (a cada 2 minutos). Precisa de `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`.
 - O programa só reserva boletins com `selection_id` em todas as selecções e nenhum jogo iniciado; usa um bloqueio em `booking_reference` para não duplicar e faz uma só tentativa por boletim.
+
+### Reserva agendada no PC local (automática)
+
+- `tools/windows/install-reserve-task.ps1` instala a tarefa agendada **Ficha Kamba - Reservas**. Ao iniciar sessão no Windows, `tools/windows/reserve-supervisor.ps1` corre `tools/reserve-pending.js` a cada 120 segundos e pede o código dos boletins publicados sem código e com jogos futuros. Não precisa de ser lançado à mão.
+- Instalação (uma vez, na pasta do projecto que tem `tools/reserve-pending.js` e `node_modules`): `powershell -ExecutionPolicy Bypass -File tools\windows\install-reserve-task.ps1`. A `SUPABASE_SERVICE_ROLE_KEY` é pedida numa janela com a escrita oculta e guardada cifrada para o utilizador do Windows, em `%LOCALAPPDATA%\FichaKamba\reserve-secrets.json`. Nunca vai para o GitHub.
+- Registo diário em `%LOCALAPPDATA%\FichaKamba\logs\reservas-AAAA-MM-DD.log`. Só regista reservas feitas e erros; os boletins antigos saltados não enchem o registo.
+- É independente da recolha diária (`daily-collector-supervisor.ps1`): a recolha corre uma vez por dia, enquanto as reservas têm de ser pedidas sempre que um boletim novo é publicado, a qualquer hora.
+- Remover: `Unregister-ScheduledTask -TaskName "Ficha Kamba - Reservas" -Confirm:$false`.
+- Estado: os scripts PowerShell não foram executados num Windows real nesta sessão; só o lado Node (`reserve-pending.js`) tem testes automatizados.
+
+## Fonte ao vivo SofaScore (recolhida no PC)
+
+**Fonte principal** de marcador, estado, eventos e estatísticas dos jogos dos boletins; cobre ligas pequenas (sub-17, torneios locais) que as outras fontes não cobrem. Highlightly, Sportmonks e SportAPI ficam como **reserva**. **Não é uma API oficial**: o SofaScore não tem API pública, os endereços usados são internos do site, podem mudar ou ser bloqueados, e os termos do site restringem o acesso automático. A decisão de a usar é do utilizador.
+
+- `tools/collect-live-sofascore.js` corre no PC (a Vercel costuma ser bloqueada por este tipo de fonte). Lê `GET https://www.sofascore.com/api/v1/sport/football/events/live` (1 pedido por ciclo) por `curl.exe`: em 20/11/2026 o `fetch` do Node recebeu 403 no PC do utilizador, mas o `curl` normal foi aceite. O curl vai com o seu identificador normal, sem disfarce de navegador (`SOFASCORE_TRANSPORT=fetch` volta ao fetch), associa só os jogos dos boletins publicados por equipas (ordem casa/visitante) e hora, e pede estatísticas e incidentes apenas desses jogos.
+- Grava em `match_statistics`, **uma linha por jogo e fonte, actualizada no lugar** (a base está perto do limite do plano): `SofaScore-fixture` (estado, marcador, minuto, `eventId`), `SofaScore-live` (estatísticas) e `SofaScore-live-events` (eventos).
+- `lib/pipeline/live-tickets.js` usa o `SofaScore-fixture` **primeiro**. Só para os jogos que o SofaScore não tem (ou cujos dados estão obsoletos) recorre a Highlightly → Sportmonks → SportAPI; se o SofaScore cobrir todos os jogos, as fontes de reserva nem são chamadas (poupa quota). Um jogo «em curso» sem actualização há mais de 10 minutos é ignorado (o recolhedor pode ter parado); estados finais, adiado e cancelado mantêm-se.
+- Sem dados não há marcador: o site mostra «Dados indisponíveis». Eventos e estatísticas **vazios não são gravados**, porque podem significar falta de cobertura e não «sem cartões»; os mercados que dependem deles ficam pendentes em vez de serem liquidados.
+- O minuto é calculado a partir do início do período e é aproximado: o tempo de compensação é truncado em 45' e 90'.
+- Se o SofaScore responder 403/429, o script **pára e espera 5 minutos**. Nunca disfarça o pedido nem contorna o bloqueio.
+- Uso: `npm run collect:live -- --probe` (mostra o JSON bruto, não grava), `npm run collect:live` (uma vez), `npm run collect:live -- --watch` (a cada 60 s; mínimo 30 s). Precisa de `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`, excepto em `--probe`.
+- **Estado:** a lista de jogos ao vivo foi validada com uma resposta real de 20/11/2026 (15 jogos, todos convertidos). **Não confirmados contra respostas reais:** `/event/{id}/statistics` e `/event/{id}/incidents` (correr `npm run collect:live -- --probe` com um jogo em curso e conferir `lib/pipeline/sofascore.js`), a associação a jogos reais dos boletins e a gravação em `match_statistics` num ciclo real.
+
+## Ao vivo automático (PC)
+
+`tools/windows/install-live-task.ps1` instala a tarefa "Ficha Kamba - Ao vivo": recolhe marcador, minuto e
+estatísticas dos jogos ao vivo (SofaScore, a cada 60 s) e grava em `match_statistics`. Reutiliza a configuração e a
+chave cifrada de `install-reserve-task.ps1` (corre esse instalador primeiro). O site (boletins publicados e painel
+"Ao vivo") atualiza a cada minuto quando há jogos em directo e a cada 5 minutos quando não há.
+Registo: `%LOCALAPPDATA%\FichaKamba\logs\ao-vivo-AAAA-MM-DD.log`.

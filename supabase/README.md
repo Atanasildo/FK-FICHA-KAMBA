@@ -13,7 +13,7 @@ The Vercel integration has already supplied the existing Supabase project's URL 
 publishable/anon key. The Vite-prefixed Production variables were added separately.
 
 ## Install schema
-1. Open the existing Supabase project **Ficha-Kamba**.
+1. Open the Supabase project **Ficha-Kamba-Novo**.
 2. Open SQL Editor and create a new query.
 3. Paste and run `supabase/schema.sql`.
 4. Paste and run `supabase/migrations/20261108_match_context.sql`.
