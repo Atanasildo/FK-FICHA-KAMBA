@@ -361,3 +361,57 @@
 .fk-live-chips button:active{transform:scale(.95)}
 @keyframes fkh-blink{0%,100%{opacity:1}50%{opacity:.45}}
 @media(prefers-reduced-motion:reduce){.fk-live-item,.fk-live-score.pop,.fk-live-game.is-live .fk-live-min,.fk-live-details{animation:none!important}.fk-live-game:hover{transform:none}}
+
+/* ───────── carrossel no topo: jogos ao vivo + fichas com códigos de reserva ───────── */
+.fk-reference-home{--fkh-pad:clamp(16px,5vw,72px);padding-left:var(--fkh-pad);padding-right:var(--fkh-pad)}
+.fk-ticker{margin:0 calc(var(--fkh-pad) * -1);border-bottom:1px solid rgba(212,245,60,.14);background:rgba(4,8,13,.92);animation:fkh-appear .5s ease-out backwards}
+.fk-marquee{display:flex;align-items:stretch;height:36px;border-top:1px solid rgba(255,255,255,.04)}
+.fk-marquee:first-child{border-top:0}
+.fk-marquee-tag{position:relative;z-index:2;display:flex;align-items:center;gap:7px;flex:0 0 auto;padding:0 16px 0 var(--fkh-pad);background:#05090f;font:700 10px var(--fkh-body);letter-spacing:.9px;text-transform:uppercase;color:var(--fkh-muted);box-shadow:10px 0 14px -6px #05090f}
+.fk-marquee-tag i{width:8px;height:8px;border-radius:50%;background:var(--fkh-led)}
+.fk-marquee.is-live .fk-marquee-tag{color:#ff8a73}
+.fk-marquee.is-live .fk-marquee-tag i{background:var(--fkh-goal);--tone:var(--fkh-goal);animation:fkh-pulse 1.4s ease-out infinite}
+.fk-marquee.is-tickets .fk-marquee-tag{color:var(--fkh-led)}
+.fk-marquee-viewport{position:relative;flex:1;min-width:0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent);mask-image:linear-gradient(90deg,transparent,#000 34px,#000 calc(100% - 34px),transparent)}
+.fk-marquee-track{display:flex;width:max-content;height:100%;animation:fkh-marquee var(--dur,40s) linear infinite;will-change:transform}
+.fk-marquee-track.is-reverse{animation-direction:reverse}
+.fk-marquee:hover .fk-marquee-track,.fk-marquee:focus-within .fk-marquee-track{animation-play-state:paused}
+.fk-marquee-group{display:flex;align-items:center;flex:0 0 auto;min-width:100%}
+@keyframes fkh-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.fk-tick{display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;height:100%;padding:0 18px;border:0;border-right:1px solid rgba(255,255,255,.06);background:transparent;color:var(--fkh-text);font:500 12px var(--fkh-body);white-space:nowrap;cursor:pointer;transition:background .18s}
+.fk-tick:hover{background:rgba(255,255,255,.05)}
+.fk-tick:focus-visible{outline:2px solid var(--fkh-led);outline-offset:-2px}
+.fk-tick b{font-weight:600}
+.fk-tick strong{padding:2px 8px;border-radius:5px;background:#0b141f;border:1px solid #1d2c3f;font:700 12px var(--fkh-display);color:var(--fkh-led);font-variant-numeric:tabular-nums}
+.fk-tick small{font-size:11px;color:var(--fkh-muted)}
+.fk-tick small em{font-style:normal;color:var(--fkh-text);font-weight:600}
+.fk-tick.is-game.is-mine{background:linear-gradient(90deg,rgba(212,245,60,.09),transparent)}
+.fk-tick.is-game small{padding:2px 7px;border-radius:99px;background:rgba(255,75,43,.14);color:#ff9a86;font-weight:700;font-size:10px}
+.fk-tick.is-note{color:var(--fkh-muted)}
+.fk-tick-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:var(--fkh-gold)}
+.fk-tick-dot.is-live{background:var(--fkh-goal);--tone:var(--fkh-goal);animation:fkh-pulse 1.4s ease-out infinite}
+.fk-tick-dot.is-won{background:var(--fkh-win)}
+.fk-tick-dot.is-lost{background:#5d6b80}
+.fk-tick.is-ticket{padding-left:22px;background:rgba(212,245,60,.06);border-left:2px solid var(--fkh-led)}
+.fk-tick.is-ticket b{color:var(--fkh-led);font-family:var(--fkh-display);letter-spacing:-.2px}
+.fk-tick-code{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:6px;background:#0b141f;border:1px solid rgba(212,245,60,.3);color:var(--fkh-muted);font-size:11px}
+.fk-tick-code code{font:700 11px var(--fkh-display);color:var(--fkh-text);letter-spacing:.3px}
+.fk-tick-code.is-pending{border-color:rgba(245,185,66,.4);color:#ffd88a}
+
+@media(max-width:700px){
+  .fk-reference-home{--fkh-pad:14px}
+  .fk-marquee{height:32px}
+  .fk-marquee-tag{padding-right:12px;font-size:9px}
+  .fk-tick{padding:0 14px;font-size:11px}
+}
+/* sem movimento: o carrossel fica parado e passa a deslizar com o dedo/rato */
+@media(prefers-reduced-motion:reduce){
+  .fk-ticker{animation:none}
+  .fk-marquee-viewport{overflow-x:auto;-webkit-mask-image:none;mask-image:none}
+  .fk-marquee-track{animation:none}
+  .fk-marquee-group[aria-hidden="true"]{display:none}
+  .fk-marquee-tag i{animation:none}
+  .fk-tick-dot.is-live{animation:none}
+}
