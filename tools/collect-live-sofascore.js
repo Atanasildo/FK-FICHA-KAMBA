@@ -14,7 +14,7 @@ import { execFile } from "node:child_process";
 import { createClient } from "@supabase/supabase-js";
 import { matchFixture } from "../lib/pipeline/live-tickets.js";
 import { settleFinishedLegs } from "../lib/pipeline/settlement.js";
-import { syncLiveGames } from "../lib/pipeline/live-games.js";
+import { enrichLiveGames, syncLiveGames } from "../lib/pipeline/live-games.js";
 import {
   SOFASCORE_BASE,
   hasStatistics,
@@ -243,7 +243,8 @@ if (isMain) {
         // Um só pedido da lista ao vivo por ciclo: serve a página "Ao vivo" e o acompanhamento das fichas.
         const liveList = normalizeSofascoreLiveList(await getSofascoreJson("/sport/football/events/live"));
         const g = await syncLiveGames({ db, liveList, getJson: getSofascoreJson, log: msg => console.log(msg) });
-        console.log(`[${new Date().toLocaleTimeString("pt-PT")}] jogos ao vivo: ${g.live} | terminados confirmados: ${g.finalized}`);
+        const d = await enrichLiveGames({ db, getJson: getSofascoreJson, log: msg => console.log(msg) });
+        console.log(`[${new Date().toLocaleTimeString("pt-PT")}] jogos ao vivo: ${g.live} | terminados confirmados: ${g.finalized} | detalhes: ${d.updated}`);
         const r = await runCycle({ db, getJson: getSofascoreJson, state, liveList });
         console.log(`[${new Date().toLocaleTimeString("pt-PT")}] acompanhados: ${r.tracked} | liquidadas: ${r.settled} | associados: ${r.matched} | gravados: ${r.written} | falhas: ${r.failed}`);
       } catch (e) {

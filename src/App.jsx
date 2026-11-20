@@ -48,6 +48,8 @@ export default function App() {
   const [liveUpdates, setLiveUpdates] = useState({});
   const [liveUpdatedAt, setLiveUpdatedAt] = useState(null);
   const [liveGames, setLiveGames] = useState([]);
+  const [gameQuery, setGameQuery] = useState('');
+  const [gameScope, setGameScope] = useState('todos');
   const [expanded, setExpanded] = useState({});
   const [mobile, setMobile] = useState(false);
   const [query, setQuery] = useState('');
@@ -197,7 +199,8 @@ export default function App() {
   ), [groupedTickets]);
   const filteredHistory = history.filter(t => [t.id, t.name, t.bookmaker, t.bookingId].join(' ').toLowerCase().includes(query.toLowerCase()));
   const toggle = id => setExpanded(p => ({ ...p, [id]: !p[id] }));
-  const liveLegCount = liveTickets.reduce((n, t) => n + (t.legs || []).filter(isLive).length, 0);
+  const liveGameCount = liveGames.filter(gameIsLive).length;
+  const liveLegCount = liveGameCount || liveTickets.reduce((n, t) => n + (t.legs || []).filter(isLive).length, 0);
   if (page === 'Bilhetes do dia') return <DailyHome
     tickets={todayTickets}
     expanded={expanded}
@@ -206,6 +209,7 @@ export default function App() {
     onDismissNotice={() => setNotice('')}
     onNavigate={setPage}
     liveCount={liveLegCount}
+    ticketLiveCount={liveTickets.reduce((n, t) => n + (t.legs || []).filter(isLive).length, 0)}
   />;
   const sum = fn => liveTickets.reduce((n, t) => n + (t.legs || []).filter(fn).length, 0);
   const shell = { page, onNavigate: setPage, liveCount: liveLegCount, notice, onDismissNotice: () => setNotice('') };
@@ -219,16 +223,30 @@ export default function App() {
   </FkShell>;
 
   if (page === 'Acompanhamento ao vivo') {
-    const nowLive = liveGames.filter(gameIsLive);
-    const done = liveGames.filter(gameIsFinished).sort((a, b) => Date.parse(b.finished_at || b.kickoff_at) - Date.parse(a.finished_at || a.kickoff_at));
+    const norm = v => String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    const ticketTeams = new Set(todayTickets.flatMap(t => (t.legs || []).flatMap(l => [norm(l.home), norm(l.away)])).filter(Boolean));
+    const fromTickets = g => ticketTeams.has(norm(g.home_team)) || ticketTeams.has(norm(g.away_team));
+    const terms = norm(gameQuery).split(' ').filter(Boolean);
+    const visible = liveGames.filter(g => (gameScope === 'todos' || fromTickets(g)) &&
+      (!terms.length || terms.every(term => norm([g.home_team, g.away_team, g.competition, g.country].join(' ')).includes(term))));
+    const nowLive = visible.filter(gameIsLive);
+    const done = visible.filter(gameIsFinished).sort((a, b) => Date.parse(b.finished_at || b.kickoff_at) - Date.parse(a.finished_at || a.kickoff_at));
     const fast = fastLiveRef.current || liveGamesFastRef.current;
     const latest = liveGames.reduce((m, g) => Math.max(m, Date.parse(g.updated_at) || 0), 0);
-    return <FkShell {...shell} liveCount={nowLive.length || liveLegCount} footer={nowLive.length + ' em directo • ' + done.length + ' terminados nas últimas 36 h'}>
+    const filtered = Boolean(terms.length) || gameScope !== 'todos';
+    return <FkShell {...shell} footer={liveGames.filter(gameIsLive).length + ' em directo • ' + liveGames.filter(gameIsFinished).length + ' terminados nas últimas 36 h'}>
       <PageHeader emoji="📡" title="Ao vivo" subtitle="Todos os jogos em directo agora e os que já terminaram"
-        board={[[nowLive.length, 'Ao vivo', true], [done.length, 'Terminados']]}/>
-      <div className="fk-reference-note"><Radio size={15}/><span>{fast ? 'Actualização a cada minuto.' : 'Sem jogos em directo agora: actualização a cada 5 minutos.'}{latest ? ' Última recolha: ' + new Date(latest).toLocaleTimeString('pt-AO') + '.' : ''} O acompanhamento de cada ficha está em «Bilhetes do dia».</span></div>
-      <LiveGamesSection title="Em directo" games={nowLive} empty="Nenhum jogo em directo neste momento."/>
-      <LiveGamesSection title="Terminados" games={done} empty="Ainda não há jogos terminados registados." finished/>
+        board={[[liveGames.filter(gameIsLive).length, 'Ao vivo', true], [liveGames.filter(gameIsFinished).length, 'Terminados']]}/>
+      <div className="fk-reference-note"><Radio size={15}/><span>{fast ? 'Actualização a cada minuto.' : 'Sem jogos em directo agora: actualização a cada 5 minutos.'}{latest ? ' Última recolha: ' + new Date(latest).toLocaleTimeString('pt-AO') + '.' : ''} Toca num jogo para ver as estatísticas. O acompanhamento de cada ficha está em «Bilhetes do dia».</span></div>
+      <div className="fk-live-tools">
+        <label className="fk-reference-search"><Search size={16}/><input value={gameQuery} onChange={e => setGameQuery(e.target.value)} placeholder="Pesquisar equipa, competição ou país…" aria-label="Pesquisar jogos"/></label>
+        <div className="fk-live-chips" role="group" aria-label="Filtro">
+          <button className={gameScope === 'todos' ? 'is-on' : ''} onClick={() => setGameScope('todos')}>Todos</button>
+          <button className={gameScope === 'fichas' ? 'is-on' : ''} onClick={() => setGameScope('fichas')}>Jogos das minhas fichas</button>
+        </div>
+      </div>
+      <LiveGamesSection title="Em directo" games={nowLive} empty={filtered ? 'Nenhum jogo em directo corresponde ao filtro.' : 'Nenhum jogo em directo neste momento.'}/>
+      <LiveGamesSection title="Terminados" games={done} empty={filtered ? 'Nenhum jogo terminado corresponde ao filtro.' : 'Ainda não há jogos terminados registados.'} finished/>
     </FkShell>;
   }
 
@@ -340,14 +358,14 @@ function EmptyPanel({ emoji, title, detail }) {
   return <section className="fk-reference-empty"><span>{emoji}</span><b>{title}</b>{detail && <small>{detail}</small>}</section>;
 }
 
-function DailyHome({ tickets, expanded, onToggle, notice, onDismissNotice, onNavigate, liveCount = 0 }) {
+function DailyHome({ tickets, expanded, onToggle, notice, onDismissNotice, onNavigate, liveCount = 0, ticketLiveCount = 0 }) {
   const total = tickets.length;
   const games = tickets.reduce((n, t) => n + (t.legs || []).length, 0);
   return <FkShell page="Bilhetes do dia" onNavigate={onNavigate} liveCount={liveCount} notice={notice} onDismissNotice={onDismissNotice}
     footer={total + (total === 1 ? ' ficha carregada' : ' fichas carregadas') + ' • Actualização automática a cada 5 minutos'}>
     <PageHeader emoji="⚽" title="Bilhetes do dia"
       subtitle={<>Ficha Kamba <i>•</i> {new Date().toLocaleDateString('pt-AO')}</>}
-      board={[[total, total === 1 ? 'Ficha' : 'Fichas'], [games, games === 1 ? 'Jogo' : 'Jogos'], [liveCount, 'Ao vivo', true]]}/>
+      board={[[total, total === 1 ? 'Ficha' : 'Fichas'], [games, games === 1 ? 'Jogo' : 'Jogos'], [ticketLiveCount, 'Ao vivo', true]]}/>
     {total ? <section className="fk-reference-grid">
       {tickets.map((ticket, index) => <DailyTicketCard key={ticket.id} ticket={ticket}
         expanded={!!expanded[ticket.id]} onToggle={() => onToggle(ticket.id)} featured={index === 0}/>)}
@@ -358,6 +376,52 @@ function DailyHome({ tickets, expanded, onToggle, notice, onDismissNotice, onNav
 const gameIsFinished = g => /^(FT|AET|PENS)$/i.test(g.status);
 const gameIsLive = g => !gameIsFinished(g) && /^(1H|2H|HT|ET|LIVE)$/i.test(g.status);
 const gameLabel = g => /^HT$/i.test(g.status) ? 'INTERVALO' : /^(AET)$/i.test(g.status) ? 'FIM (prol.)' : /^PENS$/i.test(g.status) ? 'FIM (pen.)' : gameIsFinished(g) ? 'FIM' : g.minute ? g.minute + "'" : 'AO VIVO';
+
+const GAME_STATS = [
+  ['Posse de bola (%)', 'possession'], ['Remates', 'shots'], ['Remates à baliza', 'shots_on_target'], ['Remates fora', 'shots_off_target'],
+  ['Cantos', 'corners'], ['Faltas', 'fouls'], ['Cartões amarelos', 'yellow_cards'], ['Cartões vermelhos', 'red_cards'],
+  ['Defesas', 'saves'], ['Desarmes', 'tackles'], ['Passes', 'total_passes'], ['Passes certos', 'accurate_passes']
+];
+const EVENT_ICON = { goal: '⚽', yellow_card: '🟨', red_card: '🟥', second_yellow: '🟥', substitution: '🔁' };
+const EVENT_NAME = { goal: 'Golo', yellow_card: 'Cartão amarelo', red_card: 'Cartão vermelho', second_yellow: 'Segundo amarelo', substitution: 'Substituição' };
+
+function LiveGameRow({ game: g, finished }) {
+  const [open, setOpen] = useState(false);
+  const [details, setDetails] = useState(null);
+  useEffect(() => {
+    if (!open || !supabase) return undefined;
+    let active = true;
+    const load = async () => {
+      const { data } = await supabase.from('live_games').select('stats,events,details_at').eq('sofascore_id', g.sofascore_id).maybeSingle();
+      if (active) setDetails(data || {});
+    };
+    load();
+    const timer = finished ? null : window.setInterval(load, 60000);
+    return () => { active = false; if (timer) window.clearInterval(timer); };
+  }, [open, g.sofascore_id, finished]);
+  const rows = GAME_STATS.map(([label, key]) => ({ label, home: details?.stats?.home?.[key], away: details?.stats?.away?.[key] }))
+    .filter(r => r.home != null || r.away != null);
+  const events = Array.isArray(details?.events) ? details.events.filter(e => e.event_type !== 'substitution') : [];
+  return <div className={'fk-live-item' + (open ? ' is-open' : '')}>
+    <button className={'fk-live-game' + (finished ? '' : ' is-live')} onClick={() => setOpen(o => !o)} aria-expanded={open}>
+      <span className="fk-live-team">{g.home_team}</span>
+      <b className="fk-live-score">{g.home_score ?? '-'} : {g.away_score ?? '-'}</b>
+      <span className="fk-live-team is-away">{g.away_team}</span>
+      <small className="fk-live-min">{gameLabel(g)}</small>
+    </button>
+    {open && <div className="fk-live-details">
+      {details === null ? <p className="fk-live-empty">A carregar…</p> : <>
+        {events.length > 0 && <div className="fk-live-events">{events.map((e, i) => <div key={i} className={'is-' + (e.team_side || 'none')}>
+          <i>{EVENT_ICON[e.event_type] || '•'}</i><b>{e.minute != null ? e.minute + "'" : ''}</b>
+          <span>{e.player_name || EVENT_NAME[e.event_type]}{e.team_side ? ' · ' + (e.team_side === 'home' ? g.home_team : g.away_team) : ''}</span>
+        </div>)}</div>}
+        {rows.length > 0 ? <div className="fk-live-stats">{rows.map(r => <div key={r.label}><b>{r.home ?? '–'}</b><small>{r.label}</small><b>{r.away ?? '–'}</b></div>)}</div>
+          : <p className="fk-live-empty">{details.details_at ? 'A fonte não tem estatísticas para este jogo (comum em ligas pequenas).' : 'Estatísticas ainda por recolher: aparecem dentro de alguns minutos.'}</p>}
+        {details.details_at && <small className="fk-live-stamp">Estatísticas de {new Date(details.details_at).toLocaleTimeString('pt-AO')}</small>}
+      </>}
+    </div>}
+  </div>;
+}
 
 function LiveGamesSection({ title, games, empty, finished = false }) {
   const groups = useMemo(() => {
@@ -373,12 +437,7 @@ function LiveGamesSection({ title, games, empty, finished = false }) {
     <h2 className="fk-live-title">{title} <small>{games.length}</small></h2>
     {groups.length ? groups.map(([name, rows]) => <div className="fk-live-league" key={name}>
       <h3>{name}</h3>
-      {rows.map(g => <div className={'fk-live-game' + (finished ? '' : ' is-live')} key={g.sofascore_id}>
-        <span className="fk-live-team">{g.home_team}</span>
-        <b className="fk-live-score">{g.home_score ?? '-'} : {g.away_score ?? '-'}</b>
-        <span className="fk-live-team is-away">{g.away_team}</span>
-        <small className="fk-live-min">{gameLabel(g)}</small>
-      </div>)}
+      {rows.map(g => <LiveGameRow key={g.sofascore_id} game={g} finished={finished}/>)}
     </div>) : <p className="fk-live-empty">{empty}</p>}
   </section>;
 }

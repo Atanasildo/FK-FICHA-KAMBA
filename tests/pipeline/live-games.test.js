@@ -43,3 +43,34 @@ test("jogo que continua na lista não é pedido de novo", async () => {
   const db = fakeDb([{ sofascore_id: "1", home_team: "A1", away_team: "B1" }]);
   await syncLiveGames({ db, liveList: [game("1", "2H")], getJson: async () => { throw new Error("não devia pedir"); }, now: NOW, pause: async () => {} });
 });
+
+import { enrichLiveGames } from "../../lib/pipeline/live-games.js";
+
+function enrichDb(rows) {
+  const updates = [];
+  return {
+    updates,
+    from: () => ({
+      select: async () => ({ data: rows, error: null }),
+      update: patch => ({ eq: async (_c, id) => { updates.push({ id, patch }); return { error: null }; } })
+    })
+  };
+}
+const statsPayload = { statistics: [{ period: "ALL", groups: [{ statisticsItems: [{ name: "Total shots", homeValue: 5, awayValue: 2 }] }] }] };
+
+test("detalhes: respeita o orçamento e dá prioridade a terminados e nunca consultados", async () => {
+  const old = new Date(NOW - 10 * 60000).toISOString();
+  const db = enrichDb([
+    { sofascore_id: "a", home_team: "A", away_team: "A", finished_at: null, details_at: old },
+    { sofascore_id: "b", home_team: "B", away_team: "B", finished_at: null, details_at: null },
+    { sofascore_id: "c", home_team: "C", away_team: "C", finished_at: new Date(NOW - 60000).toISOString(), details_at: old },
+    { sofascore_id: "d", home_team: "D", away_team: "D", finished_at: null, details_at: new Date(NOW - 1000).toISOString() }
+  ]);
+  const calls = [];
+  const r = await enrichLiveGames({ db, getJson: async p => { calls.push(p); return p.endsWith("statistics") ? statsPayload : { incidents: [] }; }, now: NOW, budget: 2, pause: async () => {} });
+  assert.equal(r.updated, 2);
+  assert.deepEqual(db.updates.map(u => u.id), ["c", "b"]);
+  assert.equal(db.updates[0].patch.stats.home.shots, 5);
+  assert.equal("events" in db.updates[0].patch, false);
+  assert.equal(calls.length, 4);
+});

@@ -258,10 +258,25 @@
 .fk-live-title small{padding:2px 9px;border-radius:99px;background:rgba(212,245,60,.12);color:var(--fkh-led);font-size:12px}
 .fk-live-league{margin-bottom:14px;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
 .fk-live-league h3{margin:0;padding:8px 14px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--fkh-muted);background:rgba(255,255,255,.04)}
-.fk-live-game{display:grid;grid-template-columns:1fr auto 1fr 74px;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid rgba(255,255,255,.06);font-size:14px}
+.fk-live-item{border-top:1px solid rgba(255,255,255,.06)}
+.fk-live-game{width:100%;background:none;border:0;color:inherit;font:inherit;cursor:pointer;text-align:inherit;display:grid;grid-template-columns:1fr auto 1fr 74px;align-items:center;gap:10px;padding:10px 14px;font-size:14px}
+.fk-live-game:hover{background:rgba(255,255,255,.04)}
 .fk-live-team.is-away{text-align:left}.fk-live-team:first-child{text-align:right}
 .fk-live-score{min-width:54px;text-align:center;font-variant-numeric:tabular-nums}
 .fk-live-game.is-live .fk-live-score,.fk-live-game.is-live .fk-live-min{color:var(--fkh-led)}
 .fk-live-min{text-align:right;color:var(--fkh-muted);font-size:11px}
 .fk-live-empty{margin:0;padding:14px;color:var(--fkh-muted);font-size:13px}
 @media(max-width:560px){.fk-live-game{grid-template-columns:1fr auto 1fr;row-gap:2px}.fk-live-min{grid-column:1/-1;text-align:center}}
+
+.fk-live-tools{max-width:1280px;margin:0 auto 18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.fk-live-tools .fk-reference-search{flex:1 1 280px;margin:0}
+.fk-live-chips{display:flex;gap:8px;flex-wrap:wrap}
+.fk-live-chips button{padding:9px 14px;border-radius:99px;border:1px solid rgba(255,255,255,.14);background:transparent;color:var(--fkh-muted);font:inherit;font-size:13px;cursor:pointer}
+.fk-live-chips button.is-on{background:var(--fkh-led);border-color:var(--fkh-led);color:#0b1a0f;font-weight:700}
+.fk-live-details{padding:4px 14px 14px;background:rgba(255,255,255,.03)}
+.fk-live-events{display:grid;gap:4px;margin:8px 0 12px;font-size:13px}
+.fk-live-events div{display:flex;gap:8px;align-items:center}.fk-live-events b{min-width:34px;color:var(--fkh-muted)}
+.fk-live-stats{display:grid;gap:6px;font-size:13px}
+.fk-live-stats div{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.fk-live-stats div b:first-child{text-align:right}.fk-live-stats small{color:var(--fkh-muted);text-align:center}
+.fk-live-stamp{display:block;margin-top:8px;color:var(--fkh-muted);font-size:11px}
