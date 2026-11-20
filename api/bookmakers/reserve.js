@@ -69,108 +69,111 @@ export async function createBooking({ site, selections, totalOdd }) {
   };
 }
 
-function getExistingBooking(reference) {
-  if (!reference) return null;
-  try {
-    const parsed = JSON.parse(reference);
-    return parsed && typeof parsed === "object" ? parsed : { id: String(reference) };
-  } catch {
-    return { id: String(reference) };
+const siteOf = title => /elephant/i.test(title || "") ? "elephant" : /bantu/i.test(title || "") ? "bantu" : null;
+
+// Decide, sem tocar na rede, que boletins podem ser reservados agora: todas as selecções com
+// selection_id numérico e nenhum jogo já iniciado.
+export function pickReservable(tickets, now = Date.now()) {
+  const ready = [], skipped = [];
+  for (const t of tickets || []) {
+    const legs = t.ticket_legs || [];
+    const site = siteOf(t.title);
+    let reason = null;
+    if (!site) reason = "casa não identificada no título";
+    else if (!legs.length) reason = "sem selecções";
+    else if (legs.some(l => !/^\d+$/.test(String(l.selection_id ?? "")))) reason = "faltam selection_id";
+    else if (legs.some(l => !l.matches?.kickoff_at || Date.parse(l.matches.kickoff_at) <= now)) reason = "há jogos já iniciados";
+    if (reason) skipped.push({ id: t.id, title: t.title, reason });
+    else ready.push({ ticket: t, site });
   }
+  return { ready, skipped };
 }
 
-async function createBookingForTicket(ticketId, requestedSite) {
+function parseReference(reference) {
+  if (!reference) return null;
+  try { const parsed = JSON.parse(reference); return parsed && typeof parsed === "object" ? parsed : { id: String(reference) }; }
+  catch { return { id: String(reference) }; }
+}
+
+function adminClient() {
   const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
   if (!url || !key) throw new Error("Configuração privada do Supabase em falta.");
-  const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+  return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+}
 
-  const { data: ticket, error: ticketError } = await db.from("tickets")
-    .select("id,title,status,total_odds,booking_reference,ticket_legs(id,market_id,selection_id,market_name,selection,odd,matches(home_team,away_team,competition,kickoff_at))")
-    .eq("id", ticketId).maybeSingle();
-  if (ticketError) throw new Error("Não foi possível ler a ficha: " + ticketError.message);
-  if (!ticket || ticket.status !== "published") throw new Error("A ficha não existe ou não está publicada.");
+// O Swarm das casas recusa os servidores da Vercel (HTTP 403), por isso a reserva é pedida a partir
+// do PC local (tools/reserve-pending.js). Este endpoint só lista o que falta reservar e grava o código.
+//   GET  -> boletins por reservar
+//   POST { action: "claim" | "save" | "release", ticketId, bookingId? }
+export async function listPending(db, now = Date.now()) {
+  const since = new Date(now - 36 * 3600 * 1000).toISOString();
+  const { data, error } = await db.from("tickets")
+    .select("id,title,total_odds,booking_reference,ticket_legs(selection_id,odd,matches(kickoff_at))")
+    .eq("status", "published").is("booking_reference", null).gte("published_at", since);
+  if (error) throw new Error("Não foi possível ler os boletins: " + error.message);
+  const { ready, skipped } = pickReservable(data, now);
+  return {
+    pending: ready.map(({ ticket, site }) => ({
+      id: ticket.id, title: ticket.title, site, totalOdds: Number(ticket.total_odds),
+      selections: ticket.ticket_legs.map(l => ({ selectionId: String(l.selection_id), odd: Number(l.odd), startTime: l.matches.kickoff_at }))
+    })),
+    skipped
+  };
+}
 
-  const existing = getExistingBooking(ticket.booking_reference);
-  if (existing?.id && existing.status !== "creating") {
-    return { ok: true, alreadyExists: true, bookingId: String(existing.id), bookingLink: existing.url || null, status: existing.status || "booking_created" };
+export async function applyAction(db, { action, ticketId, bookingId }) {
+  if (!ticketId) throw Object.assign(new Error("Falta ticketId."), { status: 400 });
+  const { data: ticket, error } = await db.from("tickets").select("id,title,status,booking_reference").eq("id", ticketId).maybeSingle();
+  if (error) throw new Error("Não foi possível ler a ficha: " + error.message);
+  if (!ticket || ticket.status !== "published") throw Object.assign(new Error("A ficha não existe ou não está publicada."), { status: 404 });
+  const current = ticket.booking_reference;
+  const parsed = parseReference(current);
+
+  if (action === "claim") {
+    if (current) throw Object.assign(new Error("A ficha já tem uma referência ou está em processamento."), { status: 409 });
+    const claim = JSON.stringify({ status: "creating", startedAt: new Date().toISOString() });
+    const { data: claimed, error: e } = await db.from("tickets").update({ booking_reference: claim }).eq("id", ticketId).is("booking_reference", null).select("id").maybeSingle();
+    if (e) throw new Error("Não foi possível reservar o processamento: " + e.message);
+    if (!claimed) throw Object.assign(new Error("Outro pedido ficou com esta ficha."), { status: 409 });
+    return { ok: true, status: "creating" };
   }
-  if (existing?.status === "creating") throw new Error("Já existe um pedido de partilha em processamento para esta ficha.");
+  if (parsed?.status !== "creating") throw Object.assign(new Error("A ficha não está em processamento."), { status: 409 });
 
-  const siteFromTitle = /elephant/i.test(ticket.title) ? "elephant" : /bantu/i.test(ticket.title) ? "bantu" : null;
-  const site = requestedSite || siteFromTitle;
-  if (!site || site !== siteFromTitle) throw new Error("A casa indicada não corresponde à versão desta ficha.");
-  if (!Array.isArray(ticket.ticket_legs) || !ticket.ticket_legs.length) throw new Error("A ficha não tem selecções.");
-
-  const marketIds = [...new Set(ticket.ticket_legs.map(leg => leg.market_id).filter(Boolean))];
-  if (marketIds.length !== ticket.ticket_legs.length) throw new Error("Há selecções sem mercado de origem; não é seguro criar a partilha.");
-  const { data: markets, error: marketsError } = await db.from("markets")
-    .select("id,line,period,selection,market_name,bookmaker_id").in("id", marketIds);
-  if (marketsError) throw new Error("Não foi possível validar os mercados: " + marketsError.message);
-  const marketById = new Map((markets || []).map(m => [m.id, m]));
-  const bookmakerIds = [...new Set((markets || []).map(m => m.bookmaker_id).filter(Boolean))];
-  const { data: bookmakers, error: bookmakersError } = await db.from("bookmakers")
-    .select("id,code,name").in("id", bookmakerIds);
-  if (bookmakersError) throw new Error("Não foi possível validar a casa de apostas: " + bookmakersError.message);
-  const bookmakerById = new Map((bookmakers || []).map(b => [b.id, b]));
-  const expectedCode = site === "elephant" ? "elephantbet" : "bantubet";
-
-  const selections = ticket.ticket_legs.map(leg => {
-    const market = marketById.get(leg.market_id);
-    const bookmaker = market && bookmakerById.get(market.bookmaker_id);
-    const match = leg.matches || {};
-    if (!market || !bookmaker || String(bookmaker.code).toLowerCase() !== expectedCode) {
-      throw new Error("Uma ou mais selecções não pertencem à casa indicada.");
-    }
-    if (!match.home_team || !match.away_team || !match.kickoff_at) throw new Error("Há um jogo sem equipas ou hora de início.");
-    if (!leg.selection_id) throw new Error("Há selecções sem selection_id da casa; não é possível reservar esta ficha.");
-    return {
-      home: match.home_team, away: match.away_team, competition: match.competition || "",
-      startTime: match.kickoff_at, marketName: leg.market_name, selectionName: leg.selection,
-      odd: leg.odd, selectionId: leg.selection_id
-    };
-  });
-
-  const claim = JSON.stringify({ status: "creating", startedAt: new Date().toISOString() });
-  const { data: claimed, error: claimError } = await db.from("tickets").update({ booking_reference: claim })
-    .eq("id", ticketId).is("booking_reference", null).select("id").maybeSingle();
-  if (claimError) throw new Error("Não foi possível reservar o processamento: " + claimError.message);
-  if (!claimed) throw new Error("A ficha já tem uma referência ou outro pedido está em processamento.");
-
-  try {
-    const result = await createBooking({ site, selections, totalOdd: ticket.total_odds });
+  if (action === "release") {
+    await db.from("tickets").update({ booking_reference: null }).eq("id", ticketId).eq("booking_reference", current);
+    return { ok: true, status: "released" };
+  }
+  if (action === "save") {
+    const site = siteOf(ticket.title);
+    if (!site) throw Object.assign(new Error("Casa não identificada no título da ficha."), { status: 400 });
+    if (!/^\d{3,12}$/.test(String(bookingId ?? ""))) throw Object.assign(new Error("bookingId inválido."), { status: 400 });
     const reference = JSON.stringify({
-      id: result.bookingId, url: result.bookingLink, status: "booking_created",
-      site, createdAt: new Date().toISOString(), shareTemplateLink: result.shareTemplateLink
+      id: String(bookingId), url: configs[site].bookingBase + bookingId,
+      status: "booking_created", site, createdAt: new Date().toISOString()
     });
-    const { error: saveError } = await db.from("tickets").update({ booking_reference: reference })
-      .eq("id", ticketId).eq("booking_reference", claim);
-    if (saveError) throw new Error("O link foi criado, mas não foi possível guardá-lo: " + saveError.message);
-    return { ...result, ticketId, status: "booking_created", message: "Reserva criada; isto não confirma uma aposta colocada." };
-  } catch (error) {
-    await db.from("tickets").update({ booking_reference: null }).eq("id", ticketId).eq("booking_reference", claim);
-    throw error;
+    const { error: e } = await db.from("tickets").update({ booking_reference: reference }).eq("id", ticketId).eq("booking_reference", current);
+    if (e) throw new Error("Não foi possível gravar o código: " + e.message);
+    return { ok: true, status: "booking_created", bookingId: String(bookingId) };
   }
+  throw Object.assign(new Error("Acção desconhecida."), { status: 400 });
 }
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    return res.status(405).json({ error: "Método não permitido." });
-  }
   const secret = process.env.CRON_SECRET;
   if (!secret || req.headers.authorization !== `Bearer ${secret}`) {
     return res.status(401).json({ error: "Não autorizado." });
   }
+  if (req.method !== "GET" && req.method !== "POST") {
+    res.setHeader("Allow", "GET, POST");
+    return res.status(405).json({ error: "Método não permitido." });
+  }
   try {
-    const body = req.body || {};
-    const result = body.ticketId
-      ? await createBookingForTicket(String(body.ticketId), body.site)
-      : await createBooking(body);
-    return res.status(200).json(result);
+    const db = adminClient();
+    res.setHeader("Cache-Control", "no-store");
+    if (req.method === "GET") return res.status(200).json({ ok: true, ...(await listPending(db)) });
+    return res.status(200).json(await applyAction(db, req.body || {}));
   } catch (error) {
-    return res.status(error.name === "AbortError" ? 504 : 400).json({
-      ok: false, error: error.name === "AbortError" ? "Tempo esgotado ao contactar a casa." : error.message
-    });
+    return res.status(error.status || 500).json({ ok: false, error: error.message });
   }
 }
