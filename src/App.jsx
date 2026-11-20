@@ -55,6 +55,7 @@ function AppBody() {
   const [data, setData] = useState({ tickets: [] });
   const [analyses, setAnalyses] = useState([]);
   const [analysesLoading, setAnalysesLoading] = useState(true);
+  const [ticketsLoading, setTicketsLoading] = useState(true);
   const [liveUpdates, setLiveUpdates] = useState({});
   const [liveUpdatedAt, setLiveUpdatedAt] = useState(null);
   const [liveGames, setLiveGames] = useState([]);
@@ -71,6 +72,7 @@ function AppBody() {
     async function loadPublishedTickets() {
       if (!supabase) {
         setNotice('A ligação ao Supabase não está configurada. As fichas não serão simuladas nem carregadas de dados locais.');
+        setTicketsLoading(false);
         return;
       }
       const { data: rows, error } = await supabase
@@ -81,6 +83,7 @@ function AppBody() {
       if (!active) return;
       if (error) {
         setNotice('Não foi possível sincronizar as fichas publicadas: ' + error.message);
+        setTicketsLoading(false);
         return;
       }
       const remoteTickets = (rows || []).map(ticket => ({
@@ -122,6 +125,7 @@ function AppBody() {
         })
       }));
       setData({ tickets: remoteTickets });
+      setTicketsLoading(false);
     }
     loadPublishedTickets();
     const timer = window.setInterval(loadPublishedTickets, 300000);
@@ -212,6 +216,15 @@ function AppBody() {
   const toggle = id => setExpanded(p => ({ ...p, [id]: !p[id] }));
   const liveGameCount = liveGames.filter(gameIsLive).length;
   const liveLegCount = liveGameCount || liveTickets.reduce((n, t) => n + (t.legs || []).filter(isLive).length, 0);
+  const ticker = useMemo(() => {
+    const norm = v => String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    const mine = new Set(todayTickets.flatMap(t => (t.legs || []).flatMap(l => [norm(l.home), norm(l.away)])).filter(Boolean));
+    const own = g => mine.has(norm(g.home_team)) || mine.has(norm(g.away_team));
+    const live = liveGames.filter(gameIsLive).sort((a, b) => Number(own(b)) - Number(own(a))).slice(0, 40)
+      .map(g => ({ id: g.sofascore_id, home: g.home_team, away: g.away_team, score: (g.home_score ?? '-') + ' : ' + (g.away_score ?? '-'), label: gameLabel(g), mine: own(g) }));
+    const next = todayTickets.flatMap(t => t.legs || []).map(l => Date.parse(l.date)).filter(ms => ms > Date.now()).sort((a, b) => a - b)[0] || null;
+    return { live, tickets: todayTickets, next };
+  }, [liveGames, todayTickets]);
   if (page === 'Bilhetes do dia') return <DailyHome
     tickets={todayTickets}
     expanded={expanded}
@@ -221,15 +234,17 @@ function AppBody() {
     onNavigate={setPage}
     liveCount={liveLegCount}
     ticketLiveCount={liveTickets.reduce((n, t) => n + (t.legs || []).filter(isLive).length, 0)}
+    loading={ticketsLoading}
+    ticker={ticker}
   />;
   const sum = fn => liveTickets.reduce((n, t) => n + (t.legs || []).filter(fn).length, 0);
-  const shell = { page, onNavigate: setPage, liveCount: liveLegCount, notice, onDismissNotice: () => setNotice('') };
+  const shell = { page, onNavigate: setPage, liveCount: liveLegCount, notice, onDismissNotice: () => setNotice(''), ticker };
 
   if (page === 'Análises') return <FkShell {...shell} footer={analyses.length + ' análises guardadas • Actualização automática a cada 5 minutos'}>
     <PageHeader emoji="📊" title="Análises" subtitle="Relatórios preparados e guardados no Supabase"
       board={[[analyses.length, analyses.length === 1 ? 'Relatório' : 'Relatórios']]}/>
-    {analysesLoading ? <EmptyPanel emoji="⏳" title="A carregar análises…"/> :
-      analyses.length ? <section className="fk-reference-grid fk-two">{analyses.map(row => <AnalysisCard key={row.id} row={row}/>)}</section> :
+    {analysesLoading ? <Skeletons n={4} two/> :
+      analyses.length ? <section className="fk-reference-grid fk-two">{analyses.map((row, i) => <AnalysisCard key={row.id} row={row} index={i}/>)}</section> :
       <EmptyPanel emoji="📊" title="Ainda não existem análises guardadas" detail="Depois da recolha diária das odds, as análises aprovadas aparecem automaticamente aqui."/>}
   </FkShell>;
 
@@ -246,8 +261,8 @@ function AppBody() {
     const latest = liveGames.reduce((m, g) => Math.max(m, Date.parse(g.updated_at) || 0), 0);
     const filtered = Boolean(terms.length) || gameScope !== 'todos';
     return <FkShell {...shell} footer={liveGames.filter(gameIsLive).length + ' em directo • ' + liveGames.filter(gameIsFinished).length + ' terminados nas últimas 36 h'}>
-      <PageHeader emoji="📡" title="Ao vivo" subtitle="Todos os jogos em directo agora e os que já terminaram"
-        board={[[liveGames.filter(gameIsLive).length, 'Ao vivo', true], [liveGames.filter(gameIsFinished).length, 'Terminados']]}/>
+      <PageHeader emoji="📡" title="Ao vivo" subtitle={filtered ? 'Filtro activo: ' + (nowLive.length + done.length) + ' de ' + liveGames.length + ' jogos' : 'Todos os jogos em directo agora e os que já terminaram'}
+        board={[[nowLive.length, 'Ao vivo', true], [done.length, 'Terminados']]}/>
       <div className="fk-reference-note"><Radio size={15}/><span>{fast ? 'Actualização a cada minuto.' : 'Sem jogos em directo agora: actualização a cada 5 minutos.'}{latest ? ' Última recolha: ' + new Date(latest).toLocaleTimeString('pt-AO') + '.' : ''} Toca num jogo para ver as estatísticas. O acompanhamento de cada ficha está em «Bilhetes do dia».</span></div>
       <div className="fk-live-tools">
         <label className="fk-reference-search"><Search size={16}/><input value={gameQuery} onChange={e => setGameQuery(e.target.value)} placeholder="Pesquisar equipa, competição ou país…" aria-label="Pesquisar jogos"/></label>
@@ -265,8 +280,8 @@ function AppBody() {
     <PageHeader emoji="📋" title="Histórico" subtitle="Fichas e resultados de dias anteriores"
       board={[[history.length, history.length === 1 ? 'Ficha' : 'Fichas']]}/>
     <label className="fk-reference-search"><Search size={16}/><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Pesquisar por ficha, ID ou casa…" aria-label="Pesquisar no histórico"/></label>
-    {filteredHistory.length ? <section className="fk-reference-grid">
-      {filteredHistory.map(t => <DailyTicketCard key={t.id} ticket={t} expanded={!!expanded[t.id]} onToggle={() => toggle(t.id)}/>)}
+    {ticketsLoading ? <Skeletons n={3}/> : filteredHistory.length ? <section className="fk-reference-grid">
+      {filteredHistory.map((t, i) => <DailyTicketCard key={t.id} index={i} ticket={t} expanded={!!expanded[t.id]} onToggle={() => toggle(t.id)}/>)}
     </section> : <EmptyPanel emoji="📋" title="Ainda não há histórico" detail={query ? 'Nenhuma ficha corresponde à pesquisa.' : 'As fichas concluídas serão arquivadas aqui para consulta.'}/>}
   </FkShell>;
 }
@@ -332,9 +347,10 @@ const crest = (name = '') => {
   return letters.toUpperCase();
 };
 
-function FkShell({ page, onNavigate, liveCount = 0, notice, onDismissNotice, footer, children }) {
+function FkShell({ page, onNavigate, liveCount = 0, notice, onDismissNotice, footer, ticker, children }) {
   return <main className="fk-reference-home">
     <div className="fk-reference-pitch" aria-hidden="true"/>
+    {ticker && <FkTicker {...ticker} onNavigate={onNavigate}/>}
     <nav className="fk-reference-nav" aria-label="Navegação principal">
       <span className="fk-reference-logo"><b>FK</b><i>.</i><small>Ficha Kamba</small></span>
       <div className="fk-reference-tabs">
@@ -347,32 +363,55 @@ function FkShell({ page, onNavigate, liveCount = 0, notice, onDismissNotice, foo
         </button>)}
       </div>
     </nav>
-    <div className="fk-page-in" key={page}>{children}</div>
+    <div className="fk-page-in fk-reference-page" key={page}>{children}</div>
     {notice && <div className="fk-reference-notice" role="status"><ShieldCheck size={16}/><span>{notice}</span><button onClick={onDismissNotice} aria-label="Fechar aviso"><X size={15}/></button></div>}
     <footer className="fk-reference-footer"><span><i/> {footer}</span></footer>
     <TicketDrawer/>
   </main>;
 }
 
-// Número que sobe suavemente até ao valor (respeita «reduzir movimento»).
-function CountUp({ value }) {
-  const target = Number(value) || 0;
-  const [shown, setShown] = useState(target);
-  const fromRef = useRef(target);
-  useEffect(() => {
-    const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const from = fromRef.current;
-    if (reduce || from === target) { setShown(target); fromRef.current = target; return undefined; }
-    let frame; const start = performance.now(); const duration = 650;
-    const tick = now => {
-      const t = Math.min(1, (now - start) / duration);
-      setShown(Math.round(from + (target - from) * (1 - Math.pow(1 - t, 3))));
-      if (t < 1) frame = requestAnimationFrame(tick); else fromRef.current = target;
-    };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [target]);
-  return <>{shown}</>;
+function Marquee({ tag, tone, reverse = false, children }) {
+  const items = React.Children.toArray(children);
+  const duration = Math.max(30, items.length * 5);
+  return <div className={'fk-marquee is-' + tone}>
+    <span className="fk-marquee-tag"><i/>{tag}</span>
+    <div className="fk-marquee-viewport">
+      <div className={'fk-marquee-track' + (reverse ? ' is-reverse' : '')} style={{ '--dur': duration + 's' }}>
+        <div className="fk-marquee-group">{items}</div>
+        <div className="fk-marquee-group" aria-hidden="true">{items.map((item, i) => React.cloneElement(item, { key: 'copy' + i, tabIndex: -1 }))}</div>
+      </div>
+    </div>
+  </div>;
+}
+
+function FkTicker({ live = [], tickets = [], next = null, onNavigate }) {
+  const go = label => () => onNavigate && onNavigate(label);
+  const clock = ms => new Date(ms).toLocaleTimeString('pt-AO', { hour: '2-digit', minute: '2-digit' });
+  const liveItems = live.length
+    ? live.map(g => <button key={'g' + g.id} className={'fk-tick is-game' + (g.mine ? ' is-mine' : '')} onClick={go('Acompanhamento ao vivo')}>
+        <i className="fk-tick-dot is-live"/><b>{g.home}</b><strong>{g.score}</strong><b>{g.away}</b><small>{g.label}</small>
+      </button>)
+    : [<button key="none" className="fk-tick is-note" onClick={go('Acompanhamento ao vivo')}>
+        Sem jogos em directo agora{next ? ' · próximo jogo das tuas fichas às ' + clock(next) : ''}
+      </button>];
+  const ticketItems = tickets.flatMap(t => {
+    const entries = (t.bookmakerEntries && t.bookmakerEntries.length) ? t.bookmakerEntries : [{ bookmaker: t.bookmaker || 'Reserva', bookingId: t.bookingId }];
+    const booked = entries.filter(e => e.bookingId);
+    const head = <button key={'t' + t.id} className="fk-tick is-ticket" onClick={go('Bilhetes do dia')}>
+      <b>{t.name}</b>
+      {booked.map(e => <span className="fk-tick-code" key={e.bookmaker}>{e.bookmaker} <code>#{e.bookingId}</code></span>)}
+      {!booked.length && <span className="fk-tick-code is-pending">reserva pendente</span>}
+    </button>;
+    const legs = (t.legs || []).map((l, i) => <button key={'l' + t.id + '-' + (l.id || i)} className="fk-tick is-leg" onClick={go('Bilhetes do dia')}>
+      <i className={'fk-tick-dot is-' + tone(resultClass(l))}/><b>{l.home && l.away ? l.home + ' – ' + l.away : (l.market || 'Jogo')}</b>
+      <small>{l.market ? l.market + ': ' : ''}<em>{l.selection}</em> @{money(l.odd)}</small>
+    </button>);
+    return [head, ...legs];
+  });
+  return <div className="fk-ticker" role="region" aria-label="Jogos em directo e fichas">
+    <Marquee tag="Ao vivo" tone="live">{liveItems}</Marquee>
+    {ticketItems.length > 0 && <Marquee tag="Fichas" tone="tickets" reverse>{ticketItems}</Marquee>}
+  </div>;
 }
 
 function PageHeader({ emoji, title, subtitle, board = [] }) {
@@ -387,20 +426,46 @@ function PageHeader({ emoji, title, subtitle, board = [] }) {
   </header>;
 }
 
+function CountUp({ value }) {
+  const target = Number(value) || 0;
+  const [shown, setShown] = useState(0);
+  const from = useRef(0);
+  useEffect(() => {
+    const still = typeof window === 'undefined' || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if (still || target === from.current) { setShown(target); from.current = target; return undefined; }
+    const begin = from.current, start = performance.now(), duration = 700;
+    let raf;
+    const tick = now => {
+      const t = Math.min(1, (now - start) / duration);
+      setShown(Math.round(begin + (target - begin) * (1 - Math.pow(1 - t, 3))));
+      if (t < 1) raf = requestAnimationFrame(tick); else from.current = target;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target]);
+  return <>{shown}</>;
+}
+
+function Skeletons({ n = 3, two = false }) {
+  return <section className={'fk-reference-grid' + (two ? ' fk-two' : '')} aria-busy="true" aria-label="A carregar">
+    {Array.from({ length: n }, (_, i) => <div className="fk-skeleton" key={i} style={{ '--i': i }}><i/><i/><i/><i/></div>)}
+  </section>;
+}
+
 function EmptyPanel({ emoji, title, detail }) {
   return <section className="fk-reference-empty"><span>{emoji}</span><b>{title}</b>{detail && <small>{detail}</small>}</section>;
 }
 
-function DailyHome({ tickets, expanded, onToggle, notice, onDismissNotice, onNavigate, liveCount = 0, ticketLiveCount = 0 }) {
+function DailyHome({ tickets, expanded, onToggle, notice, onDismissNotice, onNavigate, liveCount = 0, ticketLiveCount = 0, loading = false, ticker = null }) {
   const total = tickets.length;
   const games = tickets.reduce((n, t) => n + (t.legs || []).length, 0);
-  return <FkShell page="Bilhetes do dia" onNavigate={onNavigate} liveCount={liveCount} notice={notice} onDismissNotice={onDismissNotice}
+  return <FkShell page="Bilhetes do dia" onNavigate={onNavigate} liveCount={liveCount} notice={notice} onDismissNotice={onDismissNotice} ticker={ticker}
     footer={total + (total === 1 ? ' ficha carregada' : ' fichas carregadas') + ' • Actualização automática a cada 5 minutos'}>
     <PageHeader emoji="⚽" title="Bilhetes do dia"
       subtitle={<>Ficha Kamba <i>•</i> {new Date().toLocaleDateString('pt-AO')}</>}
       board={[[total, total === 1 ? 'Ficha' : 'Fichas'], [games, games === 1 ? 'Jogo' : 'Jogos'], [ticketLiveCount, 'Ao vivo', true]]}/>
-    {total ? <section className="fk-reference-grid">
-      {tickets.map((ticket, index) => <DailyTicketCard key={ticket.id} ticket={ticket}
+    {loading ? <Skeletons n={3}/> : total ? <section className="fk-reference-grid">
+      {tickets.map((ticket, index) => <DailyTicketCard key={ticket.id} ticket={ticket} index={index}
         expanded={!!expanded[ticket.id]} onToggle={() => onToggle(ticket.id)} featured={index === 0}/>)}
     </section> : <EmptyPanel emoji="⚽" title="Nenhuma ficha publicada hoje" detail="As fichas reais aparecerão aqui assim que forem publicadas."/>}
   </FkShell>;
@@ -418,7 +483,7 @@ const GAME_STATS = [
 const EVENT_ICON = { goal: '⚽', yellow_card: '🟨', red_card: '🟥', second_yellow: '🟥', substitution: '🔁' };
 const EVENT_NAME = { goal: 'Golo', yellow_card: 'Cartão amarelo', red_card: 'Cartão vermelho', second_yellow: 'Segundo amarelo', substitution: 'Substituição' };
 
-function LiveGameRow({ game: g, finished }) {
+function LiveGameRow({ game: g, finished, index = 0 }) {
   const [open, setOpen] = useState(false);
   const [details, setDetails] = useState(null);
   const score = (g.home_score ?? '-') + ':' + (g.away_score ?? '-');
@@ -444,7 +509,7 @@ function LiveGameRow({ game: g, finished }) {
   const rows = GAME_STATS.map(([label, key]) => ({ label, home: details?.stats?.home?.[key], away: details?.stats?.away?.[key] }))
     .filter(r => r.home != null || r.away != null);
   const events = Array.isArray(details?.events) ? details.events.filter(e => e.event_type !== 'substitution') : [];
-  return <div className={'fk-live-item' + (open ? ' is-open' : '')}>
+  return <div className={'fk-live-item' + (open ? ' is-open' : '')} style={{ '--i': Math.min(index, 12) }}>
     <button className={'fk-live-game' + (finished ? '' : ' is-live')} onClick={() => setOpen(o => !o)} aria-expanded={open}>
       <span className="fk-live-team">{g.home_team}</span>
       <b className={'fk-live-score' + (flash ? ' is-flash' : '')}>{g.home_score ?? '-'} : {g.away_score ?? '-'}</b>
@@ -479,7 +544,7 @@ function LiveGamesSection({ title, games, empty, finished = false }) {
     <h2 className="fk-live-title">{title} <small>{games.length}</small></h2>
     {groups.length ? groups.map(([name, rows]) => <div className="fk-live-league" key={name}>
       <h3>{name}</h3>
-      {rows.map(g => <LiveGameRow key={g.sofascore_id} game={g} finished={finished}/>)}
+      {rows.map((g, i) => <LiveGameRow key={g.sofascore_id} game={g} finished={finished} index={i}/>)}
     </div>) : <p className="fk-live-empty">{empty}</p>}
   </section>;
 }
@@ -551,7 +616,7 @@ function BookingCodes({ ticket: t }) {
   </div>;
 }
 
-function DailyTicketCard({ ticket: t, featured = false }) {
+function DailyTicketCard({ ticket: t, featured = false, index = 0 }) {
   const { setOpenId } = useContext(TicketCtx);
   const now = useNow();
   const legs = t.legs || [];
@@ -563,7 +628,7 @@ function DailyTicketCard({ ticket: t, featured = false }) {
   const date = t.createdAt ? new Date(t.createdAt).toLocaleDateString('pt-AO') : new Date().toLocaleDateString('pt-AO');
   const bestOdd = entries.length ? Math.max(...entries.map(e => Number(e.totalOdds) || 0)) : Number(t.totalOdds) || 0;
   const open = () => setOpenId(t.id);
-  return <article className={'fk-reference-ticket is-' + state + ' phase-' + info.phase + (featured ? ' is-featured' : '')}>
+  return <article className={'fk-reference-ticket is-' + state + ' phase-' + info.phase + (featured ? ' is-featured' : '')} style={{ '--i': Math.min(index, 14) }}>
     <div className="fk-reference-watermark" aria-hidden="true">⚽</div>
     <div className="fk-reference-ticket-main" role="button" tabIndex={0} onClick={open}
       onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }}>
@@ -663,7 +728,7 @@ function TicketDrawer() {
   </div>;
 }
 
-function AnalysisCard({ row }) {
+function AnalysisCard({ row, index = 0 }) {
   const match = row.matches || {};
   const report = row.analysis || {};
   const selections = Array.isArray(report.selections) ? report.selections : [];
@@ -675,7 +740,7 @@ function AnalysisCard({ row }) {
   const pct = value => { const n = num(value); return n === null ? '—' : n.toFixed(1) + '%'; };
   const risks = Array.isArray(report.riskFlags) ? report.riskFlags : [];
   const sources = Array.isArray(report.sources) ? report.sources : [];
-  return <article className="fk-reference-ticket fk-analysis is-pending">
+  return <article className="fk-reference-ticket fk-analysis is-pending" style={{ '--i': Math.min(index, 14) }}>
     <div className="fk-reference-ticket-main" style={{ cursor: 'default' }}>
       <div className="fk-reference-ticket-top">
         <span><b>{match.competition || 'Competição não indicada'}</b><i> — {match.kickoff_at ? new Date(match.kickoff_at).toLocaleString('pt-AO') : 'Data não indicada'}</i></span>
