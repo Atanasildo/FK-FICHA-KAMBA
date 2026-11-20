@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Activity, ChevronDown, FileText, History, LayoutDashboard, Radio, Search, ShieldCheck, X } from 'lucide-react';
 import { supabase } from './lib/supabase.js';
 import './home-redesign.css';
@@ -142,8 +142,11 @@ export default function App() {
     return () => { active = false; window.clearInterval(timer); };
   }, []);
 
+  // Ritmo adaptativo: a cada minuto quando há jogos em directo (ou a começar), senão a cada 5 minutos.
+  const fastLiveRef = useRef(false);
   useEffect(() => {
     let active = true;
+    let timer;
     const refreshLive = async () => {
       try {
         const response = await fetch('/api/pipeline/live-tickets');
@@ -155,9 +158,15 @@ export default function App() {
         // Mantém a última actualização válida quando a fonte está temporariamente indisponível.
       }
     };
-    refreshLive();
-    const timer = window.setInterval(refreshLive, 300000);
-    return () => { active = false; window.clearInterval(timer); };
+    const loop = async () => {
+      // Separador em segundo plano não gasta pedidos; actualiza logo que volta a ficar visível.
+      if (!document.hidden) await refreshLive();
+      if (active) timer = window.setTimeout(loop, fastLiveRef.current ? 60000 : 300000);
+    };
+    const onVisible = () => { if (!document.hidden && active) { window.clearTimeout(timer); loop(); } };
+    document.addEventListener('visibilitychange', onVisible);
+    loop();
+    return () => { active = false; window.clearTimeout(timer); document.removeEventListener('visibilitychange', onVisible); };
   }, []);
 
   const ticketsWithLive = useMemo(() => data.tickets.map(ticket => ({
@@ -168,6 +177,9 @@ export default function App() {
   const todayTickets = useMemo(() => groupedTickets.filter(t => t.origin === 'ai' && isToday(t.createdAt)), [groupedTickets]);
   // Acompanhamento mantém também jogos por iniciar e jogos terminados no próprio dia.
   const liveTickets = todayTickets;
+  // Jogos em directo, ou a começar nos próximos 15 minutos, pedem actualização a cada minuto.
+  fastLiveRef.current = todayTickets.some(t => (t.legs || []).some(leg => isLive(leg) ||
+    (leg.date && !isFinished(leg) && Date.parse(leg.date) - Date.now() < 15 * 60 * 1000 && Date.parse(leg.date) - Date.now() > -3 * 60 * 60 * 1000)));
   const history = useMemo(() => groupedTickets.filter(t =>
     t.origin !== 'ai' || !isToday(t.createdAt) || ticketFullySettled(t)
   ), [groupedTickets]);
@@ -197,7 +209,7 @@ export default function App() {
   if (page === 'Acompanhamento ao vivo') return <FkShell {...shell} footer={liveTickets.length + (liveTickets.length === 1 ? ' ficha' : ' fichas') + ' de hoje em acompanhamento'}>
     <PageHeader emoji="📡" title="Ao vivo" subtitle="Marcadores e estados dentro de cada ficha"
       board={[[sum(isLive), 'Ao vivo', true], [sum(isFinished), 'Terminados'], [sum(leg => !isLive(leg) && !isFinished(leg)), 'Por iniciar']]}/>
-    {liveUpdatedAt && <div className="fk-reference-note"><Radio size={15}/><span>Marcadores e estados actualizados a cada 5 minutos. As estatísticas são recolhidas em rotação para respeitar os limites da fonte. Última consulta: {new Date(liveUpdatedAt).toLocaleTimeString('pt-AO')}</span></div>}
+    {liveUpdatedAt && <div className="fk-reference-note"><Radio size={15}/><span>{fastLiveRef.current ? 'Jogos em directo: marcador, minuto e estatísticas actualizados a cada minuto.' : 'Sem jogos em directo agora: actualização a cada 5 minutos.'} Última consulta: {new Date(liveUpdatedAt).toLocaleTimeString('pt-AO')}</span></div>}
     {liveTickets.length ? <section className="fk-reference-grid">
       {liveTickets.map(t => <DailyTicketCard key={t.id} ticket={t} expanded={expanded[t.id] !== false} onToggle={() => toggle(t.id)}/>)}
     </section> : <EmptyPanel emoji="📡" title="Ainda não há fichas de hoje para acompanhar" detail="Quando forem publicadas, os jogos por iniciar, em directo e terminados aparecem aqui."/>}

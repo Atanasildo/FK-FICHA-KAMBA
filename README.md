@@ -540,3 +540,11 @@ Esta secção evita que uma nova IA confunda código existente com funcionalidad
 - Se o SofaScore responder 403/429, o script **pára e espera 5 minutos**. Nunca disfarça o pedido nem contorna o bloqueio.
 - Uso: `npm run collect:live -- --probe` (mostra o JSON bruto, não grava), `npm run collect:live` (uma vez), `npm run collect:live -- --watch` (a cada 60 s; mínimo 30 s). Precisa de `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`, excepto em `--probe`.
 - **Estado:** a lista de jogos ao vivo foi validada com uma resposta real de 20/11/2026 (15 jogos, todos convertidos). **Não confirmados contra respostas reais:** `/event/{id}/statistics` e `/event/{id}/incidents` (correr `npm run collect:live -- --probe` com um jogo em curso e conferir `lib/pipeline/sofascore.js`), a associação a jogos reais dos boletins e a gravação em `match_statistics` num ciclo real.
+
+## Ao vivo automático (PC)
+
+`tools/windows/install-live-task.ps1` instala a tarefa "Ficha Kamba - Ao vivo": recolhe marcador, minuto e
+estatísticas dos jogos ao vivo (SofaScore, a cada 60 s) e grava em `match_statistics`. Reutiliza a configuração e a
+chave cifrada de `install-reserve-task.ps1` (corre esse instalador primeiro). O site (boletins publicados e painel
+"Ao vivo") atualiza a cada minuto quando há jogos em directo e a cada 5 minutos quando não há.
+Registo: `%LOCALAPPDATA%\FichaKamba\logs\ao-vivo-AAAA-MM-DD.log`.
