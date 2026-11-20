@@ -661,6 +661,8 @@ function TicketDrawer() {
   const { openId, setOpenId, tickets } = useContext(TicketCtx);
   const ticket = openId ? tickets.find(t => t.id === openId) : null;
   const now = useNow();
+  const [openLegs, setOpenLegs] = useState({});
+  useEffect(() => { setOpenLegs({}); }, [openId]);
   useEffect(() => {
     if (!ticket) return undefined;
     const onKey = e => { if (e.key === 'Escape') setOpenId(null); };
@@ -693,9 +695,16 @@ function TicketDrawer() {
             const score = matchScore(leg);
             const live = isLive(leg);
             const done = isFinished(leg);
-            return <li key={leg.id || index} className={'fk-tl-item is-' + tone(resultClass(leg))}>
+            const legKey = leg.id || index;
+            const hasEvents = Array.isArray(leg.matchEvents) && leg.matchEvents.length > 0;
+            const hasStats = (live || done) && liveStatRows(leg).length > 0;
+            const hasDetails = hasEvents || hasStats || Boolean(leg.lastEvent) || Boolean(leg.rationale);
+            const expandedLeg = Boolean(openLegs[legKey]);
+            return <li key={legKey} className={'fk-tl-item is-' + tone(resultClass(leg))}>
               <time>{clock(leg.date) || '--:--'}</time>
-              <div className="fk-reference-leg">
+              <div className={'fk-reference-leg' + (expandedLeg ? ' is-open' : '')}>
+                <button type="button" className="fk-leg-toggle" disabled={!hasDetails} aria-expanded={expandedLeg}
+                  onClick={() => setOpenLegs(prev => ({ ...prev, [legKey]: !prev[legKey] }))}>
                 <div className="fk-reference-fixture">
                   <div className="fk-reference-team"><span className="fk-reference-crest" aria-hidden="true">{crest(leg.home)}</span><span>{leg.home || '—'}</span></div>
                   {score
@@ -707,18 +716,22 @@ function TicketDrawer() {
                   <span>{leg.league || 'Competição não indicada'}</span>
                   <span>{leg.market || 'Mercado'}: <b>{leg.selection || '—'}</b> · Odd <b>{money(leg.odd)}</b></span>
                   <em className="fk-reference-chip" style={{ '--tone': { won: 'var(--fkh-win)', lost: '#6b7a90', live: 'var(--fkh-goal)', pending: 'var(--fkh-gold)' }[tone(resultClass(leg))] }}>{resultLabel(leg)}</em>
+                  {hasDetails && <ChevronDown size={14} className="fk-leg-chevron" aria-hidden="true"/>}
                 </div>
-                {Array.isArray(leg.matchEvents) && leg.matchEvents.length > 0
+                </button>
+                {expandedLeg && <div className="fk-leg-details">
+                {hasEvents
                   ? <div className="fk-reference-events">{leg.matchEvents.map((event, i) => <div key={i} className={'is-' + (event.side || 'none')}>
                       <i>{event.type === 'red_card' || event.type === 'second_yellow' ? '🟥' : '⚽'}</i>
                       <b>{event.minute != null ? event.minute + "'" : ''}</b>
                       <span>{event.player || (event.type === 'goal' ? 'Golo' : 'Expulsão')}{event.side ? ' · ' + (event.side === 'home' ? leg.home : leg.away) : ''}</span>
                     </div>)}</div>
                   : leg.lastEvent && <small className="note">{leg.lastEvent}</small>}
-                {(live || done) && liveStatRows(leg).length > 0 && <div className="fk-reference-stats">
+                {hasStats && <div className="fk-reference-stats">
                   {liveStatRows(leg).map(row => <div key={row.label}><b>{row.home}</b><small>{row.label}</small><b>{row.away}</b></div>)}
                 </div>}
                 {leg.rationale && <small className="note">{leg.rationale}</small>}
+                </div>}
               </div>
             </li>;
           })}
