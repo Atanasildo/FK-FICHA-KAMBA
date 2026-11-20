@@ -13,6 +13,7 @@
 import { execFile } from "node:child_process";
 import { createClient } from "@supabase/supabase-js";
 import { matchFixture } from "../lib/pipeline/live-tickets.js";
+import { settleFinishedLegs } from "../lib/pipeline/settlement.js";
 import {
   SOFASCORE_BASE,
   hasStatistics,
@@ -109,12 +110,12 @@ export async function runCycle({
   pause = ms => new Promise(resolve => setTimeout(resolve, ms))
 }) {
   const { data: tickets, error } = await db.from("tickets")
-    .select("id,ticket_legs(matches(id,home_team,away_team,kickoff_at,status))")
+    .select("id,ticket_legs(id,match_id,market_id,market_name,selection,result,matches(id,home_team,away_team,kickoff_at,status))")
     .eq("status", "published").order("published_at", { ascending: false }).limit(100);
   if (error) throw new Error("Não foi possível ler os boletins: " + error.message);
 
   const tracked = pickTracked(tickets, now);
-  const summary = { tracked: tracked.length, matched: 0, written: 0, failed: 0 };
+  const summary = { tracked: tracked.length, matched: 0, written: 0, failed: 0, settled: 0 };
   if (!tracked.length) { log("Sem jogos de boletins na janela de acompanhamento."); return summary; }
 
   const liveList = normalizeSofascoreLiveList(await getJson("/sport/football/events/live"), now);
@@ -174,7 +175,11 @@ export async function runCycle({
         }
         state.statsAt.set(match.id, now);
       }
-      if (isFinal) state.final.add(match.id);
+      if (isFinal) {
+        const legs = tickets.flatMap(ticket => ticket.ticket_legs || []);
+        summary.settled += await settleFinishedLegs({ db, match, legs, fixture, log });
+        state.final.add(match.id);
+      }
       log(`OK  ${label} · ${fixture.status} ${fixture.home_score ?? "-"}-${fixture.away_score ?? "-"}`);
     } catch (e) {
       if (e instanceof BlockedError) throw e;
@@ -235,7 +240,7 @@ if (isMain) {
       let wait = intervalMs;
       try {
         const r = await runCycle({ db, getJson: getSofascoreJson, state });
-        console.log(`[${new Date().toLocaleTimeString("pt-PT")}] acompanhados: ${r.tracked} | associados: ${r.matched} | gravados: ${r.written} | falhas: ${r.failed}`);
+        console.log(`[${new Date().toLocaleTimeString("pt-PT")}] acompanhados: ${r.tracked} | liquidadas: ${r.settled} | associados: ${r.matched} | gravados: ${r.written} | falhas: ${r.failed}`);
       } catch (e) {
         console.error(`[${new Date().toLocaleTimeString("pt-PT")}] ${e.message}`);
         if (e instanceof BlockedError) wait = 5 * 60 * 1000;
