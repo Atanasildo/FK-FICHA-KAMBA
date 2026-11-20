@@ -290,3 +290,21 @@ test("identifica totais de cartões da equipa da casa e visitante sem os mistura
   assert.equal(result.comparisonCount, 2);
   assert.deepEqual(result.events[0].comparisons.map(item => item.quotes[0].team).sort(), ["away", "home"]);
 });
+
+test("combinações de golos não se fundem com o Over/Under real (bug odd 8,00 em vez de 1,77)", () => {
+  const fixture = (bookmaker, overOdds, comboOdds, comboId) => ({
+    home: "Athletic Bilbao", away: "Espanyol", kickoff: "2026-11-20T20:00:00.000Z", bookmaker,
+    markets: [
+      { market: "Total de golos no jogo", marketType: "OverUnder", marketBase: "2.5", selection: "Mais de", odds: overOdds, selectionId: bookmaker + "-over" },
+      { market: "Total de golos no jogo", marketType: "OverUnder", marketBase: "2.5", selection: "Menos", odds: 2, selectionId: bookmaker + "-under" },
+      { market: "Combinação de Total de Golos por Partes", marketType: "HalfTotalGoalsCombination", marketBase: null,
+        selection: "Mais de 2.5 golos na 1º Parte e Mais de 4.5 golos no jogo", odds: comboOdds, selectionId: comboId }
+    ]
+  });
+  const result = compareFixtures([fixture("BantuBet", 1.77, 8, "combo-b"), fixture("ElephantBet", 1.7, 8, "combo-e")]);
+  const over = result.events[0].comparisons.find(c => c.market === "Total de golos no jogo" && c.selection === "Mais de" && c.line === "2.5");
+  assert.ok(over, "Over 2.5 existe");
+  assert.deepEqual(over.quotes.map(q => q.odds).sort(), [1.7, 1.77]);
+  assert.equal(over.quotes.every(q => q.market === "Total de golos no jogo"), true);
+  assert.equal(over.quotes.some(q => String(q.selectionId).startsWith("combo")), false);
+});
