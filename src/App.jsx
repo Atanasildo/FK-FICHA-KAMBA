@@ -326,14 +326,14 @@ function ticketStatus(ticket) {
   const legs = ticket.legs || [];
   const outcomes = legs.map(leg => String(leg.marketStatus || leg.result || '').toLowerCase());
   if (outcomes.some(value => value.includes('perdida') || value === 'lost')) return 'Perdida';
-  if (ticketFullySettled(ticket)) return outcomes.every(value => value === 'void') ? 'Anulada' : 'Ganha';
+  if (ticketFullySettled(ticket)) return outcomes.every(value => value === 'void') ? 'Anulada' : 'Dentro';
   if (legs.some(isLive)) return legs.filter(isLive).length + ' jogo(s) em directo';
   if (legs.length && legs.every(isFinished)) return 'A aguardar liquidação';
   return ticket.status || 'Publicada';
 }
 
 function ticketStatusClass(status) {
-  if (status === 'Ganha') return 'state-good';
+  if (status === 'Dentro') return 'state-good';
   if (status === 'Perdida') return 'state-bad';
   if (String(status).includes('directo')) return 'state-live';
   return 'state-pending';
@@ -572,15 +572,20 @@ function ticketPhase(t, now) {
   const first = times[0] || null, last = times[times.length - 1] || null;
   const live = legs.filter(isLive).length;
   const done = legs.filter(l => isFinished(l) || settledLeg(l)).length;
+  const lost = legs.filter(l => /perdida|^lost$/i.test(String(l.marketStatus || l.result || '').trim())).length;
   let phase = 'upcoming';
-  if (legs.length && done === legs.length) phase = 'finished';
+  if (lost > 0) phase = 'lost';
+  else if (ticketFullySettled(t)) phase = 'won';
+  else if (legs.length && done === legs.length) phase = 'finished';
   else if (live > 0) phase = 'live';
   else if (first && first <= now) phase = 'running';
-  return { phase, first, last, live, done, total: legs.length };
+  return { phase, first, last, live, done, lost, total: legs.length };
 }
 
 function PhaseStrip({ info, now }) {
-  const { phase, first, live, done, total } = info;
+  const { phase, first, live, done, lost, total } = info;
+  if (phase === 'lost') return <div className="fk-phase is-lost"><X size={14}/><b>FICHA PERDIDA</b><span>{lost} {lost === 1 ? 'selecção falhou' : 'selecções falharam'} · {done}/{total} terminados</span></div>;
+  if (phase === 'won') return <div className="fk-phase is-won"><Check size={14}/><b>FICHA DENTRO</b><span>todas as {total} selecções entraram</span></div>;
   if (phase === 'live') return <div className="fk-phase is-live"><i/><b>AO VIVO</b><span>{live} {live === 1 ? 'jogo' : 'jogos'} em directo · {done}/{total} terminados</span></div>;
   if (phase === 'running') return <div className="fk-phase is-running"><i/><b>A DECORRER</b><span>{done}/{total} terminados · a aguardar os restantes</span></div>;
   if (phase === 'finished') return <div className="fk-phase is-finished"><Check size={14}/><b>TERMINADA</b><span>{total} jogos concluídos</span></div>;
@@ -643,14 +648,6 @@ function DailyTicketCard({ ticket: t, featured = false, index = 0 }) {
         {entries.map(e => <span key={e.bookmaker} className={(Number(e.totalOdds) || 0) === bestOdd ? 'is-best' : ''}>{e.bookmaker}<b>{money(e.totalOdds)}</b></span>)}
       </div>}
       {legs.length > 0 && <ProgressBar legs={legs}/>}
-      <div className="fk-reference-picks">
-        {legs.map((leg, index) => <div className="fk-reference-pick" key={leg.id || index}>
-          <span className={'dot is-' + tone(resultClass(leg))} aria-hidden="true"/>
-          <span>{leg.selection || leg.market || (leg.home && leg.away ? leg.home + ' vs ' + leg.away : 'Selecção')}</span>
-          <b>{money(leg.odd)}</b>
-        </div>)}
-        {!legs.length && <div className="fk-reference-pick"><span>Selecções ainda não disponíveis</span><b>—</b></div>}
-      </div>
       <div className="fk-reference-ticket-foot">{legs.length} selecções <span>•</span> {info.first ? 'Início ' + clock(info.first) + (info.last && info.last !== info.first ? ' · último jogo ' + clock(info.last) : '') : 'Hora por confirmar'}</div>
       <span className="fk-reference-expand">ABRIR FICHA <ArrowRight size={13}/></span>
     </div>
@@ -662,7 +659,25 @@ function TicketDrawer() {
   const ticket = openId ? tickets.find(t => t.id === openId) : null;
   const now = useNow();
   const [openLegs, setOpenLegs] = useState({});
+  const swipeY = useRef(null);
   useEffect(() => { setOpenLegs({}); }, [openId]);
+  // O botão Voltar do Android (e o gesto de voltar do iOS) fecha a gaveta em vez de sair do site.
+  useEffect(() => {
+    if (!openId) return undefined;
+    let closedByBack = false;
+    window.history.pushState({ fkDrawer: openId }, '');
+    const onPop = () => { closedByBack = true; setOpenId(null); };
+    window.addEventListener('popstate', onPop);
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      if (!closedByBack && window.history.state && window.history.state.fkDrawer === openId) window.history.back();
+    };
+  }, [openId, setOpenId]);
+  const onSwipeStart = e => { swipeY.current = e.touches[0].clientY; };
+  const onSwipeEnd = e => {
+    if (swipeY.current != null && e.changedTouches[0].clientY - swipeY.current > 70) setOpenId(null);
+    swipeY.current = null;
+  };
   useEffect(() => {
     if (!ticket) return undefined;
     const onKey = e => { if (e.key === 'Escape') setOpenId(null); };
@@ -679,7 +694,8 @@ function TicketDrawer() {
   return <div className="fk-drawer-root" role="dialog" aria-modal="true" aria-label="Detalhes da ficha">
     <div className="fk-drawer-backdrop" onClick={() => setOpenId(null)}/>
     <aside className="fk-drawer">
-      <header className="fk-drawer-head">
+      <header className="fk-drawer-head" onTouchStart={onSwipeStart} onTouchEnd={onSwipeEnd}>
+        <span className="fk-drawer-grip" aria-hidden="true"/>
         <div>
           <small>{ticket.bookmaker || (entries.length ? entries.map(e => e.bookmaker).join(' / ') : 'Ficha')}</small>
           <h2>Odd {money(bestOdd)}</h2>
