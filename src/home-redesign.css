@@ -487,3 +487,11 @@
   .fk-marquee-tag i{animation:none}
   .fk-tick-dot.is-live{animation:none}
 }
+
+.fk-leg-toggle{all:unset;display:block;width:100%;box-sizing:border-box;cursor:pointer;border-radius:10px}
+.fk-leg-toggle:disabled{cursor:default}
+.fk-leg-toggle:focus-visible{outline:2px solid var(--fkh-goal);outline-offset:3px}
+.fk-leg-toggle .fk-reference-leg-meta{position:relative}
+.fk-leg-chevron{margin-left:auto;color:var(--fkh-muted);transition:transform .2s ease}
+.fk-reference-leg.is-open .fk-leg-chevron{transform:rotate(180deg)}
+.fk-leg-details{display:grid;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--fkh-border);animation:fk-fade .25s ease-out}
