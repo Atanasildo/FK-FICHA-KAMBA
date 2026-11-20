@@ -295,9 +295,9 @@ test("combinações de golos não se fundem com o Over/Under real (bug odd 8,00 
   const fixture = (bookmaker, overOdds, comboOdds, comboId) => ({
     home: "Athletic Bilbao", away: "Espanyol", kickoff: "2026-11-20T20:00:00.000Z", bookmaker,
     markets: [
-      { market: "Total de golos no jogo", marketType: "OverUnder", marketBase: "2.5", selection: "Mais de", odds: overOdds, selectionId: bookmaker + "-over" },
-      { market: "Total de golos no jogo", marketType: "OverUnder", marketBase: "2.5", selection: "Menos", odds: 2, selectionId: bookmaker + "-under" },
-      { market: "Combinação de Total de Golos por Partes", marketType: "HalfTotalGoalsCombination", marketBase: null,
+      { market: "Total de golos no jogo", marketType: "OverUnder", marketBase: "2.5", line: 2.5, selection: "Mais de", odds: overOdds, selectionId: bookmaker + "-over" },
+      { market: "Total de golos no jogo", marketType: "OverUnder", marketBase: "2.5", line: 2.5, selection: "Menos", odds: 2, selectionId: bookmaker + "-under" },
+      { market: "Combinação de Total de Golos por Partes", marketType: "HalfTotalGoalsCombination", marketBase: null, line: 2.5,
         selection: "Mais de 2.5 golos na 1º Parte e Mais de 4.5 golos no jogo", odds: comboOdds, selectionId: comboId }
     ]
   });
