@@ -387,7 +387,13 @@ function DailyTicketCard({ ticket: t, expanded, onToggle, featured = false }) {
             <span>{leg.market || 'Mercado'}: <b>{leg.selection || '—'}</b> · Odd <b>{money(leg.odd)}</b></span>
             <em className="fk-reference-chip" style={{ '--tone': { won: 'var(--fkh-win)', lost: '#6b7a90', live: 'var(--fkh-goal)', pending: 'var(--fkh-gold)' }[tone(resultClass(leg))] }}>{resultLabel(leg)}</em>
           </div>
-          {leg.lastEvent && <small className="note">{leg.lastEvent}</small>}
+          {Array.isArray(leg.matchEvents) && leg.matchEvents.length > 0
+            ? <div className="fk-reference-events">{leg.matchEvents.map((event, i) => <div key={i} className={'is-' + (event.side || 'none')}>
+                <i>{event.type === 'red_card' || event.type === 'second_yellow' ? '🟥' : '⚽'}</i>
+                <b>{event.minute != null ? event.minute + "'" : ''}</b>
+                <span>{event.player || (event.type === 'goal' ? 'Golo' : 'Expulsão')}{event.side ? ' · ' + (event.side === 'home' ? leg.home : leg.away) : ''}</span>
+              </div>)}</div>
+            : leg.lastEvent && <small className="note">{leg.lastEvent}</small>}
           {(live || done) && liveStatRows(leg).length > 0 && <div className="fk-reference-stats">
             {liveStatRows(leg).map(row => <div key={row.label}><b>{row.home}</b><small>{row.label}</small><b>{row.away}</b></div>)}
           </div>}

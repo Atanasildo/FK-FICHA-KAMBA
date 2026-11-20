@@ -246,3 +246,9 @@
 .fk-analysis-sources a:hover{text-decoration:underline}
 
 @media(max-width:1050px){.fk-reference-grid.fk-two{grid-template-columns:1fr}}
+
+.fk-reference-events{display:grid;gap:4px;padding:8px 10px;border-radius:9px;background:#05090f;border:1px solid #1a2535;font-size:12px}
+.fk-reference-events div{display:grid;grid-template-columns:20px 34px 1fr;align-items:center;gap:6px;color:var(--fkh-text)}
+.fk-reference-events div.is-away{opacity:.92}
+.fk-reference-events b{font-family:var(--fkh-display);font-variant-numeric:tabular-nums;color:var(--fkh-goal)}
+.fk-reference-events i{font-style:normal}
