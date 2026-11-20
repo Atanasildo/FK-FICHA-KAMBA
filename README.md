@@ -270,6 +270,7 @@ FK-FICHA-KAMBA/
 - `bantubet-console-collector.js`, `elephantbet-console-collector.js`: coletores específicos.
 - `local-bookmaker-collector.js`, `local-bookmaker-check.js`: recolha/verificação local.
 - `recover-swarm-game.js`: recuperação de jogo específico.
+- `collect-live-sofascore.js`: recolhe marcador, estado, eventos e estatísticas ao vivo dos jogos dos boletins (fonte não oficial; ver «Fonte ao vivo SofaScore»).
 - `report-swarm-comparison.js`: relatório de comparação.
 - `run-analysis-only.js`: chama o pipeline legado em Preview, com modo de teste por omissão; rever argumentos antes de qualquer execução.
 - `run-internet-fallback.js`: teste isolado do fallback de contexto, em modo dry-run.
@@ -526,3 +527,16 @@ Esta secção evita que uma nova IA confunda código existente com funcionalidad
 - É independente da recolha diária (`daily-collector-supervisor.ps1`): a recolha corre uma vez por dia, enquanto as reservas têm de ser pedidas sempre que um boletim novo é publicado, a qualquer hora.
 - Remover: `Unregister-ScheduledTask -TaskName "Ficha Kamba - Reservas" -Confirm:$false`.
 - Estado: os scripts PowerShell não foram executados num Windows real nesta sessão; só o lado Node (`reserve-pending.js`) tem testes automatizados.
+
+## Fonte ao vivo SofaScore (recolhida no PC)
+
+Fonte adicional de marcador, estado, eventos e estatísticas para os jogos dos boletins, pensada para ligas pequenas que as outras fontes não cobrem. **Não é uma API oficial**: o SofaScore não tem API pública, os endereços usados são internos do site, podem mudar ou ser bloqueados, e os termos do site restringem o acesso automático. A decisão de a usar é do utilizador.
+
+- `tools/collect-live-sofascore.js` corre no PC (a Vercel costuma ser bloqueada por este tipo de fonte). Lê `GET https://www.sofascore.com/api/v1/sport/football/events/live` (1 pedido por ciclo), associa só os jogos dos boletins publicados por equipas (ordem casa/visitante) e hora, e pede estatísticas e incidentes apenas desses jogos.
+- Grava em `match_statistics`, **uma linha por jogo e fonte, actualizada no lugar** (a base está perto do limite do plano): `SofaScore-fixture` (estado, marcador, minuto, `eventId`), `SofaScore-live` (estatísticas) e `SofaScore-live-events` (eventos).
+- `lib/pipeline/live-tickets.js` usa o `SofaScore-fixture` **apenas como último recurso**, para jogos que Highlightly, Sportmonks e SportAPI não associaram. Um jogo «em curso» sem actualização há mais de 10 minutos é ignorado (o recolhedor pode ter parado); estados finais, adiado e cancelado mantêm-se.
+- Sem dados não há marcador: o site mostra «Dados indisponíveis». Eventos e estatísticas **vazios não são gravados**, porque podem significar falta de cobertura e não «sem cartões»; os mercados que dependem deles ficam pendentes em vez de serem liquidados.
+- O minuto é calculado a partir do início do período e é aproximado: o tempo de compensação é truncado em 45' e 90'.
+- Se o SofaScore responder 403/429, o script **pára e espera 5 minutos**. Nunca disfarça o pedido nem contorna o bloqueio.
+- Uso: `npm run collect:live -- --probe` (mostra o JSON bruto, não grava), `npm run collect:live` (uma vez), `npm run collect:live -- --watch` (a cada 60 s; mínimo 30 s). Precisa de `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`, excepto em `--probe`.
+- **Estado:** os testes automatizados usam dados sintéticos escritos a partir do formato conhecido do SofaScore, e **nenhum pedido real foi feito**. Antes de confiar nos dados, correr `--probe` com jogos ao vivo e confirmar os nomes dos campos em `lib/pipeline/sofascore.js`. A associação a jogos reais e o bloqueio a IPs de casa ainda não foram verificados.
