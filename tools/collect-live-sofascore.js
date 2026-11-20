@@ -14,6 +14,7 @@ import { execFile } from "node:child_process";
 import { createClient } from "@supabase/supabase-js";
 import { matchFixture } from "../lib/pipeline/live-tickets.js";
 import { settleFinishedLegs } from "../lib/pipeline/settlement.js";
+import { syncLiveGames } from "../lib/pipeline/live-games.js";
 import {
   SOFASCORE_BASE,
   hasStatistics,
@@ -106,7 +107,7 @@ export function newState() {
 }
 
 export async function runCycle({
-  db, getJson, state = newState(), now = Date.now(), log = console.log,
+  db, getJson, state = newState(), now = Date.now(), log = console.log, liveList: givenLiveList = null,
   pause = ms => new Promise(resolve => setTimeout(resolve, ms))
 }) {
   const { data: tickets, error } = await db.from("tickets")
@@ -118,7 +119,7 @@ export async function runCycle({
   const summary = { tracked: tracked.length, matched: 0, written: 0, failed: 0, settled: 0 };
   if (!tracked.length) { log("Sem jogos de boletins na janela de acompanhamento."); return summary; }
 
-  const liveList = normalizeSofascoreLiveList(await getJson("/sport/football/events/live"), now);
+  const liveList = givenLiveList || normalizeSofascoreLiveList(await getJson("/sport/football/events/live"), now);
   const claimed = new Set();
   const resolved = new Map();
   for (const match of tracked) {
@@ -239,7 +240,11 @@ if (isMain) {
     do {
       let wait = intervalMs;
       try {
-        const r = await runCycle({ db, getJson: getSofascoreJson, state });
+        // Um só pedido da lista ao vivo por ciclo: serve a página "Ao vivo" e o acompanhamento das fichas.
+        const liveList = normalizeSofascoreLiveList(await getSofascoreJson("/sport/football/events/live"));
+        const g = await syncLiveGames({ db, liveList, getJson: getSofascoreJson, log: msg => console.log(msg) });
+        console.log(`[${new Date().toLocaleTimeString("pt-PT")}] jogos ao vivo: ${g.live} | terminados confirmados: ${g.finalized}`);
+        const r = await runCycle({ db, getJson: getSofascoreJson, state, liveList });
         console.log(`[${new Date().toLocaleTimeString("pt-PT")}] acompanhados: ${r.tracked} | liquidadas: ${r.settled} | associados: ${r.matched} | gravados: ${r.written} | falhas: ${r.failed}`);
       } catch (e) {
         console.error(`[${new Date().toLocaleTimeString("pt-PT")}] ${e.message}`);

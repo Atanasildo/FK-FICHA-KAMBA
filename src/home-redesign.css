@@ -252,3 +252,16 @@
 .fk-reference-events div.is-away{opacity:.92}
 .fk-reference-events b{font-family:var(--fkh-display);font-variant-numeric:tabular-nums;color:var(--fkh-goal)}
 .fk-reference-events i{font-style:normal}
+
+.fk-live-section{max-width:1280px;margin:0 auto 26px}
+.fk-live-title{margin:0 0 12px;font-size:18px;display:flex;align-items:center;gap:8px}
+.fk-live-title small{padding:2px 9px;border-radius:99px;background:rgba(212,245,60,.12);color:var(--fkh-led);font-size:12px}
+.fk-live-league{margin-bottom:14px;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+.fk-live-league h3{margin:0;padding:8px 14px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--fkh-muted);background:rgba(255,255,255,.04)}
+.fk-live-game{display:grid;grid-template-columns:1fr auto 1fr 74px;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid rgba(255,255,255,.06);font-size:14px}
+.fk-live-team.is-away{text-align:left}.fk-live-team:first-child{text-align:right}
+.fk-live-score{min-width:54px;text-align:center;font-variant-numeric:tabular-nums}
+.fk-live-game.is-live .fk-live-score,.fk-live-game.is-live .fk-live-min{color:var(--fkh-led)}
+.fk-live-min{text-align:right;color:var(--fkh-muted);font-size:11px}
+.fk-live-empty{margin:0;padding:14px;color:var(--fkh-muted);font-size:13px}
+@media(max-width:560px){.fk-live-game{grid-template-columns:1fr auto 1fr;row-gap:2px}.fk-live-min{grid-column:1/-1;text-align:center}}
