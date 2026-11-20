@@ -10,6 +10,7 @@
 // e os termos do site restringem o acesso automático. O script faz poucos pedidos, só para os jogos
 // das fichas, identifica-se normalmente e, se receber um bloqueio (403/429), PÁRA e espera: nunca
 // disfarça o pedido nem tenta contornar o bloqueio. Sem dados, o site mostra "Dados indisponíveis".
+import { execFile } from "node:child_process";
 import { createClient } from "@supabase/supabase-js";
 import { matchFixture } from "../lib/pipeline/live-tickets.js";
 import {
@@ -29,16 +30,47 @@ const REQUEST_GAP_MS = 500;
 
 export class BlockedError extends Error {}
 
-export async function getSofascoreJson(path, { fetchImpl = fetch, timeoutMs = 15000 } = {}) {
+const blocked = status => new BlockedError(`SofaScore recusou o pedido (HTTP ${status}). Não é contornado; a esperar.`);
+
+export async function fetchSofascoreJson(path, { fetchImpl = fetch, timeoutMs = 15000 } = {}) {
   const response = await fetchImpl(SOFASCORE_BASE + path, {
     headers: { Accept: "application/json" },
     signal: AbortSignal.timeout(timeoutMs)
   });
-  if (response.status === 403 || response.status === 429) {
-    throw new BlockedError(`SofaScore recusou o pedido (HTTP ${response.status}). Não é contornado; a esperar.`);
-  }
+  if (response.status === 403 || response.status === 429) throw blocked(response.status);
   if (!response.ok) throw new Error(`SofaScore HTTP ${response.status} em ${path}`);
   return response.json();
+}
+
+// No PC do utilizador, o pedido do Node (fetch) foi recusado com 403, mas o `curl` normal do Windows
+// foi aceite. Por isso o transporte por defeito é o curl.exe, com o seu identificador normal (sem
+// disfarce de navegador). Um 403/429 continua a parar o recolhedor.
+export function curlJson(path, {
+  timeoutMs = 15000, execImpl = execFile, bin = process.platform === "win32" ? "curl.exe" : "curl"
+} = {}) {
+  const args = ["-s", "--max-time", String(Math.ceil(timeoutMs / 1000)), "-w", "\n%{http_code}", SOFASCORE_BASE + path];
+  return new Promise((resolve, reject) => {
+    execImpl(bin, args, { maxBuffer: 64 * 1024 * 1024, windowsHide: true }, (error, stdout) => {
+      if (error && !stdout) {
+        reject(new Error(error.code === "ENOENT"
+          ? `${bin} não encontrado: instala o curl ou define SOFASCORE_TRANSPORT=fetch.`
+          : `curl falhou: ${error.message}`));
+        return;
+      }
+      const text = String(stdout);
+      const cut = text.lastIndexOf("\n");
+      const status = Number(text.slice(cut + 1).trim());
+      if (status === 403 || status === 429) { reject(blocked(status)); return; }
+      if (status !== 200) { reject(new Error(`SofaScore HTTP ${status || "sem resposta"} em ${path}`)); return; }
+      try { resolve(JSON.parse(text.slice(0, cut))); }
+      catch { reject(new Error("Resposta do SofaScore não é JSON válido em " + path)); }
+    });
+  });
+}
+
+export function getSofascoreJson(path, options = {}) {
+  const transport = options.transport || process.env.SOFASCORE_TRANSPORT || "curl";
+  return transport === "fetch" ? fetchSofascoreJson(path, options) : curlJson(path, options);
 }
 
 // Jogos das fichas publicadas que estão (ou acabaram de estar) em campo.
@@ -171,6 +203,20 @@ async function probe() {
   console.log(`Eventos brutos: ${Array.isArray(raw?.events) ? raw.events.length : "campo 'events' ausente"} | normalizados: ${list.length}`);
   console.log("== Primeiro evento bruto"); console.log(cut(raw?.events?.[0] ?? raw));
   console.log("== Primeiro evento normalizado"); console.log(cut(list[0] ?? null));
+
+  // Estatísticas e incidentes de um jogo em curso, para confirmar o formato destes dois endereços.
+  const first = (raw?.events || []).find(event => event?.status?.type === "inprogress");
+  if (!first) { console.log("\nNenhum jogo em curso agora: sem estatísticas/incidentes para confirmar."); return; }
+  console.log(`\n== Jogo de teste: ${first.homeTeam?.name} v ${first.awayTeam?.name} (id ${first.id})`);
+  for (const [name, normalize] of [["statistics", normalizeSofascoreStatistics], ["incidents", normalizeSofascoreIncidents]]) {
+    await new Promise(resolve => setTimeout(resolve, REQUEST_GAP_MS));
+    console.log(`\n== /event/${first.id}/${name} (bruto)`);
+    try {
+      const data = await getSofascoreJson(`/event/${first.id}/${name}`);
+      console.log(cut(data));
+      console.log(`== ${name} normalizado`); console.log(cut(normalize(data)));
+    } catch (e) { console.log("Falhou:", e.message); }
+  }
 }
 
 const isMain = process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, "/").split("/").pop());

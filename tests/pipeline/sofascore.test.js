@@ -1,6 +1,7 @@
-// NOTA: os dados abaixo são SINTÉTICOS, escritos a partir do formato que se conhece do SofaScore.
-// Não foram copiados de uma resposta real. Se o formato real for diferente, corrige o conversor
-// (lib/pipeline/sofascore.js) com o resultado de `node tools/collect-live-sofascore.js --probe`.
+// NOTA: o formato da LISTA de jogos ao vivo foi confirmado com uma resposta real de 20/11/2026
+// (15 jogos, todos convertidos). Os dados abaixo são mesmo assim SINTÉTICOS, e os formatos de
+// /statistics e /incidents ainda NÃO foram confirmados contra uma resposta real: corre
+// `npm run collect:live -- --probe` com um jogo em curso e corrige lib/pipeline/sofascore.js se preciso.
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -11,7 +12,7 @@ import {
   normalizeSofascoreStatistics,
   sofascoreStatus
 } from "../../lib/pipeline/sofascore.js";
-import { BlockedError, newState, pickTracked, runCycle } from "../../tools/collect-live-sofascore.js";
+import { BlockedError, curlJson, newState, pickTracked, runCycle } from "../../tools/collect-live-sofascore.js";
 
 const NOW = Date.parse("2026-11-20T13:00:00Z");
 const KICKOFF = Date.parse("2026-11-20T12:15:00Z");
@@ -241,4 +242,44 @@ test("ciclo: confirma o estado final uma única vez quando o jogo sai da lista a
   calls.length = 0;
   await runCycle({ db, getJson: fakeApi(routes, calls), state, now: NOW + 3_660_000, log: quiet, pause: noPause });
   assert.deepEqual(calls, ["/sport/football/events/live"]);
+});
+
+// ---- transporte por curl ----
+const fakeCurl = (stdout, error = null) => (bin, args, options, callback) => {
+  fakeCurl.last = { bin, args };
+  callback(error, stdout);
+};
+
+test("curl: lê o JSON e o código HTTP, com o identificador normal do curl", async () => {
+  const data = await curlJson("/sport/football/events/live", { execImpl: fakeCurl('{"events":[]}\n200'), bin: "curl" });
+  assert.deepEqual(data, { events: [] });
+  const { args } = fakeCurl.last;
+  assert.equal(args.at(-1), "https://www.sofascore.com/api/v1/sport/football/events/live");
+  assert.ok(!args.some(arg => /user-agent|^-A$|referer|cookie/i.test(arg)), "não pode disfarçar o pedido");
+});
+
+test("curl: 403 e 429 viram BlockedError (o recolhedor pára)", async () => {
+  await assert.rejects(curlJson("/x", { execImpl: fakeCurl("Forbidden\n403") }), BlockedError);
+  await assert.rejects(curlJson("/x", { execImpl: fakeCurl("\n429") }), BlockedError);
+});
+
+test("curl: outros erros HTTP, JSON inválido e curl em falta dão erros claros", async () => {
+  await assert.rejects(curlJson("/x", { execImpl: fakeCurl("erro\n500") }), /HTTP 500/);
+  await assert.rejects(curlJson("/x", { execImpl: fakeCurl("\n000") }), /sem resposta/);
+  await assert.rejects(curlJson("/x", { execImpl: fakeCurl("<html>\n200") }), /JSON válido/);
+  const missing = Object.assign(new Error("spawn curl.exe ENOENT"), { code: "ENOENT" });
+  await assert.rejects(curlJson("/x", { execImpl: fakeCurl("", missing), bin: "curl.exe" }), /curl\.exe não encontrado/);
+});
+
+test("lista real: o estado '1st half' com minuto e o marcador são convertidos", () => {
+  // Estrutura copiada (campos reais) de um jogo da lista ao vivo de 20/11/2026.
+  const real = { id: 1, homeTeam: { name: "Western Sydney Wanderers" }, awayTeam: { name: "Adelaide United" },
+    startTimestamp: 1795164000, status: { code: 6, description: "1st half", type: "inprogress" },
+    time: { currentPeriodStartTimestamp: 1795164017, initial: 0, max: 2700, extra: 540 },
+    homeScore: { current: 0, display: 0 }, awayScore: { current: 0, display: 0 }, tournament: { name: "A-League Men" } };
+  const fixture = normalizeSofascoreEvent(real, (1795164017 + 5 * 60) * 1000);
+  assert.equal(fixture.status, "1H");
+  assert.equal(fixture.minute, 6);
+  assert.equal(fixture.home_score, 0);
+  assert.equal(fixture.competition, "A-League Men");
 });
