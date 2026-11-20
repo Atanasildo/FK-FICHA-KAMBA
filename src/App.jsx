@@ -579,11 +579,15 @@ function ticketPhase(t, now) {
   else if (legs.length && done === legs.length) phase = 'finished';
   else if (live > 0) phase = 'live';
   else if (first && first <= now) phase = 'running';
-  return { phase, first, last, live, done, lost, total: legs.length };
+  // Todos os jogos já deviam ter acabado (último arrancou há mais de 3h) mas faltam resultados.
+  const awaiting = phase === 'running' && last && now - last > 3 * 3600000 ? legs.length - done : 0;
+  if (awaiting > 0 && live === 0) phase = 'awaiting';
+  return { phase, first, last, live, done, lost, awaiting, total: legs.length };
 }
 
 function PhaseStrip({ info, now }) {
-  const { phase, first, live, done, lost, total } = info;
+  const { phase, first, live, done, lost, awaiting, total } = info;
+  if (phase === 'awaiting') return <div className="fk-phase is-awaiting"><Clock size={14}/><b>A AGUARDAR RESULTADOS</b><span>{awaiting} {awaiting === 1 ? 'jogo' : 'jogos'} já terminado(s) sem resultado confirmado · {done}/{total} confirmados</span></div>;
   if (phase === 'lost') return <div className="fk-phase is-lost"><X size={14}/><b>FICHA PERDIDA</b><span>{lost} {lost === 1 ? 'selecção falhou' : 'selecções falharam'} · {done}/{total} terminados</span></div>;
   if (phase === 'won') return <div className="fk-phase is-won"><Check size={14}/><b>FICHA DENTRO</b><span>todas as {total} selecções entraram</span></div>;
   if (phase === 'live') return <div className="fk-phase is-live"><i/><b>AO VIVO</b><span>{live} {live === 1 ? 'jogo' : 'jogos'} em directo · {done}/{total} terminados</span></div>;
@@ -635,6 +639,8 @@ function DailyTicketCard({ ticket: t, featured = false, index = 0 }) {
   const open = () => setOpenId(t.id);
   return <article className={'fk-reference-ticket is-' + state + ' phase-' + info.phase + (featured ? ' is-featured' : '')} style={{ '--i': Math.min(index, 14) }}>
     <div className="fk-reference-watermark" aria-hidden="true">⚽</div>
+    {info.phase === 'won' && <span className="fk-seal fk-seal-ticket is-won" role="img" aria-label="Ficha dentro"><Check size={22} strokeWidth={3}/></span>}
+    {info.phase === 'lost' && <span className="fk-seal fk-seal-ticket is-lost" role="img" aria-label="Ficha perdida"><X size={22} strokeWidth={3}/></span>}
     <div className="fk-reference-ticket-main" role="button" tabIndex={0} onClick={open}
       onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }}>
       <div className="fk-reference-ticket-top">
@@ -719,6 +725,8 @@ function TicketDrawer() {
             return <li key={legKey} className={'fk-tl-item is-' + tone(resultClass(leg))}>
               <time>{clock(leg.date) || '--:--'}</time>
               <div className={'fk-reference-leg' + (expandedLeg ? ' is-open' : '')}>
+                {tone(resultClass(leg)) === 'won' && <span className="fk-seal is-won" role="img" aria-label="Ganha"><Check size={16} strokeWidth={3}/></span>}
+                {tone(resultClass(leg)) === 'lost' && <span className="fk-seal is-lost" role="img" aria-label="Perdida"><X size={16} strokeWidth={3}/></span>}
                 <button type="button" className="fk-leg-toggle" disabled={!hasDetails} aria-expanded={expandedLeg}
                   onClick={() => setOpenLegs(prev => ({ ...prev, [legKey]: !prev[legKey] }))}>
                 <div className="fk-reference-fixture">
@@ -731,7 +739,7 @@ function TicketDrawer() {
                 <div className="fk-reference-leg-meta">
                   <span>{leg.league || 'Competição não indicada'}</span>
                   <span>{leg.market || 'Mercado'}: <b>{leg.selection || '—'}</b> · Odd <b>{money(leg.odd)}</b></span>
-                  <em className="fk-reference-chip" style={{ '--tone': { won: 'var(--fkh-win)', lost: '#6b7a90', live: 'var(--fkh-goal)', pending: 'var(--fkh-gold)' }[tone(resultClass(leg))] }}>{resultLabel(leg)}</em>
+                  <em className="fk-reference-chip" style={{ '--tone': { won: 'var(--fkh-win)', lost: '#ff5a5a', live: 'var(--fkh-goal)', pending: 'var(--fkh-gold)' }[tone(resultClass(leg))] }}>{resultLabel(leg)}</em>
                   {hasDetails && <ChevronDown size={14} className="fk-leg-chevron" aria-hidden="true"/>}
                 </div>
                 </button>
