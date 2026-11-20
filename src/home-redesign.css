@@ -528,3 +528,13 @@
 .fk-seal-ticket{top:auto;bottom:54px;right:16px;width:46px;height:46px}
 .fk-reference-ticket{position:relative}
 .fk-reference-chip{}
+
+.fk-odd{font-variant-numeric:tabular-nums}
+.fk-odd s{opacity:.55;margin-right:5px;font-weight:400}
+.fk-odd.is-up{color:var(--fkh-win)}.fk-odd.is-down{color:#ff8a4d}.fk-odd.is-suspended{color:#ff5a5a;text-transform:uppercase;font-size:11px;letter-spacing:.5px}
+.fk-reference-books .fk-odd{margin-left:6px}
+.fk-odds-now{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--fkh-muted)}
+.fk-odds-now>span{display:inline-flex;gap:4px;align-items:baseline}
+.fk-odds-now-box{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin:12px 0 0;padding:10px 12px;border-radius:10px;border:1px solid var(--fkh-border);background:rgba(255,255,255,.035);font-size:13px}
+.fk-odds-now-box small{flex:1 0 100%;color:var(--fkh-muted);font-size:11px;letter-spacing:.4px;text-transform:uppercase}
+.fk-odds-now-box s{opacity:.5;margin:0 4px}

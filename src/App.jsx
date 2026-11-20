@@ -77,7 +77,7 @@ function AppBody() {
       }
       const { data: rows, error } = await supabase
         .from('tickets')
-        .select('id,shared_ticket_id,title,status,total_odds,booking_reference,published_at,created_at,ticket_legs(id,market_name,selection,odd,result,matches(home_team,away_team,competition,kickoff_at,status))')
+        .select('id,shared_ticket_id,title,status,total_odds,booking_reference,published_at,created_at,current_total_odds,current_odds_at,ticket_legs(id,market_name,selection,odd,result,current_odd,current_odd_at,odd_state,matches(home_team,away_team,competition,kickoff_at,status))')
         .eq('status', 'published')
         .order('published_at', { ascending: false });
       if (!active) return;
@@ -95,6 +95,8 @@ function AppBody() {
         origin: 'ai',
         status: 'Publicada',
         totalOdds: ticket.total_odds,
+        currentTotalOdds: ticket.current_total_odds,
+        oddsCheckedAt: ticket.current_odds_at,
         bookingId: (() => {
           try {
             const parsed = JSON.parse(ticket.booking_reference || "null");
@@ -120,6 +122,8 @@ function AppBody() {
             market: leg.market_name,
             selection: leg.selection,
             odd: leg.odd,
+            currentOdd: leg.current_odd,
+            oddState: leg.odd_state,
             marketStatus: leg.result
           };
         })
@@ -286,6 +290,25 @@ function AppBody() {
   </FkShell>;
 }
 
+const legKey = leg => [leg.home, leg.away, leg.market, leg.selection].join('~');
+
+// Odd actual da casa face à odd da elaboração: seta, cor e "suspensa" quando a casa retirou a selecção.
+function OddNow({ orig, now, state, compact = false }) {
+  if (state === 'suspended') return <b className="fk-odd is-suspended">suspensa</b>;
+  const value = Number(now);
+  if (!Number.isFinite(value) || value <= 1) return null;
+  const base = Number(orig);
+  const delta = !Number.isFinite(base) ? 'same' : value > base + 0.004 ? 'up' : value < base - 0.004 ? 'down' : 'same';
+  return <b className={'fk-odd is-' + delta}>{delta !== 'same' && !compact && <s>{money(base)}</s>}{money(value)}{delta === 'up' ? ' ▲' : delta === 'down' ? ' ▼' : ''}</b>;
+}
+
+const checkedAgo = (at, now) => {
+  const ms = Date.parse(at || '');
+  if (!Number.isFinite(ms)) return null;
+  const minutes = Math.max(0, Math.round((now - ms) / 60000));
+  return minutes < 1 ? 'agora mesmo' : minutes < 60 ? 'há ' + minutes + ' min' : 'há ' + Math.round(minutes / 60) + ' h';
+};
+
 function groupBookmakerPairs(tickets) {
   const groups = new Map();
   // Fichas antigas não têm shared_ticket_id: junta as das duas casas pelo dia, tipo e conjunto de jogos.
@@ -306,6 +329,9 @@ function groupBookmakerPairs(tickets) {
     const entries = items.map(item => ({
       bookmaker: item.bookmaker || 'Casa não indicada',
       totalOdds: item.totalOdds,
+      currentTotalOdds: item.currentTotalOdds,
+      oddsCheckedAt: item.oddsCheckedAt,
+      legMap: Object.fromEntries((item.legs || []).map(l => [legKey(l), { odd: l.odd, currentOdd: l.currentOdd, oddState: l.oddState }])),
       bookingId: item.bookingId,
       bookingUrl: item.bookingUrl
     })).sort((a, b) => a.bookmaker.localeCompare(b.bookmaker));
@@ -651,7 +677,7 @@ function DailyTicketCard({ ticket: t, featured = false, index = 0 }) {
       <BookingCodes ticket={t}/>
       <div className="fk-reference-total"><small>{entries.length > 1 ? 'Melhor odd combinada' : 'Odd combinada'}</small>{money(bestOdd)}</div>
       {entries.length > 1 && <div className="fk-reference-books">
-        {entries.map(e => <span key={e.bookmaker} className={(Number(e.totalOdds) || 0) === bestOdd ? 'is-best' : ''}>{e.bookmaker}<b>{money(e.totalOdds)}</b></span>)}
+        {entries.map(e => <span key={e.bookmaker} className={(Number(e.totalOdds) || 0) === bestOdd ? 'is-best' : ''}>{e.bookmaker}<b>{money(e.totalOdds)}</b>{e.currentTotalOdds && Math.abs(Number(e.currentTotalOdds) - Number(e.totalOdds)) >= 0.01 && <OddNow orig={e.totalOdds} now={e.currentTotalOdds} compact/>}</span>)}
       </div>}
       {legs.length > 0 && <ProgressBar legs={legs}/>}
       <div className="fk-reference-ticket-foot">{legs.length} selecções <span>•</span> {info.first ? 'Início ' + clock(info.first) + (info.last && info.last !== info.first ? ' · último jogo ' + clock(info.last) : '') : 'Hora por confirmar'}</div>
@@ -711,6 +737,10 @@ function TicketDrawer() {
       <div className="fk-drawer-body">
         <PhaseStrip info={info} now={now}/>
         <BookingCodes ticket={ticket}/>
+        {(entries.length ? entries : [ticket]).some(e => e.currentTotalOdds) && <div className="fk-odds-now-box">
+          <small>Odd agora nas casas{checkedAgo((entries.length ? entries : [ticket]).map(e => e.oddsCheckedAt).filter(Boolean).sort().pop(), now) ? ' · ' + checkedAgo((entries.length ? entries : [ticket]).map(e => e.oddsCheckedAt).filter(Boolean).sort().pop(), now) : ''}</small>
+          {(entries.length ? entries : [{ ...ticket, bookmaker: ticket.bookmaker || 'Casa' }]).map(e => <span key={e.bookmaker}>{e.bookmaker} <s>{money(e.totalOdds)}</s> <OddNow orig={e.totalOdds} now={e.currentTotalOdds} state={e.currentTotalOdds ? 'open' : 'suspended'} compact/></span>)}
+        </div>}
         {legs.length > 0 && <ProgressBar legs={legs}/>}
         <ol className="fk-timeline">
           {legs.map((leg, index) => {
@@ -739,6 +769,8 @@ function TicketDrawer() {
                 <div className="fk-reference-leg-meta">
                   <span>{leg.league || 'Competição não indicada'}</span>
                   <span>{leg.market || 'Mercado'}: <b>{leg.selection || '—'}</b> · Odd <b>{money(leg.odd)}</b></span>
+                  {(entries.length ? entries : [{ bookmaker: ticket.bookmaker || '', legMap: { [legKey(leg)]: { odd: leg.odd, currentOdd: leg.currentOdd, oddState: leg.oddState } } }]).some(e => e.legMap?.[legKey(leg)]?.currentOdd || e.legMap?.[legKey(leg)]?.oddState === 'suspended') &&
+                    <span className="fk-odds-now">Agora: {(entries.length ? entries : [{ bookmaker: ticket.bookmaker || '', legMap: { [legKey(leg)]: { odd: leg.odd, currentOdd: leg.currentOdd, oddState: leg.oddState } } }]).map(e => { const o = e.legMap?.[legKey(leg)]; return o ? <span key={e.bookmaker}>{e.bookmaker ? e.bookmaker.replace('Bet', '') + ' ' : ''}<OddNow orig={o.odd} now={o.currentOdd} state={o.oddState}/></span> : null; })}</span>}
                   <em className="fk-reference-chip" style={{ '--tone': { won: 'var(--fkh-win)', lost: '#ff5a5a', live: 'var(--fkh-goal)', pending: 'var(--fkh-gold)' }[tone(resultClass(leg))] }}>{resultLabel(leg)}</em>
                   {hasDetails && <ChevronDown size={14} className="fk-leg-chevron" aria-hidden="true"/>}
                 </div>

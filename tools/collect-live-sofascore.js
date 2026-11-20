@@ -13,6 +13,7 @@
 import { execFile } from "node:child_process";
 import { createClient } from "@supabase/supabase-js";
 import { matchFixture } from "../lib/pipeline/live-tickets.js";
+import { refreshLegOdds } from "../lib/pipeline/live-odds.js";
 import { settleFinishedLegs } from "../lib/pipeline/settlement.js";
 import { enrichLiveGames, syncLiveGames } from "../lib/pipeline/live-games.js";
 import {
@@ -237,6 +238,20 @@ if (isMain) {
     const intervalArg = Number(process.argv.find(arg => arg.startsWith("--interval="))?.split("=")[1] || 60);
     const intervalMs = Math.max(30, Number.isFinite(intervalArg) ? intervalArg : 60) * 1000;
     const state = newState();
+    // Odds actuais das casas (Swarm, só funciona a partir do PC): corre à parte do SofaScore,
+    // de 2 em 2 minutos, para que uma falha de uma fonte não pare a outra.
+    let oddsBusy = false;
+    const oddsTick = async () => {
+      if (oddsBusy || process.env.FK_ODDS_TRACKER === "off") return;
+      oddsBusy = true;
+      try {
+        const o = await refreshLegOdds({ db, log: msg => console.log(msg) });
+        console.log(`[${new Date().toLocaleTimeString("pt-PT")}] odds das casas: ${o.tickets} ficha(s), ${o.legs} selecção(ões), ${o.suspended} suspensa(s)`);
+      } catch (e) {
+        console.error(`[${new Date().toLocaleTimeString("pt-PT")}] odds das casas: ${e.message}`);
+      } finally { oddsBusy = false; }
+    };
+    if (watch) { oddsTick(); setInterval(oddsTick, 120000); } else await oddsTick();
     do {
       let wait = intervalMs;
       try {
