@@ -217,7 +217,8 @@ console.log(JSON.stringify({
 
 if (dryRun) {
   console.log("\nMODO DE TESTE: nenhuma odd foi enviada e nenhuma análise/bilhete foi criada.");
-} else if (failedBatches === 0 && totalSavedGames > 0 && totalSavedComparisons > 0 && totalSavedRawMarkets > 0) {
+} else if (failedBatches <= Math.ceil(pairsToCollect.length * 0.03) && totalSavedGames > 0 && totalSavedComparisons > 0 && totalSavedRawMarkets > 0) {
+  if (failedBatches > 0) console.log("\nNOTA: " + failedBatches + " jogo(s) falharam (até 3% é tolerado). Os restantes foram gravados.");
   console.log("\nRECOLHA CONCLUÍDA. A API confirmou gravações positivas no Supabase.");
   console.log("A análise será iniciada manualmente aqui no ChatGPT, quando o utilizador pedir.");
 } else {

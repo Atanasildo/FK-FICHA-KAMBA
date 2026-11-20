@@ -50,10 +50,12 @@ try {
     $oldLocation = Get-Location
     try {
       Set-Location -LiteralPath ([string]$config.repoPath)
+      # Mensagens de erro do Node (stderr) não podem terminar o supervisor: um jogo com timeout não deve parar a recolha.
+      $ErrorActionPreference = "Continue"
       & ([string]$config.nodePath) (Join-Path ([string]$config.repoPath) "tools/collect-swarm-upload.js") "--max-games=$($config.maxGames)" 2>&1 | ForEach-Object { Write-Log ([string]$_) }
       $exitCode = $LASTEXITCODE
     } catch { Write-Log "ERRO ao executar Node: $($_.Exception.Message)"; $exitCode = 1 }
-    finally { Set-Location $oldLocation }
+    finally { $ErrorActionPreference = "Stop"; Set-Location $oldLocation }
     if ($exitCode -eq 0) {
       ([ordered]@{ lastSuccessDate=$today; completedAt=(Get-Date).ToString("o"); maxGames=[int]$config.maxGames; apiBaseUrl=[string]$config.apiBaseUrl } | ConvertTo-Json) |
         Set-Content -LiteralPath $statePath -Encoding UTF8
