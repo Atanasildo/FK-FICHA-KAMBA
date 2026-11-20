@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Activity, ChevronDown, FileText, History, LayoutDashboard, Radio, Search, ShieldCheck, X } from 'lucide-react';
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Activity, ArrowRight, Check, ChevronDown, Clock, Copy, FileText, History, LayoutDashboard, Radio, Search, ShieldCheck, X } from 'lucide-react';
 import { supabase } from './lib/supabase.js';
 import './home-redesign.css';
 
@@ -40,7 +40,17 @@ const resultClass = leg => {
   return 'state-pending';
 };
 
+const TicketCtx = createContext(null);
+
 export default function App() {
+  const [openId, setOpenId] = useState(null);
+  const [allTickets, setAllTickets] = useState([]);
+  const value = useMemo(() => ({ openId, setOpenId, tickets: allTickets, setTickets: setAllTickets }), [openId, allTickets]);
+  return <TicketCtx.Provider value={value}><AppBody/></TicketCtx.Provider>;
+}
+
+function AppBody() {
+  const ticketCtx = useContext(TicketCtx);
   const [page, setPage] = useState('Bilhetes do dia');
   const [data, setData] = useState({ tickets: [] });
   const [analyses, setAnalyses] = useState([]);
@@ -192,6 +202,7 @@ export default function App() {
     legs: (ticket.legs || []).map(leg => ({ ...leg, ...(liveUpdates[leg.id] || {}) }))
   })), [data.tickets, liveUpdates]);
   const groupedTickets = useMemo(() => groupBookmakerPairs(ticketsWithLive), [ticketsWithLive]);
+  useEffect(() => { ticketCtx.setTickets(groupedTickets); }, [groupedTickets]);
   const todayTickets = useMemo(() => groupedTickets.filter(t => t.origin === 'ai' && isToday(t.createdAt)), [groupedTickets]);
   // Acompanhamento mantém também jogos por iniciar e jogos terminados no próprio dia.
   const liveTickets = todayTickets;
@@ -352,9 +363,10 @@ function FkShell({ page, onNavigate, liveCount = 0, notice, onDismissNotice, foo
         </button>)}
       </div>
     </nav>
-    <div className="fk-reference-page" key={page}>{children}</div>
+    <div className="fk-page-in fk-reference-page" key={page}>{children}</div>
     {notice && <div className="fk-reference-notice" role="status"><ShieldCheck size={16}/><span>{notice}</span><button onClick={onDismissNotice} aria-label="Fechar aviso"><X size={15}/></button></div>}
     <footer className="fk-reference-footer"><span><i/> {footer}</span></footer>
+    <TicketDrawer/>
   </main>;
 }
 
@@ -474,6 +486,15 @@ const EVENT_NAME = { goal: 'Golo', yellow_card: 'Cartão amarelo', red_card: 'Ca
 function LiveGameRow({ game: g, finished, index = 0 }) {
   const [open, setOpen] = useState(false);
   const [details, setDetails] = useState(null);
+  const score = (g.home_score ?? '-') + ':' + (g.away_score ?? '-');
+  const lastScore = useRef(score);
+  const [flash, setFlash] = useState(false);
+  useEffect(() => {
+    if (lastScore.current === score) return undefined;
+    lastScore.current = score; setFlash(true);
+    const timer = window.setTimeout(() => setFlash(false), 2200);
+    return () => window.clearTimeout(timer);
+  }, [score]);
   useEffect(() => {
     if (!open || !supabase) return undefined;
     let active = true;
@@ -491,9 +512,9 @@ function LiveGameRow({ game: g, finished, index = 0 }) {
   return <div className={'fk-live-item' + (open ? ' is-open' : '')} style={{ '--i': Math.min(index, 12) }}>
     <button className={'fk-live-game' + (finished ? '' : ' is-live')} onClick={() => setOpen(o => !o)} aria-expanded={open}>
       <span className="fk-live-team">{g.home_team}</span>
-      <b key={(g.home_score ?? '-') + ':' + (g.away_score ?? '-')} className="fk-live-score pop">{g.home_score ?? '-'} : {g.away_score ?? '-'}</b>
+      <b className={'fk-live-score' + (flash ? ' is-flash' : '')}>{g.home_score ?? '-'} : {g.away_score ?? '-'}</b>
       <span className="fk-live-team is-away">{g.away_team}</span>
-      <small className="fk-live-min">{gameLabel(g)}</small>
+      <small className="fk-live-min">{!finished && <i className="fk-live-dot" aria-hidden="true"/>}{gameLabel(g)}</small>
     </button>
     {open && <div className="fk-live-details">
       {details === null ? <p className="fk-live-empty">A carregar…</p> : <>
@@ -528,26 +549,100 @@ function LiveGamesSection({ title, games, empty, finished = false }) {
   </section>;
 }
 
-function DailyTicketCard({ ticket: t, expanded, onToggle, featured = false, index = 0 }) {
+const clock = value => value ? new Date(value).toLocaleTimeString('pt-AO', { hour: '2-digit', minute: '2-digit' }) : null;
+const kickoffMs = leg => Date.parse(leg.date || '') || null;
+
+function useNow(ms = 30000) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => { const timer = window.setInterval(() => setNow(Date.now()), ms); return () => window.clearInterval(timer); }, [ms]);
+  return now;
+}
+
+const untilText = diff => {
+  const minutes = Math.max(1, Math.round(diff / 60000));
+  if (minutes < 60) return 'em ' + minutes + ' min';
+  const h = Math.floor(minutes / 60), m = minutes % 60;
+  return 'em ' + h + 'h' + (m ? String(m).padStart(2, '0') : '');
+};
+
+// Fase da ficha: ao vivo, a decorrer (já começou mas sem jogo em directo agora), por iniciar ou terminada.
+function ticketPhase(t, now) {
+  const legs = t.legs || [];
+  const times = legs.map(kickoffMs).filter(Boolean).sort((a, b) => a - b);
+  const first = times[0] || null, last = times[times.length - 1] || null;
+  const live = legs.filter(isLive).length;
+  const done = legs.filter(l => isFinished(l) || settledLeg(l)).length;
+  let phase = 'upcoming';
+  if (legs.length && done === legs.length) phase = 'finished';
+  else if (live > 0) phase = 'live';
+  else if (first && first <= now) phase = 'running';
+  return { phase, first, last, live, done, total: legs.length };
+}
+
+function PhaseStrip({ info, now }) {
+  const { phase, first, live, done, total } = info;
+  if (phase === 'live') return <div className="fk-phase is-live"><i/><b>AO VIVO</b><span>{live} {live === 1 ? 'jogo' : 'jogos'} em directo · {done}/{total} terminados</span></div>;
+  if (phase === 'running') return <div className="fk-phase is-running"><i/><b>A DECORRER</b><span>{done}/{total} terminados · a aguardar os restantes</span></div>;
+  if (phase === 'finished') return <div className="fk-phase is-finished"><Check size={14}/><b>TERMINADA</b><span>{total} jogos concluídos</span></div>;
+  return <div className="fk-phase is-upcoming"><Clock size={14}/><b>COMEÇA ÀS {first ? clock(first) : '—'}</b><span>{first ? untilText(first - now) : 'hora por confirmar'}</span></div>;
+}
+
+function ProgressBar({ legs }) {
+  return <div className="fk-progress" aria-hidden="true">
+    {legs.map((leg, i) => <span key={leg.id || i} className={'is-' + tone(resultClass(leg))}/>)}
+  </div>;
+}
+
+function CopyCode({ code }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async event => {
+    event.stopPropagation();
+    try { await navigator.clipboard.writeText(String(code)); setCopied(true); window.setTimeout(() => setCopied(false), 1600); } catch { /* sem permissão */ }
+  };
+  return <button type="button" className={'fk-copy' + (copied ? ' is-done' : '')} onClick={copy} aria-label="Copiar código de reserva">
+    {copied ? <Check size={13}/> : <Copy size={13}/>}<span>{copied ? 'Copiado' : 'Copiar'}</span>
+  </button>;
+}
+
+function BookingCodes({ ticket: t }) {
+  const entries = t.bookmakerEntries || [];
+  const rows = entries.length ? entries.map(e => ({ name: e.bookmaker, code: e.bookingId, url: e.bookingUrl }))
+    : [{ name: t.bookmaker || 'Reserva', code: t.bookingId, url: t.bookingUrl }];
+  return <div className="fk-codes">
+    {rows.map(r => <div key={r.name} className={'fk-code' + (r.code ? '' : ' is-pending')}>
+      <small>{r.name}</small>
+      {r.code ? <><code>{r.code}</code><CopyCode code={r.code}/>{r.url && <a href={r.url} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} aria-label="Abrir reserva"><ArrowRight size={14}/></a>}</> : <em>a gerar…</em>}
+    </div>)}
+  </div>;
+}
+
+function DailyTicketCard({ ticket: t, featured = false, index = 0 }) {
+  const { setOpenId } = useContext(TicketCtx);
+  const now = useNow();
   const legs = t.legs || [];
   const entries = t.bookmakerEntries || [];
   const status = ticketStatus(t);
   const state = tone(ticketStatusClass(status));
-  const liveCount = legs.filter(isLive).length;
+  const info = ticketPhase(t, now);
   const bookmaker = t.bookmaker || (entries.length ? entries.map(e => e.bookmaker).join(' / ') : 'Casa de apostas');
   const date = t.createdAt ? new Date(t.createdAt).toLocaleDateString('pt-AO') : new Date().toLocaleDateString('pt-AO');
   const bestOdd = entries.length ? Math.max(...entries.map(e => Number(e.totalOdds) || 0)) : Number(t.totalOdds) || 0;
-  return <article className={'fk-reference-ticket is-' + state + (featured ? ' is-featured' : '')} style={{ '--i': Math.min(index, 14) }}>
+  const open = () => setOpenId(t.id);
+  return <article className={'fk-reference-ticket is-' + state + ' phase-' + info.phase + (featured ? ' is-featured' : '')} style={{ '--i': Math.min(index, 14) }}>
     <div className="fk-reference-watermark" aria-hidden="true">⚽</div>
-    <button className="fk-reference-ticket-main" onClick={onToggle} aria-expanded={expanded}>
+    <div className="fk-reference-ticket-main" role="button" tabIndex={0} onClick={open}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }}>
       <div className="fk-reference-ticket-top">
         <span><b>{bookmaker}</b><i> — {date}</i></span>
-        <em className="fk-reference-chip">{liveCount > 0 && <i/>}{status}</em>
+        <em className="fk-reference-chip">{info.live > 0 && <i/>}{status}</em>
       </div>
+      <PhaseStrip info={info} now={now}/>
+      <BookingCodes ticket={t}/>
       <div className="fk-reference-total"><small>{entries.length > 1 ? 'Melhor odd combinada' : 'Odd combinada'}</small>{money(bestOdd)}</div>
       {entries.length > 1 && <div className="fk-reference-books">
         {entries.map(e => <span key={e.bookmaker} className={(Number(e.totalOdds) || 0) === bestOdd ? 'is-best' : ''}>{e.bookmaker}<b>{money(e.totalOdds)}</b></span>)}
       </div>}
+      {legs.length > 0 && <ProgressBar legs={legs}/>}
       <div className="fk-reference-picks">
         {legs.map((leg, index) => <div className="fk-reference-pick" key={leg.id || index}>
           <span className={'dot is-' + tone(resultClass(leg))} aria-hidden="true"/>
@@ -556,44 +651,81 @@ function DailyTicketCard({ ticket: t, expanded, onToggle, featured = false, inde
         </div>)}
         {!legs.length && <div className="fk-reference-pick"><span>Selecções ainda não disponíveis</span><b>—</b></div>}
       </div>
-      <div className="fk-reference-ticket-foot">{legs.length} selecções <span>•</span> {entries.length ? entries.length + ' casas' : (t.bookingId ? 'Reserva: ' + t.bookingId : 'Reserva pendente')}</div>
-      <span className="fk-reference-expand">{expanded ? 'FECHAR DETALHES' : 'VER DETALHES'} <ChevronDown size={13}/></span>
-    </button>
-    {expanded && <div className="fk-reference-expanded">
-      {legs.map((leg, index) => {
-        const score = matchScore(leg);
-        const live = isLive(leg);
-        const done = isFinished(leg);
-        return <div className="fk-reference-leg" key={leg.id || index}>
-          <div className="fk-reference-fixture">
-            <div className="fk-reference-team"><span className="fk-reference-crest" aria-hidden="true">{crest(leg.home)}</span><span>{leg.home || '—'}</span></div>
-            {score
-              ? <div key={score} className={'fk-reference-score pop' + (live ? ' is-live' : '')}>{score}<small>{live ? (leg.minute ? leg.minute + "'" : 'AO VIVO') : done ? 'FIM' : ''}</small></div>
-              : <div className="fk-reference-score vs">VS</div>}
-            <div className="fk-reference-team away"><span className="fk-reference-crest" aria-hidden="true">{crest(leg.away)}</span><span>{leg.away || '—'}</span></div>
-          </div>
-          <div className="fk-reference-leg-meta">
-            <span>{leg.league || 'Competição não indicada'}{leg.date ? ' · ' + new Date(leg.date).toLocaleString('pt-AO') : ''}</span>
-            <span>{leg.market || 'Mercado'}: <b>{leg.selection || '—'}</b> · Odd <b>{money(leg.odd)}</b></span>
-            <em className="fk-reference-chip" style={{ '--tone': { won: 'var(--fkh-win)', lost: '#6b7a90', live: 'var(--fkh-goal)', pending: 'var(--fkh-gold)' }[tone(resultClass(leg))] }}>{resultLabel(leg)}</em>
-          </div>
-          {Array.isArray(leg.matchEvents) && leg.matchEvents.length > 0
-            ? <div className="fk-reference-events">{leg.matchEvents.map((event, i) => <div key={i} className={'is-' + (event.side || 'none')}>
-                <i>{event.type === 'red_card' || event.type === 'second_yellow' ? '🟥' : '⚽'}</i>
-                <b>{event.minute != null ? event.minute + "'" : ''}</b>
-                <span>{event.player || (event.type === 'goal' ? 'Golo' : 'Expulsão')}{event.side ? ' · ' + (event.side === 'home' ? leg.home : leg.away) : ''}</span>
-              </div>)}</div>
-            : leg.lastEvent && <small className="note">{leg.lastEvent}</small>}
-          {(live || done) && liveStatRows(leg).length > 0 && <div className="fk-reference-stats">
-            {liveStatRows(leg).map(row => <div key={row.label}><b>{row.home}</b><small>{row.label}</small><b>{row.away}</b></div>)}
-          </div>}
-          {leg.rationale && <small className="note">{leg.rationale}</small>}
-        </div>;
-      })}
-      {entries.map(entry => <div className="fk-reference-booking" key={entry.bookmaker}><span>{entry.bookmaker}</span><b>Odd {money(entry.totalOdds)}</b><strong>{entry.bookingId || 'Reserva pendente'}</strong>{entry.bookingUrl && <a href={entry.bookingUrl} target="_blank" rel="noreferrer">Abrir reserva</a>}</div>)}
-      {!entries.length && <div className="fk-reference-booking"><span>Referência de reserva</span><strong>{t.bookingId || 'A aguardar'}</strong>{t.bookingUrl && <a href={t.bookingUrl} target="_blank" rel="noreferrer">Abrir reserva</a>}</div>}
-    </div>}
+      <div className="fk-reference-ticket-foot">{legs.length} selecções <span>•</span> {info.first ? 'Início ' + clock(info.first) + (info.last && info.last !== info.first ? ' · último jogo ' + clock(info.last) : '') : 'Hora por confirmar'}</div>
+      <span className="fk-reference-expand">ABRIR FICHA <ArrowRight size={13}/></span>
+    </div>
   </article>;
+}
+
+function TicketDrawer() {
+  const { openId, setOpenId, tickets } = useContext(TicketCtx);
+  const ticket = openId ? tickets.find(t => t.id === openId) : null;
+  const now = useNow();
+  useEffect(() => {
+    if (!ticket) return undefined;
+    const onKey = e => { if (e.key === 'Escape') setOpenId(null); };
+    document.addEventListener('keydown', onKey);
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = previous; };
+  }, [ticket, setOpenId]);
+  if (!ticket) return null;
+  const entries = ticket.bookmakerEntries || [];
+  const info = ticketPhase(ticket, now);
+  const bestOdd = entries.length ? Math.max(...entries.map(e => Number(e.totalOdds) || 0)) : Number(ticket.totalOdds) || 0;
+  const legs = [...(ticket.legs || [])].sort((a, b) => (kickoffMs(a) || Infinity) - (kickoffMs(b) || Infinity));
+  return <div className="fk-drawer-root" role="dialog" aria-modal="true" aria-label="Detalhes da ficha">
+    <div className="fk-drawer-backdrop" onClick={() => setOpenId(null)}/>
+    <aside className="fk-drawer">
+      <header className="fk-drawer-head">
+        <div>
+          <small>{ticket.bookmaker || (entries.length ? entries.map(e => e.bookmaker).join(' / ') : 'Ficha')}</small>
+          <h2>Odd {money(bestOdd)}</h2>
+        </div>
+        <button className="fk-drawer-close" onClick={() => setOpenId(null)} aria-label="Fechar"><X size={18}/></button>
+      </header>
+      <div className="fk-drawer-body">
+        <PhaseStrip info={info} now={now}/>
+        <BookingCodes ticket={ticket}/>
+        {legs.length > 0 && <ProgressBar legs={legs}/>}
+        <ol className="fk-timeline">
+          {legs.map((leg, index) => {
+            const score = matchScore(leg);
+            const live = isLive(leg);
+            const done = isFinished(leg);
+            return <li key={leg.id || index} className={'fk-tl-item is-' + tone(resultClass(leg))}>
+              <time>{clock(leg.date) || '--:--'}</time>
+              <div className="fk-reference-leg">
+                <div className="fk-reference-fixture">
+                  <div className="fk-reference-team"><span className="fk-reference-crest" aria-hidden="true">{crest(leg.home)}</span><span>{leg.home || '—'}</span></div>
+                  {score
+                    ? <div className={'fk-reference-score' + (live ? ' is-live' : '')}>{score}<small>{live ? (leg.minute ? leg.minute + "'" : 'AO VIVO') : done ? 'FIM' : ''}</small></div>
+                    : <div className="fk-reference-score vs">VS</div>}
+                  <div className="fk-reference-team away"><span className="fk-reference-crest" aria-hidden="true">{crest(leg.away)}</span><span>{leg.away || '—'}</span></div>
+                </div>
+                <div className="fk-reference-leg-meta">
+                  <span>{leg.league || 'Competição não indicada'}</span>
+                  <span>{leg.market || 'Mercado'}: <b>{leg.selection || '—'}</b> · Odd <b>{money(leg.odd)}</b></span>
+                  <em className="fk-reference-chip" style={{ '--tone': { won: 'var(--fkh-win)', lost: '#6b7a90', live: 'var(--fkh-goal)', pending: 'var(--fkh-gold)' }[tone(resultClass(leg))] }}>{resultLabel(leg)}</em>
+                </div>
+                {Array.isArray(leg.matchEvents) && leg.matchEvents.length > 0
+                  ? <div className="fk-reference-events">{leg.matchEvents.map((event, i) => <div key={i} className={'is-' + (event.side || 'none')}>
+                      <i>{event.type === 'red_card' || event.type === 'second_yellow' ? '🟥' : '⚽'}</i>
+                      <b>{event.minute != null ? event.minute + "'" : ''}</b>
+                      <span>{event.player || (event.type === 'goal' ? 'Golo' : 'Expulsão')}{event.side ? ' · ' + (event.side === 'home' ? leg.home : leg.away) : ''}</span>
+                    </div>)}</div>
+                  : leg.lastEvent && <small className="note">{leg.lastEvent}</small>}
+                {(live || done) && liveStatRows(leg).length > 0 && <div className="fk-reference-stats">
+                  {liveStatRows(leg).map(row => <div key={row.label}><b>{row.home}</b><small>{row.label}</small><b>{row.away}</b></div>)}
+                </div>}
+                {leg.rationale && <small className="note">{leg.rationale}</small>}
+              </div>
+            </li>;
+          })}
+        </ol>
+      </div>
+    </aside>
+  </div>;
 }
 
 function AnalysisCard({ row, index = 0 }) {
