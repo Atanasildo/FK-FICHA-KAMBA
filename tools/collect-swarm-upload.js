@@ -14,6 +14,14 @@ if (!Number.isInteger(maxGames) || maxGames < 1 || maxGames > 1500) {
   console.error("FK_MAX_GAMES/--max-games deve ser um número inteiro entre 1 e 1500.");
   process.exit(1);
 }
+// --after=2026-11-21T13:30:00Z → recolhe só jogos que começam a partir dessa hora (para completar um dia cortado
+// pelo limite sem repetir os jogos que já estão gravados).
+const afterArg = process.argv.find(arg => arg.startsWith("--after="));
+const afterTs = afterArg ? Date.parse(afterArg.split("=")[1]) : null;
+if (afterArg && !Number.isFinite(afterTs)) {
+  console.error("--after deve ser uma data ISO, por exemplo --after=2026-11-21T13:30:00Z");
+  process.exit(1);
+}
 const baseUrl = (process.env.FK_API_URL || "").replace(/\/$/, "");
 const ingestUrl = process.env.FK_INGEST_URL || (baseUrl ? baseUrl + "/api/bookmakers/save-comparison" : "");
 const secret = process.env.CRON_SECRET;
@@ -70,15 +78,19 @@ const eligiblePairs = commonPairs.map(pair => ({
   elephant: elephantById.get(pair.elephantId)
 })).filter(item => item.bantu && item.elephant);
 
-const pairsToCollect = eligiblePairs.slice(0, maxGames);
+const afterFiltered = afterTs ? eligiblePairs.filter(item => Number(item.bantu.start_ts) * 1000 >= afterTs) : eligiblePairs;
+if (afterTs) console.log("Filtro --after: " + afterFiltered.length + " de " + eligiblePairs.length + " jogos comuns começam a partir de " + new Date(afterTs).toISOString() + ".");
+const pairsToCollect = afterFiltered.slice(0, maxGames);
+const MB_PER_GAME = 0.4; // medido: ~0,38 MB por jogo (markets + comparações). Plano gratuito do Supabase: 500 MB.
+console.log("Espaço estimado a gravar: ~" + Math.round(pairsToCollect.length * MB_PER_GAME) + " MB (≈0,4 MB por jogo; limite gratuito 500 MB). Jogos virtuais (SRL) já foram excluídos.");
 
 console.log("Jogos comuns BantuBet/ElephantBet:", commonPairs.length);
 console.log("A SportAPI não é necessária para esta recolha.");
 console.log("Limite configurado:", maxGames, "par(es).");
 console.log("A recolher:", pairsToCollect.length, "pares de jogos comuns.");
-if (eligiblePairs.length > pairsToCollect.length) {
-  const firstCut = new Date(Number(eligiblePairs[pairsToCollect.length].bantu.start_ts) * 1000).toISOString();
-  console.log("ATENÇÃO: " + (eligiblePairs.length - pairsToCollect.length) + " jogo(s) elegível(eis) ficam de fora pelo limite (a partir de " + firstCut + "). Aumenta maxGames para os incluir.");
+if (afterFiltered.length > pairsToCollect.length) {
+  const firstCut = new Date(Number(afterFiltered[pairsToCollect.length].bantu.start_ts) * 1000).toISOString();
+  console.log("ATENÇÃO: " + (afterFiltered.length - pairsToCollect.length) + " jogo(s) elegível(eis) ficam de fora pelo limite (a partir de " + firstCut + "). Aumenta maxGames para os incluir.");
 }
 
 if (!pairsToCollect.length) {
