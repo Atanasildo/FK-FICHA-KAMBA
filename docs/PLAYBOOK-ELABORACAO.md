@@ -147,7 +147,7 @@ Não limitar-se a 1X2/BTTS: há **centenas de mercados** por jogo. Escolher o qu
 
 **Liquidação automática** (`lib/tickets/live-market.js`): totais de golos (jogo e equipa), ambas marcam, resultado/dupla chance, cartões amarelos/vermelhos, cantos. **Não** cobre handicaps, empate anula aposta, combinações nem mercados da 1.ª parte — as selecções nesses mercados ficam "a aguardar resultados" até serem liquidadas à mão. Preferir mercados cobertos; se usar os outros, avisar o proprietário.
 
-**Correlação:** no mesmo boletim, no máximo **uma selecção por jogo**. Entre boletins, limitar a repetição dos mesmos jogos (diversificação, §8).
+**Correlação:** no mesmo boletim, no máximo **uma selecção por jogo**. Entre boletins, aplicar a **regra de descorrelação** (§8.1): em regra, cada jogo aparece em **um só boletim**.
 
 ## 8. Passo 6 — construir os boletins
 
@@ -160,6 +160,18 @@ Regras do **Manual** (§6.2): odd individual **≥ 1,40**; **uma casa por boleti
 - **Probabilidade conjunta:** produto das probabilidades (se independentes) — **mostrar** ao proprietário. Selecções do mesmo jogo não são independentes.
 - **Horário:** ordenar por hora; o primeiro jogo deve começar com antecedência para a reserva. Se as notícias de escalações forem decisivas, publicar em **duas vagas** (manhã: jogos da tarde; tarde: jogos da noite) e revalidar o onze inicial antes da 2.ª.
 
+
+### 8.1 Regra de descorrelação (gestão de correlação / exposição)
+
+Termo: **gestão de correlação**, também chamada diversificação não correlacionada ou controlo de exposição. Quando um único resultado pode derrubar vários boletins ao mesmo tempo, há um **ponto único de falha**. O erro típico é pôr a vitória do mesmo favorito em 3 boletins: se ele empata, os 3 perdem.
+
+1. **Exclusividade de partida: 1 jogo = 1 boletim** (versões BantuBet/ElephantBet do mesmo boletim, ligadas por `shared_ticket_id`, contam como **um** só boletim). Um jogo só pode repetir-se noutro boletim se houver razão forte e escrita, e nunca com mercado correlacionado (ponto 2).
+2. **Mercados dependentes no mesmo jogo.** Se a falha de um mercado aumenta a probabilidade de falha de outro **no mesmo jogo** (ex.: "Mais de 2.5 golos" num boletim e "Ambas marcam: Sim" noutro, ambos falham num 0-0 ou 1-0), **proibido** pôr os dois em boletins diferentes. Antes de gravar, cruzar todas as selecções do dia e rejeitar pares correlacionados (totais, ambas marcam, resultado do favorito, dupla chance do mesmo lado).
+3. **Teto de exposição por jogo.** Se, excepcionalmente, um jogo estiver em mais de um boletim, indicar ao proprietário a exposição total (nº de boletins que dependem dele) e recomendar que o valor somado nunca ultrapasse o limite de risco de uma única aposta (referência: 2 a 3% da banca). A IA **não** define stakes; só avisa.
+4. **Diversificação de carteira.** Repartir os boletins por **competições, horários e famílias de mercado** diferentes, em vez de agrupar jogos da mesma liga ou da mesma hora.
+5. **Falta de jogos.** Se não houver jogos fortes suficientes para cumprir 1 jogo = 1 boletim, publicar **menos boletins** e explicar. Nunca preencher com variações quase iguais.
+6. **Relatório.** No resumo ao proprietário, incluir a tabela jogo → boletim e declarar explicitamente: "sem jogos repetidos" ou listar as excepções e a razão.
+
 ## 9. Passo 7 — validações finais (todas têm de passar)
 
 ```sql
@@ -170,7 +182,7 @@ select t.title, t.total_odds, count(l.id) pernas, count(l.selection_id) com_sele
 from tickets t join ticket_legs l on l.ticket_id=t.id join matches m on m.id=l.match_id
 where t.status='draft' group by t.id;
 ```
-Checklist: jogo **não** iniciado (com margem); **odd actual ≥ 1,40 nas duas casas** (re-ler o JSON mais recente); `selection_id` numérico em todas as selecções; mercado e linha iguais nas duas casas; uma selecção por jogo; total dentro da faixa; sem duplicação com boletins existentes; probabilidade conjunta calculada; sem SRL; selecções com fonte e justificação.
+Checklist: jogo **não** iniciado (com margem); **odd actual ≥ 1,40 nas duas casas** (re-ler o JSON mais recente); `selection_id` numérico em todas as selecções; mercado e linha iguais nas duas casas; uma selecção por jogo; **nenhum jogo repetido entre boletins (§8.1)** nem pares de mercados correlacionados; total dentro da faixa; sem duplicação com boletins existentes; probabilidade conjunta calculada; sem SRL; selecções com fonte e justificação.
 
 ## 10. Passo 8 — gravar (rascunho → publicar)
 
@@ -210,7 +222,7 @@ Data/hora e lote · jogos descobertos por casa e comuns · contadores de gravaç
 4. Usar vários snapshots da mesma selecção na remoção de margem.
 5. Dar prioridade a "Premier League" de qualquer país.
 6. Gravar sem confirmar depois que os registos persistiram.
-7. Publicar boletins quase iguais (dependentes dos mesmos jogos) como se fossem diversificados.
+7. Publicar boletins quase iguais (dependentes dos mesmos jogos e mercados) como se fossem diversificados. Regra: **1 jogo = 1 boletim** e sem mercados correlacionados entre boletins (§8.1).
 8. Ficar só em 1X2/BTTS quando havia centenas de mercados mais adequados.
 9. Cortar o dia da recolha a meio (limite de jogos) e não avisar.
 10. Esquecer `selection_id` (a reserva salta a ficha).
@@ -224,7 +236,7 @@ Data/hora e lote · jogos descobertos por casa e comuns · contadores de gravaç
 3. Passo 3: pesquisar ≥ 3 fontes por jogo candidato; guardar contexto.
 4. Passo 4: devig + Poisson/Elo + previsões → `p_final`, EV, confiança.
 5. Passo 5: escolher o **melhor mercado** por jogo (todas as famílias).
-6. Passo 6: construir boletins (regras do Manual), diversificar, calcular probabilidade conjunta.
+6. Passo 6: construir boletins (regras do Manual), aplicar a descorrelação (§8.1: 1 jogo = 1 boletim, sem mercados correlacionados), calcular probabilidade conjunta.
 7. Passo 7: validar tudo (checklist §9) → rascunho.
 8. Mostrar ao proprietário o resumo honesto e **pedir autorização** → publicar → confirmar persistência → acompanhar reservas.
 9. Passo 9: registar resultados, calibrar, melhorar.
