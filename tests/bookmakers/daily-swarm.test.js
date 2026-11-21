@@ -103,3 +103,28 @@ test("permite configurar explicitamente a antecedência mínima", () => {
   });
   assert.equal(pairs.length, 1);
 });
+
+import { isVirtualSwarmGame } from "../../lib/bookmakers/daily-swarm.js";
+
+test("jogos virtuais (SRL, eSoccer, Cyber) são reconhecidos e jogos reais não", () => {
+  assert.equal(isVirtualSwarmGame({ home: "Groningen SRL", away: "NEC Nijmegen SRL" }), true);
+  assert.equal(isVirtualSwarmGame({ home: "Arsenal (Esports)", away: "Chelsea (Esports)" }), true);
+  assert.equal(isVirtualSwarmGame({ home: "Bayer 04 Leverkusen", away: "Eintracht Frankfurt" }), false);
+  assert.equal(isVirtualSwarmGame({ home: "Real Madrid", away: "Barcelona" }), false);
+});
+
+test("jogos virtuais não ocupam vagas e o dia inteiro cabe quando o limite é alto", () => {
+  const nowSeconds = 1_000_000;
+  const mk = (id, home, away, offsetMin) => ({ id: String(id), home, away, start_ts: nowSeconds + 3600 + offsetMin * 60, is_live: false });
+  const bantu = [], elephant = [];
+  for (let i = 0; i < 30; i++) {
+    bantu.push(mk(i, "Casa " + i + " FC", "Fora " + i + " FC", i * 20));
+    elephant.push(mk(1000 + i, "Casa " + i + " FC", "Fora " + i + " FC", i * 20));
+  }
+  bantu.push(mk(900, "Groningen SRL", "NEC Nijmegen SRL", 5));
+  elephant.push(mk(1900, "Groningen SRL", "NEC Nijmegen SRL", 5));
+  const pairs = selectCommonSwarmGames(bantu, elephant, { nowSeconds, minKickoffLeadSeconds: 0, horizonSeconds: 48 * 3600, maxGames: 1500 });
+  assert.equal(pairs.length, 30);
+  assert.ok(!pairs.some(pair => /SRL/.test(pair.home)));
+  assert.equal(Math.max(...pairs.map(pair => pair.bantuKickoff)), nowSeconds + 3600 + 29 * 20 * 60);
+});

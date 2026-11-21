@@ -30,7 +30,9 @@ $secrets = Get-Content -LiteralPath $secretsPath -Raw | ConvertFrom-Json
 $env:CRON_SECRET = Convert-SecureStringToPlainText ([string]$secrets.cronSecret)
 $env:VERCEL_AUTOMATION_BYPASS_SECRET = Convert-SecureStringToPlainText ([string]$secrets.vercelBypass)
 $env:FK_API_URL = [string]$config.apiBaseUrl
-$env:FK_MAX_GAMES = [string]$config.maxGames
+# Limites antigos (150/400) cortavam o dia a meio da tarde; o mínimo passa a ser 1000 (≈400 MB no pior dia).
+$maxGames = [Math]::Max([int]$config.maxGames, 1000)
+$env:FK_MAX_GAMES = [string]$maxGames
 $lastAttemptDate = ""
 $lastAttemptAt = [datetime]::MinValue
 Write-Log "Supervisor iniciado. A aguardar Internet; limite diário: uma recolha confirmada."
@@ -46,18 +48,18 @@ try {
     }
     $lastAttemptDate = $today
     $lastAttemptAt = Get-Date
-    Write-Log "Internet detectada. A iniciar recolha de até $($config.maxGames) jogos."
+    Write-Log "Internet detectada. A iniciar recolha de até $maxGames jogos."
     $oldLocation = Get-Location
     try {
       Set-Location -LiteralPath ([string]$config.repoPath)
       # Mensagens de erro do Node (stderr) não podem terminar o supervisor: um jogo com timeout não deve parar a recolha.
       $ErrorActionPreference = "Continue"
-      & ([string]$config.nodePath) (Join-Path ([string]$config.repoPath) "tools/collect-swarm-upload.js") "--max-games=$($config.maxGames)" 2>&1 | ForEach-Object { Write-Log ([string]$_) }
+      & ([string]$config.nodePath) (Join-Path ([string]$config.repoPath) "tools/collect-swarm-upload.js") "--max-games=$maxGames" 2>&1 | ForEach-Object { Write-Log ([string]$_) }
       $exitCode = $LASTEXITCODE
     } catch { Write-Log "ERRO ao executar Node: $($_.Exception.Message)"; $exitCode = 1 }
     finally { $ErrorActionPreference = "Stop"; Set-Location $oldLocation }
     if ($exitCode -eq 0) {
-      ([ordered]@{ lastSuccessDate=$today; completedAt=(Get-Date).ToString("o"); maxGames=[int]$config.maxGames; apiBaseUrl=[string]$config.apiBaseUrl } | ConvertTo-Json) |
+      ([ordered]@{ lastSuccessDate=$today; completedAt=(Get-Date).ToString("o"); maxGames=$maxGames; apiBaseUrl=[string]$config.apiBaseUrl } | ConvertTo-Json) |
         Set-Content -LiteralPath $statePath -Encoding UTF8
       Write-Log "RECOLHA CONFIRMADA. Não haverá nova recolha hoje."
     } else { Write-Log "A recolha terminou com código $exitCode. Não foi marcada como concluída; nova tentativa após $($config.retryMinutes) minutos." }
