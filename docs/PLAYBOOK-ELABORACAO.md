@@ -172,6 +172,18 @@ Termo: **gestão de correlação**, também chamada diversificação não correl
 5. **Falta de jogos.** Se não houver jogos fortes suficientes para cumprir 1 jogo = 1 boletim, publicar **menos boletins** e explicar. Nunca preencher com variações quase iguais.
 6. **Relatório.** No resumo ao proprietário, incluir a tabela jogo → boletim e declarar explicitamente: "sem jogos repetidos" ou listar as excepções e a razão.
 
+### 8.2 Vieses e bloqueios adicionais (antes de escolher e de gravar)
+
+Adoptado do que se sabe sobre carteiras de apostas, **adaptado às regras do Manual** (faixas de odds, acumuladores). Onde uma regra geral choca com o Manual, prevalece o Manual e a IA **avisa o risco** em vez de impor o bloqueio.
+
+1. **Odds baixas "seguras" (viés favorito–azarão).** Os grandes favoritos têm o preço inflacionado pelo público. Manter o mínimo de **1,40 por selecção** (Manual §6.2). Só aceitar menos com erro de preço grosseiro e justificado por escrito — e então não entra em boletim, só em relatório.
+2. **Margem composta.** Cada mercado leva a margem da casa (4–8%); num acumulador ela multiplica-se. Em cada boletim, **calcular e mostrar** a margem composta estimada (`1 − Π(1/(1+margem_i))`, ou a partir do devig de cada selecção) junto da probabilidade conjunta. Os boletins longos exigidos pelas faixas do Manual são de **risco extremo e valor esperado negativo**: dizê-lo. Preferir sempre menos selecções com odds melhores (§8) e só incluir selecções com edge ≥ 0 estimado; se a selecção tem EV < 0, declarar a razão da inclusão (ex.: precisa para a faixa).
+3. **Viés de recência.** Não dar peso excessivo ao último jogo ou a "séries". Usar janelas de **10 a 20 jogos** (casa/fora separados) e métricas de desempenho subjacente (xG, remates) quando existirem; o último resultado entra como contexto, não como razão principal. Um 4-0 recente já está no preço.
+4. **Sobreajuste.** Não usar padrões sem causa (dia da semana, cor da camisola, "sempre ganha à quarta"), nem H2H com amostra pequena como razão principal. Qualquer regra nova só entra se validada em amostra grande; senão fica como nota, sem peso.
+5. **Liquidez e eficiência.** Em ligas principais o mercado é muito eficiente: encolher a estimativa para o mercado (§6) e esperar pouco edge. Em ligas menores há mais desajuste de odds mas **mais risco oculto** (atrasos salariais, relvado, informação escassa): reduzir a confiança e exigir mais fontes. Nível 2–3 (§4): confiança máxima "média" salvo evidência forte. Stakes não são definidos pela IA.
+6. **Exposição simultânea.** Os boletins de uma vaga estão todos em jogo ao mesmo tempo. Avisar o proprietário da exposição simultânea e do número de boletins por vaga; recomendar limitar o capital em jogo ao mesmo tempo (referência de gestão de banca: 10–15% do total) e repartir por **vagas/horários** (§8, duas vagas). A IA só alerta; o valor apostado é decisão do proprietário.
+7. **Movimento de mercado.** Re-ler as odds mais recentes antes de gravar e antes de publicar. Se a odd da selecção **subiu** de forma relevante desde a recolha (ou as duas casas divergem) sem razão conhecida, ou se o mercado se move **contra** a previsão do modelo, **parar e reavaliar** (pode haver informação nova: lesão, onze). Registar a odd de elaboração para comparar com a odd de início do jogo (CLV, §11).
+
 ## 9. Passo 7 — validações finais (todas têm de passar)
 
 ```sql
@@ -182,7 +194,7 @@ select t.title, t.total_odds, count(l.id) pernas, count(l.selection_id) com_sele
 from tickets t join ticket_legs l on l.ticket_id=t.id join matches m on m.id=l.match_id
 where t.status='draft' group by t.id;
 ```
-Checklist: jogo **não** iniciado (com margem); **odd actual ≥ 1,40 nas duas casas** (re-ler o JSON mais recente); `selection_id` numérico em todas as selecções; mercado e linha iguais nas duas casas; uma selecção por jogo; **nenhum jogo repetido entre boletins (§8.1)** nem pares de mercados correlacionados; total dentro da faixa; sem duplicação com boletins existentes; probabilidade conjunta calculada; sem SRL; selecções com fonte e justificação.
+Checklist: jogo **não** iniciado (com margem); **odd actual ≥ 1,40 nas duas casas** (re-ler o JSON mais recente); `selection_id` numérico em todas as selecções; mercado e linha iguais nas duas casas; uma selecção por jogo; **nenhum jogo repetido entre boletins (§8.1)** nem pares de mercados correlacionados; total dentro da faixa; sem duplicação com boletins existentes; probabilidade conjunta calculada; sem SRL; selecções com fonte e justificação; **margem composta e probabilidade conjunta mostradas (§8.2)**; odds re-lidas antes de gravar/publicar e sem movimento contrário inexplicado.
 
 ## 10. Passo 8 — gravar (rascunho → publicar)
 
@@ -226,6 +238,9 @@ Data/hora e lote · jogos descobertos por casa e comuns · contadores de gravaç
 8. Ficar só em 1X2/BTTS quando havia centenas de mercados mais adequados.
 9. Cortar o dia da recolha a meio (limite de jogos) e não avisar.
 10. Esquecer `selection_id` (a reserva salta a ficha).
+11. Dar peso excessivo ao último resultado ou a séries, e usar padrões sem causa como razão principal (§8.2).
+12. Esconder a margem composta dos acumuladores longos e tratar "favoritos seguros" de odd baixa como valor (§8.2).
+13. Não re-ler as odds antes de publicar (movimento de mercado) e não avisar da exposição simultânea (§8.2).
 
 ---
 
