@@ -348,6 +348,8 @@ Seguir integralmente `docs/chatgpt-analysis-workflow.md`. Em resumo:
 6. Guardar contexto validado em `match_statistics` e relatórios prontos em `match_analyses`.
 7. Não escrever em `tickets` nem `ticket_legs` durante a análise manual.
 
+**Procedimento completo de elaboração (um só comando): [`docs/PLAYBOOK-ELABORACAO.md`](docs/PLAYBOOK-ELABORACAO.md).** Quando o proprietário disser "ACTIVAR FICHA KAMBA", executar esse playbook.
+
 A documentação de análise manual é a referência prioritária para o fluxo ChatGPT. Não executar `/api/pipeline/run-daily` como se fosse a mesma rotina: esse endpoint pertence ao pipeline legado/automatizado.
 
 ### 7.3 Fichas e publicação
@@ -478,7 +480,7 @@ Esta secção evita que uma nova IA confunda código existente com funcionalidad
 
 ## 12. Instruções obrigatórias para qualquer outra IA
 
-1. Ler este README inteiro, `docs/chatgpt-analysis-workflow.md` e `supabase/README.md`.
+1. Ler este README inteiro, `docs/PLAYBOOK-ELABORACAO.md`, `docs/chatgpt-analysis-workflow.md` e `supabase/README.md`.
 2. Antes de editar, confirmar a branch, SHA e estado da Vercel. Fazer `git status` e não apagar alterações locais.
 3. Inspeccionar os ficheiros concretos relacionados com a tarefa; esta árvore é um mapa, não substitui leitura do código.
 4. Não assumir que `main` é a branch correcta. Não misturar branches divergentes sem comparar commits e rever o diff.
@@ -493,6 +495,7 @@ Esta secção evita que uma nova IA confunda código existente com funcionalidad
 
 ## 13. Documentos de referência
 
+- [Playbook de elaboração (comando único "ACTIVAR FICHA KAMBA")](docs/PLAYBOOK-ELABORACAO.md)
 - [Procedimento de análise manual no ChatGPT](docs/chatgpt-analysis-workflow.md)
 - [Fundação e configuração Supabase](supabase/README.md)
 - [Schema base Supabase](supabase/schema.sql)
