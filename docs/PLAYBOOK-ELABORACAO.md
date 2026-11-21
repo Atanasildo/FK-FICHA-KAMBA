@@ -206,6 +206,34 @@ Checklist: jogo **não** iniciado (com margem); **odd actual ≥ 1,40 nas duas c
 
 **Publicar** (`status='published'`, `published_at=now()`) **só com autorização** e só se todas as validações passarem. Depois: consultar a base para **confirmar que persistiu** (regra 6) e que `booking_reference` aparece em poucos minutos (a tarefa do PC gera o código). Se, ao fim de ~10 min, não houver código, pedir ao proprietário o log da tarefa de reservas.
 
+### 10.1 Limpeza pós-elaboração (regra do proprietário: ficam só os jogos usados)
+
+Regra do proprietário: **depois de recolher, analisar e elaborar os boletins, os restantes jogos recolhidos são apagados; permanecem apenas os jogos usados nos boletins.** Serve para a base de dados nunca encher (limite gratuito 500 MB; cada jogo recolhido ocupa ~0,2–0,4 MB).
+
+**Quando:** só **depois** de: (1) os boletins do dia estarem gravados (rascunho ou publicados) e **confirmados por consulta** (regra 6); (2) o relatório ao proprietário estar entregue; (3) não haver mais elaboração prevista com esses jogos (se houver 2.ª vaga, §8, esperar por ela). **Nunca antes de os boletins existirem**, senão apaga-se o conjunto de onde se vai escolher.
+
+**O que apagar:** jogos do dia (`source='swarm'`, dia de Luanda do alvo) **sem nenhuma `ticket_legs`** (rascunho, publicado ou histórico), com as respectivas `odds_comparisons` e `markets`. **Nunca apagar** jogos com pernas em qualquer boletim. Contexto e análises (`match_statistics`, `match_analyses`) dos jogos usados mantêm-se; os dos jogos apagados vão com eles.
+
+```sql
+-- 1) pré-visualizar (não apaga): quantos jogos ficam e quantos saem
+select count(*) filter (where exists (select 1 from ticket_legs l where l.match_id=m.id)) ficam,
+       count(*) filter (where not exists (select 1 from ticket_legs l where l.match_id=m.id)) saem
+from matches m
+where m.source='swarm' and (m.kickoff_at at time zone 'Africa/Luanda')::date = date '<AAAA-MM-DD>';
+
+-- 2) só depois de o proprietário (ou a regra permanente) autorizar e de confirmar os boletins:
+with alvo as (
+  select m.id from matches m
+  where m.source='swarm' and (m.kickoff_at at time zone 'Africa/Luanda')::date = date '<AAAA-MM-DD>'
+    and not exists (select 1 from ticket_legs l where l.match_id=m.id)
+), a as (delete from markets where match_id in (select id from alvo) returning 1),
+   b as (delete from odds_comparisons where match_id in (select id from alvo) returning 1),
+   c as (delete from matches where id in (select id from alvo) returning 1)
+select (select count(*) from a) markets, (select count(*) from b) comparacoes, (select count(*) from c) jogos;
+```
+
+**Depois:** reportar quantos jogos/comparações/mercados foram apagados e quantos ficam, e o tamanho da base (`pg_database_size`). Se a limpeza diária automática (`fk-cleanup-swarm-matches-10h`) já tiver apagado jogos de dias passados, não repetir. Esta limpeza **não** substitui as guardas de armazenamento (purga a 420 MB, bloqueio a 465 MB).
+
 ## 11. Passo 9 — acompanhar, liquidar e aprender (é aqui que se ganha "êxito" a longo prazo)
 
 1. **Ao vivo e liquidação.** O recolhedor SofaScore corre no PC. 403 = bloqueio temporário: esperar, não contornar. Fichas com selecções sem liquidação automática ficam a aguardar até serem liquidadas à mão.
@@ -253,5 +281,5 @@ Data/hora e lote · jogos descobertos por casa e comuns · contadores de gravaç
 5. Passo 5: escolher o **melhor mercado** por jogo (todas as famílias).
 6. Passo 6: construir boletins (regras do Manual), aplicar a descorrelação (§8.1: 1 jogo = 1 boletim, sem mercados correlacionados), calcular probabilidade conjunta.
 7. Passo 7: validar tudo (checklist §9) → rascunho.
-8. Mostrar ao proprietário o resumo honesto e **pedir autorização** → publicar → confirmar persistência → acompanhar reservas.
+8. Mostrar ao proprietário o resumo honesto e **pedir autorização** → publicar → confirmar persistência → acompanhar reservas → **limpeza pós-elaboração (§10.1): apagar os jogos recolhidos que não entraram em nenhum boletim**.
 9. Passo 9: registar resultados, calibrar, melhorar.
