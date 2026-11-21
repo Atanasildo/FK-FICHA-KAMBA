@@ -128,3 +128,45 @@ test("jogos virtuais não ocupam vagas e o dia inteiro cabe quando o limite é a
   assert.ok(!pairs.some(pair => /SRL/.test(pair.home)));
   assert.equal(Math.max(...pairs.map(pair => pair.bantuKickoff)), nowSeconds + 3600 + 29 * 20 * 60);
 });
+
+import { competitionPriority } from "../../lib/bookmakers/daily-swarm.js";
+import { parseSwarmCompetitionTree } from "../../lib/bookmakers/swarm.js";
+
+test("principais competições têm prioridade; feminino, jovens e reservas ficam para o fim", () => {
+  const tier = (competition, extra = {}) => competitionPriority({ competition, ...extra });
+  assert.equal(tier("UEFA Champions League"), 0);
+  assert.equal(tier("Premier League", { region: "England" }), 0);
+  assert.equal(tier("La Liga", { region: "Spain" }), 0);
+  assert.equal(tier("Brasileirão Série A", { region: "Brazil" }), 0);
+  assert.equal(tier("Championship", { region: "England" }), 1);
+  assert.equal(tier("Segunda División", { region: "Spain" }), 1);
+  assert.equal(tier("Division 3 Reserve League", { region: "Sweden" }), 3);
+  assert.equal(tier("Premier League", { region: "England", home: "Arsenal Women", away: "Chelsea Women" }), 3);
+  assert.equal(tier("FA Women's Super League", { region: "England" }), 3);
+  assert.equal(tier("Liga Nacional", { region: "Guatemala" }), 2);
+  assert.equal(tier(""), 2);
+});
+
+test("a ordem dos pares põe as principais competições antes das outras", () => {
+  const nowSeconds = 1_000_000;
+  const mk = (id, home, away, offsetMin, competition) => ({ id: String(id), home, away, competition, start_ts: nowSeconds + 3600 + offsetMin * 60, is_live: false });
+  const bantu = [mk(1, "Aaa Town", "Bbb Town", 5, "Liga Nacional"), mk(2, "Arsenal", "Chelsea", 600, "Premier League"), mk(3, "Ccc FC", "Ddd FC", 10, "Division 3 Reserve League")];
+  const elephant = [mk(11, "Aaa Town", "Bbb Town", 5, "Liga Nacional"), mk(12, "Arsenal", "Chelsea", 600, "Premier League"), mk(13, "Ccc FC", "Ddd FC", 10, "Division 3 Reserve League")];
+  const pairs = selectCommonSwarmGames(bantu, elephant, { nowSeconds, minKickoffLeadSeconds: 0, horizonSeconds: 48 * 3600, maxGames: 1500 });
+  assert.deepEqual(pairs.map(pair => pair.home), ["Arsenal", "Aaa Town", "Ccc FC"]);
+  assert.equal(pairs[0].competition, "Premier League");
+  const limited = selectCommonSwarmGames(bantu, elephant, { nowSeconds, minKickoffLeadSeconds: 0, horizonSeconds: 48 * 3600, maxGames: 1 });
+  assert.equal(limited[0].home, "Arsenal");
+});
+
+test("parseSwarmCompetitionTree associa cada jogo à competição e à região", () => {
+  const data = { sport: { 1: { region: {
+    10: { name: "England", competition: { 100: { name: "Premier League", game: { 5001: { id: 5001 }, 5002: { id: 5002 } } } } },
+    20: { name: "Spain", competition: { 200: { name: "La Liga", game: { 6001: { id: 6001 } } } } }
+  } } } };
+  const map = parseSwarmCompetitionTree(data, 1);
+  assert.equal(map.size, 3);
+  assert.deepEqual(map.get("5001"), { competition: "Premier League", region: "England" });
+  assert.deepEqual(map.get("6001"), { competition: "La Liga", region: "Spain" });
+  assert.equal(parseSwarmCompetitionTree({}, 1).size, 0);
+});

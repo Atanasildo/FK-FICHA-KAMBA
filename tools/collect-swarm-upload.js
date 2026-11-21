@@ -1,10 +1,11 @@
 import { randomUUID } from "node:crypto";
 import {
   collectSwarm,
+  discoverSwarmCompetitions,
   discoverSwarmGames,
   SWARM_BOOKMAKERS
 } from "../lib/bookmakers/swarm.js";
-import { selectCommonSwarmGames, describeUnmatchedSwarmGames } from "../lib/bookmakers/daily-swarm.js";
+import { selectCommonSwarmGames, describeUnmatchedSwarmGames, competitionPriority } from "../lib/bookmakers/daily-swarm.js";
 import { writeFileSync } from "node:fs";
 
 const dryRun = process.argv.includes("--dry-run");
@@ -61,11 +62,35 @@ for (const name of providers) {
   console.log(name + ": " + discovered[name].gamesFound + " jogos encontrados.");
 }
 
+// Competição de cada jogo (para dar prioridade às principais e gravar o campeonato na ficha).
+// Se a consulta falhar, a recolha segue sem competições (os jogos ficam por ordem de hora).
+const competitionsByHouse = {};
+for (const name of providers) {
+  try {
+    competitionsByHouse[name] = await discoverSwarmCompetitions({ ...SWARM_BOOKMAKERS[name], sportId: 1, timeoutMs: 45000 });
+    for (const game of discovered[name].games) {
+      const info = competitionsByHouse[name].get(String(game.id));
+      if (info) {
+        game.region = info.region;
+        game.competition = info.competition ? (info.region ? info.competition + " · " + info.region : info.competition) : null;
+      }
+    }
+    const withCompetition = discovered[name].games.filter(game => game.competition).length;
+    console.log(name + ": competição identificada em " + withCompetition + " de " + discovered[name].games.length + " jogos.");
+  } catch (error) {
+    competitionsByHouse[name] = new Map();
+    console.warn("Aviso: não foi possível obter as competições da " + name + " (" + error.message + "). A recolha continua sem prioridade por competição.");
+  }
+}
+
+console.log("A emparelhar os jogos das duas casas (pode demorar alguns segundos)...");
+const pairingStartedAt = Date.now();
 const commonPairs = selectCommonSwarmGames(
   discovered.bantu.games,
   discovered.elephant.games,
   { maxGames: 1500, maxKickoffDifferenceSeconds: 90 * 60, onlyToday: true }
 );
+console.log("Emparelhamento concluído em " + ((Date.now() - pairingStartedAt) / 1000).toFixed(1) + " s: " + commonPairs.length + " jogos comuns.");
 const diagnostic = describeUnmatchedSwarmGames(discovered.bantu.games, discovered.elephant.games, commonPairs);
 console.log("Jogos de hoje (com 1 h de antecedência): BantuBet " + diagnostic.bantuHoje + ", ElephantBet " + diagnostic.elephantHoje + ", em par " + diagnostic.emPar + ".");
 console.log("Sem par: " + diagnostic.soBantu.length + " só na BantuBet, " + diagnostic.soElephant.length + " só na ElephantBet. Lista em swarm-unmatched-today.json.");
@@ -85,6 +110,8 @@ const MB_PER_GAME = 0.4; // medido: ~0,38 MB por jogo (markets + comparações).
 console.log("Espaço estimado a gravar: ~" + Math.round(pairsToCollect.length * MB_PER_GAME) + " MB (≈0,4 MB por jogo; limite gratuito 500 MB). Jogos virtuais (SRL) já foram excluídos.");
 
 console.log("Jogos comuns BantuBet/ElephantBet:", commonPairs.length);
+const tierCounts = [0, 1, 2, 3].map(tier => eligiblePairs.filter(item => competitionPriority(item.bantu) === tier).length);
+console.log("Por prioridade de competição — principais: " + tierCounts[0] + ", fortes: " + tierCounts[1] + ", outras: " + tierCounts[2] + ", feminino/jovens/reservas: " + tierCounts[3] + ". As principais são recolhidas primeiro.");
 console.log("A SportAPI não é necessária para esta recolha.");
 console.log("Limite configurado:", maxGames, "par(es).");
 console.log("A recolher:", pairsToCollect.length, "pares de jogos comuns.");
@@ -127,6 +154,8 @@ async function collectOnePair(item, index) {
       if (!bantu.received || !elephant.received) {
         throw new Error("Uma das casas não devolveu a recolha completa deste jogo.");
       }
+      for (const game of bantu.games || []) { if (String(game.id) === String(item.bantu.id) && item.bantu.competition) game.competition = item.bantu.competition; }
+      for (const game of elephant.games || []) { if (String(game.id) === String(item.elephant.id)) game.competition = item.elephant.competition || item.bantu.competition || game.competition; }
       lastCollectionError = null;
       break;
     } catch (error) {
