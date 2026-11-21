@@ -156,9 +156,35 @@ Regras do **Manual** (§6.2): odd individual **≥ 1,40**; **uma casa por boleti
 - **Distribuição de referência:** 6 a 8 boletins — 2 em 25–50x, 2 em 30–70x, os restantes em 100–10.000x. São metas, **não** licença para incluir selecções fracas. Se não houver qualidade: **menos boletins ou nenhum**, com explicação.
 - **Boletins "1000x+":** permitidos (até 2 por dia) se as duas casas ultrapassarem 1000 e **todas** as selecções passarem na análise. Probabilidade conjunta típica < 0,1%: tratar como bilhete de risco extremo e dizê-lo.
 - **Número de selecções:** livre; é o necessário para a faixa de odds. Mais selecções = menor probabilidade; preferir menos selecções com odds mais altas e boas (ex.: handicap, golos por equipa) a muitas selecções de 1,40.
-- **Diversificação:** repartir os jogos pelos boletins; evitar que todos dependam dos mesmos 3 resultados. Se só restam ~9 selecções fortes, **publicar poucos boletins** em vez de variações quase iguais.
+- **Descorrelação entre boletins (regra obrigatória — ver §8.1).** Um mesmo resultado não pode derrubar vários boletins ao mesmo tempo.
 - **Probabilidade conjunta:** produto das probabilidades (se independentes) — **mostrar** ao proprietário. Selecções do mesmo jogo não são independentes.
 - **Horário:** ordenar por hora; o primeiro jogo deve começar com antecedência para a reserva. Se as notícias de escalações forem decisivas, publicar em **duas vagas** (manhã: jogos da tarde; tarde: jogos da noite) e revalidar o onze inicial antes da 2.ª.
+
+### 8.1 Descorrelação entre boletins (Gestão de Correlação / "ponto único de falha")
+
+**Nome do conceito:** *gestão de correlação*, *descorrelação de carteira* ou *controlo de exposição por evento*. O risco que se evita chama-se **risco sistémico** ou **ponto único de falha**: um só resultado que faz perder vários boletins ao mesmo tempo (ex.: o Arsenal empatar e cair três boletins).
+
+**Regras obrigatórias (verificar antes de gravar):**
+
+1. **Exclusividade de jogo: cada jogo aparece em, no máximo, UM boletim.** As duas versões do mesmo boletim (BantuBet e ElephantBet, ligadas por `shared_ticket_id`) contam como **um só boletim** — o utilizador escolhe uma casa, não joga as duas. Entre boletins **diferentes**, nenhum jogo se repete.
+2. **Nenhum boletim contido noutro.** Um boletim que é igual a outro "mais uma selecção" não é um boletim novo: é o mesmo risco. Proibido.
+3. **Mercados dependentes do mesmo jogo.** Se, por autorização expressa, um jogo tiver de entrar em dois boletins, as duas selecções só podem coexistir se a **sobreposição de falhas** for baixa: calcular, com a matriz de resultados (Poisson/mercado), `P(falham as duas) / (P(falha A) · P(falha B))`; se for claramente > 1 (ex.: "Mais de 2.5" e "Ambas marcam" falham juntas em 0-0 e 1-0), **bloquear**. Por defeito não se faz.
+4. **Independência de carteira.** Distribuir os boletins por **campeonatos, horários e regiões** diferentes: no máximo ~40% das selecções de um boletim da mesma liga, e evitar pôr no mesmo boletim jogos com a mesma causa comum (mesma jornada decisiva, mesmo temporal, mesmo árbitro, mesma narrativa de "dia de favoritos").
+5. **Dentro de um boletim:** uma selecção por jogo; para dois mercados do mesmo jogo, usar o **mercado combinado** próprio (ex.: Resultado + Total) com a sua odd, nunca duas selecções soltas.
+6. **Exposição por evento (teto).** O Ficha Kamba reserva com stake 0, por isso o teto em dinheiro **não se aplica ao sistema**. Se o proprietário ou os utilizadores definirem stakes, informar a regra de bolso: o total apostado em boletins que contêm o mesmo jogo não deve passar 2–3% da banca.
+
+**Consequência prática (dizer sempre ao proprietário):** o número de boletins é limitado pelo número de **jogos fortes disponíveis**: `nº de boletins ≈ jogos fortes ÷ selecções por boletim`. Com ~10 jogos fortes e 8–10 selecções por boletim só cabe **1 boletim** sem repetir jogos. Para ter vários boletins independentes é preciso: (a) pesquisar **mais jogos e mais ligas**; (b) usar **mercados de odd mais alta com evidência** (handicap, golos por equipa, resultado + total) para chegar à faixa com **menos selecções** por boletim; (c) aceitar **menos boletins** em vez de repetir jogos. As faixas e a quantidade do Manual são metas, não obrigação.
+
+**Verificação (SQL) — tem de devolver zero linhas:**
+
+```sql
+-- jogos repetidos entre boletins diferentes (conta cada boletim uma vez, ignorando a casa)
+select l.match_id, count(distinct coalesce(t.shared_ticket_id, t.id)) as boletins
+from tickets t join ticket_legs l on l.ticket_id = t.id
+where t.status in ('draft','published') and t.created_at > now() - interval '24 hours'
+group by l.match_id
+having count(distinct coalesce(t.shared_ticket_id, t.id)) > 1;
+```
 
 ## 9. Passo 7 — validações finais (todas têm de passar)
 
@@ -170,7 +196,7 @@ select t.title, t.total_odds, count(l.id) pernas, count(l.selection_id) com_sele
 from tickets t join ticket_legs l on l.ticket_id=t.id join matches m on m.id=l.match_id
 where t.status='draft' group by t.id;
 ```
-Checklist: jogo **não** iniciado (com margem); **odd actual ≥ 1,40 nas duas casas** (re-ler o JSON mais recente); `selection_id` numérico em todas as selecções; mercado e linha iguais nas duas casas; uma selecção por jogo; total dentro da faixa; sem duplicação com boletins existentes; probabilidade conjunta calculada; sem SRL; selecções com fonte e justificação.
+Checklist: **nenhum jogo repetido entre boletins diferentes** (consulta do §8.1 sem linhas) e nenhum boletim contido noutro; jogo **não** iniciado (com margem); **odd actual ≥ 1,40 nas duas casas** (re-ler o JSON mais recente); `selection_id` numérico em todas as selecções; mercado e linha iguais nas duas casas; uma selecção por jogo; total dentro da faixa; sem duplicação com boletins existentes; probabilidade conjunta calculada; sem SRL; selecções com fonte e justificação.
 
 ## 10. Passo 8 — gravar (rascunho → publicar)
 
@@ -214,6 +240,7 @@ Data/hora e lote · jogos descobertos por casa e comuns · contadores de gravaç
 8. Ficar só em 1X2/BTTS quando havia centenas de mercados mais adequados.
 9. Cortar o dia da recolha a meio (limite de jogos) e não avisar.
 10. Esquecer `selection_id` (a reserva salta a ficha).
+11. Publicar boletins que partilham jogos ou que contêm outro (em 21/11: o Boletim 03 era o 02 mais uma selecção, e o Arsenal estava em três boletins) — viola a descorrelação do §8.1.
 
 ---
 
