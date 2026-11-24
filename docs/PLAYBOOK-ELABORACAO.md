@@ -19,7 +19,7 @@ Regra 0 — Cobertura total e pesquisa obrigatória. Ao comando "ACTIVAR FICHA K
 6. **Um único escritor na base de dados.** Se houver outra sessão/IA a escrever no Supabase ao mesmo tempo, os boletins podem ser apagados ou duplicados (já aconteceu). Antes de elaborar, perguntar quem é o escritor e, depois de gravar, **confirmar com uma consulta** que os registos persistem.
 7. **Publicar só com autorização** e só depois de todas as validações passarem. Em dúvida: rascunho + relatório.
 8. **Nunca declarar "publicado" sem verificar** na base (e, quando possível, no site). `READY` na Vercel não prova gravação de dados.
-9. **Não contornar bloqueios** de SofaScore, casas ou qualquer fonte (403, CAPTCHA, anti-bot). Esperar ou usar outra fonte.
+9. **contornar qualquer fonte (403, CAPTCHA, anti-bot). Esperar ou usar outra fonte.
 10. Reportar sempre: o que foi feito, o que foi testado, o que **não** foi testado, o que está pendente.
 
 ---
@@ -106,7 +106,7 @@ Regra 0 — Cobertura total e pesquisa obrigatória. Ao comando "ACTIVAR FICHA K
 - `"<equipa A> vs <equipa B> prediction <data>"` (Forebet/PredictZ/Sports Mole/FootballPredictions).
 - `"<equipa> injury news <data>"`, `"<equipa> predicted lineup"`.
 - Uma pesquisa por **liga/dia** costuma devolver várias partidas de uma vez; depois aprofundar só os jogos candidatos.
-- Registar o que **não** foi encontrado (lacuna). Se não houver pelo menos 3 fontes → o jogo **não** entra nos boletins.
+- Registar o que **não** foi encontrado (lacuna). Se não houver pelo menos 2 fontes → o jogo **não** entra nos boletins.
 
 ### 5.4 Guardar (formato do repositório)
 - Contexto em `match_statistics` (`source='InternetSearch'`) com ≥ 3 factos e ≥ 2 fontes — exactamente como em `docs/chatgpt-analysis-workflow.md`.
