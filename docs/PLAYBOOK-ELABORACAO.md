@@ -8,8 +8,9 @@
 
 ---
 
-## 0. Regras que nunca se quebram
+## . Regras que nunca se quebram
 
+Regra 0 — Cobertura total e pesquisa obrigatória. Ao comando "ACTIVAR FICHA KAMBA", a IA analisa todos os jogos elegíveis do dia, não apenas os que já têm dados. Quando faltarem dados (forma, golos, ausências, classificação, previsões), a IA pesquisa na internet para os preencher antes de analisar. Só depois monta os boletins, nas faixas de odds do playbook, e pede autorização para publicar. É proibido encurtar a elaboração ou aceitar boletins de odds baixas por falta de pesquisa. Só ficam de fora os jogos que, depois de pesquisados, continuem sem dados de fiabilidade suficiente, e cada exclusão leva o motivo.
 1. **Dados reais ou nada.** Não inventar odds, estatísticas, lesões, notícias, resultados, fontes, códigos de reserva. Se a fonte não confirma, o dado fica "indisponível".
 2. **Não apostar, não depositar, não movimentar dinheiro.** Reservar (gerar código de aposta com stake 0) é feito só pela tarefa agendada do PC, nunca pela IA.
 3. **Não apagar** jogos, análises, boletins ou histórico sem autorização explícita do proprietário. (Rascunhos criados pela própria IA e ainda não publicados podem ser substituídos se a IA avisar.)
