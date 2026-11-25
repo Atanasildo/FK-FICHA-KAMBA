@@ -271,6 +271,9 @@ FK-FICHA-KAMBA/
 - `local-bookmaker-collector.js`, `local-bookmaker-check.js`: recolha/verificação local.
 - `recover-swarm-game.js`: recuperação de jogo específico.
 - `collect-live-sofascore.js`: recolhe marcador, estado, eventos e estatísticas ao vivo dos jogos dos boletins (fonte não oficial; ver «Fonte ao vivo SofaScore»).
+- `collect-prematch-sofascore.js`: recolhe no PC palpite do público, forma e confrontos directos do SofaScore para `match_statistics` (ver «Recolha de análise no PC»).
+- `collect-prediction-sites.js`, `probe-prediction-sites.js`: leitor e sonda dos sites de previsões.
+- `show-candidates.js`: mostra os candidatos com fontes a concordar (`lib/pipeline/consensus.js`).
 - `report-swarm-comparison.js`: relatório de comparação.
 - `run-analysis-only.js`: chama o pipeline legado em Preview, com modo de teste por omissão; rever argumentos antes de qualquer execução.
 - `run-internet-fallback.js`: teste isolado do fallback de contexto, em modo dry-run.
@@ -494,6 +497,7 @@ Esta secção evita que uma nova IA confunda código existente com funcionalidad
 ## 13. Documentos de referência
 
 - [Procedimento de análise manual no ChatGPT](docs/chatgpt-analysis-workflow.md)
+- Playbook de elaboração (`docs/PLAYBOOK-ELABORACAO.md`, na branch `docs/playbook-elaboracao`; §16 descreve a recolha automática e o consenso)
 - [Fundação e configuração Supabase](supabase/README.md)
 - [Schema base Supabase](supabase/schema.sql)
 - [Exemplo de variáveis de ambiente](.env.example)
@@ -548,3 +552,22 @@ estatísticas dos jogos ao vivo (SofaScore, a cada 60 s) e grava em `match_stati
 chave cifrada de `install-reserve-task.ps1` (corre esse instalador primeiro). O site (boletins publicados e painel
 "Ao vivo") atualiza a cada minuto quando há jogos em directo e a cada 5 minutos quando não há.
 Registo: `%LOCALAPPDATA%\FichaKamba\logs\ao-vivo-AAAA-MM-DD.log`.
+
+## Recolha de análise no PC (previsões + pré-jogo) — 25/11/2026
+
+Objectivo: a análise não gastar o limite do utilizador. O PC grava em `match_statistics` e a IA lê tudo numa só consulta. Detalhes e regras de elaboração: §16 de `docs/PLAYBOOK-ELABORACAO.md`.
+
+| Recolha | Comando | Tarefa agendada | Estado em 25/11 |
+|---|---|---|---|
+| Sites de previsões | `node tools\collect-prediction-sites.js [--dry\|--watch]` | «Ficha Kamba - Previsoes» (`install-sites-task.ps1`, de 3 em 3 h) | correu à mão (250 ligações); tarefa por instalar |
+| Pré-jogo SofaScore | `node tools\collect-prematch-sofascore.js --max=10` | «Ficha Kamba - Pre-jogo» (`install-prematch-task.ps1`, de 3 em 3 h) | nunca gravou jogos reais (403); formato por confirmar |
+| Ao vivo SofaScore | `npm run collect:live -- --watch` | «Ficha Kamba - Ao vivo» | parada desde as 02:30 (403) |
+
+- **Sites lidos:** MyBets e Statarea (palpite), Vitibet e BetStudy (percentagens 1/X/2), Forza (só jogos grandes). FootyStats e SoccerVista dão 0 jogos. Forebet, PredictZ, WinDrawWin e Foresportia dão 403 a scripts: ficam de fora, sem contornar. Gravam com `source = 'site:<nome>'`.
+- **Consenso** (`lib/pipeline/consensus.js`, `node tools\show-candidates.js`): odds sem margem + percentagens dos sites + palpite SofaScore; só propõe 1, X ou 2 com pelo menos 2 fontes a concordar, nenhuma a contrariar, e odds entre 1,40 e 3,20 nas duas casas. Guarda o `selectionId` de cada casa (diferente entre BantuBet e ElephantBet).
+- **Limites:** só 1X2; forma, lesões e notícias dependem do pré-jogo SofaScore; o consenso não garante resultados.
+- **403 do SofaScore:** o script pára e espera (pausa de 2,5 s entre pedidos). Não correr sondas seguidas; em 403, parar as tarefas SofaScore cerca de 1 h. Nunca contornar.
+- **Chave Supabase:** o arranque mostra o endereço e o comprimento da chave; `sb_secret_…` tem 41 caracteres e começa por `sb_`. Sem aspas nem espaços em `set SUPABASE_SERVICE_ROLE_KEY=…` (aceita também `SUPABASE_SECRET_KEY` e `SUPABASE_SERVICE_KEY`).
+- **Reservas:** os códigos têm de ser reservados no PC (`tools\reserve-pending.js`) antes de os jogos começarem; jogos asiáticos começam às 11:00 em Luanda.
+- Os PR #19, #20 e #21 continuam por fundir (esta branch inclui o #21).
+- Os scripts PowerShell novos não foram executados num Windows real nesta sessão; só o lado Node tem testes (`tests/pipeline/`).
