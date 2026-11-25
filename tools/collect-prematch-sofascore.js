@@ -4,8 +4,10 @@ import { createClient } from "@supabase/supabase-js";
 import { getSofascoreJson } from "./collect-live-sofascore.js";
 import { collectPrematch } from "../lib/pipeline/prematch.js";
 
-const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
+const clean = v => String(v || "").trim().replace(/^["']+|["']+$/g, "");
+const url = clean(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL);
+const key = clean(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_KEY);
+console.log(`Supabase: ${url} | chave: ${key.length} caracteres, começa por "${key.slice(0, 3)}"`);
 if (!url || !key) { console.error("Faltam SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY."); process.exit(1); }
 const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
 const max = Number(process.argv.find(a => a.startsWith("--max="))?.split("=")[1] || 150);
