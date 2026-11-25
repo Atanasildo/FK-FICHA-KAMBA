@@ -98,6 +98,7 @@
 - **Dados:** SofaScore, FotMob, WhoScored, FBref, Understat (xG nas 5 grandes ligas), Transfermarkt (lesões/valor), Soccerway/Flashscore (resultados e tabelas).
 - **Previsões (como segunda opinião, nunca como única fonte):** PrimaTips, FootballSuper.tips, PredictZ (referidos no Manual); Forebet, Statarea, Sports Mole, SportyTrader, FootballPredictions.com, Squawka, LiveScore previews, Vitibet, ScoreGPT/Statz (modelos automáticos — peso baixo).
 - **Notícias:** BBC Sport, Sky Sports, Marca/AS, Kicker, L'Équipe, A Bola/Record, Globo Esporte, ESPN.
+- **Forebet, PredictZ, WinDrawWin e Foresportia dão 403 a scripts no PC** (não contornar); Vitibet, BetStudy, MyBets, Statarea e Forza são lidos pela recolha automática (§16).
 - Não copiar previsões sem validação independente (Manual §6.1). Registar origem, hora e qualidade.
 
 ### 5.3 Como pesquisar (modelos de pesquisa)
@@ -199,6 +200,8 @@ Data/hora e lote · jogos descobertos por casa e comuns · contadores de gravaç
 
 - **Migração para o Histórico não perder equipas:** acrescentar colunas (equipas, competição, hora) a `ticket_legs`, preenchidas ao gravar e antes da limpeza. Aditiva; ainda **não autorizada nem aplicada**.
 - **Fonte ao vivo alternativa** se o SofaScore continuar a bloquear.
+- **Instalar no PC as tarefas «Ficha Kamba - Previsoes» e «Ficha Kamba - Pre-jogo»** e validar o pré-jogo SofaScore com dados reais (ver §16).
+- **Mercados além de 1X2** (Mais de 2.5, BTTS, dupla chance) ainda não entram no consenso automático (§16.4).
 - **Tabela `prediction_log`** para calibração/CLV.
 - **API/MCP segura para agentes** com permissões por agente (Manual §5).
 
@@ -214,6 +217,10 @@ Data/hora e lote · jogos descobertos por casa e comuns · contadores de gravaç
 8. Ficar só em 1X2/BTTS quando havia centenas de mercados mais adequados.
 9. Cortar o dia da recolha a meio (limite de jogos) e não avisar.
 10. Esquecer `selection_id` (a reserva salta a ficha).
+11. Gastar o limite do proprietário em pesquisas web que o PC pode fazer de graça (ver §16): a recolha de previsões e do pré-jogo deve ser feita pelas tarefas agendadas, e a IA só lê a base.
+12. Usar o **mesmo número de selecção nas duas casas** em mercados de resultado (1X2, dupla chance): BantuBet e ElephantBet têm `selectionId` diferentes. As fichas de 22/11 foram feitas assim e as reservas devem ser conferidas.
+13. Correr várias sondas ao SofaScore seguidas (e deixar o ao vivo a pedir de minuto a minuto): o IP do PC levou **403** e o ao vivo parou às 02:30 de 25/11. Uma sonda por vez, com pausa, e parar tudo ~1 h se vier 403.
+14. Chave do Supabase copiada sem o primeiro carácter (`b_secret…` em vez de `sb_secret_…`) → «Invalid API key». Conferir o diagnóstico de arranque: 41 caracteres e começa por `sb_`.
 
 ---
 
@@ -228,3 +235,56 @@ Data/hora e lote · jogos descobertos por casa e comuns · contadores de gravaç
 7. Passo 7: validar tudo (checklist §9) → rascunho.
 8. Mostrar ao proprietário o resumo honesto e **pedir autorização** → publicar → confirmar persistência → acompanhar reservas.
 9. Passo 9: registar resultados, calibrar, melhorar.
+
+---
+
+## 16. Recolha automática no PC e consenso de fontes (adicionado em 25/11/2026)
+
+**Objectivo:** a análise deixar de gastar o limite do proprietário. O PC recolhe palpites, forma e confrontos directos e grava-os em `match_statistics`; a IA lê tudo numa só consulta, calcula o consenso e monta as fichas. Código na branch `feat/mega-fichas` (inclui o PR #21; os PR #19, #20 e #21 continuam por fundir).
+
+### 16.1 As três recolhas e o seu estado em 25/11
+
+| Recolha | Ficheiros | Tarefa agendada (Windows) | Estado em 25/11 |
+|---|---|---|---|
+| Ao vivo SofaScore | `tools/collect-live-sofascore.js`, `tools/windows/install-live-task.ps1` | «Ficha Kamba - Ao vivo» | Parada desde as 02:30 por 403 do SofaScore; retomar após ~1 h de pausa |
+| Pré-jogo SofaScore | `tools/collect-prematch-sofascore.js`, `lib/pipeline/prematch.js`, `tools/windows/install-prematch-task.ps1` | «Ficha Kamba - Pre-jogo» (de 3 em 3 h) | Código pronto; **nunca gravou jogos reais** (403); formato de `/search/events` por confirmar; tarefa não instalada |
+| Sites de previsões | `tools/collect-prediction-sites.js`, `lib/pipeline/prediction-sites.js`, `tools/windows/install-sites-task.ps1` | «Ficha Kamba - Previsoes» (de 3 em 3 h) | Correu à mão às 08:16 (250 ligações gravadas); tarefa pronta, **falta instalar** |
+
+- O pré-jogo grava, por jogo (hoje e amanhã, com odds): palpite do público do SofaScore (% casa/empate/fora), forma recente das duas equipas com posição na tabela e confrontos directos. Ligas principais primeiro; sem mulheres, juvenis, reservas nem virtuais. Pausa entre pedidos: 2,5 s. Em 403/429 o script **pára e espera** (regra 9: nunca contornar).
+- Os sites de previsões gravam em `match_statistics` com `source = 'site:<nome>'`: o trecho de texto e, quando existem, as percentagens 1/X/2 e o palpite.
+- Comandos no PC (pasta do projecto, branch `feat/mega-fichas`, variáveis do Supabase definidas): `node tools\collect-prediction-sites.js [--dry|--watch]`, `node tools\collect-prematch-sofascore.js --max=10`, `node tools\show-candidates.js`, `node tools\probe-prediction-sites.js`. Instaladores: `powershell -ExecutionPolicy Bypass -File tools\windows\install-sites-task.ps1` (e `install-prematch-task.ps1`). Registos em `%LOCALAPPDATA%\FichaKamba\logs\previsoes-AAAA-MM-DD.log` e `pre-jogo-AAAA-MM-DD.log`.
+- `recolha_previsoes.py` deixou de ser usado.
+
+### 16.2 Que sites de previsões abrem a partir do PC (sonda de 25/11)
+
+- **Lidos pela recolha:** MyBets (palpite), Statarea (palpite), Vitibet (percentagens 1/X/2), BetStudy (percentagens 1/X/2), Forza (só jogos grandes; encontrou 1).
+- **Abrem mas dão 0 jogos** (página inicial sem lista por dia): FootyStats, SoccerVista.
+- **Bloqueados (403 «Just a moment…»):** Forebet, PredictZ, WinDrawWin, Foresportia. Ficam de fora; **não contornar**.
+- Outros testados sem utilidade: SportsMole e BetExplorer (404), FootballPredictions.com/.ai (sem lista), OddsPortal (2 jogos).
+- A leitura é genérica (texto da página). O leitor só olha para o que vem **depois da equipa visitante**; antes apanhava as percentagens do jogo vizinho (exemplo: Kryvbas–Kharkiv, correcto 18/26/56). Conferir sempre 3 ou 4 exemplos no `--dry` antes de gravar, e o palpite não pode ser o rótulo de uma percentagem.
+
+### 16.3 Consenso (`lib/pipeline/consensus.js`, `tools/show-candidates.js`)
+
+Para cada jogo com odds nas duas casas: probabilidade do mercado sem margem (devig) + percentagens dos sites + palpite do público do SofaScore. **Só propõe 1, X ou 2 se pelo menos 2 fontes apontarem para a mesma selecção e nenhuma a contrariar; odds entre 1,40 e 3,20 nas duas casas.** Guarda o `selectionId` de cada casa (são diferentes; ver §14.12). Resultado de 25/11: 154 jogos analisados, 124 a procurar nos sites, 250 ligações.
+
+### 16.4 Limites conhecidos
+
+- Só cobre **1X2**. Mais de 2.5, BTTS e dupla chance não entram, porque a maioria dos sites só dá 1/X/2.
+- Dos 7 sites, só 5 dão jogos no dia.
+- Forma, lesões e notícias só chegam se o pré-jogo SofaScore voltar a funcionar.
+- O consenso mostra o que os sites dizem; **não garante resultado**. A ficha de 2 fontes a concordar é a mais arriscada (ficha #3 de 25/11: probabilidade conjunta estimada ~1 em 150–200).
+
+### 16.5 Fluxo de elaboração com isto instalado
+
+1. Confirmar que as três tarefas correram nas últimas 3 h (registos) e que `match_statistics` tem linhas `site:*` de hoje.
+2. Num chat novo, o proprietário escreve «pré-jogo gravado, faz as fichas de hoje».
+3. A IA lê a base (uma consulta), corre o consenso, monta fichas **sem jogos repetidos entre elas**, valida (§9), publica com autorização e confirma persistência.
+4. **Reservar os códigos no PC antes de os jogos começarem** (`tools\reserve-pending.js`); jogos com início antes da reserva deixam a ficha por reservar. Atenção aos jogos asiáticos (11:00 em Luanda).
+5. Para 1000x+ são precisos pelo menos ~15 jogos analisados.
+
+### 16.6 Fichas de 25/11 (registo)
+
+- #1 Liga dos Campeões, 8 jogos: BantuBet 30,8 / ElephantBet 26,8 (uma só fonte, roteiro Forza; Sporting–Man United sem palpite → selecção mais fraca).
+- #2 «fontes fortes» (3–4 a concordar), 7 jogos: 55,2 / 47,1.
+- #3 «fontes mais fracas» (2 a concordar), 7 jogos: 234 / 189.
+- Verificado: nenhum jogo repetido entre as três. Pedido pendente do proprietário: **mais 3 ou 4 bilhetes para a tarde e noite de 25/11** (Championship 20:45, Serie B 19:00, etc., a partir do consenso dos sites; só jogos ainda não iniciados).
