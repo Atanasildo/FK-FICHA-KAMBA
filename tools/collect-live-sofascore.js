@@ -35,7 +35,7 @@ export class BlockedError extends Error {}
 const blocked = status => new BlockedError(`SofaScore recusou o pedido (HTTP ${status}). Não é contornado; a esperar.`);
 
 export async function fetchSofascoreJson(path, { fetchImpl = fetch, timeoutMs = 15000 } = {}) {
-  const response = await fetchImpl(SOFASCORE_BASE + path, {
+  const response = await fetchImpl(path.startsWith("http") ? path : SOFASCORE_BASE + path, {
     headers: { Accept: "application/json" },
     signal: AbortSignal.timeout(timeoutMs)
   });
