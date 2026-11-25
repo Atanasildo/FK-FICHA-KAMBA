@@ -6,6 +6,7 @@ const f = (html, h, a) => { const raw = htmlToText(html); return findInText(norm
 test("vitibet: percentagens rotuladas do jogo certo, não do vizinho", () => {
   const r = f("24% 2 57% Tip 1-2 2 Ukraine: Premier League 12:00 Kryvbas KR FC Kharkiv INDEX -1.80 1 18% X 26% 2 56% Tip 1-2 2 England: National League 20:00 Foo Bar", "Kryvbas Kryvyi Rih", "FC Kharkiv");
   assert.deepEqual(r.pct, [18, 26, 56]);
+  assert.equal(r.tip, "2");
 });
 test("betstudy: trio simples depois da equipa de fora", () => {
   const r = f("25/11 11:00 Polonia Sroda Sokol Kleczew 1 41% 25% 34% 1 2.28 @ 1xbet 25/11 11:00 Kryvbas Kryvyi Rih Metalist 1925 Kharkiv 2 26% 13% 61% 2 Bet Here", "Kryvbas Kryvyi Rih", "FC Kharkiv");
