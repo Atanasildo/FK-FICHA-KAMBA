@@ -43,7 +43,7 @@ async function runOnce() {
       const hit = findInText(textNorm, raw, m.home_team, m.away_team);
       if (!hit) continue;
       found++;
-      if (dry && found <= 3) console.log(`   ${m.home_team} - ${m.away_team} | pct=${JSON.stringify(hit.pct)} tips=${hit.tips.join(",")}\n   «${hit.snippet.slice(0, 160)}»`);
+      if (dry && found <= 3) console.log(`   ${m.home_team} - ${m.away_team} | pct=${JSON.stringify(hit.pct)} palpite=${hit.tip} extra=${hit.tips.join(",")}\n   «${hit.snippet.slice(0, 160)}»`);
       if (dry) continue;
       const payload = { site: site.id, ...hit, recolhidoEm: new Date().toISOString() };
       const source = `site:${site.id}`;
