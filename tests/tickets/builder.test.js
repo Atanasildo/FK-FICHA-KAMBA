@@ -76,3 +76,27 @@ test("aceita jogos de hoje com pelo menos uma hora de antecedência", () => {
   };
   assert.ok(normalizeCandidate(candidate, now));
 });
+
+test("gera fichas 1000x+ quando há selecções suficientes e as duas casas passam das 1000x", async () => {
+  const { buildTicketBatch } = await import("../../lib/tickets/builder.js");
+  const publishedAt = "2026-11-14T10:00:00.000Z";
+  const markets = [["Total de golos", "Mais de 1.5"], ["Ambas marcam", "Sim"], ["Dupla Chance", "1X"], ["Resultado", "Casa"], ["Total de cantos", "Mais de 8.5"], ["Handicap", "Casa +1"],
+    ["Cartões", "Mais de 3.5"], ["Total de remates", "Mais de 20.5"], ["Primeira parte", "Casa ou empate"], ["Golos da casa", "Mais de 0.5"], ["Golos do visitante", "Mais de 0.5"], ["Empate anula", "Casa"]];
+  const pool = Array.from({ length: 80 }, (_, i) => {
+    const [market, selection] = markets[i % markets.length];
+    return {
+      fixtureId: "g" + i, home: "Casa" + i, away: "Fora" + i, competition: "Liga " + i,
+      kickoff: "2026-11-14T15:00:00.000Z", market, selection,
+      rationale: "Análise com várias fontes a sustentar esta selecção.",
+      fairProbability: 0.5, selectionId: String(1000 + i),
+      quotes: [
+        { bookmaker: "BantuBet", odds: 2.3, collectedAt: "2026-11-14T09:50:00.000Z" },
+        { bookmaker: "ElephantBet", odds: 2.25, collectedAt: "2026-11-14T09:50:00.000Z" }
+      ]
+    };
+  });
+  const batch = buildTicketBatch(pool, { publishedAt });
+  const mega = batch.slips.filter(slip => slip.tier === "mega");
+  assert.ok(mega.length >= 2, "esperava pelo menos uma ficha mega (duas casas)");
+  for (const slip of mega) assert.ok(slip.total_odd >= 1000, "odd " + slip.total_odd);
+});
